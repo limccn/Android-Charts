@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AndroidCharts Demo</string>
+    <string name="gridchart">GridChart</string>
+    <string name="machart">MAChart</string>
+    <string name="stickchart">StickChart</string>
+    <string name="mastickchart">MAStickChart</string>
+    <string name="minusstickchart">MinusStickChart</string>
+    <string name="candlestickchart">CandleStickChart</string>
+    <string name="macandlestickchart">MACandleStickChart</string>
+    <string name="piechart">PieChart</string>
+    <string name="piechart_title1">title1</string>
+    <string name="piechart_title2">title2</string>
+    <string name="piechart_title3">title3</string>
+    <string name="piechart_title4">title4</string>
+    <string name="piechart_title5">title5</string>
+    <string name="spiderwebchart">SpiderWebChart</string>
+    <string name="spiderwebchart_title1">title1</string>
+    <string name="spiderwebchart_title2">title2</string>
+    <string name="spiderwebchart_title3">title3</string>
+    <string name="spiderwebchart_title4">title4</string>
+    <string name="spiderwebchart_title5">title5</string>
+
+</resources>

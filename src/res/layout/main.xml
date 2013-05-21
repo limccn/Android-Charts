@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:scrollbars="none">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/gridchart" />
+
+        <cn.limc.androidcharts.view.GridChart
+            android:id="@+id/gridchart"
+            android:layout_width="fill_parent"
+            android:layout_height="160dip" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/machart" />
+
+        <cn.limc.androidcharts.view.MAChart
+            android:id="@+id/machart"
+            android:layout_width="fill_parent"
+            android:layout_height="160dip" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/stickchart" />
+
+        <cn.limc.androidcharts.view.StickChart
+            android:id="@+id/stickchart"
+            android:layout_width="fill_parent"
+            android:layout_height="160dip" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/mastickchart" />
+
+        <cn.limc.androidcharts.view.MAStickChart
+            android:id="@+id/mastickchart"
+            android:layout_width="fill_parent"
+            android:layout_height="160dip" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/minusstickchart" />
+
+        <cn.limc.androidcharts.view.MinusStickChart
+            android:id="@+id/minusstickchart"
+            android:layout_width="fill_parent"
+            android:layout_height="160dip" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/candlestickchart" />
+
+        <cn.limc.androidcharts.view.CandleStickChart
+            android:id="@+id/candlestickchart"
+            android:layout_width="fill_parent"
+            android:layout_height="160dip" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/macandlestickchart" />
+
+        <cn.limc.androidcharts.view.MACandleStickChart
+            android:id="@+id/macandlestickchart"
+            android:layout_width="fill_parent"
+            android:layout_height="160dip" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/piechart" />
+
+        <cn.limc.androidcharts.view.PieChart
+            android:id="@+id/piechart"
+            android:layout_width="fill_parent"
+            android:layout_height="200dip" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/spiderwebchart" />
+
+        <cn.limc.androidcharts.view.SpiderWebChart
+            android:id="@+id/spiderwebchart"
+            android:layout_width="fill_parent"
+            android:layout_height="200dip" />
+    </LinearLayout>
+
+</ScrollView>
