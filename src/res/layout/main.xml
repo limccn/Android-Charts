@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text="@string/machart" />
 
-        <cn.limc.androidcharts.view.MAChart
+        <cn.limc.androidcharts.view.LineChart
             android:id="@+id/machart"
             android:layout_width="fill_parent"
             android:layout_height="160dip" />

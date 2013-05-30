@@ -1,7 +1,30 @@
+/*
+ * CandleStickChart.java
+ * Android-Charts
+ *
+ * Created by limc on 2011/05/29.
+ *
+ * Copyright 2011 limc.cn All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cn.limc.androidcharts.view;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.limc.androidcharts.entity.OHLCEntity;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,90 +33,263 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.FloatMath;
 import android.view.MotionEvent;
-import cn.limc.androidcharts.entity.OHLCEntity;
 
-
+/**
+ * 
+ * <p>
+ * CandleStickChart is a kind of graph that draw the OHLCs on a GridChart if you
+ * want display some moving average lines on this graph, please use see
+ * MACandleStickChart for more information
+ * </p>
+ * <p>
+ * CandleStickChartはGridChartの表面でロウソクを書いたラインチャードです。移動平均線など
+ * 分析線がお使いしたい場合、MACandleStickChartにご参照ください。
+ * </p>
+ * <p>
+ * CandleStickChart是在GridChart上绘制K线（蜡烛线）的图表、如果需要支持显示均线，请参照 MACandleStickChart。
+ * </p>
+ * 
+ * @author limc
+ * @version v1.0 2011/05/30 16:29:41
+ * @see CandleStickChart
+ * @see MACandleStickChart
+ * 
+ */
 public class CandleStickChart extends GridChart {
-	
-	////////////默认值///////////////
-	/** 显示纬线数 */
-	public static final int DEFAULT_LATITUDE_NUM = 4;
-	
-	/** 显示纬线数 */
-	public static final int DEFAULT_LONGTITUDE_NUM = 3;
-	
-	/** 阳线边�?��色 */
+	/**
+	 * <p>
+	 * Default price up stick's border color
+	 * </p>
+	 * <p>
+	 * 値上がりローソクのボーダー色のデフォルト値
+	 * </p>
+	 * <p>
+	 * 默认阳线的边框颜色
+	 * </p>
+	 */
 	public static final int DEFAULT_POSITIVE_STICK_BORDER_COLOR = Color.RED;
-	
-	/** 阳线填�?��色 */
+
+	/**
+	 * <p>
+	 * Default price up stick's fill color
+	 * </p>
+	 * <p>
+	 * 値上がりローソクの色のデフォルト値
+	 * </p>
+	 * <p>
+	 * 默认阳线的填充颜色
+	 * </p>
+	 */
 	public static final int DEFAULT_POSITIVE_STICK_FILL_COLOR = Color.RED;
-	
-	/** 阴线边�?��色 */
+
+	/**
+	 * <p>
+	 * Default price down stick's border color
+	 * </p>
+	 * <p>
+	 * 値下りローソクのボーダー色のデフォルト値
+	 * </p>
+	 * <p>
+	 * 默认阴线的边框颜色
+	 * </p>
+	 */
 	public static final int DEFAULT_NEGATIVE_STICK_BORDER_COLOR = Color.GREEN;
-	
-	/** 阴线填�?��色 */
+
+	/**
+	 * <p>
+	 * Default price down stick's fill color
+	 * </p>
+	 * <p>
+	 * 値下りローソクの色のデフォルト値
+	 * </p>
+	 * <p>
+	 * 默认阴线的填充颜色
+	 * </p>
+	 */
 	public static final int DEFAULT_NEGATIVE_STICK_FILL_COLOR = Color.GREEN;
-	
-	/** 十字线颜色 */
-	public static final int DEFAULT_CROSS_STICK_COLOR = DEFAULT_POSITIVE_STICK_BORDER_COLOR;
 
-	////////////属�?列表/////////////////
+	/**
+	 * <p>
+	 * Default price no change stick's color (cross-star,T-like etc.)
+	 * </p>
+	 * <p>
+	 * クローススターの色のデフォルト値
+	 * </p>
+	 * <p>
+	 * 默认十字线显示颜色
+	 * </p>
+	 */
+	public static final int DEFAULT_CROSS_STAR_COLOR = Color.LTGRAY;
 
-	/** 阳线颜色 */
-	private int positiveStickBorderColor = DEFAULT_POSITIVE_STICK_BORDER_COLOR ;
+	/**
+	 * <p>
+	 * Price up stick's border color
+	 * </p>
+	 * <p>
+	 * 値上がりローソクのボーダー色
+	 * </p>
+	 * <p>
+	 * 阳线的边框颜色
+	 * </p>
+	 */
+	private int positiveStickBorderColor = DEFAULT_POSITIVE_STICK_BORDER_COLOR;
 
-	/** 阳线填�?��色 */
+	/**
+	 * <p>
+	 * Price up stick's fill color
+	 * </p>
+	 * <p>
+	 * 値上がりローソクの色
+	 * </p>
+	 * <p>
+	 * 阳线的填充颜色
+	 * </p>
+	 */
 	private int positiveStickFillColor = DEFAULT_POSITIVE_STICK_FILL_COLOR;
 
-	/** 阴线颜色 */
+	/**
+	 * <p>
+	 * Price down stick's border color
+	 * </p>
+	 * <p>
+	 * 値下りローソクのボーダー色
+	 * </p>
+	 * <p>
+	 * 阴线的边框颜色
+	 * </p>
+	 */
+
 	private int negativeStickBorderColor = DEFAULT_NEGATIVE_STICK_BORDER_COLOR;
 
-	/** 阴线填�?��色 */
+	/**
+	 * <p>
+	 * Price down stick's fill color
+	 * </p>
+	 * <p>
+	 * 値下りローソクの色
+	 * </p>
+	 * <p>
+	 * 阴线的填充颜色
+	 * </p>
+	 */
 	private int negativeStickFillColor = DEFAULT_NEGATIVE_STICK_FILL_COLOR;
 
-	/** 十字线颜色 */
-	private int crossStickColor = DEFAULT_CROSS_STICK_COLOR;
-	
-	/** 显示纬线数 */
-	private int latitudeNum = DEFAULT_LATITUDE_NUM;
-	
-	/** 显示经线数 */
-	private int longtitudeNum = DEFAULT_LONGTITUDE_NUM;
-	
-	/** K线数据 */
+	/**
+	 * <p>
+	 * Price no change stick's color (cross-star,T-like etc.)
+	 * </p>
+	 * <p>
+	 * クローススターの色（価格変動無し）
+	 * </p>
+	 * <p>
+	 * 十字线显示颜色（十字星,一字平线,T形线的情况）
+	 * </p>
+	 */
+	private int crossStarColor = DEFAULT_CROSS_STAR_COLOR;
+
+	/**
+	 * <p>
+	 * data to draw sticks
+	 * </p>
+	 * <p>
+	 * スティックを書く用データ
+	 * </p>
+	 * <p>
+	 * 绘制柱条用的数据
+	 * </p>
+	 */
 	private List<OHLCEntity> OHLCData;
-	
-	/** 图表中�?��蜡烛线 */
-	private int maxCandleSticksNum;
 
-	/** K线显示�?��价格 */
-	private float maxPrice = 0;
+	/**
+	 * <p>
+	 * max number of sticks
+	 * </p>
+	 * <p>
+	 * スティックの最大表示数
+	 * </p>
+	 * <p>
+	 * 柱条的最大表示数
+	 * </p>
+	 */
+	private int maxSticksNum;
 
-	/** K线显示�?��价格 */
-	private float minPrice = 0;	
-	
-	/////////////////�??函数///////////////
+	/**
+	 * <p>
+	 * max value of Y axis
+	 * </p>
+	 * <p>
+	 * Y軸の最大値
+	 * </p>
+	 * <p>
+	 * Y的最大表示值
+	 * </p>
+	 */
+	private float maxValue = 0;
 
+	/**
+	 * <p>
+	 * min value of Y axis
+	 * </p>
+	 * <p>
+	 * Y軸の最小値
+	 * </p>
+	 * <p>
+	 * Y的最小表示值
+	 * </p>
+	 */
+	private float minValue = 0;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @param context
+	 * 
+	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context)
+	 */
 	public CandleStickChart(Context context) {
 		super(context);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @param context
+	 * 
+	 * @param attrs
+	 * 
+	 * @param defStyle
+	 * 
+	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context,
+	 * AttributeSet, int)
+	 */
 	public CandleStickChart(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @param context
+	 * 
+	 * @param attrs
+	 * 
+	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context,
+	 * AttributeSet)
+	 */
 	public CandleStickChart(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
-	
-	
-	///////////////函数方�?////////////////
 
-	@Override
-	public void draw(Canvas canvas) {
-		super.draw(canvas);
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * <p>Called when is going to draw this chart<p> <p>チャートを書く前、メソッドを呼ぶ<p>
+	 * <p>绘制图表时调用<p>
+	 * 
+	 * @param canvas
+	 * 
+	 * @see android.view.View#onDraw(android.graphics.Canvas)
+	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
 		initAxisY();
@@ -103,100 +299,141 @@ public class CandleStickChart extends GridChart {
 		drawCandleSticks(canvas);
 	}
 
-	/**
-	 * 获取X轴刻度位置,�?�??�最大1
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @param value
-	 * @return
+	 * 
+	 * @see cn.limc.androidcharts.view.GridChart#getAxisXGraduate(Object)
 	 */
 	@Override
-	public String getAxisXGraduate(Object value){
+	public String getAxisXGraduate(Object value) {
 		float graduate = Float.valueOf(super.getAxisXGraduate(value));
-		int index = (int) Math.floor(graduate*maxCandleSticksNum);
-		
-		if(index >= maxCandleSticksNum){
-			index = maxCandleSticksNum -1;
-		}else if(index < 0){
+		int index = (int) Math.floor(graduate * maxSticksNum);
+
+		if (index >= maxSticksNum) {
+			index = maxSticksNum - 1;
+		} else if (index < 0) {
 			index = 0;
 		}
-		
-		//返回X轴值
+
 		return String.valueOf(OHLCData.get(index).getDate());
 	}
-	
+
+	/**
+	 * <p>
+	 * get current selected data index
+	 * </p>
+	 * <p>
+	 * 選択したスティックのインデックス
+	 * </p>
+	 * <p>
+	 * 获取当前选中的柱条的index
+	 * </p>
+	 * 
+	 * @return int
+	 *         <p>
+	 *         index
+	 *         </p>
+	 *         <p>
+	 *         インデックス
+	 *         </p>
+	 *         <p>
+	 *         index
+	 *         </p>
+	 */
 	public int getSelectedIndex() {
-		if(null == super.getTouchPoint()){
+		if (null == super.getTouchPoint()) {
 			return 0;
 		}
-		float graduate = Float.valueOf(super.getAxisXGraduate(super.getTouchPoint().x));
-		int index = (int) Math.floor(graduate*maxCandleSticksNum);
-		
-		if(index >= maxCandleSticksNum){
-			index = maxCandleSticksNum -1;
-		}else if(index < 0){
+		float graduate = Float.valueOf(super.getAxisXGraduate(super
+				.getTouchPoint().x));
+		int index = (int) Math.floor(graduate * maxSticksNum);
+
+		if (index >= maxSticksNum) {
+			index = maxSticksNum - 1;
+		} else if (index < 0) {
 			index = 0;
 		}
-		
+
 		return index;
 	}
-	
-	/**
-	 * 获取Y轴刻度位置,�?�??�最大1
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @param value
-	 * @return
+	 * 
+	 * @see cn.limc.androidcharts.view.GridChart#getAxisYGraduate(Object)
 	 */
 	@Override
-	public String getAxisYGraduate(Object value){
+	public String getAxisYGraduate(Object value) {
 		float graduate = Float.valueOf(super.getAxisYGraduate(value));
-		return  String.valueOf((int)Math.floor(graduate * (maxPrice - minPrice) + minPrice));
+		return String.valueOf((int) Math.floor(graduate * (maxValue - minValue)
+				+ minValue));
 	}
-	
+
 	/**
-	 * 多点触控事件
-	 */
-	protected void drawWithFingerMove() {
-	}
-	
-	/**
-	 * 初始化X轴
+	 * <p>
+	 * initialize degrees on Y axis
+	 * </p>
+	 * <p>
+	 * Y軸の目盛を初期化
+	 * </p>
+	 * <p>
+	 * 初始化Y轴的坐标值
+	 * </p>
 	 */
 	protected void initAxisX() {
 		List<String> TitleX = new ArrayList<String>();
-		if(null != OHLCData){
-			float average = maxCandleSticksNum / longtitudeNum;
-			//�?��刻度
-			for (int i = 0; i < longtitudeNum; i++) {
+		if (null != OHLCData) {
+			float average = maxSticksNum / this.getLongitudeNum();
+			// �?��刻度
+			for (int i = 0; i < this.getLongitudeNum(); i++) {
 				int index = (int) Math.floor(i * average);
-				if(index > maxCandleSticksNum-1){
-					index = maxCandleSticksNum-1;
+				if (index > maxSticksNum - 1) {
+					index = maxSticksNum - 1;
 				}
-				//追�??�?
-				TitleX.add(String.valueOf(OHLCData.get(index).getDate()).substring(4));
+				// 追�??�?
+				TitleX.add(String.valueOf(OHLCData.get(index).getDate())
+						.substring(4));
 			}
-			TitleX.add(String.valueOf(OHLCData.get(maxCandleSticksNum-1).getDate()).substring(4));
+			TitleX.add(String.valueOf(OHLCData.get(maxSticksNum - 1).getDate())
+					.substring(4));
 		}
 		super.setAxisXTitles(TitleX);
 	}
-	
+
 	/**
-	 * 初始化Y轴
+	 * <p>
+	 * initialize degrees on Y axis
+	 * </p>
+	 * <p>
+	 * Y軸の目盛を初期化
+	 * </p>
+	 * <p>
+	 * 初始化Y轴的坐标值
+	 * </p>
 	 */
 	protected void initAxisY() {
 		List<String> TitleY = new ArrayList<String>();
-		float average = (int)((maxPrice - minPrice) / latitudeNum)/10 * 10;
-		//�?��刻度
-		for (int i = 0; i < latitudeNum; i++) {
-			String value = String.valueOf((int)Math.floor(minPrice + i * average));
-			if(value.length() < super.getAxisYMaxTitleLength()){
-				while(value.length() < super.getAxisYMaxTitleLength()){
+		float average = (int) ((maxValue - minValue) / this.getLatitudeNum()) / 10 * 10;
+		// calculate degrees on Y axis
+		for (int i = 0; i < this.getLatitudeNum(); i++) {
+			String value = String.valueOf((int) Math.floor(minValue + i
+					* average));
+			if (value.length() < super.getAxisYMaxTitleLength()) {
+				while (value.length() < super.getAxisYMaxTitleLength()) {
 					value = new String(" ") + value;
 				}
 			}
 			TitleY.add(value);
 		}
-		//�?���?��值
-		String value = String.valueOf((int)Math.floor(((int)maxPrice) / 10 * 10));
-		if(value.length() < super.getAxisYMaxTitleLength()){
-			while(value.length() < super.getAxisYMaxTitleLength()){
+		// calculate last degrees by use max value
+		String value = String.valueOf((int) Math
+				.floor(((int) maxValue) / 10 * 10));
+		if (value.length() < super.getAxisYMaxTitleLength()) {
+			while (value.length() < super.getAxisYMaxTitleLength()) {
 				value = new String(" ") + value;
 			}
 		}
@@ -206,13 +443,21 @@ public class CandleStickChart extends GridChart {
 	}
 
 	/**
-	 * 绘制蜡烛线
+	 * <p>
+	 * draw sticks
+	 * </p>
+	 * <p>
+	 * スティックを書く
+	 * </p>
+	 * <p>
+	 * 绘制柱条
+	 * </p>
+	 * 
 	 * @param canvas
 	 */
 	protected void drawCandleSticks(Canvas canvas) {
-		// 蜡烛棒宽度
-		float stickWidth = ((super.getWidth() - super.getAxisMarginLeft()-super.getAxisMarginRight()) / maxCandleSticksNum) - 1;
-		// 蜡烛棒起始绘制位置
+		float stickWidth = ((super.getWidth() - super.getAxisMarginLeft() - super
+				.getAxisMarginRight()) / maxSticksNum) - 1;
 		float stickX = super.getAxisMarginLeft() + 1;
 
 		Paint mPaintPositive = new Paint();
@@ -220,212 +465,165 @@ public class CandleStickChart extends GridChart {
 
 		Paint mPaintNegative = new Paint();
 		mPaintNegative.setColor(negativeStickFillColor);
-		
-		Paint mPaintCross = new Paint();
-		mPaintCross.setColor(crossStickColor);
 
-		if(null !=  OHLCData){
+		Paint mPaintCross = new Paint();
+		mPaintCross.setColor(crossStarColor);
+
+		if (null != OHLCData) {
 			for (int i = 0; i < OHLCData.size(); i++) {
 				OHLCEntity ohlc = OHLCData.get(i);
-				float openY = (float) ((1f - (ohlc.getOpen() - minPrice)
-						/ (maxPrice - minPrice)) * (super.getHeight() - super
-						.getAxisMarginBottom()) - super.getAxisMarginTop());
-				float highY = (float) ((1f - (ohlc.getHigh() - minPrice)
-						/ (maxPrice - minPrice)) * (super.getHeight() - super
-						.getAxisMarginBottom()) - super.getAxisMarginTop());
-				float lowY = (float) ((1f - (ohlc.getLow() - minPrice)
-						/ (maxPrice - minPrice)) * (super.getHeight() - super
-						.getAxisMarginBottom()) - super.getAxisMarginTop());
-				float closeY = (float) ((1f - (ohlc.getClose() - minPrice)
-						/ (maxPrice - minPrice)) * (super.getHeight() - super
-						.getAxisMarginBottom()) - super.getAxisMarginTop());
-	
-				// �?��和生产K线中�?��线和阳线
+				float openY = (float) ((1f - (ohlc.getOpen() - minValue)
+						/ (maxValue - minValue))
+						* (super.getHeight() - super.getAxisMarginBottom()) - super
+						.getAxisMarginTop());
+				float highY = (float) ((1f - (ohlc.getHigh() - minValue)
+						/ (maxValue - minValue))
+						* (super.getHeight() - super.getAxisMarginBottom()) - super
+						.getAxisMarginTop());
+				float lowY = (float) ((1f - (ohlc.getLow() - minValue)
+						/ (maxValue - minValue))
+						* (super.getHeight() - super.getAxisMarginBottom()) - super
+						.getAxisMarginTop());
+				float closeY = (float) ((1f - (ohlc.getClose() - minValue)
+						/ (maxValue - minValue))
+						* (super.getHeight() - super.getAxisMarginBottom()) - super
+						.getAxisMarginTop());
+
 				if (ohlc.getOpen() < ohlc.getClose()) {
-				//阳线
-					//根据宽度判断是否绘制立柱
-					if(stickWidth >= 2f){
-						canvas.drawRect(stickX, closeY, stickX + stickWidth, openY,
-								mPaintPositive);
+					// stick or line
+					if (stickWidth >= 2f) {
+						canvas.drawRect(stickX, closeY, stickX + stickWidth,
+								openY, mPaintPositive);
 					}
 					canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
 							+ stickWidth / 2f, lowY, mPaintPositive);
 				} else if (ohlc.getOpen() > ohlc.getClose()) {
-				//阴线
-					//根据宽度判断是否绘制立柱
-					if(stickWidth >= 2f){
-						canvas.drawRect(stickX, openY, stickX + stickWidth, closeY,
-								mPaintNegative);
+					// stick or line
+					if (stickWidth >= 2f) {
+						canvas.drawRect(stickX, openY, stickX + stickWidth,
+								closeY, mPaintNegative);
 					}
 					canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
 							+ stickWidth / 2f, lowY, mPaintNegative);
 				} else {
-				//十字线
-					//根据宽度判断是否绘制横线
-					if(stickWidth >= 2f){
-						canvas.drawLine(stickX, closeY, stickX + stickWidth, openY,
-								mPaintCross);
+					// line or point
+					if (stickWidth >= 2f) {
+						canvas.drawLine(stickX, closeY, stickX + stickWidth,
+								openY, mPaintCross);
 					}
 					canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
 							+ stickWidth / 2f, lowY, mPaintCross);
 				}
-	
-				//X位移
+
+				// next x
 				stickX = stickX + 1 + stickWidth;
 			}
 		}
 	}
-	
-	//Push数据绘制K线图
-	public void pushData(OHLCEntity entity){
-		if(null != entity){
-			//追�?��据到数据列表
+
+	/**
+	 * <p>
+	 * add a new stick data to sticks and refresh this chart
+	 * </p>
+	 * <p>
+	 * 新しいスティックデータを追加する，フラフをレフレシューする
+	 * </p>
+	 * <p>
+	 * 追加一条新数据并刷新当前图表
+	 * </p>
+	 * 
+	 * @param entity
+	 *            <p>
+	 *            data
+	 *            </p>
+	 *            <p>
+	 *            データ
+	 *            </p>
+	 *            <p>
+	 *            新数据
+	 *            </p>
+	 */
+	public void pushData(OHLCEntity entity) {
+		if (null != entity) {
+			// 追�?��据到数据列表
 			addData(entity);
-			//强制重�?
+			// 强制重�?
 			super.postInvalidate();
 		}
 	}
-	
-	public void addData(OHLCEntity entity){
-		if(null != entity){
-			//追�?��据
-			if(null == OHLCData || 0==OHLCData.size()){
+
+	/**
+	 * <p>
+	 * add a new stick data to sticks
+	 * </p>
+	 * <p>
+	 * 新しいスティックデータを追加する
+	 * </p>
+	 * <p>
+	 * 追加一条新数据
+	 * </p>
+	 * 
+	 * @param entity
+	 *            <p>
+	 *            data
+	 *            </p>
+	 *            <p>
+	 *            データ
+	 *            </p>
+	 *            <p>
+	 *            新数据
+	 *            </p>
+	 */
+	public void addData(OHLCEntity entity) {
+		if (null != entity) {
+			if (null == OHLCData || 0 == OHLCData.size()) {
 				OHLCData = new ArrayList<OHLCEntity>();
-				this.minPrice = ((int)entity.getLow()) / 10 * 10;
-				this.maxPrice = ((int)entity.getHigh()) / 10 * 10;
+				this.minValue = ((int) entity.getLow()) / 10 * 10;
+				this.maxValue = ((int) entity.getHigh()) / 10 * 10;
 			}
-			
+
 			this.OHLCData.add(entity);
-			
-			if (this.minPrice > entity.getLow()){
-				this.minPrice = ((int)entity.getLow()) / 10 * 10;
+
+			if (this.minValue > entity.getLow()) {
+				this.minValue = ((int) entity.getLow()) / 10 * 10;
 			}
-			
-			if (this.maxPrice < entity.getHigh()){
-				this.maxPrice = 10 + ((int)entity.getHigh()) / 10 * 10;
+
+			if (this.maxValue < entity.getHigh()) {
+				this.maxValue = 10 + ((int) entity.getHigh()) / 10 * 10;
 			}
-			
-			if(OHLCData.size() > maxCandleSticksNum){
-				maxCandleSticksNum = maxCandleSticksNum +1;
+
+			if (OHLCData.size() > maxSticksNum) {
+				maxSticksNum = maxSticksNum + 1;
 			}
 		}
 	}
-	
-	
-	
-	//////////////属�?GetterSetter/////////////////
-	
-	public List<OHLCEntity> getOHLCData() {
-		return OHLCData;
-	}
 
-	public void setOHLCData(List<OHLCEntity> data) {
-		//�?��已有数据
-		if(null != OHLCData){
-			OHLCData.clear();
-		}
-		for(OHLCEntity e :data){
-			addData(e);
-		}
-	}
-	
-	public int getPositiveStickBorderColor() {
-		return positiveStickBorderColor;
-	}
-
-	public void setPositiveStickBorderColor(int positiveStickBorderColor) {
-		this.positiveStickBorderColor = positiveStickBorderColor;
-	}
-
-	public int getPositiveStickFillColor() {
-		return positiveStickFillColor;
-	}
-
-	public void setPositiveStickFillColor(int positiveStickFillColor) {
-		this.positiveStickFillColor = positiveStickFillColor;
-	}
-
-	public int getNegativeStickBorderColor() {
-		return negativeStickBorderColor;
-	}
-
-	public void setNegativeStickBorderColor(int negativeStickBorderColor) {
-		this.negativeStickBorderColor = negativeStickBorderColor;
-	}
-
-	public int getNegativeStickFillColor() {
-		return negativeStickFillColor;
-	}
-
-	public void setNegativeStickFillColor(int negativeStickFillColor) {
-		this.negativeStickFillColor = negativeStickFillColor;
-	}
-
-	public int getCrossStickColor() {
-		return crossStickColor;
-	}
-
-	public void setCrossStickColor(int crossStickColor) {
-		this.crossStickColor = crossStickColor;
-	}
-
-	public int getLatitudeNum() {
-		return latitudeNum;
-	}
-
-	public void setLatitudeNum(int latitudeNum) {
-		this.latitudeNum = latitudeNum;
-	}
-
-	public int getMaxCandleSticksNum() {
-		return maxCandleSticksNum;
-	}
-
-	public void setMaxCandleSticksNum(int maxCandleSticksNum) {
-		this.maxCandleSticksNum = maxCandleSticksNum;
-	}
-
-	public float getMaxPrice() {
-		return maxPrice;
-	}
-
-	public void setMaxPrice(float maxPrice) {
-		this.maxPrice = maxPrice;
-	}
-
-	public float getMinPrice() {
-		return minPrice;
-	}
-
-	public void setMinPrice(float minPrice) {
-		this.minPrice = minPrice;
-	}
-
-	public int getLongtitudeNum() {
-		return longtitudeNum;
-	}
-
-	public void setLongtitudeNum(int longtitudeNum) {
-		this.longtitudeNum = longtitudeNum;
-	}
-
-	
 	private final int NONE = 0;
 	private final int ZOOM = 1;
 	private final int DOWN = 2;
-	
+
 	private float olddistance = 0f;
 	private float newdistance = 0f;
-	
-	
+
 	private int TOUCH_MODE;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * <p>Called when chart is touched<p> <p>チャートをタッチしたら、メソッドを呼ぶ<p>
+	 * <p>图表点击时调用<p>
+	 * 
+	 * @param event
+	 * 
+	 * @see android.view.View#onTouchEvent(MotionEvent)
+	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		
-		final float MIN_LENGTH = (super.getWidth()/40)<5?5:(super.getWidth()/50);
-		
+
+		final float MIN_LENGTH = (super.getWidth() / 40) < 5 ? 5 : (super
+				.getWidth() / 50);
+
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
-		// 设置拖拉模�?
 		case MotionEvent.ACTION_DOWN:
 			TOUCH_MODE = DOWN;
 			break;
@@ -433,26 +631,25 @@ public class CandleStickChart extends GridChart {
 		case MotionEvent.ACTION_POINTER_UP:
 			TOUCH_MODE = NONE;
 			return super.onTouchEvent(event);
-		// 设置多点触摸模�?
 		case MotionEvent.ACTION_POINTER_DOWN:
-			olddistance = spacing(event);
+			olddistance = calcDistance(event);
 			if (olddistance > MIN_LENGTH) {
 				TOUCH_MODE = ZOOM;
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if(TOUCH_MODE == ZOOM){
-				newdistance = spacing(event);
-				if (newdistance > MIN_LENGTH && Math.abs(newdistance - olddistance) > MIN_LENGTH) {
-					
-					if(newdistance > olddistance){
+			if (TOUCH_MODE == ZOOM) {
+				newdistance = calcDistance(event);
+				if (newdistance > MIN_LENGTH
+						&& Math.abs(newdistance - olddistance) > MIN_LENGTH) {
+
+					if (newdistance > olddistance) {
 						zoomIn();
-					}else{
+					} else {
 						zoomOut();
 					}
-					//重置距离
 					olddistance = newdistance;
-										
+
 					super.postInvalidate();
 					super.notifyEventAll(this);
 				}
@@ -461,24 +658,207 @@ public class CandleStickChart extends GridChart {
 		}
 		return true;
 	}
-	
-	protected void zoomIn(){
-		if(maxCandleSticksNum > 10){
-			maxCandleSticksNum = maxCandleSticksNum -3;
-		}
-	}
-	
-	protected void zoomOut(){
-		if(maxCandleSticksNum < OHLCData.size()-1){
-			maxCandleSticksNum = maxCandleSticksNum +3;
-		}
-	}
 
-	// 计算移动距离
-	private float spacing(MotionEvent event) {
+	/**
+	 * <p>
+	 * calculate the distance between two touch points
+	 * </p>
+	 * <p>
+	 * 複数タッチしたポイントの距離
+	 * </p>
+	 * <p>
+	 * 计算两点触控时两点之间的距离
+	 * </p>
+	 * 
+	 * @param event
+	 * @return float
+	 *         <p>
+	 *         distance
+	 *         </p>
+	 *         <p>
+	 *         距離
+	 *         </p>
+	 *         <p>
+	 *         距离
+	 *         </p>
+	 */
+	private float calcDistance(MotionEvent event) {
 		float x = event.getX(0) - event.getX(1);
 		float y = event.getY(0) - event.getY(1);
 		return FloatMath.sqrt(x * x + y * y);
-	} 
-	
+	}
+
+	/**
+	 * <p>
+	 * Zoom in the graph
+	 * </p>
+	 * <p>
+	 * 拡大表示する。
+	 * </p>
+	 * <p>
+	 * 放大表示
+	 * </p>
+	 */
+	protected void zoomIn() {
+		if (maxSticksNum > 10) {
+			maxSticksNum = maxSticksNum - 3;
+		}
+	}
+
+	/**
+	 * <p>
+	 * Zoom out the grid
+	 * </p>
+	 * <p>
+	 * 縮小表示する。
+	 * </p>
+	 * <p>
+	 * 缩小
+	 * </p>
+	 */
+	protected void zoomOut() {
+		if (maxSticksNum < OHLCData.size() - 1) {
+			maxSticksNum = maxSticksNum + 3;
+		}
+	}
+
+	/**
+	 * @return the positiveStickBorderColor
+	 */
+	public int getPositiveStickBorderColor() {
+		return positiveStickBorderColor;
+	}
+
+	/**
+	 * @param positiveStickBorderColor
+	 *            the positiveStickBorderColor to set
+	 */
+	public void setPositiveStickBorderColor(int positiveStickBorderColor) {
+		this.positiveStickBorderColor = positiveStickBorderColor;
+	}
+
+	/**
+	 * @return the positiveStickFillColor
+	 */
+	public int getPositiveStickFillColor() {
+		return positiveStickFillColor;
+	}
+
+	/**
+	 * @param positiveStickFillColor
+	 *            the positiveStickFillColor to set
+	 */
+	public void setPositiveStickFillColor(int positiveStickFillColor) {
+		this.positiveStickFillColor = positiveStickFillColor;
+	}
+
+	/**
+	 * @return the negativeStickBorderColor
+	 */
+	public int getNegativeStickBorderColor() {
+		return negativeStickBorderColor;
+	}
+
+	/**
+	 * @param negativeStickBorderColor
+	 *            the negativeStickBorderColor to set
+	 */
+	public void setNegativeStickBorderColor(int negativeStickBorderColor) {
+		this.negativeStickBorderColor = negativeStickBorderColor;
+	}
+
+	/**
+	 * @return the negativeStickFillColor
+	 */
+	public int getNegativeStickFillColor() {
+		return negativeStickFillColor;
+	}
+
+	/**
+	 * @param negativeStickFillColor
+	 *            the negativeStickFillColor to set
+	 */
+	public void setNegativeStickFillColor(int negativeStickFillColor) {
+		this.negativeStickFillColor = negativeStickFillColor;
+	}
+
+	/**
+	 * @return the crossStarColor
+	 */
+	public int getCrossStarColor() {
+		return crossStarColor;
+	}
+
+	/**
+	 * @param crossStarColor
+	 *            the crossStarColor to set
+	 */
+	public void setCrossStarColor(int crossStarColor) {
+		this.crossStarColor = crossStarColor;
+	}
+
+	/**
+	 * @return the oHLCData
+	 */
+	public List<OHLCEntity> getOHLCData() {
+		return OHLCData;
+	}
+
+	/**
+	 * @param oHLCData
+	 *            the oHLCData to set
+	 */
+	public void setOHLCData(List<OHLCEntity> oHLCData) {
+		if (null != OHLCData) {
+			OHLCData.clear();
+		}
+		for (OHLCEntity e : oHLCData) {
+			addData(e);
+		}
+	}
+
+	/**
+	 * @return the maxSticksNum
+	 */
+	public int getMaxSticksNum() {
+		return maxSticksNum;
+	}
+
+	/**
+	 * @param maxSticksNum
+	 *            the maxSticksNum to set
+	 */
+	public void setMaxSticksNum(int maxSticksNum) {
+		this.maxSticksNum = maxSticksNum;
+	}
+
+	/**
+	 * @return the maxValue
+	 */
+	public float getMaxValue() {
+		return maxValue;
+	}
+
+	/**
+	 * @param maxValue
+	 *            the maxValue to set
+	 */
+	public void setMaxValue(float maxValue) {
+		this.maxValue = maxValue;
+	}
+
+	/**
+	 * @return the minValue
+	 */
+	public float getMinValue() {
+		return minValue;
+	}
+
+	/**
+	 * @param minValue
+	 *            the minValue to set
+	 */
+	public void setMinValue(float minValue) {
+		this.minValue = minValue;
+	}
 }

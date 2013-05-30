@@ -1,11 +1,29 @@
+/*
+ * AndroidChartsActivity.java
+ * Android-Charts
+ *
+ * Created by limc on 2011/05/29.
+ *
+ * Copyright 2011 limc.cn All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cn.limc.androidcharts;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
-import android.graphics.Color;
-import android.os.Bundle;
 import cn.limc.androidcharts.entity.LineEntity;
 import cn.limc.androidcharts.entity.OHLCEntity;
 import cn.limc.androidcharts.entity.StickEntity;
@@ -14,12 +32,18 @@ import cn.limc.androidcharts.entity.TitleValueEntity;
 import cn.limc.androidcharts.view.CandleStickChart;
 import cn.limc.androidcharts.view.GridChart;
 import cn.limc.androidcharts.view.MACandleStickChart;
-import cn.limc.androidcharts.view.MAChart;
+import cn.limc.androidcharts.view.LineChart;
 import cn.limc.androidcharts.view.MAStickChart;
 import cn.limc.androidcharts.view.MinusStickChart;
 import cn.limc.androidcharts.view.PieChart;
 import cn.limc.androidcharts.view.SpiderWebChart;
 import cn.limc.androidcharts.view.StickChart;
+import cn.limc.androidcharts.R;
+
+import android.app.Activity;
+import android.graphics.Color;
+import android.os.Bundle;
+
 
 public class AndroidChartsActivity extends Activity {
 	
@@ -27,7 +51,7 @@ public class AndroidChartsActivity extends Activity {
 	List<StickEntity> vol;
 	
 	GridChart gridchart;
-	MAChart machart;
+	LineChart machart;
 	StickChart stickchart;
 	MAStickChart mastickchart;
 	MinusStickChart minusstickchart;
@@ -82,8 +106,8 @@ public class AndroidChartsActivity extends Activity {
 		gridchart.setAxisMarginLeft(20);
 		gridchart.setAxisYTitles(ytitle);
 		gridchart.setAxisXTitles(xtitle);
-		gridchart.setLongtitudeFontSize(10);
-		gridchart.setLongtitudeFontColor(Color.WHITE);
+		gridchart.setLongitudeFontSize(10);
+		gridchart.setLongitudeFontColor(Color.WHITE);
 		gridchart.setLatitudeColor(Color.GRAY);
 		gridchart.setLatitudeFontColor(Color.WHITE);
 		gridchart.setLongitudeColor(Color.GRAY);
@@ -95,7 +119,7 @@ public class AndroidChartsActivity extends Activity {
     
 	private void initMAChart()
 	{
-        this.machart = (MAChart)findViewById(R.id.machart);
+        this.machart = (LineChart)findViewById(R.id.machart);
         List<LineEntity> lines = new ArrayList<LineEntity>();
         
         //计算5日均线
@@ -141,8 +165,8 @@ public class AndroidChartsActivity extends Activity {
 		machart.setAxisMarginLeft(20);
 		machart.setAxisYTitles(ytitle);
 		machart.setAxisXTitles(xtitle);
-		machart.setLongtitudeFontSize(10);
-		machart.setLongtitudeFontColor(Color.WHITE);
+		machart.setLongitudeFontSize(10);
+		machart.setLongitudeFontColor(Color.WHITE);
 		machart.setLatitudeColor(Color.GRAY);
 		machart.setLatitudeFontColor(Color.WHITE);
 		machart.setLongitudeColor(Color.GRAY);
@@ -166,18 +190,18 @@ public class AndroidChartsActivity extends Activity {
        stickchart.setLatitudeColor(Color.GRAY);
        stickchart.setLongitudeColor(Color.GRAY);
        stickchart.setBorderColor(Color.LTGRAY);
-       stickchart.setLongtitudeFontColor(Color.WHITE);
+       stickchart.setLongitudeFontColor(Color.WHITE);
        stickchart.setLatitudeFontColor(Color.WHITE);
        stickchart.setStickFillColor(getResources().getColor(R.drawable.yellow));
        stickchart.setAxisMarginTop(5);
        stickchart.setAxisMarginRight(1);
        
        //最大显示足数
-       stickchart.setMaxStickDataNum(52);
+       stickchart.setMaxSticksNum(52);
        //最大纬线数
        stickchart.setLatitudeNum(2);
        //最大经线数
-       stickchart.setLongtitudeNum(3);
+       stickchart.setLongitudeNum(3);
        //最大价格
        stickchart.setMaxValue(10000);
        //最小价格
@@ -187,7 +211,7 @@ public class AndroidChartsActivity extends Activity {
        stickchart.setDisplayAxisYTitle(true);
        stickchart.setDisplayLatitude(true);
        stickchart.setDisplayLongitude(true);
-       stickchart.setBackgroudColor(Color.BLACK);
+       stickchart.setBackgroundColor(Color.BLACK);
        
       //为chart1增加均线
        stickchart.setStickData(vol);
@@ -225,18 +249,18 @@ public class AndroidChartsActivity extends Activity {
         mastickchart.setLatitudeColor(Color.GRAY);
         mastickchart.setLongitudeColor(Color.GRAY);
         mastickchart.setBorderColor(Color.LTGRAY);
-        mastickchart.setLongtitudeFontColor(Color.WHITE);
+        mastickchart.setLongitudeFontColor(Color.WHITE);
         mastickchart.setLatitudeFontColor(Color.WHITE);
         mastickchart.setStickFillColor(getResources().getColor(R.drawable.yellow));
         mastickchart.setAxisMarginTop(5);
         mastickchart.setAxisMarginRight(1);
         
         //最大显示足数
-        mastickchart.setMaxStickDataNum(52);
+        mastickchart.setMaxSticksNum(52);
         //最大纬线数
         mastickchart.setLatitudeNum(2);
         //最大经线数
-        mastickchart.setLongtitudeNum(3);
+        mastickchart.setLongitudeNum(3);
         //最大价格
         mastickchart.setMaxValue(10000);
         //最小价格
@@ -246,7 +270,7 @@ public class AndroidChartsActivity extends Activity {
         mastickchart.setDisplayAxisYTitle(true);
         mastickchart.setDisplayLatitude(true);
         mastickchart.setDisplayLongitude(true);
-        mastickchart.setBackgroudColor(Color.BLACK);
+        mastickchart.setBackgroundColor(Color.BLACK);
 
         //为chart1增加均线
         mastickchart.setLineData(vlines);
@@ -283,12 +307,12 @@ public class AndroidChartsActivity extends Activity {
 		minusstickchart.setAxisYColor(Color.WHITE);
 		minusstickchart.setLatitudeFontColor(Color.WHITE);
 		minusstickchart.setLatitudeColor(Color.GRAY);
-		minusstickchart.setLongtitudeFontColor(Color.WHITE);
+		minusstickchart.setLongitudeFontColor(Color.WHITE);
 		minusstickchart.setLongitudeColor(Color.GRAY);
 		//最大纬线数
 		minusstickchart.setLatitudeNum(3);
 		//最大经线数
-		minusstickchart.setLongtitudeNum(2);
+		minusstickchart.setLongitudeNum(2);
 		minusstickchart.setDisplayAxisXTitle(true);
 		minusstickchart.setDisplayAxisYTitle(true);
 		minusstickchart.setDisplayCrossXOnTouch(false);
@@ -307,26 +331,26 @@ public class AndroidChartsActivity extends Activity {
         candlestickchart.setLatitudeColor(Color.GRAY);
         candlestickchart.setLongitudeColor(Color.GRAY);
         candlestickchart.setBorderColor(Color.LTGRAY);
-        candlestickchart.setLongtitudeFontColor(Color.WHITE);
+        candlestickchart.setLongitudeFontColor(Color.WHITE);
         candlestickchart.setLatitudeFontColor(Color.WHITE);
         candlestickchart.setAxisMarginRight(1);
         
         //最大显示足数
-        candlestickchart.setMaxCandleSticksNum(52);
+        candlestickchart.setMaxSticksNum(52);
         //最大纬线数
         candlestickchart.setLatitudeNum(5);
         //最大经线数
-        candlestickchart.setLongtitudeNum(3);
+        candlestickchart.setLongitudeNum(3);
         //最大价格
-        candlestickchart.setMaxPrice(1000);
+        candlestickchart.setMaxValue(1000);
         //最小价格
-        candlestickchart.setMinPrice(200);
+        candlestickchart.setMinValue(200);
         
         candlestickchart.setDisplayAxisXTitle(true);
         candlestickchart.setDisplayAxisYTitle(true);
         candlestickchart.setDisplayLatitude(true);
         candlestickchart.setDisplayLongitude(true);
-        candlestickchart.setBackgroudColor(Color.BLACK);
+        candlestickchart.setBackgroundColor(Color.BLACK);
         
         //为chart2增加均线
         candlestickchart.setOHLCData(ohlc);
@@ -363,26 +387,26 @@ public class AndroidChartsActivity extends Activity {
       macandlestickchart.setLatitudeColor(Color.GRAY);
       macandlestickchart.setLongitudeColor(Color.GRAY);
       macandlestickchart.setBorderColor(Color.LTGRAY);
-      macandlestickchart.setLongtitudeFontColor(Color.WHITE);
+      macandlestickchart.setLongitudeFontColor(Color.WHITE);
       macandlestickchart.setLatitudeFontColor(Color.WHITE);
       macandlestickchart.setAxisMarginRight(1);
       
       //最大显示足数
-      macandlestickchart.setMaxCandleSticksNum(52);
+      macandlestickchart.setMaxSticksNum(52);
       //最大纬线数
       macandlestickchart.setLatitudeNum(5);
       //最大经线数
-      macandlestickchart.setLongtitudeNum(3);
+      macandlestickchart.setLongitudeNum(3);
       //最大价格
-      macandlestickchart.setMaxPrice(1000);
+      macandlestickchart.setMaxValue(1000);
       //最小价格
-      macandlestickchart.setMinPrice(200);
+      macandlestickchart.setMinValue(200);
       
       macandlestickchart.setDisplayAxisXTitle(true);
       macandlestickchart.setDisplayAxisYTitle(true);
       macandlestickchart.setDisplayLatitude(true);
       macandlestickchart.setDisplayLongitude(true);
-      macandlestickchart.setBackgroudColor(Color.BLACK);
+      macandlestickchart.setBackgroundColor(Color.BLACK);
 
       
     //为chart2增加均线
