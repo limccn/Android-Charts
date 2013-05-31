@@ -1,10 +1,10 @@
 # Welcome to Android-Charts
 
 Welcome to `Android-Charts` project page on github.com. We just moved from Google Code.<br />
-Android-Charts is a open-source android developing framework written in JAVA on Android SDK.<br />
-Android-Charts includes a set of very useful graphs/charts you need for developing Android Application.<br />
+Android-Charts is an open-source android developing framework written in JAVA on Android SDK.<br />
+Android-Charts includes a set of very useful graphs/charts you need for developing Android application.<br />
 
-###Released Charts:
+### Released Charts
 - `gird chart`
 - `line chart`
 - `stick chart`
@@ -12,28 +12,37 @@ Android-Charts includes a set of very useful graphs/charts you need for developi
 - `pie chart`
 - `spider web chart`
 
-###Under developing Charts:
+### Under developing Charts
 - `area chart`
 - `separeted stick chart`
 - `pizza chart`
 - `round radar chart`
     
+### More About Android-Charts
+
 If you need further information of Android-Charts, you can visit the web site of Android-Charts.
 
 - [http://www.limc.cn/androidcharts](http://www.limc.cn/androidcharts).
 
-or Contact us by follow
+Or Contact us by follow
 
 - Twitter: [@limccn](http://twitter.com/limc_cn)
 - Sina Weibo:[@limc_cn](http://weibo.com/limc_cn)
 
-also, you can goto Google Code and find the old versions of Android-Charts.
+Also, you can goto Google Code and find the old versions of Android-Charts.
 
 - [Android-Charts on Google Code](https://code.google.com/p/android-charts/)
 
+### Need iOS version?
+
+We also released an Objective-c version Chart Framework, if you need develop your 
+application on both Android and iOS.
+
+- [Cocoa-Charts](https://github.com/limccn/Cocoa-Charts.git)
+
 ## Get Start
 
-1. Clone or download Android-Chart if you haven't yet, At the command prompt type command like this
+1. Clone or download Android-Charts if you haven't yet, At the command prompt type command like this
 
         git git://github.com/limccn/Android-Charts.git
         
@@ -44,18 +53,18 @@ also, you can goto Google Code and find the old versions of Android-Charts.
 ## ScreenShot
 ![Screenshot](http://www.lidaren.com/code/androidcharts/screenshot.png)
 
-## History/Change Logs
+## History, Change Logs
 ###v0.1.1, `2013-05-30`
 To make our Android-Charts more like an Open-source framework, We fixed some bugs.
 Besides, We rewrite the Javadoc annotations.
 
 ###v0.1, `2012-07-14`
 The first stable version released, we decide to make it as an Open-source framework
-this version of Android-Chart included some new charts like line chart and stick chart.
+this version of Android-Charts included some new charts like line chart and stick chart.
 
 ###v0.0.1, `2011-05-06`
 We found that we need a new graph/chart framework to develop our application, so we wrote 
-the first version of Android-Chart, only includes pie chart and spider web chart.
+the first version of Android-Charts, only includes pie chart and spider web chart.
 
 ## Contributing
 
