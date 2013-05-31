@@ -2,33 +2,33 @@ Android-Charts
 ==============
 ## Welcome to Android-Charts
 
-Welcome to `Android-Charts` project page on github.com. We just moved from Google Code.
-Android-Charts is a open-source android developing framework written in JAVA on Android SDK.
-Android-Charts includes a set of very useful graphs/charts you need for developing Android Application.
+Welcome to `Android-Charts` project page on github.com. We just moved from Google Code.<br />
+Android-Charts is a open-source android developing framework written in JAVA on Android SDK.<br />
+Android-Charts includes a set of very useful graphs/charts you need for developing Android Application.<br />
 
 Released Charts:
-    * gird chart
-    * line chart
-    * stick chart
-    * candlestick chart
-    * pie chart
-    * spider web chart
+- `gird chart`
+-`line chart`
+- `stick chart
+- `candlestick chart`
+- `pie chart`
+- `spider web chart`
 Under developing Charts:
-    * area chart
-    * separeted stick chart
-    * pizza chart
-    * round radar chart
+- `area chart`
+- `separeted stick chart`
+- `pizza chart`
+- `round radar chart`
     
 If you need further information of Android-Charts, you can visit the web site of Android-Charts.
 
 [http://www.limc.cn/androidcharts](http://www.limc.cn/androidcharts).
 
-or Contact author by follow
+or Contact us by follow
 
-Twitter: [@limccn](http://twitter.com/limc_cn)
-Sina Weibo:[@limc_cn](http://weibo.com/limc_cn)
+- Twitter: [@limccn](http://twitter.com/limc_cn)
+- Sina Weibo:[@limc_cn](http://weibo.com/limc_cn)
 
-also, you can goto Google Code to find the old version of Android-Charts.
+also, you can goto Google Code and find the old versions of Android-Charts.
 
 [Android-Charts on Google Code](https://code.google.com/p/android-charts/)
 
