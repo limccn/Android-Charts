@@ -8,11 +8,12 @@ Android-Charts includes a set of very useful graphs/charts you need for developi
 
 Released Charts:
 - `gird chart`
--`line chart`
+- `line chart`
 - `stick chart
 - `candlestick chart`
 - `pie chart`
 - `spider web chart`
+
 Under developing Charts:
 - `area chart`
 - `separeted stick chart`
@@ -21,7 +22,7 @@ Under developing Charts:
     
 If you need further information of Android-Charts, you can visit the web site of Android-Charts.
 
-[http://www.limc.cn/androidcharts](http://www.limc.cn/androidcharts).
+- [http://www.limc.cn/androidcharts](http://www.limc.cn/androidcharts).
 
 or Contact us by follow
 
@@ -30,7 +31,7 @@ or Contact us by follow
 
 also, you can goto Google Code and find the old versions of Android-Charts.
 
-[Android-Charts on Google Code](https://code.google.com/p/android-charts/)
+- [Android-Charts on Google Code](https://code.google.com/p/android-charts/)
 
 ## Get Start
 
