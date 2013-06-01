@@ -14,7 +14,7 @@ Android-Charts includes a set of very useful graphs/charts you need for developi
 
 ### Under developing Charts
 - `area chart`
-- `separeted stick chart`
+- `separated stick chart`
 - `pizza chart`
 - `round radar chart`
     
@@ -26,8 +26,8 @@ If you need further information of Android-Charts, you can visit the web site of
 
 Or Contact us by follow
 
-- Twitter: [@limccn](http://twitter.com/limc_cn)
-- Sina Weibo:[@limc_cn](http://weibo.com/limc_cn)
+- Twitter: [@limccn](https://twitter.com/limccn)
+- Sina Weibo:[@limccn](http://weibo.com/limccn)
 
 Also, you can goto Google Code and find the old versions of Android-Charts.
 
@@ -36,7 +36,7 @@ Also, you can goto Google Code and find the old versions of Android-Charts.
 ### Need iOS version?
 
 We also released an Objective-c version Chart Framework, if you need develop your 
-application on both Android and iOS.
+application on both Android and iOS platforms.
 
 - [Cocoa-Charts](https://github.com/limccn/Cocoa-Charts.git)
 
@@ -56,15 +56,15 @@ application on both Android and iOS.
 ## History, Change Logs
 ###v0.1.1, `2013-05-30`
 To make our Android-Charts more like an Open-source framework, We fixed some bugs.
-Besides, We rewrite the Javadoc annotations.
+Besides, We rewrote the Javadoc annotations.
 
 ###v0.1, `2012-07-14`
-The first stable version released, we decide to make it as an Open-source framework
-this version of Android-Charts included some new charts like line chart and stick chart.
+The first stable version released, we decide to make it as an Open-source framework.
+This version of Android-Charts included some new charts like line chart and stick chart.
 
 ###v0.0.1, `2011-05-06`
 We found that we need a new graph/chart framework to develop our application, so we wrote 
-the first version of Android-Charts, only includes pie chart and spider web chart.
+our first version of Android-Charts, only includes pie chart and spider web chart.
 
 ## Contributing
 
