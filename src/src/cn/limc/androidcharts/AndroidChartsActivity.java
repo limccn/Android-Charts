@@ -24,20 +24,31 @@ package cn.limc.androidcharts;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.limc.androidcharts.entity.ColoredStickEntity;
+import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
 import cn.limc.androidcharts.entity.OHLCEntity;
 import cn.limc.androidcharts.entity.StickEntity;
 import cn.limc.androidcharts.entity.TitleValueColorEntity;
 import cn.limc.androidcharts.entity.TitleValueEntity;
 import cn.limc.androidcharts.view.CandleStickChart;
+import cn.limc.androidcharts.view.ColoredSlipStickChart;
 import cn.limc.androidcharts.view.GridChart;
-import cn.limc.androidcharts.view.MACandleStickChart;
 import cn.limc.androidcharts.view.LineChart;
+import cn.limc.androidcharts.view.MACandleStickChart;
+import cn.limc.androidcharts.view.MASlipCandleStickChart;
+import cn.limc.androidcharts.view.MASlipStickChart;
 import cn.limc.androidcharts.view.MAStickChart;
 import cn.limc.androidcharts.view.MinusStickChart;
 import cn.limc.androidcharts.view.PieChart;
+import cn.limc.androidcharts.view.SlipCandleStickChart;
+import cn.limc.androidcharts.view.SlipLineChart;
+import cn.limc.androidcharts.view.SlipMinusStickChart;
+import cn.limc.androidcharts.view.SlipStickChart;
 import cn.limc.androidcharts.view.SpiderWebChart;
 import cn.limc.androidcharts.view.StickChart;
+
+
 import cn.limc.androidcharts.R;
 
 import android.app.Activity;
@@ -49,14 +60,24 @@ public class AndroidChartsActivity extends Activity {
 	
 	List<OHLCEntity> ohlc;
 	List<StickEntity> vol;
+	List<ColoredStickEntity> volc;
+	List<DateValueEntity> dv1;
+	List<DateValueEntity> dv2;
 	
 	GridChart gridchart;
-	LineChart machart;
+	LineChart linechart;
+	SlipLineChart sliplinechart;
 	StickChart stickchart;
+	SlipStickChart slipstickchart;
+	ColoredSlipStickChart coloredslipstickchart;
 	MAStickChart mastickchart;
+	MASlipStickChart maslipstickchart;
 	MinusStickChart minusstickchart;
+	SlipMinusStickChart slipminusstickchart;
 	CandleStickChart candlestickchart;
+	SlipCandleStickChart slipcandlestickchart;
 	MACandleStickChart macandlestickchart;
+	MASlipCandleStickChart maslipcandlestickchart;
 	PieChart piechart;
 	SpiderWebChart spiderwebchart;
 	
@@ -67,14 +88,24 @@ public class AndroidChartsActivity extends Activity {
         
         initVOL();
         initOHLC();
+        initVOLC();
+        initDV1();
+        initDV2();
        
         initGridChart();
-	    	initMAChart();
-	    	initStickChart();
-	    	initMAStickChart();
-	    	initMinusStickChart();
-	    	initCandleStickChart();
-	    	initMACandleStickChart();   
+	    initLineChart();
+	    initSlipLineChart();
+	    initStickChart();
+	    initSlipStickChart();
+	    initColoredSlipStickChart();
+	    initMAStickChart();
+	    initMASlipStickChart();
+	    initMinusStickChart();
+	    initSlipMinusStickChart();
+	    initCandleStickChart();
+	    initSlipCandleStickChart();
+	    initMACandleStickChart();
+	    initMASlipCandleStickChart();
         initPieChart();
         initSpiderWebChart();
         
@@ -117,27 +148,27 @@ public class AndroidChartsActivity extends Activity {
 		gridchart.setDisplayLongitude(true);
 	}
     
-	private void initMAChart()
+	private void initLineChart()
 	{
-        this.machart = (LineChart)findViewById(R.id.machart);
-        List<LineEntity> lines = new ArrayList<LineEntity>();
+        this.linechart = (LineChart)findViewById(R.id.linechart);
+        List<LineEntity<Float>> lines = new ArrayList<LineEntity<Float>>();
         
         //计算5日均线
-        LineEntity MA5 = new LineEntity();
+        LineEntity<Float> MA5 = new LineEntity<Float>();
         MA5.setTitle("MA5");
         MA5.setLineColor(Color.WHITE);
         MA5.setLineData(initMA(5));
         lines.add(MA5);
         
         //计算10日均线
-        LineEntity MA10 = new LineEntity();
+        LineEntity<Float> MA10 = new LineEntity<Float>();
         MA10.setTitle("MA10");
         MA10.setLineColor(Color.RED);
         MA10.setLineData(initMA(10));
         lines.add(MA10);
         
         //计算25日均线
-        LineEntity MA25 = new LineEntity();
+        LineEntity<Float> MA25 = new LineEntity<Float>();
         MA25.setTitle("MA25");
         MA25.setLineColor(Color.GREEN);
         MA25.setLineData(initMA(25));
@@ -158,29 +189,75 @@ public class AndroidChartsActivity extends Activity {
 		xtitle.add("15:00");
 		xtitle.add(" ");
         
-        machart.setAxisXColor(Color.LTGRAY);
-		machart.setAxisYColor(Color.LTGRAY);
-		machart.setBorderColor(Color.LTGRAY);
-		machart.setAxisMarginTop(10);
-		machart.setAxisMarginLeft(20);
-		machart.setAxisYTitles(ytitle);
-		machart.setAxisXTitles(xtitle);
-		machart.setLongitudeFontSize(10);
-		machart.setLongitudeFontColor(Color.WHITE);
-		machart.setLatitudeColor(Color.GRAY);
-		machart.setLatitudeFontColor(Color.WHITE);
-		machart.setLongitudeColor(Color.GRAY);
-		machart.setMaxValue(280);
-		machart.setMinValue(240);
-		machart.setMaxPointNum(36);
-		machart.setDisplayAxisXTitle(true);
-		machart.setDisplayAxisYTitle(true);
-		machart.setDisplayLatitude(true);
-		machart.setDisplayLongitude(true);
+		linechart.setAxisXColor(Color.LTGRAY);
+		linechart.setAxisYColor(Color.LTGRAY);
+		linechart.setBorderColor(Color.LTGRAY);
+		linechart.setAxisMarginTop(10);
+		linechart.setAxisMarginLeft(20);
+		linechart.setAxisYTitles(ytitle);
+		linechart.setAxisXTitles(xtitle);
+		linechart.setLongitudeFontSize(10);
+		linechart.setLongitudeFontColor(Color.WHITE);
+		linechart.setLatitudeColor(Color.GRAY);
+		linechart.setLatitudeFontColor(Color.WHITE);
+		linechart.setLongitudeColor(Color.GRAY);
+		linechart.setMaxValue(280);
+		linechart.setMinValue(240);
+		linechart.setMaxPointNum(36);
+		linechart.setDisplayAxisXTitle(true);
+		linechart.setDisplayAxisYTitle(true);
+		linechart.setDisplayLatitude(true);
+		linechart.setDisplayLongitude(true);
         
         //为chart1增加均线
-        machart.setLineData(lines);
+		linechart.setLineData(lines);
 	}
+	
+	private void initSlipLineChart()
+	{
+        this.sliplinechart = (SlipLineChart)findViewById(R.id.sliplinechart);
+        List<LineEntity<DateValueEntity>> lines = new ArrayList<LineEntity<DateValueEntity>>();
+        
+        //计算5日均线
+        LineEntity<DateValueEntity> MA5 = new LineEntity<DateValueEntity>();
+        MA5.setTitle("HIGH");
+        MA5.setLineColor(Color.WHITE);
+        MA5.setLineData(dv1);
+        lines.add(MA5);
+        
+        //计算10日均线
+        LineEntity<DateValueEntity> MA10 = new LineEntity<DateValueEntity>();
+        MA10.setTitle("LOW");
+        MA10.setLineColor(Color.RED);
+        MA10.setLineData(dv2);
+        lines.add(MA10);
+        
+		sliplinechart.setAxisXColor(Color.LTGRAY);
+		sliplinechart.setAxisYColor(Color.LTGRAY);
+		sliplinechart.setBorderColor(Color.LTGRAY);
+		sliplinechart.setAxisMarginTop(10);
+		sliplinechart.setAxisMarginLeft(20);
+//		sliplinechart.setLatitudeNum(2);
+//		sliplinechart.setLongitudeNum(3);
+		sliplinechart.setLongitudeFontSize(10);
+		sliplinechart.setLongitudeFontColor(Color.WHITE);
+		sliplinechart.setLatitudeColor(Color.GRAY);
+		sliplinechart.setLatitudeFontColor(Color.WHITE);
+		sliplinechart.setLongitudeColor(Color.GRAY);
+		sliplinechart.setMaxValue(280);
+		sliplinechart.setMinValue(220);
+		sliplinechart.setDisplayFrom(10);
+		sliplinechart.setDisplayNumber(30);
+		sliplinechart.setMinDisplayNumber(5);
+		sliplinechart.setZoomBaseLine(0);
+		sliplinechart.setDisplayAxisXTitle(true);
+		sliplinechart.setDisplayAxisYTitle(true);
+		sliplinechart.setDisplayLatitude(true);
+		sliplinechart.setDisplayLongitude(true);
+        
+		sliplinechart.setLinesData(lines);
+	}
+	
 	private void initStickChart()
 	{
        this.stickchart = (StickChart)findViewById(R.id.stickchart);
@@ -216,29 +293,113 @@ public class AndroidChartsActivity extends Activity {
       //为chart1增加均线
        stickchart.setStickData(vol);
 	}
+	
+	private void initSlipStickChart()
+	{
+       this.slipstickchart = (SlipStickChart)findViewById(R.id.slipstickchart);
+     
+       slipstickchart.setAxisXColor(Color.LTGRAY);
+       slipstickchart.setAxisYColor(Color.LTGRAY);
+       slipstickchart.setLatitudeColor(Color.GRAY);
+       slipstickchart.setLongitudeColor(Color.GRAY);
+       slipstickchart.setBorderColor(Color.LTGRAY);
+       slipstickchart.setLongitudeFontColor(Color.WHITE);
+       slipstickchart.setLatitudeFontColor(Color.WHITE);
+       slipstickchart.setStickFillColor(getResources().getColor(R.drawable.yellow));
+       slipstickchart.setAxisMarginTop(5);
+       slipstickchart.setAxisMarginRight(1);
+       
+       //最大纬线数
+       slipstickchart.setLatitudeNum(2);
+       //最大经线数
+       slipstickchart.setLongitudeNum(3);
+       //最大价格
+       slipstickchart.setMaxValue(600000);
+       //最小价格
+       slipstickchart.setMinValue(100);
+       
+       slipstickchart.setDisplayFrom(10);
+       
+       slipstickchart.setDisplayNumber(30);
+       
+       slipstickchart.setMinDisplayNumber(5);
+       
+       slipstickchart.setZoomBaseLine(0);
+       
+       slipstickchart.setDisplayAxisXTitle(true);
+       slipstickchart.setDisplayAxisYTitle(true);
+       slipstickchart.setDisplayLatitude(true);
+       slipstickchart.setDisplayLongitude(true);
+       slipstickchart.setBackgroundColor(Color.BLACK);
+       
+      //为chart1增加均线
+       slipstickchart.setStickData(vol);
+	}
+	
+	private void initColoredSlipStickChart()
+	{
+       this.coloredslipstickchart = (ColoredSlipStickChart)findViewById(R.id.coloredslipstickchart);
+     
+       coloredslipstickchart.setAxisXColor(Color.LTGRAY);
+       coloredslipstickchart.setAxisYColor(Color.LTGRAY);
+       coloredslipstickchart.setLatitudeColor(Color.GRAY);
+       coloredslipstickchart.setLongitudeColor(Color.GRAY);
+       coloredslipstickchart.setBorderColor(Color.LTGRAY);
+       coloredslipstickchart.setLongitudeFontColor(Color.WHITE);
+       coloredslipstickchart.setLatitudeFontColor(Color.WHITE);
+       coloredslipstickchart.setAxisMarginTop(5);
+       coloredslipstickchart.setAxisMarginRight(1);
+       
+       //最大纬线数
+       coloredslipstickchart.setLatitudeNum(2);
+       //最大经线数
+       coloredslipstickchart.setLongitudeNum(3);
+       //最大价格
+       coloredslipstickchart.setMaxValue(600000);
+       //最小价格
+       coloredslipstickchart.setMinValue(100);
+       
+       coloredslipstickchart.setDisplayFrom(10);
+       
+       coloredslipstickchart.setDisplayNumber(30);
+       
+       coloredslipstickchart.setMinDisplayNumber(5);
+       
+       coloredslipstickchart.setZoomBaseLine(0);
+       
+       coloredslipstickchart.setDisplayAxisXTitle(true);
+       coloredslipstickchart.setDisplayAxisYTitle(true);
+       coloredslipstickchart.setDisplayLatitude(true);
+       coloredslipstickchart.setDisplayLongitude(true);
+       coloredslipstickchart.setBackgroundColor(Color.BLACK);
+       
+      //为chart1增加均线
+       coloredslipstickchart.setStickData(volc);
+	}
+	
 	private void initMAStickChart()
 	{
         this.mastickchart = (MAStickChart)findViewById(R.id.mastickchart);
         
         //以下计算VOL
-        List<LineEntity> vlines = new ArrayList<LineEntity>();
+        List<LineEntity<Float>> vlines = new ArrayList<LineEntity<Float>>();
         
         //计算5日均线
-        LineEntity VMA5 = new LineEntity();
+        LineEntity<Float> VMA5 = new LineEntity<Float>();
         VMA5.setTitle("MA5");
         VMA5.setLineColor(Color.WHITE);
         VMA5.setLineData(initVMA(5));
         vlines.add(VMA5);
         
         //计算10日均线
-        LineEntity VMA10 = new LineEntity();
+        LineEntity<Float> VMA10 = new LineEntity<Float>();
         VMA10.setTitle("MA10");
         VMA10.setLineColor(Color.RED);
         VMA10.setLineData(initVMA(10));
         vlines.add(VMA10);
         
         //计算25日均线
-        LineEntity VMA25 = new LineEntity();
+        LineEntity<Float> VMA25 = new LineEntity<Float>();
         VMA25.setTitle("MA25");
         VMA25.setLineColor(Color.GREEN);
         VMA25.setLineData(initVMA(25));
@@ -276,6 +437,74 @@ public class AndroidChartsActivity extends Activity {
         mastickchart.setLineData(vlines);
         //为chart1增加均线
         mastickchart.setStickData(vol);
+	}
+	
+	private void initMASlipStickChart()
+	{
+        this.maslipstickchart = (MASlipStickChart)findViewById(R.id.maslipstickchart);
+        
+        //以下计算VOL
+        List<LineEntity<Float>> vlines = new ArrayList<LineEntity<Float>>();
+        
+        //计算5日均线
+        LineEntity<Float> VMA5 = new LineEntity<Float>();
+        VMA5.setTitle("MA5");
+        VMA5.setLineColor(Color.WHITE);
+        VMA5.setLineData(initVMA(5));
+        vlines.add(VMA5);
+        
+        //计算10日均线
+        LineEntity<Float> VMA10 = new LineEntity<Float>();
+        VMA10.setTitle("MA10");
+        VMA10.setLineColor(Color.RED);
+        VMA10.setLineData(initVMA(10));
+        vlines.add(VMA10);
+        
+        //计算25日均线
+        LineEntity<Float> VMA25 = new LineEntity<Float>();
+        VMA25.setTitle("MA25");
+        VMA25.setLineColor(Color.GREEN);
+        VMA25.setLineData(initVMA(25));
+        vlines.add(VMA25);
+        
+        maslipstickchart.setAxisXColor(Color.LTGRAY);
+        maslipstickchart.setAxisYColor(Color.LTGRAY);
+        maslipstickchart.setLatitudeColor(Color.GRAY);
+        maslipstickchart.setLongitudeColor(Color.GRAY);
+        maslipstickchart.setBorderColor(Color.LTGRAY);
+        maslipstickchart.setLongitudeFontColor(Color.WHITE);
+        maslipstickchart.setLatitudeFontColor(Color.WHITE);
+        maslipstickchart.setStickFillColor(getResources().getColor(R.drawable.yellow));
+        maslipstickchart.setAxisMarginTop(5);
+        maslipstickchart.setAxisMarginRight(1);
+        
+        //最大纬线数
+        maslipstickchart.setLatitudeNum(2);
+        //最大经线数
+        maslipstickchart.setLongitudeNum(3);
+        //最大价格
+        maslipstickchart.setMaxValue(600000);
+        //最小价格
+        maslipstickchart.setMinValue(100);
+        
+        maslipstickchart.setDisplayFrom(10);
+        
+        maslipstickchart.setDisplayNumber(30);
+        
+        maslipstickchart.setMinDisplayNumber(5);
+        
+        maslipstickchart.setZoomBaseLine(0);
+        
+        maslipstickchart.setDisplayAxisXTitle(true);
+        maslipstickchart.setDisplayAxisYTitle(true);
+        maslipstickchart.setDisplayLatitude(true);
+        maslipstickchart.setDisplayLongitude(true);
+        maslipstickchart.setBackgroundColor(Color.BLACK);
+
+        //为chart1增加均线
+        maslipstickchart.setLineData(vlines);
+        //为chart1增加均线
+        maslipstickchart.setStickData(vol);
 	}
 	
 	private void initMinusStickChart()
@@ -323,6 +552,82 @@ public class AndroidChartsActivity extends Activity {
 		minusstickchart.setStickFillColor(Color.BLUE);
 	}
 	
+	private void initSlipMinusStickChart()
+	{
+        this.slipminusstickchart = (SlipMinusStickChart)findViewById(R.id.slipminusstickchart);
+		
+		List<StickEntity> data = new ArrayList<StickEntity>();
+		data.add(new StickEntity(50000,0,20110603));
+		data.add(new StickEntity(42000,0,20110703));
+		data.add(new StickEntity(32000,0,20110803));
+		data.add(new StickEntity(21000,0,20110903));
+		data.add(new StickEntity(0,-12000,20111003));
+		data.add(new StickEntity(0,-28000,20111103));
+		data.add(new StickEntity(0,-41000,20111203));
+		data.add(new StickEntity(0,-25000,20120103));
+		data.add(new StickEntity(0,-18000,20120203));
+		data.add(new StickEntity(14000,0,20120303));
+		data.add(new StickEntity(24000,0,20120303));
+		data.add(new StickEntity(36000,0,20120303));
+		data.add(new StickEntity(46000,0,20120303));
+		data.add(new StickEntity(50000,0,20110603));
+		data.add(new StickEntity(42000,0,20110703));
+		data.add(new StickEntity(32000,0,20110803));
+		data.add(new StickEntity(21000,0,20110903));
+		data.add(new StickEntity(0,-12000,20111003));
+		data.add(new StickEntity(0,-28000,20111103));
+		data.add(new StickEntity(0,-41000,20111203));
+		data.add(new StickEntity(0,-25000,20120103));
+		data.add(new StickEntity(0,-18000,20120203));
+		data.add(new StickEntity(14000,0,20120303));
+		data.add(new StickEntity(24000,0,20120303));
+		data.add(new StickEntity(36000,0,20120303));
+		data.add(new StickEntity(46000,0,20120303));
+		data.add(new StickEntity(50000,0,20110603));
+		data.add(new StickEntity(42000,0,20110703));
+		data.add(new StickEntity(32000,0,20110803));
+		data.add(new StickEntity(21000,0,20110903));
+		data.add(new StickEntity(0,-12000,20111003));
+		data.add(new StickEntity(0,-28000,20111103));
+		data.add(new StickEntity(0,-41000,20111203));
+		data.add(new StickEntity(0,-25000,20120103));
+		data.add(new StickEntity(0,-18000,20120203));
+		data.add(new StickEntity(14000,0,20120303));
+		data.add(new StickEntity(24000,0,20120303));
+		data.add(new StickEntity(36000,0,20120303));
+		data.add(new StickEntity(46000,0,20120303));
+		slipminusstickchart.setStickData(data);
+		slipminusstickchart.setMaxValue(50000);
+		slipminusstickchart.setMinValue(-50000);
+		slipminusstickchart.setAxisMarginRight(1);
+		slipminusstickchart.setAxisMarginTop(5);
+		
+		slipminusstickchart.setBorderColor(Color.GRAY);
+		slipminusstickchart.setAxisXColor(Color.WHITE);
+		slipminusstickchart.setAxisYColor(Color.WHITE);
+		slipminusstickchart.setLatitudeFontColor(Color.WHITE);
+		slipminusstickchart.setLatitudeColor(Color.GRAY);
+		slipminusstickchart.setLongitudeFontColor(Color.WHITE);
+		slipminusstickchart.setLongitudeColor(Color.GRAY);
+		//最大纬线数
+		slipminusstickchart.setLatitudeNum(3);
+		//最大经线数
+		slipminusstickchart.setLongitudeNum(2);
+		slipminusstickchart.setDisplayFrom(0);
+		slipminusstickchart.setDisplayNumber(10);
+		slipminusstickchart.setMinDisplayNumber(5);
+        
+		slipminusstickchart.setZoomBaseLine(0);
+		slipminusstickchart.setDisplayAxisXTitle(true);
+		slipminusstickchart.setDisplayAxisYTitle(true);
+		slipminusstickchart.setDisplayCrossXOnTouch(false);
+		slipminusstickchart.setDisplayCrossYOnTouch(false);
+		slipminusstickchart.setDisplayLatitude(true);
+		slipminusstickchart.setDisplayLongitude(true);
+		slipminusstickchart.setStickBorderColor(Color.WHITE);
+		slipminusstickchart.setStickFillColor(Color.BLUE);
+	}
+	
 	private void initCandleStickChart()
 	{
         this.candlestickchart = (CandleStickChart)findViewById(R.id.candlestickchart);
@@ -356,27 +661,66 @@ public class AndroidChartsActivity extends Activity {
         candlestickchart.setOHLCData(ohlc);
 	}
 	
+	private void initSlipCandleStickChart()
+	{
+        this.slipcandlestickchart = (SlipCandleStickChart)findViewById(R.id.slipcandlestickchart);
+        slipcandlestickchart.setAxisXColor(Color.LTGRAY);
+        slipcandlestickchart.setAxisYColor(Color.LTGRAY);
+        slipcandlestickchart.setLatitudeColor(Color.GRAY);
+        slipcandlestickchart.setLongitudeColor(Color.GRAY);
+        slipcandlestickchart.setBorderColor(Color.LTGRAY);
+        slipcandlestickchart.setLongitudeFontColor(Color.WHITE);
+        slipcandlestickchart.setLatitudeFontColor(Color.WHITE);
+        slipcandlestickchart.setAxisMarginRight(1);
+        
+        //最大纬线数
+        slipcandlestickchart.setLatitudeNum(5);
+        //最大经线数
+        slipcandlestickchart.setLongitudeNum(3);
+        //最大价格
+        slipcandlestickchart.setMaxValue(1000);
+        //最小价格
+        slipcandlestickchart.setMinValue(200);
+        
+        slipcandlestickchart.setDisplayFrom(10);
+        
+        slipcandlestickchart.setDisplayNumber(30);
+        
+        slipcandlestickchart.setMinDisplayNumber(5);
+        
+        slipcandlestickchart.setZoomBaseLine(0);
+        
+        slipcandlestickchart.setDisplayAxisXTitle(true);
+        slipcandlestickchart.setDisplayAxisYTitle(true);
+        slipcandlestickchart.setDisplayLatitude(true);
+        slipcandlestickchart.setDisplayLongitude(true);
+        slipcandlestickchart.setBackgroundColor(Color.BLACK);
+        
+        //为chart2增加均线
+        slipcandlestickchart.setOHLCData(ohlc);
+	}
+	
 	private void initMACandleStickChart()
 	{
         this.macandlestickchart = (MACandleStickChart)findViewById(R.id.macandlestickchart);
-      List<LineEntity> lines = new ArrayList<LineEntity>();
+      List<LineEntity<Float>> lines = new ArrayList<LineEntity<Float>>();
       
       //计算5日均线
-      LineEntity MA5 = new LineEntity();
+      LineEntity<Float> MA5 = new LineEntity<Float>();
       MA5.setTitle("MA5");
       MA5.setLineColor(Color.WHITE);
       MA5.setLineData(initMA(5));
       lines.add(MA5);
       
       //计算10日均线
-      LineEntity MA10 = new LineEntity();
+      LineEntity<Float> MA10 = new LineEntity<Float>();
       MA10.setTitle("MA10");
       MA10.setLineColor(Color.RED);
       MA10.setLineData(initMA(10));
       lines.add(MA10);
       
       //计算25日均线
-      LineEntity MA25 = new LineEntity();
+      LineEntity<Float> MA25 = new LineEntity<Float>();
       MA25.setTitle("MA25");
       MA25.setLineColor(Color.GREEN);
       MA25.setLineData(initMA(25));
@@ -414,6 +758,73 @@ public class AndroidChartsActivity extends Activity {
     
     //为chart2增加均线
     macandlestickchart.setOHLCData(ohlc);
+        
+	}
+	
+	private void initMASlipCandleStickChart()
+	{
+        this.maslipcandlestickchart = (MASlipCandleStickChart)findViewById(R.id.maslipcandlestickchart);
+      List<LineEntity<Float>> lines = new ArrayList<LineEntity<Float>>();
+      
+      //计算5日均线
+      LineEntity<Float> MA5 = new LineEntity<Float>();
+      MA5.setTitle("MA5");
+      MA5.setLineColor(Color.WHITE);
+      MA5.setLineData(initMA(5));
+      lines.add(MA5);
+      
+      //计算10日均线
+      LineEntity<Float> MA10 = new LineEntity<Float>();
+      MA10.setTitle("MA10");
+      MA10.setLineColor(Color.RED);
+      MA10.setLineData(initMA(10));
+      lines.add(MA10);
+      
+      //计算25日均线
+      LineEntity<Float> MA25 = new LineEntity<Float>();
+      MA25.setTitle("MA25");
+      MA25.setLineColor(Color.GREEN);
+      MA25.setLineData(initMA(25));
+      lines.add(MA25);
+      
+      maslipcandlestickchart.setAxisXColor(Color.LTGRAY);
+      maslipcandlestickchart.setAxisYColor(Color.LTGRAY);
+      maslipcandlestickchart.setLatitudeColor(Color.GRAY);
+      maslipcandlestickchart.setLongitudeColor(Color.GRAY);
+      maslipcandlestickchart.setBorderColor(Color.LTGRAY);
+      maslipcandlestickchart.setLongitudeFontColor(Color.WHITE);
+      maslipcandlestickchart.setLatitudeFontColor(Color.WHITE);
+      maslipcandlestickchart.setAxisMarginRight(1);
+      
+      //最大纬线数
+      maslipcandlestickchart.setLatitudeNum(5);
+      //最大经线数
+      maslipcandlestickchart.setLongitudeNum(3);
+      //最大价格
+      maslipcandlestickchart.setMaxValue(1000);
+      //最小价格
+      maslipcandlestickchart.setMinValue(200);
+      
+      maslipcandlestickchart.setDisplayFrom(10);
+      
+      maslipcandlestickchart.setDisplayNumber(30);
+      
+      maslipcandlestickchart.setMinDisplayNumber(5);
+      
+      maslipcandlestickchart.setZoomBaseLine(0);
+      
+      maslipcandlestickchart.setDisplayAxisXTitle(true);
+      maslipcandlestickchart.setDisplayAxisYTitle(true);
+      maslipcandlestickchart.setDisplayLatitude(true);
+      maslipcandlestickchart.setDisplayLongitude(true);
+      maslipcandlestickchart.setBackgroundColor(Color.BLACK);
+
+      
+    //为chart2增加均线
+      maslipcandlestickchart.setLineData(lines);
+    
+    //为chart2增加均线
+      maslipcandlestickchart.setOHLCData(ohlc);
         
 	}
     
@@ -454,6 +865,118 @@ public class AndroidChartsActivity extends Activity {
 		spiderwebchart.setData(data);
 		spiderwebchart.setLatitudeNum(5);
     }
+	
+	private void initVOLC(){
+		List<ColoredStickEntity> stick = new ArrayList<ColoredStickEntity>();
+		this.volc = new ArrayList<ColoredStickEntity>();
+		
+		stick.add(new ColoredStickEntity(406000,0,20110825,Color.RED));
+		stick.add(new ColoredStickEntity(232000,0,20110824,Color.RED));
+		stick.add(new ColoredStickEntity(355000,0,20110823,Color.BLUE));
+		stick.add(new ColoredStickEntity(437000,0,20110822,Color.RED));
+		stick.add(new ColoredStickEntity(460000,0,20110819,Color.BLUE));
+		stick.add(new ColoredStickEntity(422000,0,20110818,Color.LTGRAY));
+		stick.add(new ColoredStickEntity(502000,0,20110817,Color.RED));
+		stick.add(new ColoredStickEntity(509000,0,20110816,Color.RED));
+		stick.add(new ColoredStickEntity(110000,0,20110815,Color.RED));
+		stick.add(new ColoredStickEntity(110000,0,20110812,Color.BLUE));
+		stick.add(new ColoredStickEntity(310000,0,20110811,Color.RED));
+		stick.add(new ColoredStickEntity(210000,0,20110810,Color.BLUE));
+		stick.add(new ColoredStickEntity(211000,0,20110809,Color.BLUE));
+		stick.add(new ColoredStickEntity(577000,0,20110808,Color.RED));
+		stick.add(new ColoredStickEntity(493000,0,20110805,Color.BLUE));
+		stick.add(new ColoredStickEntity(433000,0,20110804,Color.LTGRAY));
+		stick.add(new ColoredStickEntity(479000,0,20110803,Color.BLUE));
+		stick.add(new ColoredStickEntity(360000,0,20110802,Color.RED));
+		stick.add(new ColoredStickEntity(437000,0,20110801,Color.BLUE));
+		stick.add(new ColoredStickEntity(504000,0,20110729,Color.BLUE));
+		stick.add(new ColoredStickEntity(520000,0,20110728,Color.BLUE));
+		stick.add(new ColoredStickEntity(494000,0,20110727,Color.BLUE));
+		stick.add(new ColoredStickEntity(312000,0,20110726,Color.RED));
+		stick.add(new ColoredStickEntity(424000,0,20110725,Color.BLUE));
+		stick.add(new ColoredStickEntity(557000,0,20110722,Color.RED));
+		stick.add(new ColoredStickEntity(596000,0,20110721,Color.RED));
+		stick.add(new ColoredStickEntity(311000,0,20110720,Color.LTGRAY));
+		stick.add(new ColoredStickEntity(312000,0,20110719,Color.BLUE));
+		stick.add(new ColoredStickEntity(312000,0,20110718,Color.RED));
+		stick.add(new ColoredStickEntity(312000,0,20110715,Color.BLUE));
+		stick.add(new ColoredStickEntity(410000,0,20110714,Color.BLUE));
+		stick.add(new ColoredStickEntity(311000,0,20110713,Color.BLUE));
+		stick.add(new ColoredStickEntity(210000,0,20110712,Color.BLUE));
+		stick.add(new ColoredStickEntity(410000,0,20110711,Color.RED));
+		stick.add(new ColoredStickEntity(214000,0,20110708,Color.RED));
+		stick.add(new ColoredStickEntity(312000,0,20110707,Color.BLUE));
+		stick.add(new ColoredStickEntity(212000,0,20110706,Color.RED));
+		stick.add(new ColoredStickEntity(414000,0,20110705,Color.RED));
+		stick.add(new ColoredStickEntity(310000,0,20110704,Color.BLUE));
+		stick.add(new ColoredStickEntity(210000,0,20110701,Color.RED));
+		stick.add(new ColoredStickEntity(190000,0,20110630,Color.RED));
+		stick.add(new ColoredStickEntity(210000,0,20110629,Color.BLUE));
+		stick.add(new ColoredStickEntity(116000,0,20110628,Color.BLUE));
+		stick.add(new ColoredStickEntity(142000,0,20110627,Color.BLUE));
+		stick.add(new ColoredStickEntity(524000,0,20110624,Color.RED));
+		stick.add(new ColoredStickEntity(246000,0,20110623,Color.BLUE));
+		stick.add(new ColoredStickEntity(432000,0,20110622,Color.RED));
+		stick.add(new ColoredStickEntity(352000,0,20110621,Color.RED));
+		stick.add(new ColoredStickEntity(243000,0,20110620,Color.RED));
+		stick.add(new ColoredStickEntity(165000,0,20110617,Color.BLUE));
+		stick.add(new ColoredStickEntity(554000,0,20110616,Color.BLUE));
+		stick.add(new ColoredStickEntity(552000,0,20110615,Color.BLUE));
+		stick.add(new ColoredStickEntity(431000,0,20110614,Color.LTGRAY));
+		stick.add(new ColoredStickEntity(317000,0,20110613,Color.BLUE));
+		stick.add(new ColoredStickEntity(512000,0,20110610,Color.BLUE));
+		stick.add(new ColoredStickEntity(283000,0,20110609,Color.RED));
+		stick.add(new ColoredStickEntity(144000,0,20110608,Color.RED));
+		stick.add(new ColoredStickEntity(273000,0,20110607,Color.RED));
+		stick.add(new ColoredStickEntity(278000,0,20110603,Color.RED));
+		stick.add(new ColoredStickEntity(624000,0,20110602,Color.RED));
+		stick.add(new ColoredStickEntity(217000,0,20110601,Color.BLUE));
+		stick.add(new ColoredStickEntity(116000,0,20110531,Color.BLUE));
+		stick.add(new ColoredStickEntity(191000,0,20110530,Color.RED));
+		stick.add(new ColoredStickEntity(204000,0,20110527,Color.BLUE));
+		stick.add(new ColoredStickEntity(236000,0,20110526,Color.BLUE));
+		stick.add(new ColoredStickEntity(421000,0,20110525,Color.LTGRAY));
+		stick.add(new ColoredStickEntity(114000,0,20110524,Color.BLUE));
+		stick.add(new ColoredStickEntity(403000,0,20110523,Color.RED));
+		stick.add(new ColoredStickEntity(205000,0,20110520,Color.RED));
+		stick.add(new ColoredStickEntity(328000,0,20110519,Color.BLUE));
+		stick.add(new ColoredStickEntity(109000,0,20110518,Color.RED));
+		stick.add(new ColoredStickEntity(286000,0,20110517,Color.RED));
+		stick.add(new ColoredStickEntity(103000,0,20110516,Color.BLUE));
+		stick.add(new ColoredStickEntity(114000,0,20110513,Color.BLUE));
+		stick.add(new ColoredStickEntity(107000,0,20110512,Color.RED));
+		stick.add(new ColoredStickEntity(106000,0,20110511,Color.BLUE));
+		stick.add(new ColoredStickEntity(146000,0,20110510,Color.LTGRAY));
+		stick.add(new ColoredStickEntity(105000,0,20110509,Color.RED));
+		stick.add(new ColoredStickEntity(312000,0,20110506,Color.RED));
+		stick.add(new ColoredStickEntity(530000,0,20110505,Color.RED));
+		stick.add(new ColoredStickEntity(275000,0,20110504,Color.BLUE));
+		stick.add(new ColoredStickEntity(432000,0,20110503,Color.BLUE));
+//		stick.add(new StickEntity(157000,0,20110429));
+//		stick.add(new StickEntity(148000,0,20110428));
+//		stick.add(new StickEntity(224000,0,20110427));
+//		stick.add(new StickEntity(405000,0,20110426));
+//		stick.add(new StickEntity(374000,0,20110425));
+//		stick.add(new StickEntity(473000,0,20110422));
+//		stick.add(new StickEntity(437000,0,20110421));
+//		stick.add(new StickEntity(121000,0,20110420));
+//		stick.add(new StickEntity(208000,0,20110419));
+//		stick.add(new StickEntity(486000,0,20110418));
+//		stick.add(new StickEntity(486000,0,20110415));
+//		stick.add(new StickEntity(473000,0,20110414));
+//		stick.add(new StickEntity(256000,0,20110413));
+//		stick.add(new StickEntity(275000,0,20110412));
+//		stick.add(new StickEntity(471000,0,20110411));
+//		stick.add(new StickEntity(529000,0,20110408));
+//		stick.add(new StickEntity(564000,0,20110407));
+//		stick.add(new StickEntity(257000,0,20110406));
+//		stick.add(new StickEntity(344000,0,20110404));
+//		stick.add(new StickEntity(525000,0,20110401));
+		
+        for(int i= stick.size(); i > 0 ; i--){
+        	this.volc.add(stick.get(i -1));
+        }
+	}
 	
 	private void initVOL(){
 		List<StickEntity> stick = new ArrayList<StickEntity>();
@@ -591,6 +1114,190 @@ public class AndroidChartsActivity extends Activity {
         return MA5Values;
 	}
 	
+	private void initDV1() {
+		List<DateValueEntity> dv = new ArrayList<DateValueEntity>();
+
+		this.dv1 = new ArrayList<DateValueEntity>();
+		dv.add(new DateValueEntity(246, 20110825));
+		dv.add(new DateValueEntity(242, 20110824));
+		dv.add(new DateValueEntity(240, 20110823));
+		dv.add(new DateValueEntity(236, 20110822));
+		dv.add(new DateValueEntity(240, 20110819));
+		dv.add(new DateValueEntity(241, 20110818));
+		dv.add(new DateValueEntity(243, 20110817));
+		dv.add(new DateValueEntity(242, 20110816));
+		dv.add(new DateValueEntity(240, 20110815));
+		dv.add(new DateValueEntity(238, 20110812));
+		dv.add(new DateValueEntity(237, 20110811));
+		dv.add(new DateValueEntity(233, 20110810));
+		dv.add(new DateValueEntity(241, 20110809));
+		dv.add(new DateValueEntity(244, 20110808));
+		dv.add(new DateValueEntity(249, 20110805));
+		dv.add(new DateValueEntity(248, 20110804));
+		dv.add(new DateValueEntity(249, 20110803));
+		dv.add(new DateValueEntity(251, 20110802));
+		dv.add(new DateValueEntity(252, 20110801));
+		dv.add(new DateValueEntity(251, 20110729));
+		dv.add(new DateValueEntity(252, 20110728));
+		dv.add(new DateValueEntity(250, 20110727));
+		dv.add(new DateValueEntity(256, 20110726));
+		dv.add(new DateValueEntity(258, 20110725));
+		dv.add(new DateValueEntity(260, 20110722));
+		dv.add(new DateValueEntity(261, 20110721));
+		dv.add(new DateValueEntity(260, 20110720));
+		dv.add(new DateValueEntity(262, 20110719));
+		dv.add(new DateValueEntity(262, 20110718));
+		dv.add(new DateValueEntity(261, 20110715));
+		dv.add(new DateValueEntity(259, 20110714));
+		dv.add(new DateValueEntity(258, 20110713));
+		dv.add(new DateValueEntity(260, 20110712));
+		dv.add(new DateValueEntity(260, 20110711));
+		dv.add(new DateValueEntity(262, 20110708));
+		dv.add(new DateValueEntity(261, 20110707));
+		dv.add(new DateValueEntity(261, 20110706));
+		dv.add(new DateValueEntity(261, 20110705));
+		dv.add(new DateValueEntity(257, 20110704));
+		dv.add(new DateValueEntity(257, 20110701));
+		dv.add(new DateValueEntity(255, 20110630));
+		dv.add(new DateValueEntity(256, 20110629));
+		dv.add(new DateValueEntity(256, 20110628));
+		dv.add(new DateValueEntity(256, 20110627));
+		dv.add(new DateValueEntity(249, 20110624));
+		dv.add(new DateValueEntity(245, 20110623));
+		dv.add(new DateValueEntity(244, 20110622));
+		dv.add(new DateValueEntity(243, 20110621));
+		dv.add(new DateValueEntity(247, 20110620));
+		dv.add(new DateValueEntity(249, 20110617));
+		dv.add(new DateValueEntity(253, 20110616));
+		dv.add(new DateValueEntity(253, 20110615));
+		dv.add(new DateValueEntity(250, 20110614));
+		dv.add(new DateValueEntity(250, 20110613));
+		dv.add(new DateValueEntity(254, 20110610));
+		dv.add(new DateValueEntity(255, 20110609));
+		dv.add(new DateValueEntity(254, 20110608));
+		dv.add(new DateValueEntity(253, 20110607));
+		dv.add(new DateValueEntity(252, 20110603));
+		dv.add(new DateValueEntity(254, 20110602));
+		dv.add(new DateValueEntity(254, 20110601));
+		dv.add(new DateValueEntity(252, 20110531));
+		dv.add(new DateValueEntity(254, 20110530));
+		dv.add(new DateValueEntity(256, 20110527));
+		dv.add(new DateValueEntity(257, 20110526));
+		dv.add(new DateValueEntity(257, 20110525));
+		dv.add(new DateValueEntity(265, 20110524));
+		dv.add(new DateValueEntity(266, 20110523));
+		dv.add(new DateValueEntity(268, 20110520));
+		dv.add(new DateValueEntity(267, 20110519));
+		dv.add(new DateValueEntity(266, 20110518));
+		dv.add(new DateValueEntity(267, 20110517));
+		dv.add(new DateValueEntity(267, 20110516));
+		dv.add(new DateValueEntity(267, 20110513));
+		dv.add(new DateValueEntity(269, 20110512));
+		dv.add(new DateValueEntity(269, 20110511));
+		dv.add(new DateValueEntity(268, 20110510));
+		dv.add(new DateValueEntity(268, 20110509));
+		dv.add(new DateValueEntity(268, 20110506));
+		dv.add(new DateValueEntity(271, 20110505));
+		dv.add(new DateValueEntity(273, 20110504));
+		dv.add(new DateValueEntity(271, 20110503));
+
+		for (int i = dv.size(); i > 0; i--) {
+			this.dv1.add(dv.get(i - 1));
+		}
+	}
+
+	private void initDV2() {
+		List<DateValueEntity> dv = new ArrayList<DateValueEntity>();
+
+		this.dv2 = new ArrayList<DateValueEntity>();
+		dv.add(new DateValueEntity(246, 20110825));
+		dv.add(new DateValueEntity(242, 20110824));
+		dv.add(new DateValueEntity(235, 20110823));
+		dv.add(new DateValueEntity(231, 20110822));
+		dv.add(new DateValueEntity(240, 20110819));
+		dv.add(new DateValueEntity(239, 20110818));
+		dv.add(new DateValueEntity(240, 20110817));
+		dv.add(new DateValueEntity(238, 20110816));
+		dv.add(new DateValueEntity(238, 20110815));
+		dv.add(new DateValueEntity(230, 20110812));
+		dv.add(new DateValueEntity(234, 20110811));
+		dv.add(new DateValueEntity(223, 20110810));
+		dv.add(new DateValueEntity(229, 20110809));
+		dv.add(new DateValueEntity(240, 20110808));
+		dv.add(new DateValueEntity(247, 20110805));
+		dv.add(new DateValueEntity(245, 20110804));
+		dv.add(new DateValueEntity(245, 20110803));
+		dv.add(new DateValueEntity(248, 20110802));
+		dv.add(new DateValueEntity(248, 20110801));
+		dv.add(new DateValueEntity(248, 20110729));
+		dv.add(new DateValueEntity(248, 20110728));
+		dv.add(new DateValueEntity(247, 20110727));
+		dv.add(new DateValueEntity(248, 20110726));
+		dv.add(new DateValueEntity(256, 20110725));
+		dv.add(new DateValueEntity(256, 20110722));
+		dv.add(new DateValueEntity(257, 20110721));
+		dv.add(new DateValueEntity(259, 20110720));
+		dv.add(new DateValueEntity(260, 20110719));
+		dv.add(new DateValueEntity(259, 20110718));
+		dv.add(new DateValueEntity(258, 20110715));
+		dv.add(new DateValueEntity(255, 20110714));
+		dv.add(new DateValueEntity(255, 20110713));
+		dv.add(new DateValueEntity(258, 20110712));
+		dv.add(new DateValueEntity(258, 20110711));
+		dv.add(new DateValueEntity(259, 20110708));
+		dv.add(new DateValueEntity(258, 20110707));
+		dv.add(new DateValueEntity(259, 20110706));
+		dv.add(new DateValueEntity(257, 20110705));
+		dv.add(new DateValueEntity(255, 20110704));
+		dv.add(new DateValueEntity(253, 20110701));
+		dv.add(new DateValueEntity(252, 20110630));
+		dv.add(new DateValueEntity(253, 20110629));
+		dv.add(new DateValueEntity(254, 20110628));
+		dv.add(new DateValueEntity(247, 20110627));
+		dv.add(new DateValueEntity(243, 20110624));
+		dv.add(new DateValueEntity(243, 20110623));
+		dv.add(new DateValueEntity(241, 20110622));
+		dv.add(new DateValueEntity(241, 20110621));
+		dv.add(new DateValueEntity(244, 20110620));
+		dv.add(new DateValueEntity(246, 20110617));
+		dv.add(new DateValueEntity(250, 20110616));
+		dv.add(new DateValueEntity(249, 20110615));
+		dv.add(new DateValueEntity(246, 20110614));
+		dv.add(new DateValueEntity(247, 20110613));
+		dv.add(new DateValueEntity(250, 20110610));
+		dv.add(new DateValueEntity(251, 20110609));
+		dv.add(new DateValueEntity(251, 20110608));
+		dv.add(new DateValueEntity(250, 20110607));
+		dv.add(new DateValueEntity(247, 20110603));
+		dv.add(new DateValueEntity(252, 20110602));
+		dv.add(new DateValueEntity(250, 20110601));
+		dv.add(new DateValueEntity(248, 20110531));
+		dv.add(new DateValueEntity(250, 20110530));
+		dv.add(new DateValueEntity(253, 20110527));
+		dv.add(new DateValueEntity(253, 20110526));
+		dv.add(new DateValueEntity(254, 20110525));
+		dv.add(new DateValueEntity(257, 20110524));
+		dv.add(new DateValueEntity(265, 20110523));
+		dv.add(new DateValueEntity(265, 20110520));
+		dv.add(new DateValueEntity(264, 20110519));
+		dv.add(new DateValueEntity(262, 20110518));
+		dv.add(new DateValueEntity(264, 20110517));
+		dv.add(new DateValueEntity(263, 20110516));
+		dv.add(new DateValueEntity(264, 20110513));
+		dv.add(new DateValueEntity(266, 20110512));
+		dv.add(new DateValueEntity(266, 20110511));
+		dv.add(new DateValueEntity(266, 20110510));
+		dv.add(new DateValueEntity(263, 20110509));
+		dv.add(new DateValueEntity(265, 20110506));
+		dv.add(new DateValueEntity(266, 20110505));
+		dv.add(new DateValueEntity(269, 20110504));
+		dv.add(new DateValueEntity(267, 20110503));
+
+		for (int i = dv.size(); i > 0; i--) {
+			this.dv2.add(dv.get(i - 1));
+		}
+	}
+	
 	private void initOHLC(){
         List<OHLCEntity> ohlc = new ArrayList<OHLCEntity>();
         
@@ -677,30 +1384,10 @@ public class AndroidChartsActivity extends Activity {
         ohlc.add(new OHLCEntity(271 ,271 ,266 ,266 ,20110505));
         ohlc.add(new OHLCEntity(271 ,273 ,269 ,273 ,20110504));
         ohlc.add(new OHLCEntity(268 ,271 ,267 ,271 ,20110503));
-//        ohlc.add(new OHLCEntity(273 ,275 ,268 ,268 ,20110429));
-//        ohlc.add(new OHLCEntity(274 ,276 ,270 ,272 ,20110428));
-//        ohlc.add(new OHLCEntity(275 ,277 ,273 ,273 ,20110427));
-//        ohlc.add(new OHLCEntity(280 ,280 ,276 ,276 ,20110426));
-//        ohlc.add(new OHLCEntity(282 ,283 ,280 ,281 ,20110425));
-//        ohlc.add(new OHLCEntity(282 ,283 ,281 ,282 ,20110422));
-//        ohlc.add(new OHLCEntity(280 ,281 ,279 ,280 ,20110421));
-//        ohlc.add(new OHLCEntity(283 ,283 ,279 ,279 ,20110420));
-//        ohlc.add(new OHLCEntity(284 ,286 ,283 ,285 ,20110419));
-//        ohlc.add(new OHLCEntity(283 ,286 ,282 ,285 ,20110418));
-//        ohlc.add(new OHLCEntity(285 ,285 ,283 ,284 ,20110415));
-//        ohlc.add(new OHLCEntity(280 ,285 ,279 ,285 ,20110414));
-//        ohlc.add(new OHLCEntity(281 ,283 ,280 ,282 ,20110413));
-//        ohlc.add(new OHLCEntity(283 ,286 ,282 ,282 ,20110412));
-//        ohlc.add(new OHLCEntity(280 ,283 ,279 ,283 ,20110411));
-//        ohlc.add(new OHLCEntity(280 ,281 ,279 ,280 ,20110408));
-//        ohlc.add(new OHLCEntity(276 ,280 ,276 ,280 ,20110407));
-//        ohlc.add(new OHLCEntity(273 ,276 ,272 ,276 ,20110406));
-//        ohlc.add(new OHLCEntity(275 ,276 ,271 ,272 ,20110404));
-//        ohlc.add(new OHLCEntity(275 ,276 ,273 ,275 ,20110401));
         
-        for(int i= ohlc.size(); i > 0 ; i--){
-        	this.ohlc.add(ohlc.get(i -1));
-        }
+		for (int i = ohlc.size(); i > 0; i--) {
+			this.ohlc.add(ohlc.get(i - 1));
+		}
 	}
 	
 	private List<Float> initMA(int days){

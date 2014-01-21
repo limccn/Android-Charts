@@ -28,6 +28,7 @@ import cn.limc.androidcharts.entity.OHLCEntity;
 import cn.limc.androidcharts.view.GridChart;
 import cn.limc.androidcharts.view.MACandleStickChart;
 
+
 import android.graphics.Color;
 import android.widget.TextView;
 
@@ -52,15 +53,15 @@ public class MACandleStickChartTouchEventAssemble implements ITouchEventResponse
 		MACandleStickChart machart = (MACandleStickChart)chart;
 		
 		List<OHLCEntity> OHLCData = machart.getOHLCData();
-		List<LineEntity> lineData = machart.getLineData();
+		List<LineEntity<Float>> lineData = machart.getLineData();
 		
 		if(null==OHLCData||null ==lineData){
 			return;
 		}
 		
-		LineEntity ma5 = lineData.get(0);
-		LineEntity ma10 = lineData.get(1);
-		LineEntity ma25 = lineData.get(2);
+		LineEntity<Float> ma5 = lineData.get(0);
+		LineEntity<Float> ma10 = lineData.get(1);
+		LineEntity<Float> ma25 = lineData.get(2);
 		
 		if(index >= OHLCData.size()||index <0){
 			return;
@@ -130,12 +131,12 @@ public class MACandleStickChartTouchEventAssemble implements ITouchEventResponse
 		}
 		
 		
-		tvMA5.setText(ma5.getTitle() + "=" +String.valueOf((int)ma5.getLineData().get(index).floatValue()));
-		tvMA5.setTextColor(ma5.getLineColor());
-		tvMA10.setText(ma10.getTitle() + "=" +String.valueOf((int)ma10.getLineData().get(index).floatValue()));
-		tvMA10.setTextColor(ma10.getLineColor());
-		tvMA25.setText(ma25.getTitle() + "=" +String.valueOf((int)ma25.getLineData().get(index).floatValue()));
-		tvMA25.setTextColor(ma25.getLineColor());
+//		tvMA5.setText(ma5.getTitle() + "=" +String.valueOf((int)ma5.getLineData().get(index).floatValue()));
+//		tvMA5.setTextColor(ma5.getLineColor());
+//		tvMA10.setText(ma10.getTitle() + "=" +String.valueOf((int)ma10.getLineData().get(index).floatValue()));
+//		tvMA10.setTextColor(ma10.getLineColor());
+//		tvMA25.setText(ma25.getTitle() + "=" +String.valueOf((int)ma25.getLineData().get(index).floatValue()));
+//		tvMA25.setTextColor(ma25.getLineColor());
 	}
 	
 	public void notifyEvent(GridChart chart) {

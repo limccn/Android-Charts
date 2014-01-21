@@ -28,6 +28,7 @@ import cn.limc.androidcharts.entity.StickEntity;
 import cn.limc.androidcharts.view.GridChart;
 import cn.limc.androidcharts.view.MAStickChart;
 
+
 import android.widget.TextView;
 
 
@@ -43,15 +44,15 @@ public class MAStickChartTouchEventAssemble implements ITouchEventResponse {
 		MAStickChart machart = (MAStickChart)chart;
 		
 		List<StickEntity> stickData = machart.getStickData();
-		List<LineEntity> lineData = machart.getLineData();
+		List<LineEntity<Float>> lineData = machart.getLineData();
 		
 		if(null==stickData||null ==lineData){
 			return;
 		}
 		
-		LineEntity ma5 = lineData.get(0);
-		LineEntity ma10 = lineData.get(1);
-		LineEntity ma25 = lineData.get(2);
+		LineEntity<Float> ma5 = lineData.get(0);
+		LineEntity<Float> ma10 = lineData.get(1);
+		LineEntity<Float> ma25 = lineData.get(2);
 		
 		if(index >= stickData.size()||index <0){
 			return;
@@ -63,12 +64,12 @@ public class MAStickChartTouchEventAssemble implements ITouchEventResponse {
 			tvV.setText(String.valueOf((int)(e.getHigh())));
 		}
 		
-		tvMA5.setText(ma5.getTitle() + "=" +String.valueOf((int)ma5.getLineData().get(index).floatValue()));
-		tvMA5.setTextColor(ma5.getLineColor());
-		tvMA10.setText(ma10.getTitle() + "=" +String.valueOf((int)ma10.getLineData().get(index).floatValue()));
-		tvMA10.setTextColor(ma10.getLineColor());
-		tvMA25.setText(ma25.getTitle() + "=" +String.valueOf((int)ma25.getLineData().get(index).floatValue()));
-		tvMA25.setTextColor(ma25.getLineColor());
+//		tvMA5.setText(ma5.getTitle() + "=" +String.valueOf((int)ma5.getLineData().get(index).floatValue()));
+//		tvMA5.setTextColor(ma5.getLineColor());
+//		tvMA10.setText(ma10.getTitle() + "=" +String.valueOf((int)ma10.getLineData().get(index).floatValue()));
+//		tvMA10.setTextColor(ma10.getLineColor());
+//		tvMA25.setText(ma25.getTitle() + "=" +String.valueOf((int)ma25.getLineData().get(index).floatValue()));
+//		tvMA25.setTextColor(ma25.getLineColor());
 	}
 
 	

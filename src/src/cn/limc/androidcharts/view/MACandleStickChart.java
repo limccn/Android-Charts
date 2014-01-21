@@ -25,6 +25,7 @@ import java.util.List;
 
 import cn.limc.androidcharts.entity.LineEntity;
 
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -64,7 +65,7 @@ public class MACandleStickChart extends CandleStickChart {
 	 * 绘制线条用的数据
 	 * </p>
 	 */
-	private List<LineEntity> lineData;
+	private List<LineEntity<Float>> lineData;
 
 	/*
 	 * (non-Javadoc)
@@ -153,7 +154,7 @@ public class MACandleStickChart extends CandleStickChart {
 
 		// draw MA lines
 		for (int i = 0; i < lineData.size(); i++) {
-			LineEntity line = (LineEntity) lineData.get(i);
+			LineEntity<Float> line = (LineEntity<Float>) lineData.get(i);
 			if (line.isDisplay()) {
 				Paint mPaint = new Paint();
 				mPaint.setColor(line.getLineColor());
@@ -189,7 +190,7 @@ public class MACandleStickChart extends CandleStickChart {
 	/**
 	 * @return the lineData
 	 */
-	public List<LineEntity> getLineData() {
+	public List<LineEntity<Float>> getLineData() {
 		return lineData;
 	}
 
@@ -197,7 +198,7 @@ public class MACandleStickChart extends CandleStickChart {
 	 * @param lineData
 	 *            the lineData to set
 	 */
-	public void setLineData(List<LineEntity> lineData) {
+	public void setLineData(List<LineEntity<Float>> lineData) {
 		this.lineData = lineData;
 	}
 }

@@ -44,7 +44,7 @@ application on both Android and iOS platforms.
 
 1. Clone or download Android-Charts if you haven't yet, At the command prompt type command like this
 
-        git git://github.com/limccn/Android-Charts.git
+        git clone git://github.com/limccn/Android-Charts.git
         
 2. Import the Android-Charts source files to your android project.
 

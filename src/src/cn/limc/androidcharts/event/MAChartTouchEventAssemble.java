@@ -22,6 +22,7 @@
 package cn.limc.androidcharts.event;
 
 import cn.limc.androidcharts.view.GridChart;
+
 import android.widget.ListView;
 
 public class MAChartTouchEventAssemble implements ITouchEventResponse {

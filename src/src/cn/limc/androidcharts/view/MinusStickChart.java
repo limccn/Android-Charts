@@ -25,6 +25,7 @@ import java.util.List;
 
 import cn.limc.androidcharts.entity.StickEntity;
 
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -48,6 +49,10 @@ import android.util.AttributeSet;
  * 
  */
 public class MinusStickChart extends StickChart {
+	
+	public static final int DEFAULT_STICK_SPACING = 6;
+	
+	private int stickSpacing = DEFAULT_STICK_SPACING;
 
 	/*
 	 * (non-Javadoc)
@@ -103,9 +108,9 @@ public class MinusStickChart extends StickChart {
 	protected void drawSticks(Canvas canvas) {
 		// stick width
 		float stickWidth = ((super.getWidth() - super.getAxisMarginLeft()) / super
-				.getMaxSticksNum()) - 6;
+				.getMaxSticksNum()) - stickSpacing;
 		// start point's X
-		float stickX = super.getAxisMarginLeft() + 3;
+		float stickX = super.getAxisMarginLeft() + stickSpacing / 2;
 
 		Paint mPaintFill = new Paint();
 		mPaintFill.setStyle(Style.FILL);
@@ -139,8 +144,22 @@ public class MinusStickChart extends StickChart {
 						mPaintBorder);
 
 				// next x
-				stickX = stickX + 6 + stickWidth;
+				stickX = stickX + stickSpacing + stickWidth;
 			}
 		}
+	}
+
+	/**
+	 * @return the stickSpacing
+	 */
+	public int getStickSpacing() {
+		return stickSpacing;
+	}
+
+	/**
+	 * @param stickSpacing the stickSpacing to set
+	 */
+	public void setStickSpacing(int stickSpacing) {
+		this.stickSpacing = stickSpacing;
 	}
 }

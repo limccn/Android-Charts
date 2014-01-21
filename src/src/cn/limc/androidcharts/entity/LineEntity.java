@@ -31,14 +31,14 @@ import java.util.List;
  * @author limc 
  * @version v1.0 2011/05/29 12:24:49 
  */
-public class LineEntity {
+public class LineEntity<T> {
 	
 	/** 
 	 * <p>Data for draw this line</p>
 	 * <p>ラインを表示用データ</p>
 	 * <p>线表示数据</p>
 	 */
-	private List<Float> lineData;
+	private List<T> lineData;
 	
 	/**
 	 * <p>Title for this line</p>
@@ -89,7 +89,7 @@ public class LineEntity {
 	 * <p>ラインの色</p>
 	 * <p>线的颜色</p>
 	 */
-	public LineEntity(List<Float> lineData, String title, int lineColor) {
+	public LineEntity(List<T> lineData, String title, int lineColor) {
 		super();
 		this.lineData = lineData;
 		this.title = title;
@@ -99,9 +99,9 @@ public class LineEntity {
 	/**
 	 * @param value 
 	 */
-	public void put(float value){
+	public void put(T value){
 		if (null == lineData){
-			lineData = new ArrayList<Float>();
+			lineData = new ArrayList<T>();
 		}
 		lineData.add(value);
 	}
@@ -109,14 +109,14 @@ public class LineEntity {
 	/**
 	 * @return the lineData
 	 */
-	public List<Float> getLineData() {
+	public List<T> getLineData() {
 		return lineData;
 	}
 
 	/**
 	 * @param lineData the lineData to set
 	 */
-	public void setLineData(List<Float> lineData) {
+	public void setLineData(List<T> lineData) {
 		this.lineData = lineData;
 	}
 
