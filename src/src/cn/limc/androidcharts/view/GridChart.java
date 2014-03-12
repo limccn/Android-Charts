@@ -895,7 +895,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-
+		
 		super.setBackgroundColor(backgroundColor);
 
 		drawXAxis(canvas);

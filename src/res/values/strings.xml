@@ -5,6 +5,8 @@
     <string name="gridchart">GridChart</string>
     <string name="linechart">LineChart</string>
     <string name="sliplinechart">SlipLineChart</string>
+    <string name="slipareachart">SlipAreaChart</string>
+    <string name="slipbandchart">SlipBandChart</string>
     <string name="stickchart">StickChart</string>
     <string name="slipstickchart">SlipStickChart</string>
     <string name="coloredslipstickchart">ColoredSlipStickChart</string>
@@ -16,6 +18,7 @@
     <string name="slipcandlestickchart">SlipCandleStickChart</string>
     <string name="macandlestickchart">MACandleStickChart</string>
     <string name="maslipcandlestickchart">MASlipCandleStickChart</string>
+    <string name="bollmaslipcandlestickchart">BOLLMASlipCandleStickChart</string>
     <string name="piechart">PieChart</string>
     <string name="piechart_title1">title1</string>
     <string name="piechart_title2">title2</string>

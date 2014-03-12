@@ -77,7 +77,7 @@ public class SlipLineChart extends GridChart {
 	 * 绘制线条用的数据
 	 * </p>
 	 */
-	private List<LineEntity<DateValueEntity>> linesData;
+	protected List<LineEntity<DateValueEntity>> linesData;
 
 	/**
 	 * <p>
@@ -219,7 +219,7 @@ public class SlipLineChart extends GridChart {
 	 */
 	protected void initAxisY() {
 		List<String> TitleY = new ArrayList<String>();
-		float average = (int) ((maxValue - minValue) / this.getLatitudeNum()) / 100 * 100;
+		float average = (int) ((maxValue - minValue) / this.getLatitudeNum());
 		;
 		// calculate degrees on Y axis
 		for (int i = 0; i < this.getLatitudeNum(); i++) {
@@ -234,7 +234,7 @@ public class SlipLineChart extends GridChart {
 		}
 		// calculate last degrees by use max value
 		String value = String.valueOf((int) Math
-				.floor(((int) maxValue) / 100 * 100));
+				.floor(((int) maxValue)));
 		if (value.length() < super.getAxisYMaxTitleLength()) {
 			while (value.length() < super.getAxisYMaxTitleLength()) {
 				value = new String(" ") + value;

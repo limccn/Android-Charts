@@ -41,8 +41,8 @@ import android.view.View;
  * @version v1.0 2011/05/29 15:17:50
  * 
  */
-public class BaseChart extends View implements IChart {
-
+public abstract class BaseChart extends View implements IChart {
+    
 	/*
 	 * (non-Javadoc)
 	 * 
