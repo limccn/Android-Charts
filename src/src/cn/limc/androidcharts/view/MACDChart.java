@@ -101,7 +101,6 @@ public class MACDChart extends SlipStickChart {
 	 */
 	public MACDChart(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -120,27 +119,25 @@ public class MACDChart extends SlipStickChart {
 	 */
 	public MACDChart(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void calcValueRange() {
-		if (this.stickData == null) {
+		if (stickData == null) {
 			return;
 		}
-		if (this.stickData.size() <= 0) {
+		if (stickData.size() <= 0) {
 			return;
 		}
 		double maxValue = Double.MIN_VALUE;
 		double minValue = Double.MAX_VALUE;
 
-		IMeasurable first = this.stickData.get(this.displayFrom);
+		IMeasurable first = stickData.get(displayFrom);
 		maxValue = Math.max(first.getHigh(), maxValue);
 		minValue = Math.min(first.getLow(), minValue);
 		// 判断显示为方柱或显示为线条
-		for (int i = this.displayFrom; i < this.displayFrom
-				+ this.displayNumber; i++) {
-			IMeasurable macd = this.stickData.get(i);
+		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+			IMeasurable macd = stickData.get(i);
 			maxValue = Math.max(macd.getHigh(), maxValue);
 			minValue = Math.min(macd.getLow(), minValue);
 		}
@@ -151,8 +148,12 @@ public class MACDChart extends SlipStickChart {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
+
+		System.out.println("displayFrom=" + displayFrom + "displayNumber="
+				+ displayNumber);
+
 		// 在K线图上增加均线
-		this.drawLinesData(canvas);
+		drawLinesData(canvas);
 	}
 
 	@Override
@@ -168,25 +169,24 @@ public class MACDChart extends SlipStickChart {
 		Paint mPaintStick = new Paint();
 		mPaintStick.setAntiAlias(true);
 
-		if (this.axisYPosition == AXIS_Y_POSITION_LEFT) {
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
 			// 蜡烛棒宽度
-			float stickWidth = ((super.getWidth() - this.axisMarginLeft - 2 * this.axisMarginRight) / this.displayNumber) - 1;
+			float stickWidth = ((super.getWidth() - axisMarginLeft - 2 * axisMarginRight) / displayNumber) - 1;
 
 			// 蜡烛棒起始绘制位置
-			float stickX = this.axisMarginLeft + this.axisMarginRight + 1;
+			float stickX = axisMarginLeft + axisMarginRight + 1;
 
 			PointF prePoint = new PointF(0, 0);
 			// 判断显示为方柱或显示为线条
-			for (int i = this.displayFrom; i < this.displayFrom
-					+ this.displayNumber; i++) {
-				MACDEntity stick = (MACDEntity) this.stickData.get(i);
+			for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+				MACDEntity stick = (MACDEntity) stickData.get(i);
 
-				float highY = (float) ((1 - (stick.getMacd() - this.minValue)
-						/ (this.maxValue - this.minValue))
-						* (super.getHeight() - this.axisMarginBottom) - super.axisMarginTop);
-				float lowY = (float) ((1 - (0 - this.minValue)
-						/ (this.maxValue - this.minValue))
-						* (super.getHeight() - this.axisMarginBottom) - this.axisMarginTop);
+				float highY = (float) ((1 - (stick.getMacd() - minValue)
+						/ (maxValue - minValue))
+						* (super.getHeight() - axisMarginBottom) - super.axisMarginTop);
+				float lowY = (float) ((1 - (0 - minValue)
+						/ (maxValue - minValue))
+						* (super.getHeight() - axisMarginBottom) - axisMarginTop);
 
 				if (stick.getMacd() == 0) {
 					// 没有值的情况下不绘制
@@ -195,12 +195,12 @@ public class MACDChart extends SlipStickChart {
 
 				// 柱状线颜色设定
 				if (stick.getMacd() > 0) {
-					mPaintStick.setColor(this.positiveStickColor);
+					mPaintStick.setColor(positiveStickColor);
 				} else {
-					mPaintStick.setColor(this.negativeStickColor);
+					mPaintStick.setColor(negativeStickColor);
 				}
 
-				if (this.macdDisplayType == MACD_DISPLAY_TYPE_STICK) {
+				if (macdDisplayType == MACD_DISPLAY_TYPE_STICK) {
 					// 绘制数据，根据宽度判断绘制直线或方柱
 					if (stickWidth >= 2) {
 						canvas.drawRect(stickX, highY, stickWidth,
@@ -209,17 +209,17 @@ public class MACDChart extends SlipStickChart {
 						canvas.drawLine(stickX, highY, stickX, lowY,
 								mPaintStick);
 					}
-				} else if (this.macdDisplayType == MACD_DISPLAY_TYPE_LINE) {
-					mPaintStick.setColor(this.macdLineColor);
+				} else if (macdDisplayType == MACD_DISPLAY_TYPE_LINE) {
+					mPaintStick.setColor(macdLineColor);
 					// 绘制线条
-					if (i == this.displayFrom) {
+					if (i == displayFrom) {
 						prePoint = new PointF(stickX + stickWidth / 2, highY);
 					} else {
 						canvas.drawLine(prePoint.x, prePoint.y, stickX
 								+ stickWidth / 2, highY, mPaintStick);
 						prePoint = new PointF(stickX + stickWidth / 2, highY);
 					}
-				} else if (this.macdDisplayType == MACD_DISPLAY_TYPE_LINE_STICK) {
+				} else if (macdDisplayType == MACD_DISPLAY_TYPE_LINE_STICK) {
 					canvas.drawLine(stickX + stickWidth / 2, highY, stickX
 							+ stickWidth / 2, lowY, mPaintStick);
 				}
@@ -228,22 +228,22 @@ public class MACDChart extends SlipStickChart {
 				stickX = stickX + 1 + stickWidth;
 			}
 		} else {
-			// float stickWidth = ((rect.size.width - 2 * this.axisMarginLeft -
-			// this.axisMarginRight) / this.displayNumber) - 1;
+			// float stickWidth = ((rect.size.width - 2 * axisMarginLeft -
+			// axisMarginRight) / displayNumber) - 1;
 			// // 蜡烛棒起始绘制位置
-			// float stickX = rect.size.width - this.axisMarginRight - 1 -
+			// float stickX = rect.size.width - axisMarginRight - 1 -
 			// stickWidth;
 			// //判断显示为方柱或显示为线条
-			// for (NSUInteger i = 0; i < this.displayNumber; i++) {
-			// NSUInteger index = this.displayFrom + this.displayNumber - 1 - i;
-			// CCSMACDData *stick = [this.stickData objectAtIndex:index];
+			// for (NSUInteger i = 0; i < displayNumber; i++) {
+			// NSUInteger index = displayFrom + displayNumber - 1 - i;
+			// CCSMACDData *stick = [stickData objectAtIndex:index];
 			//
-			// float highY = ((1 - (stick.macd - this.minValue) / (this.maxValue
-			// - this.minValue)) * (rect.size.height - this.axisMarginBottom) -
+			// float highY = ((1 - (stick.macd - minValue) / (maxValue
+			// - minValue)) * (rect.size.height - axisMarginBottom) -
 			// super.axisMarginTop);
-			// float lowY = ((1 - (0 - this.minValue) / (this.maxValue -
-			// this.minValue)) * (rect.size.height - this.axisMarginBottom) -
-			// this.axisMarginTop);
+			// float lowY = ((1 - (0 - minValue) / (maxValue -
+			// minValue)) * (rect.size.height - axisMarginBottom) -
+			// axisMarginTop);
 			//
 			// if (stick.macd == 0) {
 			// //没有值的情况下不绘制
@@ -252,17 +252,17 @@ public class MACDChart extends SlipStickChart {
 			// //柱状线颜色设定
 			// if (stick.macd > 0) {
 			// CGContextSetStrokeColorWithColor(context,
-			// this.positiveStickColor.CGColor);
+			// positiveStickColor.CGColor);
 			// CGContextSetFillColorWithColor(context,
-			// this.positiveStickColor.CGColor);
+			// positiveStickColor.CGColor);
 			// } else {
 			// CGContextSetStrokeColorWithColor(context,
-			// this.negativeStickColor.CGColor);
+			// negativeStickColor.CGColor);
 			// CGContextSetFillColorWithColor(context,
-			// this.negativeStickColor.CGColor);
+			// negativeStickColor.CGColor);
 			// }
 			//
-			// if (this.macdDisplayType == CCSMACDChartDisplayTypeStick) {
+			// if (macdDisplayType == CCSMACDChartDisplayTypeStick) {
 			// //绘制数据，根据宽度判断绘制直线或方柱
 			// if (stickWidth >= 2) {
 			// CGContextAddRect(context, CGRectMake(stickX, highY, stickWidth,
@@ -275,7 +275,7 @@ public class MACDChart extends SlipStickChart {
 			// //绘制线条
 			// CGContextStrokePath(context);
 			// }
-			// } else if (this.macdDisplayType ==
+			// } else if (macdDisplayType ==
 			// CCSMACDChartDisplayTypeLineStick) {
 			// CGContextMoveToPoint(context, stickX - stickWidth / 2, highY);
 			// CGContextAddLineToPoint(context, stickX - stickWidth / 2, lowY);
@@ -283,12 +283,12 @@ public class MACDChart extends SlipStickChart {
 			// CGContextStrokePath(context);
 			// } else {
 			// //绘制线条
-			// if (index == this.displayFrom + this.displayNumber - 1) {
+			// if (index == displayFrom + displayNumber - 1) {
 			// CGContextMoveToPoint(context, stickX - stickWidth / 2, highY);
 			// } else if (index == 0) {
 			// CGContextAddLineToPoint(context, stickX - stickWidth / 2, highY);
 			// CGContextSetStrokeColorWithColor(context,
-			// this.macdLineColor.CGColor);
+			// macdLineColor.CGColor);
 			// CGContextStrokePath(context);
 			// } else {
 			// CGContextAddLineToPoint(context, stickX - stickWidth / 2, highY);
@@ -305,7 +305,7 @@ public class MACDChart extends SlipStickChart {
 	protected void drawDiffLine(Canvas canvas) {
 		Paint mPaintStick = new Paint();
 		mPaintStick.setAntiAlias(true);
-		mPaintStick.setColor(this.diffLineColor);
+		mPaintStick.setColor(diffLineColor);
 
 		// 起始位置
 		float startX;
@@ -314,10 +314,10 @@ public class MACDChart extends SlipStickChart {
 		// 点线距离
 		float lineLength;
 
-		if (this.axisYPosition == AXIS_Y_POSITION_LEFT) {
-			lineLength = ((super.getWidth() - this.axisMarginLeft - 2 * this.axisMarginRight) / this.displayNumber);
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			lineLength = ((super.getWidth() - axisMarginLeft - 2 * axisMarginRight) / displayNumber);
 		} else {
-			lineLength = ((super.getWidth() - 2 * this.axisMarginLeft - this.axisMarginRight) / this.displayNumber);
+			lineLength = ((super.getWidth() - 2 * axisMarginLeft - axisMarginRight) / displayNumber);
 		}
 
 		// 起始点
@@ -331,25 +331,23 @@ public class MACDChart extends SlipStickChart {
 			// 1根则绘制一条直线
 			MACDEntity lineData = (MACDEntity) stickData.get(0);
 			// 获取终点Y坐标
-			float valueY = (float) ((1 - (lineData.getDiff() - this.minValue)
-					/ (this.maxValue - this.minValue))
-					* (super.getHeight() - this.axisMarginBottom) - this.axisMarginTop);
+			float valueY = (float) ((1 - (lineData.getDiff() - minValue)
+					/ (maxValue - minValue))
+					* (super.getHeight() - axisMarginBottom) - axisMarginTop);
 
-			canvas.drawLine(startX, valueY, this.axisMarginLeft, valueY,
-					mPaintStick);
+			canvas.drawLine(startX, valueY, axisMarginLeft, valueY, mPaintStick);
 
 		} else {
 			// 遍历并绘制线条
-			for (int j = this.displayFrom; j < this.displayFrom
-					+ this.displayNumber; j++) {
+			for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
 				MACDEntity lineData = (MACDEntity) stickData.get(j);
 
 				// 获取终点Y坐标
-				float valueY = (float) ((1 - (lineData.getDiff() - this.minValue)
-						/ (this.maxValue - this.minValue))
-						* (super.getHeight() - this.axisMarginBottom) - this.axisMarginTop);
+				float valueY = (float) ((1 - (lineData.getDiff() - minValue)
+						/ (maxValue - minValue))
+						* (super.getHeight() - axisMarginBottom) - axisMarginTop);
 				// 绘制线条路径
-				if (j == this.displayFrom || j == 0) {
+				if (j == displayFrom || j == 0) {
 					if (lineData.getDiff() == 0) {
 					} else {
 						lastY = valueY;
@@ -376,7 +374,7 @@ public class MACDChart extends SlipStickChart {
 
 		Paint mPaintStick = new Paint();
 		mPaintStick.setAntiAlias(true);
-		mPaintStick.setColor(this.deaLineColor);
+		mPaintStick.setColor(deaLineColor);
 
 		// 起始位置
 		float startX;
@@ -385,10 +383,10 @@ public class MACDChart extends SlipStickChart {
 		// 点线距离
 		float lineLength;
 
-		if (this.axisYPosition == AXIS_Y_POSITION_LEFT) {
-			lineLength = ((super.getWidth() - this.axisMarginLeft - 2 * this.axisMarginRight) / this.displayNumber);
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			lineLength = ((super.getWidth() - axisMarginLeft - 2 * axisMarginRight) / displayNumber);
 		} else {
-			lineLength = ((super.getWidth() - 2 * this.axisMarginLeft - this.axisMarginRight) / this.displayNumber);
+			lineLength = ((super.getWidth() - 2 * axisMarginLeft - axisMarginRight) / displayNumber);
 		}
 
 		// 起始点
@@ -402,25 +400,23 @@ public class MACDChart extends SlipStickChart {
 			// 1根则绘制一条直线
 			MACDEntity lineData = (MACDEntity) stickData.get(0);
 			// 获取终点Y坐标
-			float valueY = (float) ((1 - (lineData.getDea() - this.minValue)
-					/ (this.maxValue - this.minValue))
-					* (super.getHeight() - this.axisMarginBottom) - this.axisMarginTop);
+			float valueY = (float) ((1 - (lineData.getDea() - minValue)
+					/ (maxValue - minValue))
+					* (super.getHeight() - axisMarginBottom) - axisMarginTop);
 
-			canvas.drawLine(startX, valueY, this.axisMarginLeft, valueY,
-					mPaintStick);
+			canvas.drawLine(startX, valueY, axisMarginLeft, valueY, mPaintStick);
 
 		} else {
 			// 遍历并绘制线条
-			for (int j = this.displayFrom; j < this.displayFrom
-					+ this.displayNumber; j++) {
+			for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
 				MACDEntity lineData = (MACDEntity) stickData.get(j);
 
 				// 获取终点Y坐标
-				float valueY = (float) ((1 - (lineData.getDea() - this.minValue)
-						/ (this.maxValue - this.minValue))
-						* (super.getHeight() - this.axisMarginBottom) - this.axisMarginTop);
+				float valueY = (float) ((1 - (lineData.getDea() - minValue)
+						/ (maxValue - minValue))
+						* (super.getHeight() - axisMarginBottom) - axisMarginTop);
 				// 绘制线条路径
-				if (j == this.displayFrom || j == 0) {
+				if (j == displayFrom || j == 0) {
 					if (lineData.getDea() == 0) {
 					} else {
 						lastY = valueY;

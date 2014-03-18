@@ -62,7 +62,7 @@ public class SlipStickChart extends GridChart {
 	public static final int DEFAULT_DISPLAY_FROM = 0;
 	public static final int DEFAULT_DISPLAY_NUMBER = 50;
 	public static final int DEFAULT_MIN_DISPLAY_NUMBER = 20;
-	public static final int DEFAULT_ZOOM_BASE_LINE = 20;
+	public static final int DEFAULT_ZOOM_BASE_LINE = ZOOM_BASE_LINE_CENTER;
 	public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
 
 	protected int displayFrom = DEFAULT_DISPLAY_FROM;
@@ -612,7 +612,6 @@ public class SlipStickChart extends GridChart {
 						}
 					} else {
 						if (Math.abs(newdistance - olddistance) > MIN_LENGTH) {
-
 							if (newdistance > olddistance) {
 								zoomIn();
 							} else {

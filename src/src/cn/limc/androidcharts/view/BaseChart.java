@@ -43,6 +43,8 @@ import android.view.View;
  */
 public abstract class BaseChart extends View implements IChart {
 
+	public static final String LOG_TAG = "BaseChart";
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -142,4 +144,41 @@ public abstract class BaseChart extends View implements IChart {
 		}
 		return result;
 	}
+
+	// protected int[] getStyleableName(Context context) {
+	// try {
+	// StringBuilder sbStyleable = new StringBuilder();
+	// sbStyleable.append(context.getApplicationContext().getPackageName());
+	// sbStyleable.append(".R$styleable");
+	// String styleable = sbStyleable.toString();
+	// int[] id =
+	// (int[])Class.forName(styleable).getField(STYLEABLE_NAME).get(null);
+	// return id;
+	// }catch (Exception e) {
+	// return null;
+	// }
+	// }
+	//
+	// protected int getStyleableAttrId(Context context , String attr) {
+	// try {
+	// StringBuilder sbStyleable = new StringBuilder();
+	// sbStyleable.append(context.getApplicationContext().getPackageName());
+	// sbStyleable.append(".R$styleable");
+	// String styleable = sbStyleable.toString();
+	//
+	// Class<?> clazz = Class.forName(styleable);
+	// int[] id = (int[])clazz.getField(STYLEABLE_NAME).get(null);
+	//
+	// StringBuilder sbAttribute = new StringBuilder();
+	// sbAttribute.append(STYLEABLE_NAME);
+	// sbAttribute.append("_");
+	// sbAttribute.append(attr);
+	// String attribute = sbAttribute.toString();
+	//
+	// int index = clazz.getField(attribute).getInt(null);
+	// return id[index];
+	// }catch (Exception e) {
+	// return 0;
+	// }
+	// }
 }

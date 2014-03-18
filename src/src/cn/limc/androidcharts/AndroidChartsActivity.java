@@ -1063,16 +1063,16 @@ public class AndroidChartsActivity extends Activity {
 	private void initMACDChart() {
 
 		macdChart = (MACDChart) findViewById(R.id.macdchart);
-		// 设置stickData
-		macdChart.setStickData(new ListChartData<IStickEntity>(macd));
 		macdChart.setMaxValue(300000);
 		macdChart.setMinValue(-300000);
 		// macdChart.setDisplayCrossXOnTouch(false);
 		// macdChart.setDisplayCrossYOnTouch(false);
 		macdChart.setLatitudeNum(4);
 		macdChart.setLongitudeNum(3);
-		macdChart.setDisplayFrom(0);
-		macdChart.setDisplayNumber(10);
+		// macdChart.setDisplayFrom(0);
+		// macdChart.setDisplayNumber(10);
+		macdChart.setMinDisplayNumber(5);
+		macdChart.setZoomBaseLine(SlipStickChart.ZOOM_BASE_LINE_CENTER);
 		macdChart.setAxisXColor(Color.LTGRAY);
 		macdChart.setAxisYColor(Color.LTGRAY);
 		macdChart.setLatitudeColor(Color.GRAY);
@@ -1087,6 +1087,8 @@ public class AndroidChartsActivity extends Activity {
 		macdChart.setMacdLineColor(Color.CYAN);
 		macdChart.setDeaLineColor(Color.YELLOW);
 		macdChart.setDiffLineColor(Color.WHITE);
+		// 设置stickData
+		macdChart.setStickData(new ListChartData<IStickEntity>(macd));
 	}
 
 	private void initVOLC() {

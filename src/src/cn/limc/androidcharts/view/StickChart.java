@@ -34,6 +34,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.FloatMath;
+import android.view.MotionEvent;
 
 /**
  * <p>
@@ -624,6 +626,130 @@ public class StickChart extends GridChart {
 			if (stickData.size() > maxSticksNum) {
 				maxSticksNum = maxSticksNum + 1;
 			}
+		}
+	}
+
+	private final int NONE = 0;
+	private final int ZOOM = 1;
+	private final int DOWN = 2;
+
+	private float olddistance = 0f;
+	private float newdistance = 0f;
+
+	private int TOUCH_MODE;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * <p>Called when chart is touched<p> <p>チャートをタッチしたら、メソッドを呼ぶ<p>
+	 * <p>图表点击时调用<p>
+	 * 
+	 * @param event
+	 * 
+	 * @see android.view.View#onTouchEvent(MotionEvent)
+	 */
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+
+		final float MIN_LENGTH = (super.getWidth() / 40) < 5 ? 5 : (super
+				.getWidth() / 50);
+
+		switch (event.getAction() & MotionEvent.ACTION_MASK) {
+		case MotionEvent.ACTION_DOWN:
+			TOUCH_MODE = DOWN;
+			break;
+		case MotionEvent.ACTION_UP:
+		case MotionEvent.ACTION_POINTER_UP:
+			TOUCH_MODE = NONE;
+			return super.onTouchEvent(event);
+		case MotionEvent.ACTION_POINTER_DOWN:
+			olddistance = calcDistance(event);
+			if (olddistance > MIN_LENGTH) {
+				TOUCH_MODE = ZOOM;
+			}
+			break;
+		case MotionEvent.ACTION_MOVE:
+			if (TOUCH_MODE == ZOOM) {
+				newdistance = calcDistance(event);
+				if (newdistance > MIN_LENGTH
+						&& Math.abs(newdistance - olddistance) > MIN_LENGTH) {
+
+					if (newdistance > olddistance) {
+						zoomIn();
+					} else {
+						zoomOut();
+					}
+					olddistance = newdistance;
+
+					super.postInvalidate();
+					super.notifyEventAll(this);
+				}
+			}
+			break;
+		}
+		return true;
+	}
+
+	/**
+	 * <p>
+	 * calculate the distance between two touch points
+	 * </p>
+	 * <p>
+	 * 複数タッチしたポイントの距離
+	 * </p>
+	 * <p>
+	 * 计算两点触控时两点之间的距离
+	 * </p>
+	 * 
+	 * @param event
+	 * @return float
+	 *         <p>
+	 *         distance
+	 *         </p>
+	 *         <p>
+	 *         距離
+	 *         </p>
+	 *         <p>
+	 *         距离
+	 *         </p>
+	 */
+	private float calcDistance(MotionEvent event) {
+		float x = event.getX(0) - event.getX(1);
+		float y = event.getY(0) - event.getY(1);
+		return FloatMath.sqrt(x * x + y * y);
+	}
+
+	/**
+	 * <p>
+	 * Zoom in the graph
+	 * </p>
+	 * <p>
+	 * 拡大表示する。
+	 * </p>
+	 * <p>
+	 * 放大表示
+	 * </p>
+	 */
+	protected void zoomIn() {
+		if (maxSticksNum > 10) {
+			maxSticksNum = maxSticksNum - 3;
+		}
+	}
+
+	/**
+	 * <p>
+	 * Zoom out the grid
+	 * </p>
+	 * <p>
+	 * 縮小表示する。
+	 * </p>
+	 * <p>
+	 * 缩小
+	 * </p>
+	 */
+	protected void zoomOut() {
+		if (maxSticksNum < stickData.size() - 1) {
+			maxSticksNum = maxSticksNum + 3;
 		}
 	}
 

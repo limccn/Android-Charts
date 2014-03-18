@@ -29,8 +29,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.FloatMath;
-import android.view.MotionEvent;
 
 /**
  * 
@@ -226,6 +224,7 @@ public class CandleStickChart extends StickChart {
 		super(context, attrs);
 	}
 
+	@Override
 	protected void calcDataValueRange() {
 		double maxValue = 0;
 		double minValue = Integer.MAX_VALUE;
@@ -284,76 +283,6 @@ public class CandleStickChart extends StickChart {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 	}
-
-	// /**
-	// * <p>
-	// * initialize degrees on Y axis
-	// * </p>
-	// * <p>
-	// * Y軸の目盛を初期化
-	// * </p>
-	// * <p>
-	// * 初始化Y轴的坐标值
-	// * </p>
-	// */
-	// protected void initAxisX() {
-	// List<String> TitleX = new ArrayList<String>();
-	// if (null != stickData) {
-	// float average = maxSticksNum / this.getLongitudeNum();
-	// // �?��刻度
-	// for (int i = 0; i < this.getLongitudeNum(); i++) {
-	// int index = (int) Math.floor(i * average);
-	// if (index > maxSticksNum - 1) {
-	// index = maxSticksNum - 1;
-	// }
-	// // 追�??�?
-	// TitleX.add(String.valueOf(stickData.get(index).getDate())
-	// .substring(4));
-	// }
-	// TitleX.add(String.valueOf(stickData.get(maxSticksNum - 1).getDate())
-	// .substring(4));
-	// }
-	// super.setLongitudeTitles(TitleX);
-	// }
-	//
-	// /**
-	// * <p>
-	// * initialize degrees on Y axis
-	// * </p>
-	// * <p>
-	// * Y軸の目盛を初期化
-	// * </p>
-	// * <p>
-	// * 初始化Y轴的坐标值
-	// * </p>
-	// */
-	// protected void initAxisY() {
-	// List<String> TitleY = new ArrayList<String>();
-	// float average = (int) ((maxValue - minValue) / this.getLatitudeNum()) /
-	// 10 * 10;
-	// // calculate degrees on Y axis
-	// for (int i = 0; i < this.getLatitudeNum(); i++) {
-	// String value = String.valueOf((int) Math.floor(minValue + i
-	// * average));
-	// if (value.length() < super.getLatitudeMaxTitleLength()) {
-	// while (value.length() < super.getLatitudeMaxTitleLength()) {
-	// value = new String(" ") + value;
-	// }
-	// }
-	// TitleY.add(value);
-	// }
-	// // calculate last degrees by use max value
-	// String value = String.valueOf((int) Math
-	// .floor(((int) maxValue) / 10 * 10));
-	// if (value.length() < super.getLatitudeMaxTitleLength()) {
-	// while (value.length() < super.getLatitudeMaxTitleLength()) {
-	// value = new String(" ") + value;
-	// }
-	// }
-	// TitleY.add(value);
-	//
-	// super.setLatitudeTitles(TitleY);
-	// }
 
 	/**
 	 * <p>
@@ -432,130 +361,6 @@ public class CandleStickChart extends StickChart {
 				// next x
 				stickX = stickX + 1 + stickWidth;
 			}
-		}
-	}
-
-	private final int NONE = 0;
-	private final int ZOOM = 1;
-	private final int DOWN = 2;
-
-	private float olddistance = 0f;
-	private float newdistance = 0f;
-
-	private int TOUCH_MODE;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * <p>Called when chart is touched<p> <p>チャートをタッチしたら、メソッドを呼ぶ<p>
-	 * <p>图表点击时调用<p>
-	 * 
-	 * @param event
-	 * 
-	 * @see android.view.View#onTouchEvent(MotionEvent)
-	 */
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-
-		final float MIN_LENGTH = (super.getWidth() / 40) < 5 ? 5 : (super
-				.getWidth() / 50);
-
-		switch (event.getAction() & MotionEvent.ACTION_MASK) {
-		case MotionEvent.ACTION_DOWN:
-			TOUCH_MODE = DOWN;
-			break;
-		case MotionEvent.ACTION_UP:
-		case MotionEvent.ACTION_POINTER_UP:
-			TOUCH_MODE = NONE;
-			return super.onTouchEvent(event);
-		case MotionEvent.ACTION_POINTER_DOWN:
-			olddistance = calcDistance(event);
-			if (olddistance > MIN_LENGTH) {
-				TOUCH_MODE = ZOOM;
-			}
-			break;
-		case MotionEvent.ACTION_MOVE:
-			if (TOUCH_MODE == ZOOM) {
-				newdistance = calcDistance(event);
-				if (newdistance > MIN_LENGTH
-						&& Math.abs(newdistance - olddistance) > MIN_LENGTH) {
-
-					if (newdistance > olddistance) {
-						zoomIn();
-					} else {
-						zoomOut();
-					}
-					olddistance = newdistance;
-
-					super.postInvalidate();
-					super.notifyEventAll(this);
-				}
-			}
-			break;
-		}
-		return true;
-	}
-
-	/**
-	 * <p>
-	 * calculate the distance between two touch points
-	 * </p>
-	 * <p>
-	 * 複数タッチしたポイントの距離
-	 * </p>
-	 * <p>
-	 * 计算两点触控时两点之间的距离
-	 * </p>
-	 * 
-	 * @param event
-	 * @return float
-	 *         <p>
-	 *         distance
-	 *         </p>
-	 *         <p>
-	 *         距離
-	 *         </p>
-	 *         <p>
-	 *         距离
-	 *         </p>
-	 */
-	private float calcDistance(MotionEvent event) {
-		float x = event.getX(0) - event.getX(1);
-		float y = event.getY(0) - event.getY(1);
-		return FloatMath.sqrt(x * x + y * y);
-	}
-
-	/**
-	 * <p>
-	 * Zoom in the graph
-	 * </p>
-	 * <p>
-	 * 拡大表示する。
-	 * </p>
-	 * <p>
-	 * 放大表示
-	 * </p>
-	 */
-	protected void zoomIn() {
-		if (maxSticksNum > 10) {
-			maxSticksNum = maxSticksNum - 3;
-		}
-	}
-
-	/**
-	 * <p>
-	 * Zoom out the grid
-	 * </p>
-	 * <p>
-	 * 縮小表示する。
-	 * </p>
-	 * <p>
-	 * 缩小
-	 * </p>
-	 */
-	protected void zoomOut() {
-		if (maxSticksNum < stickData.size() - 1) {
-			maxSticksNum = maxSticksNum + 3;
 		}
 	}
 

@@ -31,3 +31,7 @@ src/.checkstyle
 *.prefs
 
 *.prefs
+
+src/.settings/org.eclipse.jdt.core.prefs
+
+src/.settings/org.eclipse.jdt.ui.prefs
