@@ -182,7 +182,7 @@ public class SlipBandAreaChart extends SlipLineChart {
 						areaPath.lineTo(startX, valueY1);
 						areaPath.lineTo(startX, valueY2);
 						areaPath.lineTo(lastX, lastY);
-						
+
 						areaPath.close();
 						areaPath.moveTo(startX, valueY1);
 					}

@@ -1,8 +1,8 @@
 /*
- * MAChartTouchEventAssemble.java
+ * IStickEntity.java
  * Android-Charts
  *
- * Created by limc on 2011/05/29.
+ * Created by limc on 2014.
  *
  * Copyright 2011 limc.cn All rights reserved.
  *
@@ -19,26 +19,23 @@
  * limitations under the License.
  */
 
-package cn.limc.androidcharts.event;
+package cn.limc.androidcharts.entity;
 
-import cn.limc.androidcharts.view.GridChart;
-
-import android.widget.ListView;
-
-public class MAChartTouchEventAssemble implements ITouchEventResponse {
-
-	private ListView listview;
-
-	public void notifyEvent(GridChart chart) {
-
-	}
-
-	public ListView getListview() {
-		return listview;
-	}
-
-	public void setListview(ListView listview) {
-		this.listview = listview;
-	}
+/**
+ * <p>
+ * en
+ * </p>
+ * <p>
+ * jp
+ * </p>
+ * <p>
+ * cn
+ * </p>
+ * 
+ * @author limc
+ * @version v1.0 2014/03/18 15:58:20
+ * 
+ */
+public interface IStickEntity extends IMeasurable, IHasDate {
 
 }

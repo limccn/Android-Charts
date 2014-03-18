@@ -181,12 +181,22 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:text="@string/macdchart" />
+        
+        <cn.limc.androidcharts.view.MACDChart
+            android:id="@+id/macdchart"
+            android:layout_width="fill_parent"
+            android:layout_height="240dip" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:text="@string/piechart" />
 
         <cn.limc.androidcharts.view.PieChart
             android:id="@+id/piechart"
             android:layout_width="fill_parent"
-            android:layout_height="200dip" />
+            android:layout_height="240dip" />
 
         <TextView
             android:layout_width="fill_parent"
@@ -196,7 +206,8 @@
         <cn.limc.androidcharts.view.SpiderWebChart
             android:id="@+id/spiderwebchart"
             android:layout_width="fill_parent"
-            android:layout_height="200dip" />
+            android:layout_height="240dip" />
+        
     </LinearLayout>
 
 </ScrollView>

@@ -28,7 +28,6 @@ import java.util.List;
 
 import cn.limc.androidcharts.entity.TitleValueColorEntity;
 
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -271,8 +270,7 @@ public class PieChart extends BaseChart {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * <p>Called when is going to draw this chart</p>
-	 * <p>チャートを書く前、メソッドを呼ぶ</p>
+	 * <p>Called when is going to draw this chart</p> <p>チャートを書く前、メソッドを呼ぶ</p>
 	 * <p>绘制图表时调用</p>
 	 * 
 	 * @param canvas

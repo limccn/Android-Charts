@@ -19,11 +19,11 @@
  * limitations under the License.
  */
 
-
 package cn.limc.androidcharts.view;
 
 import java.util.List;
 
+import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
 
 import android.content.Context;
@@ -33,14 +33,20 @@ import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-/** 
- * <p>en</p>
- * <p>jp</p>
- * <p>cn</p>
- *
- * @author limc 
- * @version v1.0 2014/01/21 10:55:40 
- *  
+/**
+ * <p>
+ * en
+ * </p>
+ * <p>
+ * jp
+ * </p>
+ * <p>
+ * cn
+ * </p>
+ * 
+ * @author limc
+ * @version v1.0 2014/01/21 10:55:40
+ * 
  */
 public class MASlipStickChart extends SlipStickChart {
 
@@ -55,47 +61,93 @@ public class MASlipStickChart extends SlipStickChart {
 	 * 绘制线条用的数据
 	 * </p>
 	 */
-	private List<LineEntity<Float>> lineData;
-	
-	/** 
-	 * <p>Constructor of MASlipStickChart</p>
-	 * <p>MASlipStickChart类对象的构造函数</p>
-	 * <p>MASlipStickChartのコンストラクター</p>
-	 *
+	private List<LineEntity<DateValueEntity>> linesData;
+
+	/**
+	 * <p>
+	 * Constructor of MASlipStickChart
+	 * </p>
+	 * <p>
+	 * MASlipStickChart类对象的构造函数
+	 * </p>
+	 * <p>
+	 * MASlipStickChartのコンストラクター
+	 * </p>
+	 * 
 	 * @param context
 	 * @param attrs
-	 * @param defStyle 
+	 * @param defStyle
 	 */
 	public MASlipStickChart(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		// TODO Auto-generated constructor stub
 	}
 
-	/** 
-	 * <p>Constructor of MASlipStickChart</p>
-	 * <p>MASlipStickChart类对象的构造函数</p>
-	 * <p>MASlipStickChartのコンストラクター</p>
-	 *
+	/**
+	 * <p>
+	 * Constructor of MASlipStickChart
+	 * </p>
+	 * <p>
+	 * MASlipStickChart类对象的构造函数
+	 * </p>
+	 * <p>
+	 * MASlipStickChartのコンストラクター
+	 * </p>
+	 * 
 	 * @param context
-	 * @param attrs 
+	 * @param attrs
 	 */
 	public MASlipStickChart(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub
 	}
 
-	/** 
-	 * <p>Constructor of MASlipStickChart</p>
-	 * <p>MASlipStickChart类对象的构造函数</p>
-	 * <p>MASlipStickChartのコンストラクター</p>
-	 *
-	 * @param context 
+	/**
+	 * <p>
+	 * Constructor of MASlipStickChart
+	 * </p>
+	 * <p>
+	 * MASlipStickChart类对象的构造函数
+	 * </p>
+	 * <p>
+	 * MASlipStickChartのコンストラクター
+	 * </p>
+	 * 
+	 * @param context
 	 */
 	public MASlipStickChart(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
 	}
-	
+
+	@Override
+	protected void calcDataValueRange() {
+		super.calcDataValueRange();
+
+		double maxValue = this.maxValue;
+		double minValue = this.minValue;
+		// 逐条输出MA线
+		for (int i = 0; i < this.linesData.size(); i++) {
+			LineEntity<DateValueEntity> line = this.linesData.get(i);
+			if (line != null && line.getLineData().size() > 0) {
+				// 判断显示为方柱或显示为线条
+				for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+					DateValueEntity lineData = line.getLineData().get(j);
+					if (lineData.getValue() < minValue) {
+						minValue = lineData.getValue();
+					}
+
+					if (lineData.getValue() > maxValue) {
+						maxValue = lineData.getValue();
+					}
+
+				}
+			}
+		}
+		this.maxValue = maxValue;
+		this.minValue = minValue;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -111,8 +163,8 @@ public class MASlipStickChart extends SlipStickChart {
 		super.onDraw(canvas);
 
 		// draw lines
-		if (null != this.lineData) {
-			if (0 != this.lineData.size()) {
+		if (null != this.linesData) {
+			if (0 != this.linesData.size()) {
 				drawLines(canvas);
 			}
 		}
@@ -139,20 +191,22 @@ public class MASlipStickChart extends SlipStickChart {
 		float startX;
 
 		// draw MA lines
-		for (int i = 0 ;i < lineData.size(); i++) {
-			LineEntity<Float> line = (LineEntity<Float>) lineData.get(i);
+		for (int i = 0; i < linesData.size(); i++) {
+			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
+					.get(i);
 			if (line.isDisplay()) {
 				Paint mPaint = new Paint();
 				mPaint.setColor(line.getLineColor());
 				mPaint.setAntiAlias(true);
-				List<Float> lineData = line.getLineData();
+				List<DateValueEntity> lineData = line.getLineData();
 				// set start point’s X
 				startX = super.getAxisMarginLeft() + lineLength / 2f;
 				// start point
 				PointF ptFirst = null;
 				if (lineData != null) {
-					for (int j = super.getDisplayFrom(); j < super.getDisplayFrom() + super.getDisplayNumber(); j++) {
-						float value = lineData.get(j).floatValue();
+					for (int j = super.getDisplayFrom(); j < super
+							.getDisplayFrom() + super.getDisplayNumber(); j++) {
+						float value = lineData.get(j).getValue();
 						// calculate Y
 						float valueY = (float) ((1f - (value - super
 								.getMinValue())
@@ -172,24 +226,24 @@ public class MASlipStickChart extends SlipStickChart {
 			}
 		}
 	}
-	
-	 @Override
-	 public boolean onTouchEvent(MotionEvent event) {
-		 return super.onTouchEvent(event);
-	 }
 
-	/**
-	 * @return the lineData
-	 */
-	public List<LineEntity<Float>> getLineData() {
-		return lineData;
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		return super.onTouchEvent(event);
 	}
 
 	/**
-	 * @param lineData
-	 *            the lineData to set
+	 * @return the linesData
 	 */
-	public void setLineData(List<LineEntity<Float>> lineData) {
-		this.lineData = lineData;
+	public List<LineEntity<DateValueEntity>> getLinesData() {
+		return linesData;
+	}
+
+	/**
+	 * @param linesData
+	 *            the linesData to set
+	 */
+	public void setLineData(List<LineEntity<DateValueEntity>> linesData) {
+		this.linesData = linesData;
 	}
 }

@@ -27,7 +27,6 @@ import java.util.List;
 import cn.limc.androidcharts.event.ITouchEventNotify;
 import cn.limc.androidcharts.event.ITouchEventResponse;
 
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -59,6 +58,11 @@ import android.view.MotionEvent;
  */
 public class GridChart extends BaseChart implements ITouchEventNotify,
 		ITouchEventResponse {
+
+	public static final int AXIS_X_POSITION_BOTTOM = 1 << 0;
+	public static final int AXIS_X_POSITION_TOP = 1 << 1;
+	public static final int AXIS_Y_POSITION_LEFT = 1 << 2;
+	public static final int AXIS_Y_POSITION_RIGHT = 1 << 3;
 
 	/**
 	 * <p>
@@ -98,6 +102,10 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * </p>
 	 */
 	public static final int DEFAULT_AXIS_Y_COLOR = Color.RED;
+
+	public static final int DEFAULT_AXIS_X_POSITION = AXIS_X_POSITION_BOTTOM;
+
+	public static final int DEFAULT_AXIS_Y_POSITION = AXIS_Y_POSITION_LEFT;
 
 	/**
 	 * <p>
@@ -266,7 +274,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * X轴上的标题是否显示
 	 * </p>
 	 */
-	public static final boolean DEFAULT_DISPLAY_AXIS_X_TITLE = Boolean.TRUE;
+	public static final boolean DEFAULT_DISPLAY_LONGITUDE_TITLE = Boolean.TRUE;
 
 	/**
 	 * <p>
@@ -279,7 +287,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 默认Y轴上的标题是否显示
 	 * </p>
 	 */
-	public static final boolean DEFAULT_DISPLAY_AXIS_Y_TITLE = Boolean.TRUE;
+	public static final boolean DEFAULT_DISPLAY_LATITUDE_TITLE = Boolean.TRUE;
 
 	/**
 	 * <p>
@@ -359,6 +367,9 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 */
 	public static final int DEFAULT_LATITUDE_FONT_SIZE = 12;
 
+	public static final int DEFAULT_CROSS_LINES_COLOR = Color.CYAN;
+	public static final int DEFAULT_CROSS_LINES_FONT_COLOR = Color.CYAN;
+
 	/**
 	 * <p>
 	 * default titles' max length for display of Y axis
@@ -370,7 +381,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 默认Y轴标题最大文字长度
 	 * </p>
 	 */
-	public static final int DEFAULT_AXIS_Y_MAX_TITLE_LENGTH = 5;
+	public static final int DEFAULT_LATITUDE_MAX_TITLE_LENGTH = 5;
 
 	/**
 	 * <p>
@@ -451,6 +462,10 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 */
 	private int axisYColor = DEFAULT_AXIS_Y_COLOR;
 
+	protected int axisXPosition = DEFAULT_AXIS_X_POSITION;
+
+	protected int axisYPosition = DEFAULT_AXIS_Y_POSITION;
+
 	/**
 	 * <p>
 	 * Color of grid‘s longitude line
@@ -488,7 +503,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 轴线左边距
 	 * </p>
 	 */
-	private float axisMarginLeft = DEFAULT_AXIS_MARGIN_LEFT;
+	protected float axisMarginLeft = DEFAULT_AXIS_MARGIN_LEFT;
 
 	/**
 	 * <p>
@@ -501,7 +516,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 轴线下边距
 	 * </p>
 	 */
-	private float axisMarginBottom = DEFAULT_AXIS_MARGIN_BOTTOM;
+	protected float axisMarginBottom = DEFAULT_AXIS_MARGIN_BOTTOM;
 
 	/**
 	 * <p>
@@ -514,7 +529,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 轴线上边距
 	 * </p>
 	 */
-	private float axisMarginTop = DEFAULT_AXIS_MARGIN_TOP;
+	protected float axisMarginTop = DEFAULT_AXIS_MARGIN_TOP;
 
 	/**
 	 * <p>
@@ -527,7 +542,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 轴线右边距
 	 * </p>
 	 */
-	private float axisMarginRight = DEFAULT_AXIS_MARGIN_RIGHT;
+	protected float axisMarginRight = DEFAULT_AXIS_MARGIN_RIGHT;
 
 	/**
 	 * <p>
@@ -540,7 +555,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * X轴上的标题是否显示
 	 * </p>
 	 */
-	private boolean displayAxisXTitle = DEFAULT_DISPLAY_AXIS_X_TITLE;
+	private boolean displayLongitudeTitle = DEFAULT_DISPLAY_LONGITUDE_TITLE;
 
 	/**
 	 * <p>
@@ -553,7 +568,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * Y轴上的标题是否显示
 	 * </p>
 	 */
-	private boolean displayAxisYTitle = DEFAULT_DISPLAY_AXIS_Y_TITLE;
+	private boolean displayLatitudeTitle = DEFAULT_DISPLAY_LATITUDE_TITLE;
 
 	/**
 	 * <p>
@@ -566,7 +581,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 网格纬线的数量
 	 * </p>
 	 */
-	private int latitudeNum = DEFAULT_LATITUDE_NUM;
+	protected int latitudeNum = DEFAULT_LATITUDE_NUM;
 
 	/**
 	 * <p>
@@ -579,7 +594,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 网格经线的数量
 	 * </p>
 	 */
-	private int longitudeNum = DEFAULT_LONGITUDE_NUM;
+	protected int longitudeNum = DEFAULT_LONGITUDE_NUM;
 
 	/**
 	 * <p>
@@ -726,6 +741,32 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 
 	/**
 	 * <p>
+	 * Color of cross line inside grid when touched
+	 * </p>
+	 * <p>
+	 * タッチしたポイント表示用十字線の色
+	 * </p>
+	 * <p>
+	 * 十字交叉线颜色
+	 * </p>
+	 */
+	private int crossLinesColor = DEFAULT_CROSS_LINES_COLOR;
+
+	/**
+	 * <p>
+	 * Color of cross line degree text when touched
+	 * </p>
+	 * <p>
+	 * タッチしたポイント表示用十字線度数文字の色
+	 * </p>
+	 * <p>
+	 * 十字交叉线坐标轴字体颜色
+	 * </p>
+	 */
+	private int crossLinesFontColor = DEFAULT_CROSS_LINES_FONT_COLOR;
+
+	/**
+	 * <p>
 	 * Titles Array for display of X axis
 	 * </p>
 	 * <p>
@@ -735,7 +776,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * X轴标题数组
 	 * </p>
 	 */
-	private List<String> axisXTitles;
+	private List<String> longitudeTitles;
 
 	/**
 	 * <p>
@@ -748,7 +789,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * Y轴标题数组
 	 * </p>
 	 */
-	private List<String> axisYTitles;
+	private List<String> latitudeTitles;
 
 	/**
 	 * <p>
@@ -761,7 +802,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * Y轴标题最大文字长度
 	 * </p>
 	 */
-	private int axisYMaxTitleLength = DEFAULT_AXIS_Y_MAX_TITLE_LENGTH;
+	private int latitudeMaxTitleLength = DEFAULT_LATITUDE_MAX_TITLE_LENGTH;
 
 	/**
 	 * <p>
@@ -894,9 +935,8 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-		
 		super.setBackgroundColor(backgroundColor);
+		super.onDraw(canvas);
 
 		drawXAxis(canvas);
 		drawYAxis(canvas);
@@ -905,11 +945,13 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			drawBorder(canvas);
 		}
 
-		if (displayLongitude || displayAxisXTitle) {
-			drawAxisGridX(canvas);
+		if (displayLongitude || displayLongitudeTitle) {
+			drawLongitudeLine(canvas);
+			drawLongitudeTitle(canvas);
 		}
-		if (displayLatitude || displayAxisYTitle) {
-			drawAxisGridY(canvas);
+		if (displayLatitude || displayLatitudeTitle) {
+			drawLatitudeLine(canvas);
+			drawLatitudeTitle(canvas);
 		}
 
 		if (displayCrossXOnTouch || displayCrossYOnTouch) {
@@ -937,7 +979,8 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 
 			// touched points, if touch point is only one
 			if (event.getPointerCount() == 1) {
-				// 获取点击坐�?
+				// 获取点击坐标
+
 				clickPostX = event.getX();
 				clickPostY = event.getY();
 
@@ -1021,7 +1064,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 		mPaintBox.setAlpha(80);
 
 		Paint mPaintBoxLine = new Paint();
-		mPaintBoxLine.setColor(Color.CYAN);
+		mPaintBoxLine.setColor(crossLinesColor);
 		mPaintBoxLine.setAntiAlias(true);
 
 		// draw a rectangle
@@ -1034,6 +1077,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 		canvas.drawLine(ptEnd.x, ptEnd.y, ptEnd.x, ptStart.y, mPaintBoxLine);
 		canvas.drawLine(ptEnd.x, ptStart.y, ptStart.x, ptStart.y, mPaintBoxLine);
 
+		mPaintBoxLine.setColor(crossLinesFontColor);
 		// draw text
 		canvas.drawText(content, ptStart.x, ptEnd.y, mPaintBoxLine);
 	}
@@ -1137,13 +1181,13 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 */
 	protected void drawWithFingerClick(Canvas canvas) {
 		Paint mPaint = new Paint();
-		mPaint.setColor(Color.CYAN);
+		mPaint.setColor(crossLinesColor);
 
 		float lineHLength = getWidth() - 2f;
 		float lineVLength = getHeight() - 2f;
 
 		// draw text
-		if (isDisplayAxisXTitle()) {
+		if (displayLongitudeTitle) {
 			lineVLength = lineVLength - axisMarginBottom;
 
 			if (clickPostX > 0 && clickPostY > 0) {
@@ -1162,7 +1206,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			}
 		}
 
-		if (isDisplayAxisYTitle()) {
+		if (displayLatitudeTitle) {
 			lineHLength = lineHLength - getAxisMarginLeft();
 
 			if (clickPostX > 0 && clickPostY > 0) {
@@ -1283,48 +1327,77 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 
 	 * @param canvas
 	 */
-	protected void drawAxisGridX(Canvas canvas) {
-
-		if (null != axisXTitles) {
-			int counts = axisXTitles.size();
-			float length = super.getHeight() - axisMarginBottom;
-
-			Paint mPaintLine = new Paint();
-			mPaintLine.setColor(longitudeColor);
-			if (dashLongitude) {
-				mPaintLine.setPathEffect(dashEffect);
+	protected void drawLongitudeLine(Canvas canvas) {
+		if (null == longitudeTitles) {
+			return;
+		}
+		if (false == displayLongitude) {
+			return;
+		}
+		int counts = longitudeTitles.size();
+		float length = super.getHeight() - axisMarginBottom;
+		Paint mPaintLine = new Paint();
+		mPaintLine.setColor(longitudeColor);
+		if (dashLongitude) {
+			mPaintLine.setPathEffect(dashEffect);
+		}
+		if (counts > 1) {
+			float postOffset = (super.getWidth() - axisMarginLeft - 2 * axisMarginRight)
+					/ (counts - 1);
+			float offset = axisMarginLeft + axisMarginRight;
+			for (int i = 0; i <= counts; i++) {
+				canvas.drawLine(offset + i * postOffset, 0f, offset + i
+						* postOffset, length, mPaintLine);
 			}
+		}
+	}
 
-			Paint mPaintFont = new Paint();
-			mPaintFont.setColor(longitudeFontColor);
-			mPaintFont.setTextSize(longitudeFontSize);
-			mPaintFont.setAntiAlias(true);
-			if (counts > 1) {
-				float postOffset = (super.getWidth() - axisMarginLeft - 2 * axisMarginRight)
-						/ (counts - 1);
-				float offset = axisMarginLeft + axisMarginRight;
-				for (int i = 0; i <= counts; i++) {
-					// draw line
-					if (displayLongitude) {
-						canvas.drawLine(offset + i * postOffset, 0f, offset + i
-								* postOffset, length, mPaintLine);
-					}
-					// draw title
-					if (displayAxisXTitle) {
-						if (i < counts && i > 0) {
-							canvas.drawText(axisXTitles.get(i), offset + i
-									* postOffset
-									- (axisXTitles.get(i).length())
-									* longitudeFontSize / 2f, super.getHeight()
+	/**
+	 * <p>
+	 * draw longitude lines
+	 * </p>
+	 * <p>
+	 * 経線を書く
+	 * </p>
+	 * <p>
+	 * 绘制经线
+	 * </p>
+	 * 
+	 * @param canvas
+	 */
+	protected void drawLongitudeTitle(Canvas canvas) {
+
+		if (null == longitudeTitles) {
+			return;
+		}
+		if (false == displayLongitude) {
+			return;
+		}
+		if (false == displayLongitudeTitle) {
+			return;
+		}
+
+		int counts = longitudeTitles.size();
+
+		Paint mPaintFont = new Paint();
+		mPaintFont.setColor(longitudeFontColor);
+		mPaintFont.setTextSize(longitudeFontSize);
+		mPaintFont.setAntiAlias(true);
+		if (counts > 1) {
+			float postOffset = (super.getWidth() - axisMarginLeft - 2 * axisMarginRight)
+					/ (counts - 1);
+			float offset = axisMarginLeft + axisMarginRight;
+			for (int i = 0; i <= counts; i++) {
+				if (i < counts && i > 0) {
+					canvas.drawText(longitudeTitles.get(i), offset + i
+							* postOffset - (longitudeTitles.get(i).length())
+							* longitudeFontSize / 2f, super.getHeight()
+							- axisMarginBottom + longitudeFontSize, mPaintFont);
+				} else if (0 == i) {
+					canvas.drawText(longitudeTitles.get(i),
+							this.axisMarginLeft + 2f, super.getHeight()
 									- axisMarginBottom + longitudeFontSize,
-									mPaintFont);
-						} else if (0 == i) {
-							canvas.drawText(axisXTitles.get(i),
-									this.axisMarginLeft + 2f, super.getHeight()
-											- axisMarginBottom
-											+ longitudeFontSize, mPaintFont);
-						}
-					}
+							mPaintFont);
 				}
 			}
 		}
@@ -1343,9 +1416,9 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 
 	 * @param canvas
 	 */
-	protected void drawAxisGridY(Canvas canvas) {
-		if (null != axisYTitles) {
-			int counts = axisYTitles.size();
+	protected void drawLatitudeLine(Canvas canvas) {
+		if (null != latitudeTitles) {
+			int counts = latitudeTitles.size();
 			float length = super.getWidth() - axisMarginLeft;
 
 			Paint mPaintLine = new Paint();
@@ -1373,17 +1446,60 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 								mPaintLine);
 					}
 					// draw title
-					if (displayAxisYTitle) {
+					if (displayLatitudeTitle) {
 						if (i < counts && i > 0) {
-							canvas.drawText(axisYTitles.get(i), 0f, offset - i
-									* postOffset + latitudeFontSize / 2f,
+							canvas.drawText(latitudeTitles.get(i), 0f, offset
+									- i * postOffset + latitudeFontSize / 2f,
 									mPaintFont);
 						} else if (0 == i) {
-							canvas.drawText(axisYTitles.get(i), 0f,
+							canvas.drawText(latitudeTitles.get(i), 0f,
 									super.getHeight() - this.axisMarginBottom
 											- 2f, mPaintFont);
 						}
 					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * <p>
+	 * draw latitude lines
+	 * </p>
+	 * <p>
+	 * 緯線を書く
+	 * </p>
+	 * <p>
+	 * 绘制纬线
+	 * </p>
+	 * 
+	 * @param canvas
+	 */
+	protected void drawLatitudeTitle(Canvas canvas) {
+		if (null == latitudeTitles) {
+			return;
+		}
+		if (false == displayLatitudeTitle) {
+			return;
+		}
+		int counts = latitudeTitles.size();
+		Paint mPaintFont = new Paint();
+		mPaintFont.setColor(latitudeFontColor);
+		mPaintFont.setTextSize(latitudeFontSize);
+		mPaintFont.setAntiAlias(true);
+
+		if (counts > 1) {
+			float postOffset = (super.getHeight() - axisMarginBottom - 2 * axisMarginTop)
+					/ (counts - 1);
+			float offset = super.getHeight() - axisMarginBottom - axisMarginTop;
+			for (int i = 0; i <= counts; i++) {
+				if (i < counts && i > 0) {
+					canvas.drawText(latitudeTitles.get(i), 0f, offset - i
+							* postOffset + latitudeFontSize / 2f, mPaintFont);
+				} else if (0 == i) {
+					canvas.drawText(latitudeTitles.get(i), 0f,
+							super.getHeight() - this.axisMarginBottom - 2f,
+							mPaintFont);
 				}
 			}
 		}
@@ -1609,33 +1725,33 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	}
 
 	/**
-	 * @return the displayAxisXTitle
+	 * @return the displayLongitudeTitle
 	 */
-	public boolean isDisplayAxisXTitle() {
-		return displayAxisXTitle;
+	public boolean isDisplayLongitudeTitle() {
+		return displayLongitudeTitle;
 	}
 
 	/**
-	 * @param displayAxisXTitle
-	 *            the displayAxisXTitle to set
+	 * @param displayLongitudeTitle
+	 *            the displayLongitudeTitle to set
 	 */
-	public void setDisplayAxisXTitle(boolean displayAxisXTitle) {
-		this.displayAxisXTitle = displayAxisXTitle;
+	public void setDisplayLongitudeTitle(boolean displayLongitudeTitle) {
+		this.displayLongitudeTitle = displayLongitudeTitle;
 	}
 
 	/**
 	 * @return the displayAxisYTitle
 	 */
-	public boolean isDisplayAxisYTitle() {
-		return displayAxisYTitle;
+	public boolean isDisplayLatitudeTitle() {
+		return displayLatitudeTitle;
 	}
 
 	/**
-	 * @param displayAxisYTitle
-	 *            the displayAxisYTitle to set
+	 * @param displayLatitudeTitle
+	 *            the displayLatitudeTitle to set
 	 */
-	public void setDisplayAxisYTitle(boolean displayAxisYTitle) {
-		this.displayAxisYTitle = displayAxisYTitle;
+	public void setDisplayLatitudeTitle(boolean displayLatitudeTitle) {
+		this.displayLatitudeTitle = displayLatitudeTitle;
 	}
 
 	/**
@@ -1834,48 +1950,78 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	}
 
 	/**
-	 * @return the axisXTitles
+	 * @return the crossLinesColor
 	 */
-	public List<String> getAxisXTitles() {
-		return axisXTitles;
+	public int getCrossLinesColor() {
+		return crossLinesColor;
 	}
 
 	/**
-	 * @param axisXTitles
-	 *            the axisXTitles to set
+	 * @param crossLinesColor
+	 *            the crossLinesColor to set
 	 */
-	public void setAxisXTitles(List<String> axisXTitles) {
-		this.axisXTitles = axisXTitles;
+	public void setCrossLinesColor(int crossLinesColor) {
+		this.crossLinesColor = crossLinesColor;
 	}
 
 	/**
-	 * @return the axisYTitles
+	 * @return the crossLinesFontColor
 	 */
-	public List<String> getAxisYTitles() {
-		return axisYTitles;
+	public int getCrossLinesFontColor() {
+		return crossLinesFontColor;
 	}
 
 	/**
-	 * @param axisYTitles
-	 *            the axisYTitles to set
+	 * @param crossLinesFontColor
+	 *            the crossLinesFontColor to set
 	 */
-	public void setAxisYTitles(List<String> axisYTitles) {
-		this.axisYTitles = axisYTitles;
+	public void setCrossLinesFontColor(int crossLinesFontColor) {
+		this.crossLinesFontColor = crossLinesFontColor;
 	}
 
 	/**
-	 * @return the axisYMaxTitleLength
+	 * @return the longitudeTitles
 	 */
-	public int getAxisYMaxTitleLength() {
-		return axisYMaxTitleLength;
+	public List<String> getLongitudeTitles() {
+		return longitudeTitles;
 	}
 
 	/**
-	 * @param axisYMaxTitleLength
-	 *            the axisYMaxTitleLength to set
+	 * @param longitudeTitles
+	 *            the longitudeTitles to set
 	 */
-	public void setAxisYMaxTitleLength(int axisYMaxTitleLength) {
-		this.axisYMaxTitleLength = axisYMaxTitleLength;
+	public void setLongitudeTitles(List<String> longitudeTitles) {
+		this.longitudeTitles = longitudeTitles;
+	}
+
+	/**
+	 * @return the latitudeTitles
+	 */
+	public List<String> getLatitudeTitles() {
+		return latitudeTitles;
+	}
+
+	/**
+	 * @param latitudeTitles
+	 *            the latitudeTitles to set
+	 */
+	public void setLatitudeTitles(List<String> latitudeTitles) {
+		this.latitudeTitles = latitudeTitles;
+	}
+
+	/**
+	 * @return the latitudeMaxTitleLength
+	 */
+	public int getLatitudeMaxTitleLength() {
+		return latitudeMaxTitleLength;
+	}
+
+	/**
+	 * @param latitudeMaxTitleLength
+	 *            the latitudeMaxTitleLength to set
+	 */
+	public void setLatitudeMaxTitleLength(int latitudeMaxTitleLength) {
+		this.latitudeMaxTitleLength = latitudeMaxTitleLength;
 	}
 
 	/**
@@ -1976,10 +2122,41 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	}
 
 	/**
-	 * @param backgroundColor the backgroundColor to set
+	 * @param backgroundColor
+	 *            the backgroundColor to set
 	 */
 	public void setBackgroundColor(int backgroundColor) {
 		this.backgroundColor = backgroundColor;
+	}
+
+	/**
+	 * @return the axisXPosition
+	 */
+	public int getAxisXPosition() {
+		return axisXPosition;
+	}
+
+	/**
+	 * @param axisXPosition
+	 *            the axisXPosition to set
+	 */
+	public void setAxisXPosition(int axisXPosition) {
+		this.axisXPosition = axisXPosition;
+	}
+
+	/**
+	 * @return the axisYPosition
+	 */
+	public int getAxisYPosition() {
+		return axisYPosition;
+	}
+
+	/**
+	 * @param axisYPosition
+	 *            the axisYPosition to set
+	 */
+	public void setAxisYPosition(int axisYPosition) {
+		this.axisYPosition = axisYPosition;
 	}
 
 }

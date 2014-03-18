@@ -26,7 +26,11 @@ import java.util.List;
 
 import cn.limc.androidcharts.entity.ColoredStickEntity;
 import cn.limc.androidcharts.entity.DateValueEntity;
+import cn.limc.androidcharts.entity.IChartData;
+import cn.limc.androidcharts.entity.IStickEntity;
 import cn.limc.androidcharts.entity.LineEntity;
+import cn.limc.androidcharts.entity.ListChartData;
+import cn.limc.androidcharts.entity.MACDEntity;
 import cn.limc.androidcharts.entity.OHLCEntity;
 import cn.limc.androidcharts.entity.StickEntity;
 import cn.limc.androidcharts.entity.TitleValueColorEntity;
@@ -36,6 +40,7 @@ import cn.limc.androidcharts.view.CandleStickChart;
 import cn.limc.androidcharts.view.ColoredSlipStickChart;
 import cn.limc.androidcharts.view.GridChart;
 import cn.limc.androidcharts.view.LineChart;
+import cn.limc.androidcharts.view.MACDChart;
 import cn.limc.androidcharts.view.MACandleStickChart;
 import cn.limc.androidcharts.view.MASlipCandleStickChart;
 import cn.limc.androidcharts.view.MASlipStickChart;
@@ -59,11 +64,12 @@ import android.os.Bundle;
 
 public class AndroidChartsActivity extends Activity {
 
-	List<OHLCEntity> ohlc;
-	List<StickEntity> vol;
-	List<ColoredStickEntity> volc;
+	List<IStickEntity> ohlc;
+	List<IStickEntity> vol;
+	List<IStickEntity> volc;
 	List<DateValueEntity> dv1;
 	List<DateValueEntity> dv2;
+	List<IStickEntity> macd;
 
 	GridChart gridchart;
 	LineChart linechart;
@@ -84,6 +90,7 @@ public class AndroidChartsActivity extends Activity {
 	BOLLMASlipCandleStickChart bollmaslipcandlestickchart;
 	PieChart piechart;
 	SpiderWebChart spiderwebchart;
+	MACDChart macdChart;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -95,6 +102,7 @@ public class AndroidChartsActivity extends Activity {
 		initVOLC();
 		initDV1();
 		initDV2();
+		initMACD();
 
 		initGridChart();
 		initLineChart();
@@ -115,7 +123,7 @@ public class AndroidChartsActivity extends Activity {
 		initBOLLMASlipCandleStickChart();
 		initPieChart();
 		initSpiderWebChart();
-
+		initMACDChart();
 	}
 
 	private void initGridChart() {
@@ -141,39 +149,41 @@ public class AndroidChartsActivity extends Activity {
 		gridchart.setBorderColor(Color.LTGRAY);
 		gridchart.setAxisMarginTop(10);
 		gridchart.setAxisMarginLeft(20);
-		gridchart.setAxisYTitles(ytitle);
-		gridchart.setAxisXTitles(xtitle);
+		gridchart.setLatitudeTitles(ytitle);
+		gridchart.setLongitudeTitles(xtitle);
 		gridchart.setLongitudeFontSize(10);
 		gridchart.setLongitudeFontColor(Color.WHITE);
 		gridchart.setLatitudeColor(Color.GRAY);
 		gridchart.setLatitudeFontColor(Color.WHITE);
 		gridchart.setLongitudeColor(Color.GRAY);
-		gridchart.setDisplayAxisXTitle(true);
-		gridchart.setDisplayAxisYTitle(true);
+		gridchart.setDisplayLongitudeTitle(true);
+		gridchart.setDisplayLatitudeTitle(true);
 		gridchart.setDisplayLatitude(true);
 		gridchart.setDisplayLongitude(true);
+		gridchart.setCrossLinesColor(Color.BLUE);
+		gridchart.setCrossLinesFontColor(Color.GREEN);
 	}
 
 	private void initLineChart() {
 		this.linechart = (LineChart) findViewById(R.id.linechart);
-		List<LineEntity<Float>> lines = new ArrayList<LineEntity<Float>>();
+		List<LineEntity<DateValueEntity>> lines = new ArrayList<LineEntity<DateValueEntity>>();
 
 		// 计算5日均线
-		LineEntity<Float> MA5 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> MA5 = new LineEntity<DateValueEntity>();
 		MA5.setTitle("MA5");
 		MA5.setLineColor(Color.WHITE);
 		MA5.setLineData(initMA(5));
 		lines.add(MA5);
 
 		// 计算10日均线
-		LineEntity<Float> MA10 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> MA10 = new LineEntity<DateValueEntity>();
 		MA10.setTitle("MA10");
 		MA10.setLineColor(Color.RED);
 		MA10.setLineData(initMA(10));
 		lines.add(MA10);
 
 		// 计算25日均线
-		LineEntity<Float> MA25 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> MA25 = new LineEntity<DateValueEntity>();
 		MA25.setTitle("MA25");
 		MA25.setLineColor(Color.GREEN);
 		MA25.setLineData(initMA(25));
@@ -199,8 +209,8 @@ public class AndroidChartsActivity extends Activity {
 		linechart.setBorderColor(Color.LTGRAY);
 		linechart.setAxisMarginTop(10);
 		linechart.setAxisMarginLeft(20);
-		linechart.setAxisYTitles(ytitle);
-		linechart.setAxisXTitles(xtitle);
+		linechart.setLatitudeTitles(ytitle);
+		linechart.setLongitudeTitles(xtitle);
 		linechart.setLongitudeFontSize(10);
 		linechart.setLongitudeFontColor(Color.WHITE);
 		linechart.setLatitudeColor(Color.GRAY);
@@ -209,13 +219,13 @@ public class AndroidChartsActivity extends Activity {
 		linechart.setMaxValue(280);
 		linechart.setMinValue(240);
 		linechart.setMaxPointNum(36);
-		linechart.setDisplayAxisXTitle(true);
-		linechart.setDisplayAxisYTitle(true);
+		linechart.setDisplayLongitudeTitle(true);
+		linechart.setDisplayLatitudeTitle(true);
 		linechart.setDisplayLatitude(true);
 		linechart.setDisplayLongitude(true);
 
 		// 为chart1增加均线
-		linechart.setLineData(lines);
+		linechart.setLinesData(lines);
 	}
 
 	private void initSlipLineChart() {
@@ -252,8 +262,8 @@ public class AndroidChartsActivity extends Activity {
 		sliplinechart.setDisplayNumber(30);
 		sliplinechart.setMinDisplayNumber(5);
 		sliplinechart.setZoomBaseLine(0);
-		sliplinechart.setDisplayAxisXTitle(true);
-		sliplinechart.setDisplayAxisYTitle(true);
+		sliplinechart.setDisplayLongitudeTitle(true);
+		sliplinechart.setDisplayLatitudeTitle(true);
 		sliplinechart.setDisplayLatitude(true);
 		sliplinechart.setDisplayLongitude(true);
 
@@ -294,8 +304,8 @@ public class AndroidChartsActivity extends Activity {
 		slipareachart.setDisplayNumber(30);
 		slipareachart.setMinDisplayNumber(5);
 		slipareachart.setZoomBaseLine(0);
-		slipareachart.setDisplayAxisXTitle(true);
-		slipareachart.setDisplayAxisYTitle(true);
+		slipareachart.setDisplayLongitudeTitle(true);
+		slipareachart.setDisplayLatitudeTitle(true);
 		slipareachart.setDisplayLatitude(true);
 		slipareachart.setDisplayLongitude(true);
 
@@ -336,8 +346,8 @@ public class AndroidChartsActivity extends Activity {
 		slipbandchart.setDisplayNumber(30);
 		slipbandchart.setMinDisplayNumber(5);
 		slipbandchart.setZoomBaseLine(0);
-		slipbandchart.setDisplayAxisXTitle(true);
-		slipbandchart.setDisplayAxisYTitle(true);
+		slipbandchart.setDisplayLongitudeTitle(true);
+		slipbandchart.setDisplayLatitudeTitle(true);
 		slipbandchart.setDisplayLatitude(true);
 		slipbandchart.setDisplayLongitude(true);
 
@@ -370,14 +380,14 @@ public class AndroidChartsActivity extends Activity {
 		// 最小价格
 		stickchart.setMinValue(100);
 
-		stickchart.setDisplayAxisXTitle(true);
-		stickchart.setDisplayAxisYTitle(true);
+		stickchart.setDisplayLongitudeTitle(true);
+		stickchart.setDisplayLatitudeTitle(true);
 		stickchart.setDisplayLatitude(true);
 		stickchart.setDisplayLongitude(true);
 		stickchart.setBackgroundColor(Color.BLACK);
 
 		// 为chart1增加均线
-		stickchart.setStickData(vol);
+		stickchart.setStickData(new ListChartData<IStickEntity>(vol));
 	}
 
 	private void initSlipStickChart() {
@@ -412,12 +422,13 @@ public class AndroidChartsActivity extends Activity {
 
 		slipstickchart.setZoomBaseLine(0);
 
-		slipstickchart.setDisplayAxisXTitle(true);
-		slipstickchart.setDisplayAxisYTitle(true);
+		slipstickchart.setDisplayLongitudeTitle(true);
+		slipstickchart.setDisplayLatitudeTitle(true);
 		slipstickchart.setDisplayLatitude(true);
 		slipstickchart.setDisplayLongitude(true);
 		slipstickchart.setBackgroundColor(Color.BLACK);
 
+		IChartData<IStickEntity> vol = new ListChartData<IStickEntity>(this.vol);
 		// 为chart1增加均线
 		slipstickchart.setStickData(vol);
 	}
@@ -452,38 +463,39 @@ public class AndroidChartsActivity extends Activity {
 
 		coloredslipstickchart.setZoomBaseLine(0);
 
-		coloredslipstickchart.setDisplayAxisXTitle(true);
-		coloredslipstickchart.setDisplayAxisYTitle(true);
+		coloredslipstickchart.setDisplayLongitudeTitle(true);
+		coloredslipstickchart.setDisplayLatitudeTitle(true);
 		coloredslipstickchart.setDisplayLatitude(true);
 		coloredslipstickchart.setDisplayLongitude(true);
 		coloredslipstickchart.setBackgroundColor(Color.BLACK);
 
 		// 为chart1增加均线
-		coloredslipstickchart.setStickData(volc);
+		coloredslipstickchart
+				.setStickData(new ListChartData<IStickEntity>(volc));
 	}
 
 	private void initMAStickChart() {
 		this.mastickchart = (MAStickChart) findViewById(R.id.mastickchart);
 
 		// 以下计算VOL
-		List<LineEntity<Float>> vlines = new ArrayList<LineEntity<Float>>();
+		List<LineEntity<DateValueEntity>> vlines = new ArrayList<LineEntity<DateValueEntity>>();
 
 		// 计算5日均线
-		LineEntity<Float> VMA5 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> VMA5 = new LineEntity<DateValueEntity>();
 		VMA5.setTitle("MA5");
 		VMA5.setLineColor(Color.WHITE);
 		VMA5.setLineData(initVMA(5));
 		vlines.add(VMA5);
 
 		// 计算10日均线
-		LineEntity<Float> VMA10 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> VMA10 = new LineEntity<DateValueEntity>();
 		VMA10.setTitle("MA10");
 		VMA10.setLineColor(Color.RED);
 		VMA10.setLineData(initVMA(10));
 		vlines.add(VMA10);
 
 		// 计算25日均线
-		LineEntity<Float> VMA25 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> VMA25 = new LineEntity<DateValueEntity>();
 		VMA25.setTitle("MA25");
 		VMA25.setLineColor(Color.GREEN);
 		VMA25.setLineData(initVMA(25));
@@ -512,40 +524,40 @@ public class AndroidChartsActivity extends Activity {
 		// 最小价格
 		mastickchart.setMinValue(100);
 
-		mastickchart.setDisplayAxisXTitle(true);
-		mastickchart.setDisplayAxisYTitle(true);
+		mastickchart.setDisplayLongitudeTitle(true);
+		mastickchart.setDisplayLatitudeTitle(true);
 		mastickchart.setDisplayLatitude(true);
 		mastickchart.setDisplayLongitude(true);
 		mastickchart.setBackgroundColor(Color.BLACK);
 
 		// 为chart1增加均线
-		mastickchart.setLineData(vlines);
+		mastickchart.setLinesData(vlines);
 		// 为chart1增加均线
-		mastickchart.setStickData(vol);
+		mastickchart.setStickData(new ListChartData<IStickEntity>(vol));
 	}
 
 	private void initMASlipStickChart() {
 		this.maslipstickchart = (MASlipStickChart) findViewById(R.id.maslipstickchart);
 
 		// 以下计算VOL
-		List<LineEntity<Float>> vlines = new ArrayList<LineEntity<Float>>();
+		List<LineEntity<DateValueEntity>> vlines = new ArrayList<LineEntity<DateValueEntity>>();
 
 		// 计算5日均线
-		LineEntity<Float> VMA5 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> VMA5 = new LineEntity<DateValueEntity>();
 		VMA5.setTitle("MA5");
 		VMA5.setLineColor(Color.WHITE);
 		VMA5.setLineData(initVMA(5));
 		vlines.add(VMA5);
 
 		// 计算10日均线
-		LineEntity<Float> VMA10 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> VMA10 = new LineEntity<DateValueEntity>();
 		VMA10.setTitle("MA10");
 		VMA10.setLineColor(Color.RED);
 		VMA10.setLineData(initVMA(10));
 		vlines.add(VMA10);
 
 		// 计算25日均线
-		LineEntity<Float> VMA25 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> VMA25 = new LineEntity<DateValueEntity>();
 		VMA25.setTitle("MA25");
 		VMA25.setLineColor(Color.GREEN);
 		VMA25.setLineData(initVMA(25));
@@ -580,8 +592,8 @@ public class AndroidChartsActivity extends Activity {
 
 		maslipstickchart.setZoomBaseLine(0);
 
-		maslipstickchart.setDisplayAxisXTitle(true);
-		maslipstickchart.setDisplayAxisYTitle(true);
+		maslipstickchart.setDisplayLongitudeTitle(true);
+		maslipstickchart.setDisplayLatitudeTitle(true);
 		maslipstickchart.setDisplayLatitude(true);
 		maslipstickchart.setDisplayLongitude(true);
 		maslipstickchart.setBackgroundColor(Color.BLACK);
@@ -589,13 +601,13 @@ public class AndroidChartsActivity extends Activity {
 		// 为chart1增加均线
 		maslipstickchart.setLineData(vlines);
 		// 为chart1增加均线
-		maslipstickchart.setStickData(vol);
+		maslipstickchart.setStickData(new ListChartData<IStickEntity>(vol));
 	}
 
 	private void initMinusStickChart() {
 		this.minusstickchart = (MinusStickChart) findViewById(R.id.minusstickchart);
 
-		List<StickEntity> data = new ArrayList<StickEntity>();
+		List<IStickEntity> data = new ArrayList<IStickEntity>();
 		data.add(new StickEntity(50000, 0, 20110603));
 		data.add(new StickEntity(42000, 0, 20110703));
 		data.add(new StickEntity(32000, 0, 20110803));
@@ -609,7 +621,9 @@ public class AndroidChartsActivity extends Activity {
 		data.add(new StickEntity(24000, 0, 20120303));
 		data.add(new StickEntity(36000, 0, 20120303));
 		data.add(new StickEntity(46000, 0, 20120303));
-		minusstickchart.setStickData(data);
+		minusstickchart.setStickData(new ListChartData<IStickEntity>(data));
+
+		minusstickchart.setMaxSticksNum(data.size());
 		minusstickchart.setMaxValue(50000);
 		minusstickchart.setMinValue(-50000);
 		minusstickchart.setAxisMarginRight(1);
@@ -626,8 +640,8 @@ public class AndroidChartsActivity extends Activity {
 		minusstickchart.setLatitudeNum(3);
 		// 最大经线数
 		minusstickchart.setLongitudeNum(2);
-		minusstickchart.setDisplayAxisXTitle(true);
-		minusstickchart.setDisplayAxisYTitle(true);
+		minusstickchart.setDisplayLongitudeTitle(true);
+		minusstickchart.setDisplayLatitudeTitle(true);
 		minusstickchart.setDisplayCrossXOnTouch(false);
 		minusstickchart.setDisplayCrossYOnTouch(false);
 		minusstickchart.setDisplayLatitude(true);
@@ -639,7 +653,7 @@ public class AndroidChartsActivity extends Activity {
 	private void initSlipMinusStickChart() {
 		this.slipminusstickchart = (SlipMinusStickChart) findViewById(R.id.slipminusstickchart);
 
-		List<StickEntity> data = new ArrayList<StickEntity>();
+		List<IStickEntity> data = new ArrayList<IStickEntity>();
 		data.add(new StickEntity(50000, 0, 20110603));
 		data.add(new StickEntity(42000, 0, 20110703));
 		data.add(new StickEntity(32000, 0, 20110803));
@@ -679,7 +693,7 @@ public class AndroidChartsActivity extends Activity {
 		data.add(new StickEntity(24000, 0, 20120303));
 		data.add(new StickEntity(36000, 0, 20120303));
 		data.add(new StickEntity(46000, 0, 20120303));
-		slipminusstickchart.setStickData(data);
+
 		slipminusstickchart.setMaxValue(50000);
 		slipminusstickchart.setMinValue(-50000);
 		slipminusstickchart.setAxisMarginRight(1);
@@ -701,14 +715,17 @@ public class AndroidChartsActivity extends Activity {
 		slipminusstickchart.setMinDisplayNumber(5);
 
 		slipminusstickchart.setZoomBaseLine(0);
-		slipminusstickchart.setDisplayAxisXTitle(true);
-		slipminusstickchart.setDisplayAxisYTitle(true);
+		slipminusstickchart.setDisplayLongitudeTitle(true);
+		slipminusstickchart.setDisplayLatitudeTitle(true);
 		slipminusstickchart.setDisplayCrossXOnTouch(false);
 		slipminusstickchart.setDisplayCrossYOnTouch(false);
 		slipminusstickchart.setDisplayLatitude(true);
 		slipminusstickchart.setDisplayLongitude(true);
 		slipminusstickchart.setStickBorderColor(Color.WHITE);
 		slipminusstickchart.setStickFillColor(Color.BLUE);
+
+		IChartData<IStickEntity> datas = new ListChartData<IStickEntity>(data);
+		slipminusstickchart.setStickData(datas);
 	}
 
 	private void initCandleStickChart() {
@@ -733,14 +750,14 @@ public class AndroidChartsActivity extends Activity {
 		// 最小价格
 		candlestickchart.setMinValue(200);
 
-		candlestickchart.setDisplayAxisXTitle(true);
-		candlestickchart.setDisplayAxisYTitle(true);
+		candlestickchart.setDisplayLongitudeTitle(true);
+		candlestickchart.setDisplayLatitudeTitle(true);
 		candlestickchart.setDisplayLatitude(true);
 		candlestickchart.setDisplayLongitude(true);
 		candlestickchart.setBackgroundColor(Color.BLACK);
 
 		// 为chart2增加均线
-		candlestickchart.setOHLCData(ohlc);
+		candlestickchart.setStickData(new ListChartData<IStickEntity>(ohlc));
 	}
 
 	private void initSlipCandleStickChart() {
@@ -771,36 +788,37 @@ public class AndroidChartsActivity extends Activity {
 
 		slipcandlestickchart.setZoomBaseLine(0);
 
-		slipcandlestickchart.setDisplayAxisXTitle(true);
-		slipcandlestickchart.setDisplayAxisYTitle(true);
+		slipcandlestickchart.setDisplayLongitudeTitle(true);
+		slipcandlestickchart.setDisplayLatitudeTitle(true);
 		slipcandlestickchart.setDisplayLatitude(true);
 		slipcandlestickchart.setDisplayLongitude(true);
 		slipcandlestickchart.setBackgroundColor(Color.BLACK);
 
 		// 为chart2增加均线
-		slipcandlestickchart.setOHLCData(ohlc);
+		slipcandlestickchart
+				.setStickData(new ListChartData<IStickEntity>(ohlc));
 	}
 
 	private void initMACandleStickChart() {
 		this.macandlestickchart = (MACandleStickChart) findViewById(R.id.macandlestickchart);
-		List<LineEntity<Float>> lines = new ArrayList<LineEntity<Float>>();
+		List<LineEntity<DateValueEntity>> lines = new ArrayList<LineEntity<DateValueEntity>>();
 
 		// 计算5日均线
-		LineEntity<Float> MA5 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> MA5 = new LineEntity<DateValueEntity>();
 		MA5.setTitle("MA5");
 		MA5.setLineColor(Color.WHITE);
 		MA5.setLineData(initMA(5));
 		lines.add(MA5);
 
 		// 计算10日均线
-		LineEntity<Float> MA10 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> MA10 = new LineEntity<DateValueEntity>();
 		MA10.setTitle("MA10");
 		MA10.setLineColor(Color.RED);
 		MA10.setLineData(initMA(10));
 		lines.add(MA10);
 
 		// 计算25日均线
-		LineEntity<Float> MA25 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> MA25 = new LineEntity<DateValueEntity>();
 		MA25.setTitle("MA25");
 		MA25.setLineColor(Color.GREEN);
 		MA25.setLineData(initMA(25));
@@ -826,40 +844,40 @@ public class AndroidChartsActivity extends Activity {
 		// 最小价格
 		macandlestickchart.setMinValue(200);
 
-		macandlestickchart.setDisplayAxisXTitle(true);
-		macandlestickchart.setDisplayAxisYTitle(true);
+		macandlestickchart.setDisplayLongitudeTitle(true);
+		macandlestickchart.setDisplayLatitudeTitle(true);
 		macandlestickchart.setDisplayLatitude(true);
 		macandlestickchart.setDisplayLongitude(true);
 		macandlestickchart.setBackgroundColor(Color.BLACK);
 
 		// 为chart2增加均线
-		macandlestickchart.setLineData(lines);
+		macandlestickchart.setLinesData(lines);
 
 		// 为chart2增加均线
-		macandlestickchart.setOHLCData(ohlc);
+		macandlestickchart.setStickData(new ListChartData<IStickEntity>(ohlc));
 
 	}
 
 	private void initMASlipCandleStickChart() {
 		this.maslipcandlestickchart = (MASlipCandleStickChart) findViewById(R.id.maslipcandlestickchart);
-		List<LineEntity<Float>> lines = new ArrayList<LineEntity<Float>>();
+		List<LineEntity<DateValueEntity>> lines = new ArrayList<LineEntity<DateValueEntity>>();
 
 		// 计算5日均线
-		LineEntity<Float> MA5 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> MA5 = new LineEntity<DateValueEntity>();
 		MA5.setTitle("MA5");
 		MA5.setLineColor(Color.WHITE);
 		MA5.setLineData(initMA(5));
 		lines.add(MA5);
 
 		// 计算10日均线
-		LineEntity<Float> MA10 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> MA10 = new LineEntity<DateValueEntity>();
 		MA10.setTitle("MA10");
 		MA10.setLineColor(Color.RED);
 		MA10.setLineData(initMA(10));
 		lines.add(MA10);
 
 		// 计算25日均线
-		LineEntity<Float> MA25 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> MA25 = new LineEntity<DateValueEntity>();
 		MA25.setTitle("MA25");
 		MA25.setLineColor(Color.GREEN);
 		MA25.setLineData(initMA(25));
@@ -891,52 +909,53 @@ public class AndroidChartsActivity extends Activity {
 
 		maslipcandlestickchart.setZoomBaseLine(0);
 
-		maslipcandlestickchart.setDisplayAxisXTitle(true);
-		maslipcandlestickchart.setDisplayAxisYTitle(true);
+		maslipcandlestickchart.setDisplayLongitudeTitle(true);
+		maslipcandlestickchart.setDisplayLatitudeTitle(true);
 		maslipcandlestickchart.setDisplayLatitude(true);
 		maslipcandlestickchart.setDisplayLongitude(true);
 		maslipcandlestickchart.setBackgroundColor(Color.BLACK);
 
 		// 为chart2增加均线
-		maslipcandlestickchart.setLineData(lines);
+		maslipcandlestickchart.setLinesData(lines);
 
 		// 为chart2增加均线
-		maslipcandlestickchart.setOHLCData(ohlc);
+		maslipcandlestickchart.setStickData(new ListChartData<IStickEntity>(
+				ohlc));
 
 	}
 
 	private void initBOLLMASlipCandleStickChart() {
 		this.bollmaslipcandlestickchart = (BOLLMASlipCandleStickChart) findViewById(R.id.bollmaslipcandlestickchart);
-		List<LineEntity<Float>> lines = new ArrayList<LineEntity<Float>>();
+		List<LineEntity<DateValueEntity>> lines = new ArrayList<LineEntity<DateValueEntity>>();
 
 		// 计算5日均线
-		LineEntity<Float> MA5 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> MA5 = new LineEntity<DateValueEntity>();
 		MA5.setTitle("MA5");
 		MA5.setLineColor(Color.WHITE);
 		MA5.setLineData(initMA(5));
 		lines.add(MA5);
 
 		// 计算10日均线
-		LineEntity<Float> MA10 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> MA10 = new LineEntity<DateValueEntity>();
 		MA10.setTitle("MA10");
 		MA10.setLineColor(Color.RED);
 		MA10.setLineData(initMA(10));
 		lines.add(MA10);
 
 		// 计算25日均线
-		LineEntity<Float> MA25 = new LineEntity<Float>();
+		LineEntity<DateValueEntity> MA25 = new LineEntity<DateValueEntity>();
 		MA25.setTitle("MA25");
 		MA25.setLineColor(Color.GREEN);
 		MA25.setLineData(initMA(25));
 		lines.add(MA25);
-		
+
 		List<LineEntity<DateValueEntity>> band = new ArrayList<LineEntity<DateValueEntity>>();
 		LineEntity<DateValueEntity> LOWER = new LineEntity<DateValueEntity>();
 		LOWER.setTitle("LOWER");
 		LOWER.setLineColor(Color.YELLOW);
 		LOWER.setLineData(dv1);
 		band.add(LOWER);
-		
+
 		LineEntity<DateValueEntity> UPPER = new LineEntity<DateValueEntity>();
 		UPPER.setTitle("UPPER");
 		UPPER.setLineColor(Color.CYAN);
@@ -969,19 +988,19 @@ public class AndroidChartsActivity extends Activity {
 
 		bollmaslipcandlestickchart.setZoomBaseLine(0);
 
-		bollmaslipcandlestickchart.setDisplayAxisXTitle(true);
-		bollmaslipcandlestickchart.setDisplayAxisYTitle(true);
+		bollmaslipcandlestickchart.setDisplayLongitudeTitle(true);
+		bollmaslipcandlestickchart.setDisplayLatitudeTitle(true);
 		bollmaslipcandlestickchart.setDisplayLatitude(true);
 		bollmaslipcandlestickchart.setDisplayLongitude(true);
 		bollmaslipcandlestickchart.setBackgroundColor(Color.BLACK);
 
 		// 为chart2增加均线
-		bollmaslipcandlestickchart.setLineData(lines);
+		bollmaslipcandlestickchart.setLinesData(lines);
 		bollmaslipcandlestickchart.setBandData(band);
 
 		// 为chart2增加均线
-		bollmaslipcandlestickchart.setOHLCData(ohlc);
-		
+		bollmaslipcandlestickchart
+				.setStickData(new ListChartData<IStickEntity>(ohlc));
 
 	}
 
@@ -1041,9 +1060,38 @@ public class AndroidChartsActivity extends Activity {
 		spiderwebchart.setLatitudeNum(5);
 	}
 
+	private void initMACDChart() {
+
+		macdChart = (MACDChart) findViewById(R.id.macdchart);
+		// 设置stickData
+		macdChart.setStickData(new ListChartData<IStickEntity>(macd));
+		macdChart.setMaxValue(300000);
+		macdChart.setMinValue(-300000);
+		// macdChart.setDisplayCrossXOnTouch(false);
+		// macdChart.setDisplayCrossYOnTouch(false);
+		macdChart.setLatitudeNum(4);
+		macdChart.setLongitudeNum(3);
+		macdChart.setDisplayFrom(0);
+		macdChart.setDisplayNumber(10);
+		macdChart.setAxisXColor(Color.LTGRAY);
+		macdChart.setAxisYColor(Color.LTGRAY);
+		macdChart.setLatitudeColor(Color.GRAY);
+		macdChart.setLongitudeColor(Color.GRAY);
+		macdChart.setBorderColor(Color.LTGRAY);
+		macdChart.setLongitudeFontColor(Color.WHITE);
+		macdChart.setLatitudeFontColor(Color.WHITE);
+		macdChart.setAxisMarginRight(1);
+		macdChart.setMacdDisplayType(MACDChart.MACD_DISPLAY_TYPE_LINE_STICK);
+		macdChart.setPositiveStickColor(Color.RED);
+		macdChart.setNegativeStickColor(Color.CYAN);
+		macdChart.setMacdLineColor(Color.CYAN);
+		macdChart.setDeaLineColor(Color.YELLOW);
+		macdChart.setDiffLineColor(Color.WHITE);
+	}
+
 	private void initVOLC() {
-		List<ColoredStickEntity> stick = new ArrayList<ColoredStickEntity>();
-		this.volc = new ArrayList<ColoredStickEntity>();
+		List<IStickEntity> stick = new ArrayList<IStickEntity>();
+		this.volc = new ArrayList<IStickEntity>();
 
 		stick.add(new ColoredStickEntity(406000, 0, 20110825, Color.RED));
 		stick.add(new ColoredStickEntity(232000, 0, 20110824, Color.RED));
@@ -1151,11 +1199,12 @@ public class AndroidChartsActivity extends Activity {
 		for (int i = stick.size(); i > 0; i--) {
 			this.volc.add(stick.get(i - 1));
 		}
+
+		// this.volc.addAll(stick);
 	}
 
 	private void initVOL() {
-		List<StickEntity> stick = new ArrayList<StickEntity>();
-		this.vol = new ArrayList<StickEntity>();
+		List<IStickEntity> stick = new ArrayList<IStickEntity>();
 
 		stick.add(new StickEntity(406000, 0, 20110825));
 		stick.add(new StickEntity(232000, 0, 20110824));
@@ -1260,17 +1309,20 @@ public class AndroidChartsActivity extends Activity {
 		// stick.add(new StickEntity(344000,0,20110404));
 		// stick.add(new StickEntity(525000,0,20110401));
 
+		this.vol = new ArrayList<IStickEntity>();
 		for (int i = stick.size(); i > 0; i--) {
 			this.vol.add(stick.get(i - 1));
 		}
+
+		// this.vol.addAll(stick);
 	}
 
-	private List<Float> initVMA(int days) {
+	private List<DateValueEntity> initVMA(int days) {
 		if (days < 2) {
 			return null;
 		}
 
-		List<Float> MA5Values = new ArrayList<Float>();
+		List<DateValueEntity> MA5Values = new ArrayList<DateValueEntity>();
 
 		float sum = 0;
 		float avg = 0;
@@ -1283,7 +1335,7 @@ public class AndroidChartsActivity extends Activity {
 				sum = sum + close - (float) vol.get(i - days).getHigh();
 				avg = sum / days;
 			}
-			MA5Values.add(avg);
+			MA5Values.add(new DateValueEntity(avg, vol.get(i).getDate()));
 		}
 
 		return MA5Values;
@@ -1420,9 +1472,11 @@ public class AndroidChartsActivity extends Activity {
 		dv.add(new DateValueEntity(971.8104f, 20131101));
 		dv.add(new DateValueEntity(972.5886f, 20131104));
 
-		for (int i = dv.size(); i > 0; i--) {
-			this.dv1.add(dv.get(i - 1));
-		}
+		// for (int i = dv.size(); i > 0; i--) {
+		// this.dv1.add(dv.get(i - 1));
+		// }
+
+		this.dv1.addAll(dv);
 	}
 
 	private void initDV2() {
@@ -1556,15 +1610,17 @@ public class AndroidChartsActivity extends Activity {
 		dv.add(new DateValueEntity(1060.3895f, 20131101));
 		dv.add(new DateValueEntity(1061.7113f, 20131104));
 
-		for (int i = dv.size(); i > 0; i--) {
-			this.dv2.add(dv.get(i - 1));
-		}
+		// for (int i = dv.size(); i > 0; i--) {
+		// this.dv2.add(dv.get(i - 1));
+		// }
+
+		this.dv2.addAll(dv);
 	}
 
 	private void initOHLC() {
-		List<OHLCEntity> ohlc = new ArrayList<OHLCEntity>();
+		List<IStickEntity> ohlc = new ArrayList<IStickEntity>();
 
-		this.ohlc = new ArrayList<OHLCEntity>();
+		this.ohlc = new ArrayList<IStickEntity>();
 		ohlc.add(new OHLCEntity(986, 1015, 977, 1003, 20130424));
 		ohlc.add(new OHLCEntity(1000, 1007, 982, 991, 20130425));
 		ohlc.add(new OHLCEntity(996, 1001, 985, 988, 20130426));
@@ -1692,33 +1748,142 @@ public class AndroidChartsActivity extends Activity {
 		ohlc.add(new OHLCEntity(1032, 1053, 1023, 1042, 20131101));
 		ohlc.add(new OHLCEntity(1048, 1054, 1026, 1030, 20131104));
 
-		for (int i = ohlc.size(); i > 0; i--) {
-			this.ohlc.add(ohlc.get(i - 1));
-		}
+		// for (int i = ohlc.size(); i > 0; i--) {
+		// this.ohlc.add(ohlc.get(i - 1));
+		// }
+
+		this.ohlc.addAll(ohlc);
 	}
 
-	private List<Float> initMA(int days) {
+	private List<DateValueEntity> initMA(int days) {
 
 		if (days < 2) {
 			return null;
 		}
 
-		List<Float> MA5Values = new ArrayList<Float>();
+		List<DateValueEntity> MA5Values = new ArrayList<DateValueEntity>();
 
 		float sum = 0;
 		float avg = 0;
 		for (int i = 0; i < this.ohlc.size(); i++) {
-			float close = (float) ohlc.get(i).getClose();
+			float close = (float) ((OHLCEntity) ohlc.get(i)).getClose();
 			if (i < days) {
 				sum = sum + close;
 				avg = sum / (i + 1f);
 			} else {
-				sum = sum + close - (float) ohlc.get(i - days).getClose();
+				sum = sum + close
+						- (float) ((OHLCEntity) ohlc.get(i - days)).getClose();
 				avg = sum / days;
 			}
-			MA5Values.add(avg);
+			MA5Values.add(new DateValueEntity(avg, ohlc.get(i).getDate()));
 		}
 
 		return MA5Values;
+	}
+
+	private void initMACD() {
+		List<IStickEntity> macd = new ArrayList<IStickEntity>();
+		macd.add(new MACDEntity(46934, 7297, -79272, 20130604));
+		macd.add(new MACDEntity(30276, -36354, -133260, 20130605));
+		macd.add(new MACDEntity(7002, -86094, -186192, 20130606));
+		macd.add(new MACDEntity(-20810, -132060, -222500, 20130607));
+		macd.add(new MACDEntity(-55227, -192894, -275332, 20130613));
+		macd.add(new MACDEntity(-91853, -238357, -293008, 20130614));
+		macd.add(new MACDEntity(-127894, -272058, -288326, 20130617));
+		macd.add(new MACDEntity(-160430, -290575, -260288, 20130618));
+		macd.add(new MACDEntity(-191570, -316130, -249118, 20130619));
+		macd.add(new MACDEntity(-227264, -370042, -285554, 20130620));
+		macd.add(new MACDEntity(-265658, -419232, -307148, 20130621));
+		macd.add(new MACDEntity(-315250, -513620, -396738, 20130624));
+		macd.add(new MACDEntity(-364077, -559382, -390610, 20130625));
+		macd.add(new MACDEntity(-409512, -591253, -363482, 20130626));
+		macd.add(new MACDEntity(-447752, -600711, -305918, 20130627));
+		macd.add(new MACDEntity(-472075, -569366, -194582, 20130628));
+		macd.add(new MACDEntity(-487079, -547095, -120032, 20130701));
+		macd.add(new MACDEntity(-494664, -525007, -60684, 20130702));
+		macd.add(new MACDEntity(-497830, -510493, -25324, 20130703));
+		macd.add(new MACDEntity(-495648, -486922, 17452, 20130704));
+		macd.add(new MACDEntity(-489260, -463704, 51110, 20130705));
+		macd.add(new MACDEntity(-482644, -456183, 52922, 20130708));
+		macd.add(new MACDEntity(-474974, -444294, 61358, 20130709));
+		macd.add(new MACDEntity(-462931, -414760, 96342, 20130710));
+		macd.add(new MACDEntity(-435758, -327065, 217386, 20130711));
+		macd.add(new MACDEntity(-405436, -284146, 242578, 20130712));
+		macd.add(new MACDEntity(-372688, -241698, 261980, 20130715));
+		macd.add(new MACDEntity(-339607, -207282, 264648, 20130716));
+		macd.add(new MACDEntity(-308713, -185136, 247154, 20130717));
+		macd.add(new MACDEntity(-284094, -185617, 196952, 20130718));
+		macd.add(new MACDEntity(-266763, -197441, 138644, 20130719));
+		macd.add(new MACDEntity(-255578, -210836, 89482, 20130722));
+		macd.add(new MACDEntity(-245216, -203771, 82890, 20130723));
+		macd.add(new MACDEntity(-237590, -207082, 61014, 20130724));
+		macd.add(new MACDEntity(-231216, -205721, 50988, 20130725));
+		macd.add(new MACDEntity(-226232, -206298, 39866, 20130726));
+		macd.add(new MACDEntity(-225535, -222748, 5574, 20130729));
+		macd.add(new MACDEntity(-225452, -225119, 664, 20130730));
+		macd.add(new MACDEntity(-224925, -222817, 4216, 20130731));
+		macd.add(new MACDEntity(-221561, -208103, 26914, 20130801));
+		macd.add(new MACDEntity(-216249, -195002, 42494, 20130802));
+		macd.add(new MACDEntity(-208226, -176133, 64184, 20130805));
+		macd.add(new MACDEntity(-198928, -161735, 74384, 20130806));
+		macd.add(new MACDEntity(-189184, -150208, 77950, 20130807));
+		macd.add(new MACDEntity(-179559, -141060, 76998, 20130808));
+		macd.add(new MACDEntity(-169785, -130690, 78190, 20130809));
+		macd.add(new MACDEntity(-155257, -97144, 116224, 20130812));
+		macd.add(new MACDEntity(-136401, -60980, 150842, 20130813));
+		macd.add(new MACDEntity(-117266, -40726, 153080, 20130814));
+		macd.add(new MACDEntity(-100128, -31573, 137108, 20130815));
+		macd.add(new MACDEntity(-83475, -16862, 133224, 20130816));
+		macd.add(new MACDEntity(-65575, 6022, 143196, 20130819));
+		macd.add(new MACDEntity(-46726, 28670, 150792, 20130820));
+		macd.add(new MACDEntity(-29120, 41301, 140844, 20130821));
+		macd.add(new MACDEntity(-13310, 49929, 126480, 20130822));
+		macd.add(new MACDEntity(256, 54524, 108536, 20130823));
+		macd.add(new MACDEntity(16811, 83030, 132438, 20130826));
+		macd.add(new MACDEntity(37683, 121170, 166974, 20130827));
+		macd.add(new MACDEntity(60878, 153659, 185562, 20130828));
+		macd.add(new MACDEntity(82898, 170981, 176164, 20130829));
+		macd.add(new MACDEntity(103956, 188187, 168462, 20130830));
+		macd.add(new MACDEntity(122751, 197928, 150354, 20130902));
+		macd.add(new MACDEntity(140776, 212877, 144202, 20130903));
+		macd.add(new MACDEntity(157851, 226152, 136600, 20130904));
+		macd.add(new MACDEntity(172916, 233177, 120520, 20130905));
+		macd.add(new MACDEntity(192558, 271124, 157132, 20130906));
+		macd.add(new MACDEntity(228915, 374346, 290860, 20130909));
+		macd.add(new MACDEntity(287203, 520353, 466300, 20130910));
+		macd.add(new MACDEntity(353452, 618446, 529988, 20130911));
+		macd.add(new MACDEntity(436047, 766428, 660762, 20130912));
+		macd.add(new MACDEntity(518140, 846512, 656744, 20130913));
+		macd.add(new MACDEntity(587733, 866105, 556742, 20130916));
+		macd.add(new MACDEntity(633973, 818935, 369922, 20130917));
+		macd.add(new MACDEntity(664420, 786208, 243574, 20130918));
+		macd.add(new MACDEntity(684729, 765966, 162472, 20130923));
+		macd.add(new MACDEntity(690156, 711862, 43412, 20130924));
+		macd.add(new MACDEntity(683918, 658968, -49900, 20130925));
+		macd.add(new MACDEntity(659406, 561356, -196100, 20130926));
+		macd.add(new MACDEntity(624338, 484066, -280542, 20130927));
+		macd.add(new MACDEntity(580676, 406029, -349294, 20130930));
+		macd.add(new MACDEntity(534827, 351430, -366792, 20131008));
+		macd.add(new MACDEntity(489429, 307839, -363180, 20131009));
+		macd.add(new MACDEntity(440952, 247044, -387816, 20131010));
+		macd.add(new MACDEntity(401175, 242068, -318214, 20131011));
+		macd.add(new MACDEntity(363874, 214670, -298408, 20131014));
+		macd.add(new MACDEntity(326379, 176398, -299960, 20131015));
+		macd.add(new MACDEntity(286793, 128449, -316686, 20131016));
+		macd.add(new MACDEntity(245882, 82239, -327286, 20131017));
+		macd.add(new MACDEntity(206682, 49883, -313598, 20131018));
+		macd.add(new MACDEntity(173968, 43110, -261714, 20131021));
+		macd.add(new MACDEntity(143606, 22156, -242898, 20131022));
+		macd.add(new MACDEntity(117418, 12666, -209504, 20131023));
+		macd.add(new MACDEntity(94313, 1895, -184836, 20131024));
+		macd.add(new MACDEntity(75573, 614, -149918, 20131025));
+		macd.add(new MACDEntity(61656, 5986, -111340, 20131028));
+		macd.add(new MACDEntity(56615, 36451, -40328, 20131029));
+		macd.add(new MACDEntity(59027, 68679, 19302, 20131030));
+		macd.add(new MACDEntity(61703, 72405, 21404, 20131031));
+		macd.add(new MACDEntity(65698, 81679, 31960, 20131101));
+		macd.add(new MACDEntity(68247, 78442, 20388, 20131104));
+
+		this.macd = macd;
 	}
 }

@@ -29,7 +29,6 @@ import java.util.List;
 
 import cn.limc.androidcharts.entity.TitleValueEntity;
 
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -365,7 +364,8 @@ public class SpiderWebChart extends BaseChart {
 	 * 
 	 * @param defStyle
 	 * 
-	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context,AttributeSet, int)
+	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context,AttributeSet,
+	 * int)
 	 */
 	public SpiderWebChart(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -835,10 +835,11 @@ public class SpiderWebChart extends BaseChart {
 	}
 
 	/**
-	 * @param backgroundColor the backgroundColor to set
+	 * @param backgroundColor
+	 *            the backgroundColor to set
 	 */
 	public void setBackgroundColor(int backgroundColor) {
 		this.backgroundColor = backgroundColor;
 	}
-	
+
 }

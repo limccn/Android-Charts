@@ -27,3 +27,7 @@ src/.settings/edu.umd.cs.findbugs.plugin.eclipse.prefs
 src/.settings/edu.umd.cs.findbugs.core.prefs
 
 src/.checkstyle
+
+*.prefs
+
+*.prefs

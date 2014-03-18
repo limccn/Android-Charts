@@ -25,69 +25,130 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>Entity data which is use for display a single line in LineChart</p>
- * <p>LineChartの線表示用データです。単線です。</p>
- * <p>保存线图表示用单个线的对象、多条线的时候请使用相应的数据结构保存数据</p>
- * @author limc 
- * @version v1.0 2011/05/29 12:24:49 
+ * <p>
+ * Entity data which is use for display a single line in LineChart
+ * </p>
+ * <p>
+ * LineChartの線表示用データです。単線です。
+ * </p>
+ * <p>
+ * 保存线图表示用单个线的对象、多条线的时候请使用相应的数据结构保存数据
+ * </p>
+ * 
+ * @author limc
+ * @version v1.0 2011/05/29 12:24:49
  */
 public class LineEntity<T> {
-	
-	/** 
-	 * <p>Data for draw this line</p>
-	 * <p>ラインを表示用データ</p>
-	 * <p>线表示数据</p>
+
+	/**
+	 * <p>
+	 * Data for draw this line
+	 * </p>
+	 * <p>
+	 * ラインを表示用データ
+	 * </p>
+	 * <p>
+	 * 线表示数据
+	 * </p>
 	 */
 	private List<T> lineData;
-	
+
 	/**
-	 * <p>Title for this line</p>
-	 * <p>ラインの表示タイトル</p>
-	 * <p>线的标题，用于标识别这条线</p>
+	 * <p>
+	 * Title for this line
+	 * </p>
+	 * <p>
+	 * ラインの表示タイトル
+	 * </p>
+	 * <p>
+	 * 线的标题，用于标识别这条线
+	 * </p>
 	 */
 	private String title;
-	
+
 	/**
-	 * <p>Line Color</p>
-	 * <p>ラインの色</p>
-	 * <p>线的颜色</p>
+	 * <p>
+	 * Line Color
+	 * </p>
+	 * <p>
+	 * ラインの色
+	 * </p>
+	 * <p>
+	 * 线的颜色
+	 * </p>
 	 */
 	private int lineColor;
-	
-	/** 
-	 * <p>Should display this line?</p>
-	 * <p>ラインをチャードで表面で表示するか?</p>
-	 * <p>是否在图表上显示该线</p>
+
+	/**
+	 * <p>
+	 * Should display this line?
+	 * </p>
+	 * <p>
+	 * ラインをチャードで表面で表示するか?
+	 * </p>
+	 * <p>
+	 * 是否在图表上显示该线
+	 * </p>
 	 */
 	private boolean display = true;
-	
+
 	/**
-	 * <p>Constructor of LineEntity</p>
-	 * <p>LineEntity类对象的构造函数</p>
-	 * <p>LineEntityのコンストラクター</p>
-	 *
+	 * <p>
+	 * Constructor of LineEntity
+	 * </p>
+	 * <p>
+	 * LineEntity类对象的构造函数
+	 * </p>
+	 * <p>
+	 * LineEntityのコンストラクター
+	 * </p>
+	 * 
 	 */
 	public LineEntity() {
 		super();
 	}
 
 	/**
-	 * <p>Constructor of LineEntity</p>
-	 * <p>LineEntity类对象的构造函数</p>
-	 * <p>LineEntityのコンストラクター</p>
-	 *
+	 * <p>
+	 * Constructor of LineEntity
+	 * </p>
+	 * <p>
+	 * LineEntity类对象的构造函数
+	 * </p>
+	 * <p>
+	 * LineEntityのコンストラクター
+	 * </p>
+	 * 
 	 * @param lineData
-	 * <p>Data for draw this line</p>
-	 * <p>ラインを表示用データ</p>
-	 * <p>线表示数据</p>
+	 *            <p>
+	 *            Data for draw this line
+	 *            </p>
+	 *            <p>
+	 *            ラインを表示用データ
+	 *            </p>
+	 *            <p>
+	 *            线表示数据
+	 *            </p>
 	 * @param title
-	 * <p>Title for this line</p>
-	 * <p>ラインの表示タイトル</p>
-	 * <p>线的标题，用于标识别这条线</p>
-	 * @param lineColor 
-	 * <p>Line Color</p>
-	 * <p>ラインの色</p>
-	 * <p>线的颜色</p>
+	 *            <p>
+	 *            Title for this line
+	 *            </p>
+	 *            <p>
+	 *            ラインの表示タイトル
+	 *            </p>
+	 *            <p>
+	 *            线的标题，用于标识别这条线
+	 *            </p>
+	 * @param lineColor
+	 *            <p>
+	 *            Line Color
+	 *            </p>
+	 *            <p>
+	 *            ラインの色
+	 *            </p>
+	 *            <p>
+	 *            线的颜色
+	 *            </p>
 	 */
 	public LineEntity(List<T> lineData, String title, int lineColor) {
 		super();
@@ -95,12 +156,12 @@ public class LineEntity<T> {
 		this.title = title;
 		this.lineColor = lineColor;
 	}
-	
+
 	/**
-	 * @param value 
+	 * @param value
 	 */
-	public void put(T value){
-		if (null == lineData){
+	public void put(T value) {
+		if (null == lineData) {
 			lineData = new ArrayList<T>();
 		}
 		lineData.add(value);
@@ -114,7 +175,8 @@ public class LineEntity<T> {
 	}
 
 	/**
-	 * @param lineData the lineData to set
+	 * @param lineData
+	 *            the lineData to set
 	 */
 	public void setLineData(List<T> lineData) {
 		this.lineData = lineData;
@@ -128,7 +190,8 @@ public class LineEntity<T> {
 	}
 
 	/**
-	 * @param title the title to set
+	 * @param title
+	 *            the title to set
 	 */
 	public void setTitle(String title) {
 		this.title = title;
@@ -142,7 +205,8 @@ public class LineEntity<T> {
 	}
 
 	/**
-	 * @param lineColor the lineColor to set
+	 * @param lineColor
+	 *            the lineColor to set
 	 */
 	public void setLineColor(int lineColor) {
 		this.lineColor = lineColor;
@@ -156,9 +220,10 @@ public class LineEntity<T> {
 	}
 
 	/**
-	 * @param display the display to set
+	 * @param display
+	 *            the display to set
 	 */
 	public void setDisplay(boolean display) {
 		this.display = display;
-	}	
+	}
 }

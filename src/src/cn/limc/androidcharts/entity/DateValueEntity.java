@@ -19,57 +19,73 @@
  * limitations under the License.
  */
 
-
 package cn.limc.androidcharts.entity;
 
-/** 
- * <p>en</p>
- * <p>jp</p>
- * <p>cn</p>
- *
- * @author limc 
- * @version v1.0 2014/01/21 15:29:26 
- *  
+/**
+ * <p>
+ * en
+ * </p>
+ * <p>
+ * jp
+ * </p>
+ * <p>
+ * cn
+ * </p>
+ * 
+ * @author limc
+ * @version v1.0 2014/01/21 15:29:26
+ * 
  */
-public class DateValueEntity {
+public class DateValueEntity implements IHasDate {
 
 	private int date;
 	private float value;
-	
-	/** 
-	 * <p>Constructor of DateValueEntity</p>
-	 * <p>DateValueEntity类对象的构造函数</p>
-	 * <p>DateValueEntityのコンストラクター</p>
-	 *
+
+	/**
+	 * <p>
+	 * Constructor of DateValueEntity
+	 * </p>
+	 * <p>
+	 * DateValueEntity类对象的构造函数
+	 * </p>
+	 * <p>
+	 * DateValueEntityのコンストラクター
+	 * </p>
+	 * 
 	 * @param date
-	 * @param value 
+	 * @param value
 	 */
-	public DateValueEntity(float value,int date) {
+	public DateValueEntity(float value, int date) {
 		super();
 		this.value = value;
 		this.date = date;
 	}
-	
+
 	/**
 	 * @return the date
 	 */
 	public int getDate() {
 		return date;
 	}
+
 	/**
-	 * @param date the date to set
+	 * @param date
+	 *            the date to set
 	 */
 	public void setDate(int date) {
 		this.date = date;
 	}
+
 	/**
 	 * @return the value
 	 */
 	public float getValue() {
 		return value;
 	}
+
 	/**
-	 * @param value the value to set
+	 * @param value
+	 *            the value to set
 	 */
 	public void setValue(float value) {
 		this.value = value;

@@ -24,6 +24,9 @@ package cn.limc.androidcharts.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.limc.androidcharts.entity.IChartData;
+import cn.limc.androidcharts.entity.IMeasurable;
+import cn.limc.androidcharts.entity.IStickEntity;
 import cn.limc.androidcharts.entity.StickEntity;
 
 import android.content.Context;
@@ -60,11 +63,13 @@ public class SlipStickChart extends GridChart {
 	public static final int DEFAULT_DISPLAY_NUMBER = 50;
 	public static final int DEFAULT_MIN_DISPLAY_NUMBER = 20;
 	public static final int DEFAULT_ZOOM_BASE_LINE = 20;
+	public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
 
 	protected int displayFrom = DEFAULT_DISPLAY_FROM;
 	protected int displayNumber = DEFAULT_DISPLAY_NUMBER;
 	protected int minDisplayNumber = DEFAULT_MIN_DISPLAY_NUMBER;
 	protected int zoomBaseLine = DEFAULT_ZOOM_BASE_LINE;
+	protected boolean autoCalcValueRange = DEFAULT_AUTO_CALC_VALUE_RANGE;
 
 	/**
 	 * <p>
@@ -129,7 +134,7 @@ public class SlipStickChart extends GridChart {
 	 * 绘制柱条用的数据
 	 * </p>
 	 */
-	private List<StickEntity> stickData;
+	protected IChartData<IStickEntity> stickData;
 
 	/**
 	 * <p>
@@ -142,7 +147,7 @@ public class SlipStickChart extends GridChart {
 	 * Y的最大表示值
 	 * </p>
 	 */
-	protected float maxValue;
+	protected double maxValue;
 
 	/**
 	 * <p>
@@ -155,7 +160,7 @@ public class SlipStickChart extends GridChart {
 	 * Y的最小表示值
 	 * </p>
 	 */
-	protected float minValue;
+	protected double minValue;
 
 	/**
 	 * <p>
@@ -213,6 +218,128 @@ public class SlipStickChart extends GridChart {
 		// TODO Auto-generated constructor stub
 	}
 
+	protected void calcDataValueRange() {
+
+		double maxValue = 0;
+		double minValue = Integer.MAX_VALUE;
+
+		IMeasurable first = this.stickData.get(0);
+		// 第一个stick为停盘的情况
+		if (first.getHigh() == 0 && first.getLow() == 0) {
+
+		} else {
+			maxValue = first.getHigh();
+			minValue = first.getLow();
+		}
+
+		// 判断显示为方柱或显示为线条
+		for (int i = this.displayFrom; i < this.displayFrom
+				+ this.displayNumber; i++) {
+			IMeasurable stick = this.stickData.get(i);
+			if (stick.getLow() < minValue) {
+				minValue = stick.getLow();
+			}
+
+			if (stick.getHigh() > maxValue) {
+				maxValue = stick.getHigh();
+			}
+
+		}
+
+		this.maxValue = maxValue;
+		this.minValue = minValue;
+	}
+
+	protected void calcValueRangePaddingZero() {
+		double maxValue = this.maxValue;
+		double minValue = this.minValue;
+
+		if ((long) maxValue > (long) minValue) {
+			if ((maxValue - minValue) < 10 && minValue > 1) {
+				this.maxValue = (long) (maxValue + 1);
+				this.minValue = (long) (minValue - 1);
+			} else {
+				this.maxValue = (long) (maxValue + (maxValue - minValue) * 0.1);
+				this.minValue = (long) (minValue - (maxValue - minValue) * 0.1);
+				if (this.minValue < 0) {
+					this.minValue = 0;
+				}
+			}
+		} else if ((long) maxValue == (long) minValue) {
+			if (maxValue <= 10 && maxValue > 1) {
+				this.maxValue = maxValue + 1;
+				this.minValue = minValue - 1;
+			} else if (maxValue <= 100 && maxValue > 10) {
+				this.maxValue = maxValue + 10;
+				this.minValue = minValue - 10;
+			} else if (maxValue <= 1000 && maxValue > 100) {
+				this.maxValue = maxValue + 100;
+				this.minValue = minValue - 100;
+			} else if (maxValue <= 10000 && maxValue > 1000) {
+				this.maxValue = maxValue + 1000;
+				this.minValue = minValue - 1000;
+			} else if (maxValue <= 100000 && maxValue > 10000) {
+				this.maxValue = maxValue + 10000;
+				this.minValue = minValue - 10000;
+			} else if (maxValue <= 1000000 && maxValue > 100000) {
+				this.maxValue = maxValue + 100000;
+				this.minValue = minValue - 100000;
+			} else if (maxValue <= 10000000 && maxValue > 1000000) {
+				this.maxValue = maxValue + 1000000;
+				this.minValue = minValue - 1000000;
+			} else if (maxValue <= 100000000 && maxValue > 10000000) {
+				this.maxValue = maxValue + 10000000;
+				this.minValue = minValue - 10000000;
+			}
+		} else {
+			this.maxValue = 0;
+			this.minValue = 0;
+		}
+
+	}
+
+	protected void calcValueRangeFormatForAxis() {
+		// 修正最大值和最小值
+		long rate = (long) (this.maxValue - this.minValue) / (this.latitudeNum);
+		String strRate = String.valueOf(rate);
+		float first = Integer.parseInt(String.valueOf(strRate.charAt(0))) + 1.0f;
+		if (first > 0 && strRate.length() > 1) {
+			float second = Integer.parseInt(String.valueOf(strRate.charAt(1)));
+			if (second < 5) {
+				first = first - 0.5f;
+			}
+			rate = (long) (first * Math.pow(10, strRate.length() - 1));
+		} else {
+			rate = 1;
+		}
+		// 等分轴修正
+		if (this.latitudeNum > 0
+				&& (long) (this.maxValue - this.minValue)
+						% (this.latitudeNum * rate) != 0) {
+			// 最大值加上轴差
+			this.maxValue = (long) this.maxValue
+					+ (this.latitudeNum * rate)
+					- ((long) (this.maxValue - this.minValue) % (this.latitudeNum * rate));
+		}
+	}
+
+	protected void calcValueRange() {
+		if (null == this.stickData) {
+			this.maxValue = 0;
+			this.minValue = 0;
+			return;
+		}
+
+		if (this.stickData.size() > 0) {
+			this.calcDataValueRange();
+			this.calcValueRangePaddingZero();
+		} else {
+			this.maxValue = 0;
+			this.minValue = 0;
+		}
+		this.calcValueRangeFormatForAxis();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -225,6 +352,9 @@ public class SlipStickChart extends GridChart {
 	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
+		if (this.autoCalcValueRange) {
+			calcValueRange();
+		}
 		initAxisY();
 		initAxisX();
 		super.onDraw(canvas);
@@ -282,7 +412,7 @@ public class SlipStickChart extends GridChart {
 	 */
 	@Override
 	public void notifyEvent(GridChart chart) {
-//		CandleStickChart candlechart = (CandleStickChart) chart;
+		// CandleStickChart candlechart = (CandleStickChart) chart;
 		// this. = candlechart.getMaxSticksNum();
 
 		super.setDisplayCrossYOnTouch(false);
@@ -305,7 +435,7 @@ public class SlipStickChart extends GridChart {
 	 */
 	protected void initAxisX() {
 		List<String> TitleX = new ArrayList<String>();
-		if (null != stickData) {
+		if (null != stickData && stickData.size() > 0) {
 			float average = displayNumber / this.getLongitudeNum();
 			for (int i = 0; i < this.getLongitudeNum(); i++) {
 				int index = (int) Math.floor(i * average);
@@ -320,7 +450,7 @@ public class SlipStickChart extends GridChart {
 					stickData.get(displayFrom + displayNumber - 1).getDate())
 					.substring(4));
 		}
-		super.setAxisXTitles(TitleX);
+		super.setLongitudeTitles(TitleX);
 	}
 
 	public int getSelectedIndex() {
@@ -352,6 +482,7 @@ public class SlipStickChart extends GridChart {
 	 * </p>
 	 */
 	protected void initAxisY() {
+		this.calcValueRange();
 		List<String> TitleY = new ArrayList<String>();
 		float average = (int) ((maxValue - minValue) / this.getLatitudeNum()) / 100 * 100;
 		;
@@ -359,8 +490,8 @@ public class SlipStickChart extends GridChart {
 		for (int i = 0; i < this.getLatitudeNum(); i++) {
 			String value = String.valueOf((int) Math.floor(minValue + i
 					* average));
-			if (value.length() < super.getAxisYMaxTitleLength()) {
-				while (value.length() < super.getAxisYMaxTitleLength()) {
+			if (value.length() < super.getLatitudeMaxTitleLength()) {
+				while (value.length() < super.getLatitudeMaxTitleLength()) {
 					value = new String(" ") + value;
 				}
 			}
@@ -369,17 +500,24 @@ public class SlipStickChart extends GridChart {
 		// calculate last degrees by use max value
 		String value = String.valueOf((int) Math
 				.floor(((int) maxValue) / 100 * 100));
-		if (value.length() < super.getAxisYMaxTitleLength()) {
-			while (value.length() < super.getAxisYMaxTitleLength()) {
+		if (value.length() < super.getLatitudeMaxTitleLength()) {
+			while (value.length() < super.getLatitudeMaxTitleLength()) {
 				value = new String(" ") + value;
 			}
 		}
 		TitleY.add(value);
 
-		super.setAxisYTitles(TitleY);
+		super.setLatitudeTitles(TitleY);
 	}
 
 	protected void drawSticks(Canvas canvas) {
+		if (null == stickData) {
+			return;
+		}
+		if (stickData.size() == 0) {
+			return;
+		}
+
 		float stickWidth = ((super.getWidth() - super.getAxisMarginLeft() - super
 				.getAxisMarginRight()) / displayNumber) - 1;
 		float stickX = super.getAxisMarginLeft() + 1;
@@ -387,31 +525,27 @@ public class SlipStickChart extends GridChart {
 		Paint mPaintStick = new Paint();
 		mPaintStick.setColor(stickFillColor);
 
-		if (null != stickData) {
+		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+			StickEntity ohlc = (StickEntity) stickData.get(i);
+			float highY = (float) ((1f - (ohlc.getHigh() - minValue)
+					/ (maxValue - minValue))
+					* (super.getHeight() - super.getAxisMarginBottom()) - super
+					.getAxisMarginTop());
+			float lowY = (float) ((1f - (ohlc.getLow() - minValue)
+					/ (maxValue - minValue))
+					* (super.getHeight() - super.getAxisMarginBottom()) - super
+					.getAxisMarginTop());
 
-			for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
-				StickEntity ohlc = stickData.get(i);
-
-				float highY = (float) ((1f - (ohlc.getHigh() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
-				float lowY = (float) ((1f - (ohlc.getLow() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
-
-				// stick or line?
-				if (stickWidth >= 2f) {
-					canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
-							mPaintStick);
-				} else {
-					canvas.drawLine(stickX, highY, stickX, lowY, mPaintStick);
-				}
-
-				// next x
-				stickX = stickX + 1 + stickWidth;
+			// stick or line?
+			if (stickWidth >= 2f) {
+				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
+						mPaintStick);
+			} else {
+				canvas.drawLine(stickX, highY, stickX, lowY, mPaintStick);
 			}
+
+			// next x
+			stickX = stickX + 1 + stickWidth;
 		}
 	}
 
@@ -672,17 +806,10 @@ public class SlipStickChart extends GridChart {
 	 *            新数据
 	 *            </p>
 	 */
-	public void addData(StickEntity entity) {
+	public void addData(IStickEntity entity) {
 		if (null != entity) {
-			// data is null or empty
-			if (null == stickData || 0 == stickData.size()) {
-				stickData = new ArrayList<StickEntity>();
-				this.maxValue = ((int) entity.getHigh()) / 100 * 100;
-			}
-
 			// add
 			stickData.add(entity);
-
 			if (this.maxValue < entity.getHigh()) {
 				this.maxValue = 100 + ((int) entity.getHigh()) / 100 * 100;
 			}
@@ -783,7 +910,7 @@ public class SlipStickChart extends GridChart {
 	/**
 	 * @return the stickData
 	 */
-	public List<StickEntity> getStickData() {
+	public IChartData<IStickEntity> getStickData() {
 		return stickData;
 	}
 
@@ -791,14 +918,14 @@ public class SlipStickChart extends GridChart {
 	 * @param stickData
 	 *            the stickData to set
 	 */
-	public void setStickData(List<StickEntity> stickData) {
+	public void setStickData(IChartData<IStickEntity> stickData) {
 		this.stickData = stickData;
 	}
 
 	/**
 	 * @return the maxValue
 	 */
-	public float getMaxValue() {
+	public double getMaxValue() {
 		return maxValue;
 	}
 
@@ -806,14 +933,14 @@ public class SlipStickChart extends GridChart {
 	 * @param maxValue
 	 *            the maxValue to set
 	 */
-	public void setMaxValue(float maxValue) {
+	public void setMaxValue(double maxValue) {
 		this.maxValue = maxValue;
 	}
 
 	/**
 	 * @return the minValue
 	 */
-	public float getMinValue() {
+	public double getMinValue() {
 		return minValue;
 	}
 
@@ -821,7 +948,7 @@ public class SlipStickChart extends GridChart {
 	 * @param minValue
 	 *            the minValue to set
 	 */
-	public void setMinValue(float minValue) {
+	public void setMinValue(double minValue) {
 		this.minValue = minValue;
 	}
 }

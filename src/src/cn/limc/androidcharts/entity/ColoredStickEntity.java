@@ -19,23 +19,28 @@
  * limitations under the License.
  */
 
-
 package cn.limc.androidcharts.entity;
 
-/** 
- * <p>en</p>
- * <p>jp</p>
- * <p>cn</p>
- *
- * @author limc 
- * @version v1.0 2014/01/20 18:02:55 
- *  
+/**
+ * <p>
+ * en
+ * </p>
+ * <p>
+ * jp
+ * </p>
+ * <p>
+ * cn
+ * </p>
+ * 
+ * @author limc
+ * @version v1.0 2014/01/20 18:02:55
+ * 
  */
-public class ColoredStickEntity extends StickEntity {
+public class ColoredStickEntity extends StickEntity implements IHasColor {
 	private int color;
-	
+
 	public ColoredStickEntity(double high, double low, int date, int color) {
-		super(high,low,date);
+		super(high, low, date);
 		this.color = color;
 	}
 
@@ -47,7 +52,8 @@ public class ColoredStickEntity extends StickEntity {
 	}
 
 	/**
-	 * @param color the color to set
+	 * @param color
+	 *            the color to set
 	 */
 	public void setColor(int color) {
 		this.color = color;

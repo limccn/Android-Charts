@@ -35,7 +35,7 @@ package cn.limc.androidcharts.entity;
  * @author limc
  * @version v1.0 2011/05/29 12:24:49
  */
-public class StickEntity {
+public class StickEntity implements IStickEntity {
 
 	/**
 	 * <p>

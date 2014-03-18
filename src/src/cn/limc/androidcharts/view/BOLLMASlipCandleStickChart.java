@@ -19,7 +19,6 @@
  * limitations under the License.
  */
 
-
 package cn.limc.androidcharts.view;
 
 import java.util.List;
@@ -33,27 +32,39 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 
-/** 
- * <p>en</p>
- * <p>jp</p>
- * <p>cn</p>
- *
- * @author limc 
- * @version v1.0 2014/01/23 16:27:58 
- *  
+/**
+ * <p>
+ * en
+ * </p>
+ * <p>
+ * jp
+ * </p>
+ * <p>
+ * cn
+ * </p>
+ * 
+ * @author limc
+ * @version v1.0 2014/01/23 16:27:58
+ * 
  */
 public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 
 	private List<LineEntity<DateValueEntity>> bandData;
-	
-	/** 
-	 * <p>Constructor of BOLLMASlipCandleStickChart</p>
-	 * <p>BOLLMASlipCandleStickChart类对象的构造函数</p>
-	 * <p>BOLLMASlipCandleStickChartのコンストラクター</p>
-	 *
+
+	/**
+	 * <p>
+	 * Constructor of BOLLMASlipCandleStickChart
+	 * </p>
+	 * <p>
+	 * BOLLMASlipCandleStickChart类对象的构造函数
+	 * </p>
+	 * <p>
+	 * BOLLMASlipCandleStickChartのコンストラクター
+	 * </p>
+	 * 
 	 * @param context
 	 * @param attrs
-	 * @param defStyle 
+	 * @param defStyle
 	 */
 	public BOLLMASlipCandleStickChart(Context context, AttributeSet attrs,
 			int defStyle) {
@@ -61,31 +72,71 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 		// TODO Auto-generated constructor stub
 	}
 
-	/** 
-	 * <p>Constructor of BOLLMASlipCandleStickChart</p>
-	 * <p>BOLLMASlipCandleStickChart类对象的构造函数</p>
-	 * <p>BOLLMASlipCandleStickChartのコンストラクター</p>
-	 *
+	/**
+	 * <p>
+	 * Constructor of BOLLMASlipCandleStickChart
+	 * </p>
+	 * <p>
+	 * BOLLMASlipCandleStickChart类对象的构造函数
+	 * </p>
+	 * <p>
+	 * BOLLMASlipCandleStickChartのコンストラクター
+	 * </p>
+	 * 
 	 * @param context
-	 * @param attrs 
+	 * @param attrs
 	 */
 	public BOLLMASlipCandleStickChart(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub
 	}
 
-	/** 
-	 * <p>Constructor of BOLLMASlipCandleStickChart</p>
-	 * <p>BOLLMASlipCandleStickChart类对象的构造函数</p>
-	 * <p>BOLLMASlipCandleStickChartのコンストラクター</p>
-	 *
-	 * @param context 
+	/**
+	 * <p>
+	 * Constructor of BOLLMASlipCandleStickChart
+	 * </p>
+	 * <p>
+	 * BOLLMASlipCandleStickChart类对象的构造函数
+	 * </p>
+	 * <p>
+	 * BOLLMASlipCandleStickChartのコンストラクター
+	 * </p>
+	 * 
+	 * @param context
 	 */
 	public BOLLMASlipCandleStickChart(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
 	}
-	
+
+	@Override
+	protected void calcDataValueRange() {
+		super.calcDataValueRange();
+
+		double maxValue = this.maxValue;
+		double minValue = this.minValue;
+		// 逐条输出MA线
+		for (int i = 0; i < this.bandData.size(); i++) {
+			LineEntity<DateValueEntity> line = this.bandData.get(i);
+			if (line != null && line.getLineData().size() > 0) {
+				// 判断显示为方柱或显示为线条
+				for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+					DateValueEntity lineData = line.getLineData().get(j);
+					if (lineData.getValue() < minValue) {
+						minValue = lineData.getValue();
+					}
+
+					if (lineData.getValue() > maxValue) {
+						maxValue = lineData.getValue();
+					}
+
+				}
+			}
+		}
+		this.maxValue = maxValue;
+		this.minValue = minValue;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -164,7 +215,7 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 						areaPath.lineTo(startX, valueY1);
 						areaPath.lineTo(startX, valueY2);
 						areaPath.lineTo(lastX, lastY);
-						
+
 						areaPath.close();
 						areaPath.moveTo(startX, valueY1);
 					}
@@ -178,7 +229,7 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 			}
 		}
 	}
-	
+
 	/**
 	 * <p>
 	 * draw lines
@@ -200,7 +251,8 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 
 		// draw lines
 		for (int i = 0; i < bandData.size(); i++) {
-			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) bandData.get(i);
+			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) bandData
+					.get(i);
 			if (line.isDisplay()) {
 				Paint mPaint = new Paint();
 				mPaint.setColor(line.getLineColor());
@@ -241,7 +293,8 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 	}
 
 	/**
-	 * @param bandData the bandData to set
+	 * @param bandData
+	 *            the bandData to set
 	 */
 	public void setBandData(List<LineEntity<DateValueEntity>> bandData) {
 		this.bandData = bandData;

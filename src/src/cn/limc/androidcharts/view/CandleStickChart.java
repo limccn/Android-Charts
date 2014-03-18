@@ -21,11 +21,8 @@
 
 package cn.limc.androidcharts.view;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.OHLCEntity;
-
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -56,7 +53,7 @@ import android.view.MotionEvent;
  * @see MACandleStickChart
  * 
  */
-public class CandleStickChart extends GridChart {
+public class CandleStickChart extends StickChart {
 	/**
 	 * <p>
 	 * Default price up stick's border color
@@ -188,58 +185,6 @@ public class CandleStickChart extends GridChart {
 	 */
 	private int crossStarColor = DEFAULT_CROSS_STAR_COLOR;
 
-	/**
-	 * <p>
-	 * data to draw sticks
-	 * </p>
-	 * <p>
-	 * スティックを書く用データ
-	 * </p>
-	 * <p>
-	 * 绘制柱条用的数据
-	 * </p>
-	 */
-	private List<OHLCEntity> OHLCData;
-
-	/**
-	 * <p>
-	 * max number of sticks
-	 * </p>
-	 * <p>
-	 * スティックの最大表示数
-	 * </p>
-	 * <p>
-	 * 柱条的最大表示数
-	 * </p>
-	 */
-	private int maxSticksNum;
-
-	/**
-	 * <p>
-	 * max value of Y axis
-	 * </p>
-	 * <p>
-	 * Y軸の最大値
-	 * </p>
-	 * <p>
-	 * Y的最大表示值
-	 * </p>
-	 */
-	private float maxValue = 0;
-
-	/**
-	 * <p>
-	 * min value of Y axis
-	 * </p>
-	 * <p>
-	 * Y軸の最小値
-	 * </p>
-	 * <p>
-	 * Y的最小表示值
-	 * </p>
-	 */
-	private float minValue = 0;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -281,6 +226,50 @@ public class CandleStickChart extends GridChart {
 		super(context, attrs);
 	}
 
+	protected void calcDataValueRange() {
+		double maxValue = 0;
+		double minValue = Integer.MAX_VALUE;
+
+		IMeasurable first = this.stickData.get(0);
+
+		// 第一个stick为停盘的情况
+		if (first.getHigh() == 0 && first.getLow() == 0) {
+
+		} else {
+			// max取最小，min取最大
+			maxValue = first.getHigh();
+			minValue = first.getLow();
+		}
+
+		for (int i = 0; i < this.maxSticksNum; i++) {
+			OHLCEntity stick = (OHLCEntity) this.stickData.get(i);
+			if (stick.getOpen() == 0 && stick.getHigh() == 0
+					&& stick.getLow() == 0) {
+				// 停盘期间计算收盘价
+				if (stick.getClose() > 0) {
+					if (stick.getClose() < minValue) {
+						minValue = stick.getClose();
+					}
+
+					if (stick.getClose() > maxValue) {
+						maxValue = stick.getClose();
+					}
+				}
+			} else {
+				if (stick.getLow() < minValue) {
+					minValue = stick.getLow();
+				}
+
+				if (stick.getLow() > maxValue) {
+					maxValue = stick.getLow();
+				}
+			}
+		}
+
+		this.maxValue = maxValue;
+		this.minValue = minValue;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -293,155 +282,78 @@ public class CandleStickChart extends GridChart {
 	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
-		initAxisY();
-		initAxisX();
 		super.onDraw(canvas);
-
-		drawCandleSticks(canvas);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param value
-	 * 
-	 * @see cn.limc.androidcharts.view.GridChart#getAxisXGraduate(Object)
-	 */
-	@Override
-	public String getAxisXGraduate(Object value) {
-		float graduate = Float.valueOf(super.getAxisXGraduate(value));
-		int index = (int) Math.floor(graduate * maxSticksNum);
-
-		if (index >= maxSticksNum) {
-			index = maxSticksNum - 1;
-		} else if (index < 0) {
-			index = 0;
-		}
-
-		return String.valueOf(OHLCData.get(index).getDate());
-	}
-
-	/**
-	 * <p>
-	 * get current selected data index
-	 * </p>
-	 * <p>
-	 * 選択したスティックのインデックス
-	 * </p>
-	 * <p>
-	 * 获取当前选中的柱条的index
-	 * </p>
-	 * 
-	 * @return int
-	 *         <p>
-	 *         index
-	 *         </p>
-	 *         <p>
-	 *         インデックス
-	 *         </p>
-	 *         <p>
-	 *         index
-	 *         </p>
-	 */
-	public int getSelectedIndex() {
-		if (null == super.getTouchPoint()) {
-			return 0;
-		}
-		float graduate = Float.valueOf(super.getAxisXGraduate(super
-				.getTouchPoint().x));
-		int index = (int) Math.floor(graduate * maxSticksNum);
-
-		if (index >= maxSticksNum) {
-			index = maxSticksNum - 1;
-		} else if (index < 0) {
-			index = 0;
-		}
-
-		return index;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param value
-	 * 
-	 * @see cn.limc.androidcharts.view.GridChart#getAxisYGraduate(Object)
-	 */
-	@Override
-	public String getAxisYGraduate(Object value) {
-		float graduate = Float.valueOf(super.getAxisYGraduate(value));
-		return String.valueOf((int) Math.floor(graduate * (maxValue - minValue)
-				+ minValue));
-	}
-
-	/**
-	 * <p>
-	 * initialize degrees on Y axis
-	 * </p>
-	 * <p>
-	 * Y軸の目盛を初期化
-	 * </p>
-	 * <p>
-	 * 初始化Y轴的坐标值
-	 * </p>
-	 */
-	protected void initAxisX() {
-		List<String> TitleX = new ArrayList<String>();
-		if (null != OHLCData) {
-			float average = maxSticksNum / this.getLongitudeNum();
-			// �?��刻度
-			for (int i = 0; i < this.getLongitudeNum(); i++) {
-				int index = (int) Math.floor(i * average);
-				if (index > maxSticksNum - 1) {
-					index = maxSticksNum - 1;
-				}
-				// 追�??�?
-				TitleX.add(String.valueOf(OHLCData.get(index).getDate())
-						.substring(4));
-			}
-			TitleX.add(String.valueOf(OHLCData.get(maxSticksNum - 1).getDate())
-					.substring(4));
-		}
-		super.setAxisXTitles(TitleX);
-	}
-
-	/**
-	 * <p>
-	 * initialize degrees on Y axis
-	 * </p>
-	 * <p>
-	 * Y軸の目盛を初期化
-	 * </p>
-	 * <p>
-	 * 初始化Y轴的坐标值
-	 * </p>
-	 */
-	protected void initAxisY() {
-		List<String> TitleY = new ArrayList<String>();
-		float average = (int) ((maxValue - minValue) / this.getLatitudeNum()) / 10 * 10;
-		// calculate degrees on Y axis
-		for (int i = 0; i < this.getLatitudeNum(); i++) {
-			String value = String.valueOf((int) Math.floor(minValue + i
-					* average));
-			if (value.length() < super.getAxisYMaxTitleLength()) {
-				while (value.length() < super.getAxisYMaxTitleLength()) {
-					value = new String(" ") + value;
-				}
-			}
-			TitleY.add(value);
-		}
-		// calculate last degrees by use max value
-		String value = String.valueOf((int) Math
-				.floor(((int) maxValue) / 10 * 10));
-		if (value.length() < super.getAxisYMaxTitleLength()) {
-			while (value.length() < super.getAxisYMaxTitleLength()) {
-				value = new String(" ") + value;
-			}
-		}
-		TitleY.add(value);
-
-		super.setAxisYTitles(TitleY);
-	}
+	// /**
+	// * <p>
+	// * initialize degrees on Y axis
+	// * </p>
+	// * <p>
+	// * Y軸の目盛を初期化
+	// * </p>
+	// * <p>
+	// * 初始化Y轴的坐标值
+	// * </p>
+	// */
+	// protected void initAxisX() {
+	// List<String> TitleX = new ArrayList<String>();
+	// if (null != stickData) {
+	// float average = maxSticksNum / this.getLongitudeNum();
+	// // �?��刻度
+	// for (int i = 0; i < this.getLongitudeNum(); i++) {
+	// int index = (int) Math.floor(i * average);
+	// if (index > maxSticksNum - 1) {
+	// index = maxSticksNum - 1;
+	// }
+	// // 追�??�?
+	// TitleX.add(String.valueOf(stickData.get(index).getDate())
+	// .substring(4));
+	// }
+	// TitleX.add(String.valueOf(stickData.get(maxSticksNum - 1).getDate())
+	// .substring(4));
+	// }
+	// super.setLongitudeTitles(TitleX);
+	// }
+	//
+	// /**
+	// * <p>
+	// * initialize degrees on Y axis
+	// * </p>
+	// * <p>
+	// * Y軸の目盛を初期化
+	// * </p>
+	// * <p>
+	// * 初始化Y轴的坐标值
+	// * </p>
+	// */
+	// protected void initAxisY() {
+	// List<String> TitleY = new ArrayList<String>();
+	// float average = (int) ((maxValue - minValue) / this.getLatitudeNum()) /
+	// 10 * 10;
+	// // calculate degrees on Y axis
+	// for (int i = 0; i < this.getLatitudeNum(); i++) {
+	// String value = String.valueOf((int) Math.floor(minValue + i
+	// * average));
+	// if (value.length() < super.getLatitudeMaxTitleLength()) {
+	// while (value.length() < super.getLatitudeMaxTitleLength()) {
+	// value = new String(" ") + value;
+	// }
+	// }
+	// TitleY.add(value);
+	// }
+	// // calculate last degrees by use max value
+	// String value = String.valueOf((int) Math
+	// .floor(((int) maxValue) / 10 * 10));
+	// if (value.length() < super.getLatitudeMaxTitleLength()) {
+	// while (value.length() < super.getLatitudeMaxTitleLength()) {
+	// value = new String(" ") + value;
+	// }
+	// }
+	// TitleY.add(value);
+	//
+	// super.setLatitudeTitles(TitleY);
+	// }
 
 	/**
 	 * <p>
@@ -456,7 +368,8 @@ public class CandleStickChart extends GridChart {
 	 * 
 	 * @param canvas
 	 */
-	protected void drawCandleSticks(Canvas canvas) {
+	@Override
+	protected void drawSticks(Canvas canvas) {
 		float stickWidth = ((super.getWidth() - super.getAxisMarginLeft() - super
 				.getAxisMarginRight()) / maxSticksNum) - 1;
 		float stickX = super.getAxisMarginLeft() + 1;
@@ -470,9 +383,9 @@ public class CandleStickChart extends GridChart {
 		Paint mPaintCross = new Paint();
 		mPaintCross.setColor(crossStarColor);
 
-		if (null != OHLCData) {
-			for (int i = 0; i < OHLCData.size(); i++) {
-				OHLCEntity ohlc = OHLCData.get(i);
+		if (null != stickData) {
+			for (int i = 0; i < stickData.size(); i++) {
+				OHLCEntity ohlc = (OHLCEntity) stickData.get(i);
 				float openY = (float) ((1f - (ohlc.getOpen() - minValue)
 						/ (maxValue - minValue))
 						* (super.getHeight() - super.getAxisMarginBottom()) - super
@@ -518,83 +431,6 @@ public class CandleStickChart extends GridChart {
 
 				// next x
 				stickX = stickX + 1 + stickWidth;
-			}
-		}
-	}
-
-	/**
-	 * <p>
-	 * add a new stick data to sticks and refresh this chart
-	 * </p>
-	 * <p>
-	 * 新しいスティックデータを追加する，フラフをレフレシューする
-	 * </p>
-	 * <p>
-	 * 追加一条新数据并刷新当前图表
-	 * </p>
-	 * 
-	 * @param entity
-	 *            <p>
-	 *            data
-	 *            </p>
-	 *            <p>
-	 *            データ
-	 *            </p>
-	 *            <p>
-	 *            新数据
-	 *            </p>
-	 */
-	public void pushData(OHLCEntity entity) {
-		if (null != entity) {
-			// 追�?��据到数据列表
-			addData(entity);
-			// 强制重�?
-			super.postInvalidate();
-		}
-	}
-
-	/**
-	 * <p>
-	 * add a new stick data to sticks
-	 * </p>
-	 * <p>
-	 * 新しいスティックデータを追加する
-	 * </p>
-	 * <p>
-	 * 追加一条新数据
-	 * </p>
-	 * 
-	 * @param entity
-	 *            <p>
-	 *            data
-	 *            </p>
-	 *            <p>
-	 *            データ
-	 *            </p>
-	 *            <p>
-	 *            新数据
-	 *            </p>
-	 */
-	public void addData(OHLCEntity entity) {
-		if (null != entity) {
-			if (null == OHLCData || 0 == OHLCData.size()) {
-				OHLCData = new ArrayList<OHLCEntity>();
-				this.minValue = ((int) entity.getLow()) / 10 * 10;
-				this.maxValue = ((int) entity.getHigh()) / 10 * 10;
-			}
-
-			this.OHLCData.add(entity);
-
-			if (this.minValue > entity.getLow()) {
-				this.minValue = ((int) entity.getLow()) / 10 * 10;
-			}
-
-			if (this.maxValue < entity.getHigh()) {
-				this.maxValue = 10 + ((int) entity.getHigh()) / 10 * 10;
-			}
-
-			if (OHLCData.size() > maxSticksNum) {
-				maxSticksNum = maxSticksNum + 1;
 			}
 		}
 	}
@@ -718,7 +554,7 @@ public class CandleStickChart extends GridChart {
 	 * </p>
 	 */
 	protected void zoomOut() {
-		if (maxSticksNum < OHLCData.size() - 1) {
+		if (maxSticksNum < stickData.size() - 1) {
 			maxSticksNum = maxSticksNum + 3;
 		}
 	}
@@ -798,68 +634,4 @@ public class CandleStickChart extends GridChart {
 		this.crossStarColor = crossStarColor;
 	}
 
-	/**
-	 * @return the oHLCData
-	 */
-	public List<OHLCEntity> getOHLCData() {
-		return OHLCData;
-	}
-
-	/**
-	 * @param oHLCData
-	 *            the oHLCData to set
-	 */
-	public void setOHLCData(List<OHLCEntity> oHLCData) {
-		if (null != OHLCData) {
-			OHLCData.clear();
-		}
-		for (OHLCEntity e : oHLCData) {
-			addData(e);
-		}
-	}
-
-	/**
-	 * @return the maxSticksNum
-	 */
-	public int getMaxSticksNum() {
-		return maxSticksNum;
-	}
-
-	/**
-	 * @param maxSticksNum
-	 *            the maxSticksNum to set
-	 */
-	public void setMaxSticksNum(int maxSticksNum) {
-		this.maxSticksNum = maxSticksNum;
-	}
-
-	/**
-	 * @return the maxValue
-	 */
-	public float getMaxValue() {
-		return maxValue;
-	}
-
-	/**
-	 * @param maxValue
-	 *            the maxValue to set
-	 */
-	public void setMaxValue(float maxValue) {
-		this.maxValue = maxValue;
-	}
-
-	/**
-	 * @return the minValue
-	 */
-	public float getMinValue() {
-		return minValue;
-	}
-
-	/**
-	 * @param minValue
-	 *            the minValue to set
-	 */
-	public void setMinValue(float minValue) {
-		this.minValue = minValue;
-	}
 }

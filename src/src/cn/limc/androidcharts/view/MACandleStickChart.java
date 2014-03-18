@@ -23,8 +23,8 @@ package cn.limc.androidcharts.view;
 
 import java.util.List;
 
+import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
-
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -65,7 +65,7 @@ public class MACandleStickChart extends CandleStickChart {
 	 * 绘制线条用的数据
 	 * </p>
 	 */
-	private List<LineEntity<Float>> lineData;
+	private List<LineEntity<DateValueEntity>> linesData;
 
 	/*
 	 * (non-Javadoc)
@@ -110,6 +110,34 @@ public class MACandleStickChart extends CandleStickChart {
 		super(context, attrs);
 	}
 
+	@Override
+	protected void calcDataValueRange() {
+		super.calcDataValueRange();
+
+		double maxValue = this.maxValue;
+		double minValue = this.minValue;
+		// 逐条输出MA线
+		for (int i = 0; i < this.linesData.size(); i++) {
+			LineEntity<DateValueEntity> line = this.linesData.get(i);
+			if (line != null && line.getLineData().size() > 0) {
+				// 判断显示为方柱或显示为线条
+				for (int j = 0; j < this.maxSticksNum; j++) {
+					DateValueEntity lineData = line.getLineData().get(j);
+					if (lineData.getValue() < minValue) {
+						minValue = lineData.getValue();
+					}
+
+					if (lineData.getValue() > maxValue) {
+						maxValue = lineData.getValue();
+					}
+
+				}
+			}
+		}
+		this.maxValue = maxValue;
+		this.minValue = minValue;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -125,8 +153,8 @@ public class MACandleStickChart extends CandleStickChart {
 		super.onDraw(canvas);
 
 		// draw lines
-		if (null != this.lineData) {
-			if (0 != this.lineData.size()) {
+		if (null != this.linesData) {
+			if (0 != this.linesData.size()) {
 				drawLines(canvas);
 			}
 		}
@@ -153,20 +181,21 @@ public class MACandleStickChart extends CandleStickChart {
 		float startX;
 
 		// draw MA lines
-		for (int i = 0; i < lineData.size(); i++) {
-			LineEntity<Float> line = (LineEntity<Float>) lineData.get(i);
+		for (int i = 0; i < linesData.size(); i++) {
+			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
+					.get(i);
 			if (line.isDisplay()) {
 				Paint mPaint = new Paint();
 				mPaint.setColor(line.getLineColor());
 				mPaint.setAntiAlias(true);
-				List<Float> lineData = line.getLineData();
+				List<DateValueEntity> lineData = line.getLineData();
 				// set start point’s X
 				startX = super.getAxisMarginLeft() + lineLength / 2f;
 				// start point
 				PointF ptFirst = null;
 				if (lineData != null) {
 					for (int j = 0; j < lineData.size(); j++) {
-						float value = lineData.get(j).floatValue();
+						float value = lineData.get(j).getValue();
 						// calculate Y
 						float valueY = (float) ((1f - (value - super
 								.getMinValue())
@@ -188,17 +217,17 @@ public class MACandleStickChart extends CandleStickChart {
 	}
 
 	/**
-	 * @return the lineData
+	 * @return the linesData
 	 */
-	public List<LineEntity<Float>> getLineData() {
-		return lineData;
+	public List<LineEntity<DateValueEntity>> getLinesData() {
+		return linesData;
 	}
 
 	/**
-	 * @param lineData
-	 *            the lineData to set
+	 * @param linesData
+	 *            the linesData to set
 	 */
-	public void setLineData(List<LineEntity<Float>> lineData) {
-		this.lineData = lineData;
+	public void setLinesData(List<LineEntity<DateValueEntity>> linesData) {
+		this.linesData = linesData;
 	}
 }

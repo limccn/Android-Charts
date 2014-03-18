@@ -21,10 +21,7 @@
 
 package cn.limc.androidcharts.view;
 
-import java.util.List;
-
-import cn.limc.androidcharts.entity.StickEntity;
-
+import cn.limc.androidcharts.entity.IMeasurable;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -49,9 +46,9 @@ import android.util.AttributeSet;
  * 
  */
 public class MinusStickChart extends StickChart {
-	
+
 	public static final int DEFAULT_STICK_SPACING = 6;
-	
+
 	private int stickSpacing = DEFAULT_STICK_SPACING;
 
 	/*
@@ -95,6 +92,46 @@ public class MinusStickChart extends StickChart {
 		super(context, attrs);
 	}
 
+	@Override
+	protected void calcDataValueRange() {
+
+		double maxValue = Integer.MIN_VALUE;
+		double minValue = Integer.MAX_VALUE;
+
+		IMeasurable first = this.stickData.get(0);
+		// 第一个stick为停盘的情况
+		if (first.getHigh() == 0 && first.getLow() == 0) {
+
+		} else {
+			maxValue = first.getHigh();
+			minValue = first.getLow();
+		}
+
+		// 判断显示为方柱或显示为线条
+		for (int i = 0; i < this.stickData.size(); i++) {
+			IMeasurable stick = this.stickData.get(i);
+			if (stick.getLow() < minValue) {
+				minValue = stick.getLow();
+			}
+
+			if (stick.getHigh() > maxValue) {
+				maxValue = stick.getHigh();
+			}
+
+		}
+
+		this.maxValue = maxValue;
+		this.minValue = minValue;
+	}
+
+	@Override
+	protected void calcValueRangePaddingZero() {
+	}
+
+	@Override
+	protected void calcValueRangeFormatForAxis() {
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -121,12 +158,10 @@ public class MinusStickChart extends StickChart {
 		mPaintBorder.setStrokeWidth(2);
 		mPaintBorder.setColor(super.getStickBorderColor());
 
-		List<StickEntity> data = super.getStickData();
-
-		if (null != data) {
+		if (null != stickData) {
 			// display as stick or line
-			for (int i = 0; i < data.size(); i++) {
-				StickEntity e = data.get(i);
+			for (int i = 0; i < stickData.size(); i++) {
+				IMeasurable e = stickData.get(i);
 
 				float highY = (float) ((1f - (e.getHigh() - super.minValue)
 						/ (maxValue - minValue))
@@ -157,7 +192,8 @@ public class MinusStickChart extends StickChart {
 	}
 
 	/**
-	 * @param stickSpacing the stickSpacing to set
+	 * @param stickSpacing
+	 *            the stickSpacing to set
 	 */
 	public void setStickSpacing(int stickSpacing) {
 		this.stickSpacing = stickSpacing;

@@ -19,7 +19,6 @@
  * limitations under the License.
  */
 
-
 package cn.limc.androidcharts.view;
 
 import java.util.List;
@@ -32,56 +31,80 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
 
-/** 
- * <p>en</p>
- * <p>jp</p>
- * <p>cn</p>
- *
- * @author limc 
- * @version v1.0 2014/01/22 16:19:37 
- *  
+/**
+ * <p>
+ * en
+ * </p>
+ * <p>
+ * jp
+ * </p>
+ * <p>
+ * cn
+ * </p>
+ * 
+ * @author limc
+ * @version v1.0 2014/01/22 16:19:37
+ * 
  */
 public class SlipAreaChart extends SlipLineChart {
 
-	/** 
-	 * <p>Constructor of SlipAreaChart</p>
-	 * <p>SlipAreaChart类对象的构造函数</p>
-	 * <p>SlipAreaChartのコンストラクター</p>
-	 *
+	/**
+	 * <p>
+	 * Constructor of SlipAreaChart
+	 * </p>
+	 * <p>
+	 * SlipAreaChart类对象的构造函数
+	 * </p>
+	 * <p>
+	 * SlipAreaChartのコンストラクター
+	 * </p>
+	 * 
 	 * @param context
 	 * @param attrs
-	 * @param defStyle 
+	 * @param defStyle
 	 */
 	public SlipAreaChart(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		// TODO Auto-generated constructor stub
 	}
 
-	/** 
-	 * <p>Constructor of SlipAreaChart</p>
-	 * <p>SlipAreaChart类对象的构造函数</p>
-	 * <p>SlipAreaChartのコンストラクター</p>
-	 *
+	/**
+	 * <p>
+	 * Constructor of SlipAreaChart
+	 * </p>
+	 * <p>
+	 * SlipAreaChart类对象的构造函数
+	 * </p>
+	 * <p>
+	 * SlipAreaChartのコンストラクター
+	 * </p>
+	 * 
 	 * @param context
-	 * @param attrs 
+	 * @param attrs
 	 */
 	public SlipAreaChart(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub
 	}
 
-	/** 
-	 * <p>Constructor of SlipAreaChart</p>
-	 * <p>SlipAreaChart类对象的构造函数</p>
-	 * <p>SlipAreaChartのコンストラクター</p>
-	 *
-	 * @param context 
+	/**
+	 * <p>
+	 * Constructor of SlipAreaChart
+	 * </p>
+	 * <p>
+	 * SlipAreaChart类对象的构造函数
+	 * </p>
+	 * <p>
+	 * SlipAreaChartのコンストラクター
+	 * </p>
+	 * 
+	 * @param context
 	 */
 	public SlipAreaChart(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -94,13 +117,13 @@ public class SlipAreaChart extends SlipLineChart {
 	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);		
+		super.onDraw(canvas);
 		// draw lines
 		if (null != linesData) {
 			drawAreas(canvas);
 		}
 	}
-	
+
 	/**
 	 * <p>
 	 * draw lines
@@ -122,7 +145,8 @@ public class SlipAreaChart extends SlipLineChart {
 
 		// draw lines
 		for (int i = 0; i < linesData.size(); i++) {
-			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData.get(i);
+			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
+					.get(i);
 			if (line.isDisplay()) {
 				Paint mPaint = new Paint();
 				mPaint.setColor(line.getLineColor());
@@ -143,11 +167,17 @@ public class SlipAreaChart extends SlipLineChart {
 
 						// if is not last point connect to previous point
 						if (j == displayFrom) {
-							linePath.moveTo(startX, super.getHeight() - super.getAxisMarginBottom());
+							linePath.moveTo(
+									startX,
+									super.getHeight()
+											- super.getAxisMarginBottom());
 							linePath.lineTo(startX, valueY);
-						} else if(j == displayFrom + displayNumber - 1) {
+						} else if (j == displayFrom + displayNumber - 1) {
 							linePath.lineTo(startX, valueY);
-							linePath.lineTo(startX , super.getHeight() - super.getAxisMarginBottom());
+							linePath.lineTo(
+									startX,
+									super.getHeight()
+											- super.getAxisMarginBottom());
 						} else {
 							linePath.lineTo(startX, valueY);
 						}

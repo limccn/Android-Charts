@@ -90,7 +90,7 @@ public class SlipLineChart extends GridChart {
 	 * Y的最小表示值
 	 * </p>
 	 */
-	private int minValue;
+	private double minValue;
 
 	/**
 	 * <p>
@@ -103,7 +103,7 @@ public class SlipLineChart extends GridChart {
 	 * Y的最大表示值
 	 * </p>
 	 */
-	private int maxValue;
+	private double maxValue;
 
 	/*
 	 * (non-Javadoc)
@@ -148,6 +148,141 @@ public class SlipLineChart extends GridChart {
 		super(context, attrs);
 	}
 
+	protected void calcDataValueRange() {
+		double maxValue = 0;
+		double minValue = Integer.MAX_VALUE;
+		// 逐条输出MA线
+		for (int i = 0; i < this.linesData.size(); i++) {
+			LineEntity<DateValueEntity> line = this.linesData.get(i);
+			if (line != null && line.getLineData().size() > 0) {
+				// 判断显示为方柱或显示为线条
+				for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+					DateValueEntity lineData = line.getLineData().get(j);
+					if (lineData.getValue() < minValue) {
+						minValue = lineData.getValue();
+					}
+
+					if (lineData.getValue() > maxValue) {
+						maxValue = lineData.getValue();
+					}
+
+				}
+			}
+		}
+
+		this.maxValue = maxValue;
+		this.minValue = minValue;
+	}
+
+	protected void calcValueRangePaddingZero() {
+		double maxValue = this.maxValue;
+		double minValue = this.minValue;
+
+		if ((long) maxValue > (long) minValue) {
+			if ((maxValue - minValue) < 10. && minValue > 1.) {
+				this.maxValue = (long) (maxValue + 1);
+				this.minValue = (long) (minValue - 1);
+			} else {
+				this.maxValue = (long) (maxValue + (maxValue - minValue) * 0.1);
+				this.minValue = (long) (minValue - (maxValue - minValue) * 0.1);
+
+				if (this.minValue < 0) {
+					this.minValue = 0;
+				}
+			}
+		} else if ((long) maxValue == (long) minValue) {
+			if (maxValue <= 10 && maxValue > 1) {
+				this.maxValue = maxValue + 1;
+				this.minValue = minValue - 1;
+			} else if (maxValue <= 100 && maxValue > 10) {
+				this.maxValue = maxValue + 10;
+				this.minValue = minValue - 10;
+			} else if (maxValue <= 1000 && maxValue > 100) {
+				this.maxValue = maxValue + 100;
+				this.minValue = minValue - 100;
+			} else if (maxValue <= 10000 && maxValue > 1000) {
+				this.maxValue = maxValue + 1000;
+				this.minValue = minValue - 1000;
+			} else if (maxValue <= 100000 && maxValue > 10000) {
+				this.maxValue = maxValue + 10000;
+				this.minValue = minValue - 10000;
+			} else if (maxValue <= 1000000 && maxValue > 100000) {
+				this.maxValue = maxValue + 100000;
+				this.minValue = minValue - 100000;
+			} else if (maxValue <= 10000000 && maxValue > 1000000) {
+				this.maxValue = maxValue + 1000000;
+				this.minValue = minValue - 1000000;
+			} else if (maxValue <= 100000000 && maxValue > 10000000) {
+				this.maxValue = maxValue + 10000000;
+				this.minValue = minValue - 10000000;
+			}
+		} else {
+			this.maxValue = 0;
+			this.minValue = 0;
+		}
+	}
+
+	protected void calcValueRangeFormatForAxis() {
+		int rate = 1;
+
+		if (this.maxValue < 3000) {
+			rate = 1;
+		} else if (this.maxValue >= 3000 && this.maxValue < 5000) {
+			rate = 5;
+		} else if (this.maxValue >= 5000 && this.maxValue < 30000) {
+			rate = 10;
+		} else if (this.maxValue >= 30000 && this.maxValue < 50000) {
+			rate = 50;
+		} else if (this.maxValue >= 50000 && this.maxValue < 300000) {
+			rate = 100;
+		} else if (this.maxValue >= 300000 && this.maxValue < 500000) {
+			rate = 500;
+		} else if (this.maxValue >= 500000 && this.maxValue < 3000000) {
+			rate = 1000;
+		} else if (this.maxValue >= 3000000 && this.maxValue < 5000000) {
+			rate = 5000;
+		} else if (this.maxValue >= 5000000 && this.maxValue < 30000000) {
+			rate = 10000;
+		} else if (this.maxValue >= 30000000 && this.maxValue < 50000000) {
+			rate = 50000;
+		} else {
+			rate = 100000;
+		}
+
+		// 等分轴修正
+		if (this.latitudeNum > 0 && rate > 1
+				&& (long) (this.minValue) % rate != 0) {
+			// 最大值加上轴差
+			this.minValue = (long) this.minValue
+					- ((long) (this.minValue) % rate);
+		}
+		// 等分轴修正
+		if (this.latitudeNum > 0
+				&& (long) (this.maxValue - this.minValue)
+						% (this.latitudeNum * rate) != 0) {
+			// 最大值加上轴差
+			this.maxValue = (long) this.maxValue
+					+ (this.latitudeNum * rate)
+					- ((long) (this.maxValue - this.minValue) % (this.latitudeNum * rate));
+		}
+	}
+
+	protected void calcValueRange() {
+		if (null == this.linesData) {
+			this.maxValue = 0;
+			this.minValue = 0;
+			return;
+		}
+		if (this.linesData.size() > 0) {
+			this.calcDataValueRange();
+			this.calcValueRangePaddingZero();
+		} else {
+			this.maxValue = 0;
+			this.minValue = 0;
+		}
+		this.calcValueRangeFormatForAxis();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -160,10 +295,11 @@ public class SlipLineChart extends GridChart {
 	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
 		initAxisY();
 		initAxisX();
-		
+
+		super.onDraw(canvas);
+
 		// draw lines
 		if (null != this.linesData) {
 			drawLines(canvas);
@@ -189,7 +325,8 @@ public class SlipLineChart extends GridChart {
 		}
 		index = index + displayFrom;
 
-		return String.valueOf(linesData.get(0).getLineData().get(index).getDate());
+		return String.valueOf(linesData.get(0).getLineData().get(index)
+				.getDate());
 	}
 
 	/*
@@ -205,7 +342,7 @@ public class SlipLineChart extends GridChart {
 		return String.valueOf((int) Math.floor(graduate * (maxValue - minValue)
 				+ minValue));
 	}
-	
+
 	/**
 	 * <p>
 	 * initialize degrees on Y axis
@@ -218,6 +355,7 @@ public class SlipLineChart extends GridChart {
 	 * </p>
 	 */
 	protected void initAxisY() {
+		this.calcValueRange();
 		List<String> TitleY = new ArrayList<String>();
 		float average = (int) ((maxValue - minValue) / this.getLatitudeNum());
 		;
@@ -225,26 +363,25 @@ public class SlipLineChart extends GridChart {
 		for (int i = 0; i < this.getLatitudeNum(); i++) {
 			String value = String.valueOf((int) Math.floor(minValue + i
 					* average));
-			if (value.length() < super.getAxisYMaxTitleLength()) {
-				while (value.length() < super.getAxisYMaxTitleLength()) {
+			if (value.length() < super.getLatitudeMaxTitleLength()) {
+				while (value.length() < super.getLatitudeMaxTitleLength()) {
 					value = new String(" ") + value;
 				}
 			}
 			TitleY.add(value);
 		}
 		// calculate last degrees by use max value
-		String value = String.valueOf((int) Math
-				.floor(((int) maxValue)));
-		if (value.length() < super.getAxisYMaxTitleLength()) {
-			while (value.length() < super.getAxisYMaxTitleLength()) {
+		String value = String.valueOf((int) Math.floor(((int) maxValue)));
+		if (value.length() < super.getLatitudeMaxTitleLength()) {
+			while (value.length() < super.getLatitudeMaxTitleLength()) {
 				value = new String(" ") + value;
 			}
 		}
 		TitleY.add(value);
 
-		super.setAxisYTitles(TitleY);
+		super.setLatitudeTitles(TitleY);
 	}
-	
+
 	/**
 	 * <p>
 	 * initialize degrees on Y axis
@@ -266,16 +403,18 @@ public class SlipLineChart extends GridChart {
 					index = displayNumber - 1;
 				}
 				index = index + displayFrom;
-				TitleX.add(String.valueOf(linesData.get(0).getLineData().get(index).getDate())
+				TitleX.add(String.valueOf(
+						linesData.get(0).getLineData().get(index).getDate())
 						.substring(4));
 			}
 			TitleX.add(String.valueOf(
-					linesData.get(0).getLineData().get(displayFrom + displayNumber - 1).getDate())
+					linesData.get(0).getLineData()
+							.get(displayFrom + displayNumber - 1).getDate())
 					.substring(4));
 		}
-		super.setAxisXTitles(TitleX);
+		super.setLongitudeTitles(TitleX);
 	}
-	
+
 	/**
 	 * <p>
 	 * draw lines
@@ -297,7 +436,8 @@ public class SlipLineChart extends GridChart {
 
 		// draw lines
 		for (int i = 0; i < linesData.size(); i++) {
-			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData.get(i);
+			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
+					.get(i);
 			if (line.isDisplay()) {
 				Paint mPaint = new Paint();
 				mPaint.setColor(line.getLineColor());
@@ -383,7 +523,8 @@ public class SlipLineChart extends GridChart {
 				if (newdistance > MIN_LENGTH) {
 					if (startPointA.x >= event.getX(0)
 							&& startPointB.x >= event.getX(1)) {
-						if (displayFrom + displayNumber + 2 < linesData.get(0).getLineData().size()) {
+						if (displayFrom + displayNumber + 2 < linesData.get(0)
+								.getLineData().size()) {
 							displayFrom = displayFrom + 2;
 						}
 					} else if (startPointA.x <= event.getX(0)
@@ -487,8 +628,10 @@ public class SlipLineChart extends GridChart {
 			}
 
 			// 处理displayFrom越界
-			if (displayFrom + displayNumber >= linesData.get(0).getLineData().size()) {
-				displayFrom = linesData.get(0).getLineData().size() - displayNumber;
+			if (displayFrom + displayNumber >= linesData.get(0).getLineData()
+					.size()) {
+				displayFrom = linesData.get(0).getLineData().size()
+						- displayNumber;
 			}
 		}
 	}
@@ -530,8 +673,10 @@ public class SlipLineChart extends GridChart {
 				}
 			}
 
-			if (displayFrom + displayNumber >= linesData.get(0).getLineData().size()) {
-				displayNumber = linesData.get(0).getLineData().size() - displayFrom;
+			if (displayFrom + displayNumber >= linesData.get(0).getLineData()
+					.size()) {
+				displayNumber = linesData.get(0).getLineData().size()
+						- displayFrom;
 			}
 		}
 	}
@@ -539,7 +684,7 @@ public class SlipLineChart extends GridChart {
 	/**
 	 * @return the minValue
 	 */
-	public int getMinValue() {
+	public double getMinValue() {
 		return minValue;
 	}
 
@@ -547,14 +692,14 @@ public class SlipLineChart extends GridChart {
 	 * @param minValue
 	 *            the minValue to set
 	 */
-	public void setMinValue(int minValue) {
+	public void setMinValue(double minValue) {
 		this.minValue = minValue;
 	}
 
 	/**
 	 * @return the maxValue
 	 */
-	public int getMaxValue() {
+	public double getMaxValue() {
 		return maxValue;
 	}
 
@@ -634,7 +779,8 @@ public class SlipLineChart extends GridChart {
 	}
 
 	/**
-	 * @param linesData the linesData to set
+	 * @param linesData
+	 *            the linesData to set
 	 */
 	public void setLinesData(List<LineEntity<DateValueEntity>> linesData) {
 		this.linesData = linesData;

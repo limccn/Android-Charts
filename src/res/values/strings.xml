@@ -19,6 +19,7 @@
     <string name="macandlestickchart">MACandleStickChart</string>
     <string name="maslipcandlestickchart">MASlipCandleStickChart</string>
     <string name="bollmaslipcandlestickchart">BOLLMASlipCandleStickChart</string>
+    <string name="macdchart">MACDChart</string>
     <string name="piechart">PieChart</string>
     <string name="piechart_title1">title1</string>
     <string name="piechart_title2">title2</string>
