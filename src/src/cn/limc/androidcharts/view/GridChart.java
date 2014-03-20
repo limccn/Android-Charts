@@ -32,9 +32,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.PathEffect;
 import android.graphics.PointF;
-import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -60,6 +60,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 		ITouchEventResponse {
 
 	public static final int AXIS_X_POSITION_BOTTOM = 1 << 0;
+	@Deprecated
 	public static final int AXIS_X_POSITION_TOP = 1 << 1;
 	public static final int AXIS_Y_POSITION_LEFT = 1 << 2;
 	public static final int AXIS_Y_POSITION_RIGHT = 1 << 3;
@@ -102,6 +103,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * </p>
 	 */
 	public static final int DEFAULT_AXIS_Y_COLOR = Color.RED;
+	public static final float DEFAULT_AXIS_WIDTH = 1;
 
 	public static final int DEFAULT_AXIS_X_POSITION = AXIS_X_POSITION_BOTTOM;
 
@@ -144,7 +146,9 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 默认轴线左边距
 	 * </p>
 	 */
+	@Deprecated
 	public static final float DEFAULT_AXIS_MARGIN_LEFT = 42f;
+	public static final float DEFAULT_AXIS_Y_TITLE_QUADRANT_WIDTH = 16f;
 
 	/**
 	 * <p>
@@ -157,7 +161,9 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 默认轴线下边距
 	 * </p>
 	 */
+	@Deprecated
 	public static final float DEFAULT_AXIS_MARGIN_BOTTOM = 16f;
+	public static final float DEFAULT_AXIS_X_TITLE_QUADRANT_HEIGHT = 16f;
 
 	/**
 	 * <p>
@@ -170,7 +176,10 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 默认轴线上边距
 	 * </p>
 	 */
+	@Deprecated
 	public static final float DEFAULT_AXIS_MARGIN_TOP = 5f;
+	public static final float DEFAULT_DATA_QUADRANT_PADDING_TOP = 5f;
+	public static final float DEFAULT_DATA_QUADRANT_PADDING_BOTTOM = 5f;
 
 	/**
 	 * <p>
@@ -183,7 +192,10 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 轴线右边距
 	 * </p>
 	 */
+	@Deprecated
 	public static final float DEFAULT_AXIS_MARGIN_RIGHT = 5f;
+	public static final float DEFAULT_DATA_QUADRANT_PADDING_LEFT = 5f;
+	public static final float DEFAULT_DATA_QUADRANT_PADDING_RIGHT = 5f;
 
 	/**
 	 * <p>
@@ -315,6 +327,8 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 */
 	public static final int DEFAULT_BORDER_COLOR = Color.RED;
 
+	public static final float DEFAULT_BORDER_WIDTH = 1f;
+
 	/**
 	 * <p>
 	 * default color of text for the longitude　degrees display
@@ -425,19 +439,6 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 
 	/**
 	 * <p>
-	 * background color
-	 * </p>
-	 * <p>
-	 * 背景の色
-	 * </p>
-	 * <p>
-	 * 背景色
-	 * </p>
-	 */
-	private int backgroundColor = DEFAULT_BACKGROUND_COLOR;
-
-	/**
-	 * <p>
 	 * Color of X axis
 	 * </p>
 	 * <p>
@@ -461,6 +462,8 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * </p>
 	 */
 	private int axisYColor = DEFAULT_AXIS_Y_COLOR;
+
+	private float axisWidth = DEFAULT_AXIS_WIDTH;
 
 	protected int axisXPosition = DEFAULT_AXIS_X_POSITION;
 
@@ -503,7 +506,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 轴线左边距
 	 * </p>
 	 */
-	protected float axisMarginLeft = DEFAULT_AXIS_MARGIN_LEFT;
+	protected float axisYTitleQuadrantWidth = DEFAULT_AXIS_Y_TITLE_QUADRANT_WIDTH;
 
 	/**
 	 * <p>
@@ -516,7 +519,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 轴线下边距
 	 * </p>
 	 */
-	protected float axisMarginBottom = DEFAULT_AXIS_MARGIN_BOTTOM;
+	protected float axisXTitleQuadrantHeight = DEFAULT_AXIS_X_TITLE_QUADRANT_HEIGHT;
 
 	/**
 	 * <p>
@@ -529,7 +532,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 轴线上边距
 	 * </p>
 	 */
-	protected float axisMarginTop = DEFAULT_AXIS_MARGIN_TOP;
+	protected float dataQuadrantPaddingTop = DEFAULT_DATA_QUADRANT_PADDING_TOP;
 
 	/**
 	 * <p>
@@ -542,7 +545,21 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 轴线右边距
 	 * </p>
 	 */
-	protected float axisMarginRight = DEFAULT_AXIS_MARGIN_RIGHT;
+	protected float dataQuadrantPaddingLeft = DEFAULT_DATA_QUADRANT_PADDING_LEFT;
+	protected float dataQuadrantPaddingBottom = DEFAULT_DATA_QUADRANT_PADDING_BOTTOM;
+
+	/**
+	 * <p>
+	 * Margin of the axis to the right border
+	 * </p>
+	 * <p>
+	 * 轴線より右枠線の距離
+	 * </p>
+	 * <p>
+	 * 轴线右边距
+	 * </p>
+	 */
+	protected float dataQuadrantPaddingRight = DEFAULT_DATA_QUADRANT_PADDING_RIGHT;
 
 	/**
 	 * <p>
@@ -686,6 +703,8 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * </p>
 	 */
 	private int borderColor = DEFAULT_BORDER_COLOR;
+
+	protected float borderWidth = DEFAULT_BORDER_WIDTH;
 
 	/**
 	 * <p>
@@ -935,7 +954,6 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
-		super.setBackgroundColor(backgroundColor);
 		super.onDraw(canvas);
 
 		drawXAxis(canvas);
@@ -955,7 +973,10 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 		}
 
 		if (displayCrossXOnTouch || displayCrossYOnTouch) {
-			drawWithFingerClick(canvas);
+			// drawWithFingerClick(canvas);
+			drawHorizontalLine(canvas);
+			drawVerticalLine(canvas);
+
 		}
 	}
 
@@ -972,30 +993,47 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 
-		if (event.getY() > 0
-				&& event.getY() < super.getBottom() - getAxisMarginBottom()
-				&& event.getX() > super.getLeft() + getAxisMarginLeft()
-				&& event.getX() < super.getRight()) {
-
-			// touched points, if touch point is only one
-			if (event.getPointerCount() == 1) {
-				// 获取点击坐标
-
-				clickPostX = event.getX();
-				clickPostY = event.getY();
-
-				PointF point = new PointF(clickPostX, clickPostY);
-				touchPoint = point;
-
-				// redraw
-				super.invalidate();
-
-				// do notify
-				notifyEventAll(this);
-
-			} else if (event.getPointerCount() == 2) {
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			if (event.getX() < borderWidth + axisYTitleQuadrantWidth) {
+				return false;
+			}
+		} else {
+			if (event.getX() > super.getWidth() - borderWidth
+					- axisYTitleQuadrantWidth) {
+				return false;
 			}
 		}
+
+		if (axisXPosition == AXIS_X_POSITION_BOTTOM) {
+			if (event.getY() > super.getHeight() - borderWidth
+					- axisXTitleQuadrantHeight) {
+				return false;
+			}
+		} else {
+			if (event.getY() < borderWidth + axisXTitleQuadrantHeight) {
+				return false;
+			}
+		}
+
+		// touched points, if touch point is only one
+		if (event.getPointerCount() == 1) {
+			// 获取点击坐标
+
+			clickPostX = event.getX();
+			clickPostY = event.getY();
+
+			PointF point = new PointF(clickPostX, clickPostY);
+			touchPoint = point;
+
+			// redraw
+			super.invalidate();
+
+			// do notify
+			notifyEventAll(this);
+
+		} else if (event.getPointerCount() == 2) {
+		}
+
 		return super.onTouchEvent(event);
 	}
 
@@ -1060,16 +1098,17 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			int fontSize, Canvas canvas) {
 
 		Paint mPaintBox = new Paint();
-		mPaintBox.setColor(Color.BLACK);
+		mPaintBox.setColor(Color.WHITE);
 		mPaintBox.setAlpha(80);
+		mPaintBox.setStyle(Style.FILL);
 
 		Paint mPaintBoxLine = new Paint();
 		mPaintBoxLine.setColor(crossLinesColor);
 		mPaintBoxLine.setAntiAlias(true);
+		mPaintBoxLine.setTextSize(fontSize);
 
 		// draw a rectangle
-		canvas.drawRoundRect(new RectF(ptStart.x, ptStart.y, ptEnd.x, ptEnd.y),
-				20.0f, 20.0f, mPaintBox);
+		canvas.drawRect(ptStart.x, ptStart.y, ptEnd.x, ptEnd.y, mPaintBox);
 
 		// draw a rectangle' border
 		canvas.drawLine(ptStart.x, ptStart.y, ptStart.x, ptEnd.y, mPaintBoxLine);
@@ -1079,7 +1118,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 
 		mPaintBoxLine.setColor(crossLinesFontColor);
 		// draw text
-		canvas.drawText(content, ptStart.x, ptEnd.y, mPaintBoxLine);
+		canvas.drawText(content, ptStart.x, ptStart.y + fontSize, mPaintBoxLine);
 	}
 
 	/**
@@ -1116,12 +1155,72 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 *         </p>
 	 */
 	public String getAxisXGraduate(Object value) {
+		// TODO:计算方式调整
+		float valueLength = ((Float) value).floatValue()
+				- axisYTitleQuadrantWidth - dataQuadrantPaddingLeft;
+		return String.valueOf(valueLength / this.getDataQuadrantPaddingWidth());
+	}
 
-		float length = super.getWidth() - axisMarginLeft - 2 * axisMarginRight;
-		float valueLength = ((Float) value).floatValue() - axisMarginLeft
-				- axisMarginRight;
+	protected float getDataQuadrantWidth() {
+		return super.getWidth() - axisYTitleQuadrantWidth - 2 * borderWidth
+				- axisWidth;
+	}
 
-		return String.valueOf(valueLength / length);
+	protected float getDataQuadrantHeight() {
+		return super.getHeight() - axisXTitleQuadrantHeight - 2 * borderWidth
+				- axisWidth;
+	}
+
+	protected float getDataQuadrantStartX() {
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			return borderWidth + axisYTitleQuadrantWidth + axisWidth;
+		} else {
+			return borderWidth;
+		}
+	}
+
+	protected float getDataQuadrantPaddingStartX() {
+		return getDataQuadrantStartX() + dataQuadrantPaddingLeft;
+	}
+
+	protected float getDataQuadrantEndX() {
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			return super.getWidth() - borderWidth - axisYTitleQuadrantWidth
+					- axisWidth;
+		} else {
+			return super.getWidth() - borderWidth;
+		}
+	}
+
+	protected float getDataQuadrantPaddingEndX() {
+		return getDataQuadrantStartX() - dataQuadrantPaddingRight;
+	}
+
+	protected float getDataQuadrantStartY() {
+		return borderWidth;
+	}
+
+	protected float getDataQuadrantPaddingStartY() {
+		return getDataQuadrantStartY() + dataQuadrantPaddingTop;
+	}
+
+	protected float getDataQuadrantEndY() {
+		return super.getHeight() - borderWidth - axisXTitleQuadrantHeight
+				- axisWidth;
+	}
+
+	protected float getDataQuadrantPaddingEndY() {
+		return getDataQuadrantEndY() - dataQuadrantPaddingTop;
+	}
+
+	protected float getDataQuadrantPaddingWidth() {
+		return getDataQuadrantWidth() - dataQuadrantPaddingLeft
+				- dataQuadrantPaddingRight;
+	}
+
+	protected float getDataQuadrantPaddingHeight() {
+		return getDataQuadrantHeight() - dataQuadrantPaddingTop
+				- dataQuadrantPaddingBottom;
 	}
 
 	/**
@@ -1158,12 +1257,11 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 *         </p>
 	 */
 	public String getAxisYGraduate(Object value) {
-
-		float length = super.getHeight() - axisMarginBottom - 2 * axisMarginTop;
-		float valueLength = length
-				- (((Float) value).floatValue() - axisMarginTop);
-
-		return String.valueOf(valueLength / length);
+		// TODO:计算方式调整
+		float valueLength = this.getDataQuadrantPaddingHeight()
+				- (((Float) value).floatValue());
+		return String
+				.valueOf(valueLength / this.getDataQuadrantPaddingHeight());
 	}
 
 	/**
@@ -1179,63 +1277,82 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 
 	 * @param canvas
 	 */
-	protected void drawWithFingerClick(Canvas canvas) {
+	protected void drawVerticalLine(Canvas canvas) {
+
+		if (displayLongitudeTitle == false) {
+			return;
+		}
+		if (displayCrossXOnTouch == false) {
+			return;
+		}
+		if (clickPostX <= 0) {
+			return;
+		}
+
 		Paint mPaint = new Paint();
 		mPaint.setColor(crossLinesColor);
 
-		float lineHLength = getWidth() - 2f;
-		float lineVLength = getHeight() - 2f;
+		float lineVLength = getDataQuadrantHeight() + axisWidth;
+
+		// TODO calculate points to draw
+		PointF BoxVS = new PointF(clickPostX - longitudeFontSize * 5f / 2f,
+				borderWidth + lineVLength);
+		PointF BoxVE = new PointF(clickPostX + longitudeFontSize * 5f / 2f,
+				borderWidth + lineVLength + axisXTitleQuadrantHeight);
 
 		// draw text
-		if (displayLongitudeTitle) {
-			lineVLength = lineVLength - axisMarginBottom;
+		drawAlphaTextBox(BoxVS, BoxVE, getAxisXGraduate(clickPostX),
+				longitudeFontSize, canvas);
 
-			if (clickPostX > 0 && clickPostY > 0) {
-				if (displayCrossXOnTouch) {
-					// TODO calculate points to draw
-					PointF BoxVS = new PointF(clickPostX - longitudeFontSize
-							* 5f / 2f, lineVLength + 2f);
-					PointF BoxVE = new PointF(clickPostX + longitudeFontSize
-							* 5f / 2f, lineVLength + axisMarginBottom - 1f);
+		canvas.drawLine(clickPostX, borderWidth, clickPostX, lineVLength,
+				mPaint);
+	}
 
-					// draw text
-					drawAlphaTextBox(BoxVS, BoxVE,
-							getAxisXGraduate(clickPostX), longitudeFontSize,
-							canvas);
-				}
-			}
+	protected void drawHorizontalLine(Canvas canvas) {
+
+		if (displayLatitudeTitle == false) {
+			return;
+		}
+		if (displayCrossYOnTouch == false) {
+			return;
+		}
+		if (clickPostY <= 0) {
+			return;
 		}
 
-		if (displayLatitudeTitle) {
-			lineHLength = lineHLength - getAxisMarginLeft();
+		Paint mPaint = new Paint();
+		mPaint.setColor(crossLinesColor);
 
-			if (clickPostX > 0 && clickPostY > 0) {
-				if (displayCrossYOnTouch) {
-					// TODO calculate points to draw
-					PointF BoxHS = new PointF(1f, clickPostY - latitudeFontSize
-							/ 2f);
-					PointF BoxHE = new PointF(axisMarginLeft, clickPostY
-							+ latitudeFontSize / 2f);
+		float lineHLength = getDataQuadrantWidth() + axisWidth;
 
-					// draw text
-					drawAlphaTextBox(BoxHS, BoxHE,
-							getAxisYGraduate(clickPostY), latitudeFontSize,
-							canvas);
-				}
-			}
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			PointF BoxHS = new PointF(borderWidth, clickPostY
+					- latitudeFontSize / 2f - 2);
+			PointF BoxHE = new PointF(borderWidth + axisYTitleQuadrantWidth,
+					clickPostY + latitudeFontSize / 2f + 2);
+
+			// draw text
+			drawAlphaTextBox(BoxHS, BoxHE, getAxisYGraduate(clickPostY),
+					latitudeFontSize, canvas);
+
+			canvas.drawLine(borderWidth + axisYTitleQuadrantWidth, clickPostY,
+					borderWidth + axisYTitleQuadrantWidth + lineHLength,
+					clickPostY, mPaint);
+		} else {
+			PointF BoxHS = new PointF(super.getWidth() - borderWidth
+					- axisYTitleQuadrantWidth, clickPostY - latitudeFontSize
+					/ 2f - 2);
+			PointF BoxHE = new PointF(super.getWidth() - borderWidth,
+					clickPostY + latitudeFontSize / 2f + 2);
+
+			// draw text
+			drawAlphaTextBox(BoxHS, BoxHE, getAxisYGraduate(clickPostY),
+					latitudeFontSize, canvas);
+
+			canvas.drawLine(borderWidth, clickPostY, borderWidth + lineHLength,
+					clickPostY, mPaint);
 		}
 
-		// draw line
-		if (clickPostX > 0 && clickPostY > 0) {
-			if (displayCrossXOnTouch) {
-				canvas.drawLine(clickPostX, 1f, clickPostX, lineVLength, mPaint);
-			}
-
-			if (displayCrossYOnTouch) {
-				canvas.drawLine(axisMarginLeft, clickPostY, axisMarginLeft
-						+ lineHLength, clickPostY, mPaint);
-			}
-		}
 	}
 
 	/**
@@ -1252,17 +1369,13 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * @param canvas
 	 */
 	protected void drawBorder(Canvas canvas) {
-		float width = super.getWidth() - 2;
-		float height = super.getHeight() - 2;
-
 		Paint mPaint = new Paint();
 		mPaint.setColor(borderColor);
-
+		mPaint.setStrokeWidth(borderWidth);
+		mPaint.setStyle(Style.STROKE);
 		// draw a rectangle
-		canvas.drawLine(1f, 1f, 1f + width, 1f, mPaint);
-		canvas.drawLine(1f + width, 1f, 1f + width, 1f + height, mPaint);
-		canvas.drawLine(1f + width, 1f + height, 1f, 1f + height, mPaint);
-		canvas.drawLine(1f, 1f + height, 1f, 1f, mPaint);
+		canvas.drawRect(borderWidth / 2, borderWidth / 2, super.getWidth()
+				- borderWidth / 2, super.getHeight() - borderWidth / 2, mPaint);
 	}
 
 	/**
@@ -1281,12 +1394,19 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	protected void drawXAxis(Canvas canvas) {
 
 		float length = super.getWidth();
-		float postY = super.getHeight() - axisMarginBottom - 1;
+		float postY;
+		if (axisXPosition == AXIS_X_POSITION_BOTTOM) {
+			postY = super.getHeight() - axisXTitleQuadrantHeight - borderWidth
+					- axisWidth / 2;
+		} else {
+			postY = super.getHeight() - borderWidth - axisWidth / 2;
+		}
 
 		Paint mPaint = new Paint();
 		mPaint.setColor(axisXColor);
+		mPaint.setStrokeWidth(axisWidth);
 
-		canvas.drawLine(0f, postY, length, postY, mPaint);
+		canvas.drawLine(borderWidth, postY, length, postY, mPaint);
 
 	}
 
@@ -1305,13 +1425,21 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 */
 	protected void drawYAxis(Canvas canvas) {
 
-		float length = super.getHeight() - axisMarginBottom;
-		float postX = axisMarginLeft + 1;
+		float length = super.getHeight() - axisXTitleQuadrantHeight
+				- borderWidth;
+		float postX;
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			postX = borderWidth + axisYTitleQuadrantWidth + axisWidth / 2;
+		} else {
+			postX = super.getWidth() - borderWidth - axisYTitleQuadrantWidth
+					- axisWidth / 2;
+		}
 
 		Paint mPaint = new Paint();
 		mPaint.setColor(axisXColor);
+		mPaint.setStrokeWidth(axisWidth);
 
-		canvas.drawLine(postX, 0f, postX, length, mPaint);
+		canvas.drawLine(postX, borderWidth, postX, length, mPaint);
 	}
 
 	/**
@@ -1335,19 +1463,28 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			return;
 		}
 		int counts = longitudeTitles.size();
-		float length = super.getHeight() - axisMarginBottom;
+		float length = getDataQuadrantHeight();
+
 		Paint mPaintLine = new Paint();
 		mPaintLine.setColor(longitudeColor);
 		if (dashLongitude) {
 			mPaintLine.setPathEffect(dashEffect);
 		}
 		if (counts > 1) {
-			float postOffset = (super.getWidth() - axisMarginLeft - 2 * axisMarginRight)
+			float postOffset = this.getDataQuadrantPaddingWidth()
 					/ (counts - 1);
-			float offset = axisMarginLeft + axisMarginRight;
-			for (int i = 0; i <= counts; i++) {
-				canvas.drawLine(offset + i * postOffset, 0f, offset + i
-						* postOffset, length, mPaintLine);
+
+			float offset;
+			if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+				offset = borderWidth + axisYTitleQuadrantWidth + axisWidth
+						+ dataQuadrantPaddingLeft;
+			} else {
+				offset = borderWidth + dataQuadrantPaddingLeft;
+			}
+
+			for (int i = 0; i < counts; i++) {
+				canvas.drawLine(offset + i * postOffset, borderWidth, offset
+						+ i * postOffset, length, mPaintLine);
 			}
 		}
 	}
@@ -1377,28 +1514,50 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			return;
 		}
 
-		int counts = longitudeTitles.size();
+		if (longitudeTitles.size() <= 1) {
+			return;
+		}
 
 		Paint mPaintFont = new Paint();
 		mPaintFont.setColor(longitudeFontColor);
 		mPaintFont.setTextSize(longitudeFontSize);
 		mPaintFont.setAntiAlias(true);
-		if (counts > 1) {
-			float postOffset = (super.getWidth() - axisMarginLeft - 2 * axisMarginRight)
-					/ (counts - 1);
-			float offset = axisMarginLeft + axisMarginRight;
-			for (int i = 0; i <= counts; i++) {
-				if (i < counts && i > 0) {
+
+		float postOffset = this.getDataQuadrantPaddingWidth()
+				/ (longitudeTitles.size() - 1);
+
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			float offset = borderWidth + axisYTitleQuadrantWidth + axisWidth
+					+ dataQuadrantPaddingLeft;
+			for (int i = 0; i < longitudeTitles.size(); i++) {
+				if (0 == i) {
+					canvas.drawText(longitudeTitles.get(i), offset + 2f,
+							super.getHeight() - axisXTitleQuadrantHeight
+									+ longitudeFontSize, mPaintFont);
+				} else {
 					canvas.drawText(longitudeTitles.get(i), offset + i
 							* postOffset - (longitudeTitles.get(i).length())
 							* longitudeFontSize / 2f, super.getHeight()
-							- axisMarginBottom + longitudeFontSize, mPaintFont);
-				} else if (0 == i) {
-					canvas.drawText(longitudeTitles.get(i),
-							this.axisMarginLeft + 2f, super.getHeight()
-									- axisMarginBottom + longitudeFontSize,
+							- axisXTitleQuadrantHeight + longitudeFontSize,
 							mPaintFont);
 				}
+			}
+
+		} else {
+			float offset = borderWidth + dataQuadrantPaddingLeft;
+			for (int i = 0; i < longitudeTitles.size(); i++) {
+				if (0 == i) {
+					canvas.drawText(longitudeTitles.get(i), offset + 2f,
+							super.getHeight() - axisXTitleQuadrantHeight
+									+ longitudeFontSize, mPaintFont);
+				} else {
+					canvas.drawText(longitudeTitles.get(i), offset + i
+							* postOffset - (longitudeTitles.get(i).length())
+							* longitudeFontSize / 2f, super.getHeight()
+							- axisXTitleQuadrantHeight + longitudeFontSize,
+							mPaintFont);
+				}
+
 			}
 		}
 	}
@@ -1417,47 +1576,53 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * @param canvas
 	 */
 	protected void drawLatitudeLine(Canvas canvas) {
-		if (null != latitudeTitles) {
-			int counts = latitudeTitles.size();
-			float length = super.getWidth() - axisMarginLeft;
 
-			Paint mPaintLine = new Paint();
-			mPaintLine.setColor(latitudeColor);
-			if (dashLatitude) {
-				mPaintLine.setPathEffect(dashEffect);
+		if (null == latitudeTitles) {
+			return;
+		}
+		if (false == displayLatitude) {
+			return;
+		}
+		if (false == displayLatitudeTitle) {
+			return;
+		}
+		if (latitudeTitles.size() <= 1) {
+			return;
+		}
+
+		float length = getDataQuadrantWidth();
+
+		Paint mPaintLine = new Paint();
+		mPaintLine.setColor(latitudeColor);
+		if (dashLatitude) {
+			mPaintLine.setPathEffect(dashEffect);
+		}
+
+		Paint mPaintFont = new Paint();
+		mPaintFont.setColor(latitudeFontColor);
+		mPaintFont.setTextSize(latitudeFontSize);
+		mPaintFont.setAntiAlias(true);
+
+		float postOffset = this.getDataQuadrantPaddingHeight()
+				/ (latitudeTitles.size() - 1);
+
+		float offset = super.getHeight() - borderWidth
+				- axisXTitleQuadrantHeight - axisWidth
+				- dataQuadrantPaddingBottom;
+
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			float startFrom = borderWidth + axisYTitleQuadrantWidth + axisWidth;
+			for (int i = 0; i < latitudeTitles.size(); i++) {
+				canvas.drawLine(startFrom, offset - i * postOffset, startFrom
+						+ length, offset - i * postOffset, mPaintLine);
+
 			}
+		} else {
+			float startFrom = borderWidth;
+			for (int i = 0; i < latitudeTitles.size(); i++) {
+				canvas.drawLine(startFrom, offset - i * postOffset, startFrom
+						+ length, offset - i * postOffset, mPaintLine);
 
-			Paint mPaintFont = new Paint();
-			mPaintFont.setColor(latitudeFontColor);
-			mPaintFont.setTextSize(latitudeFontSize);
-			mPaintFont.setAntiAlias(true);
-
-			if (counts > 1) {
-				float postOffset = (super.getHeight() - axisMarginBottom - 2 * axisMarginTop)
-						/ (counts - 1);
-				float offset = super.getHeight() - axisMarginBottom
-						- axisMarginTop;
-				for (int i = 0; i <= counts; i++) {
-					// draw line
-					if (displayLatitude) {
-						canvas.drawLine(axisMarginLeft,
-								offset - i * postOffset, axisMarginLeft
-										+ length, offset - i * postOffset,
-								mPaintLine);
-					}
-					// draw title
-					if (displayLatitudeTitle) {
-						if (i < counts && i > 0) {
-							canvas.drawText(latitudeTitles.get(i), 0f, offset
-									- i * postOffset + latitudeFontSize / 2f,
-									mPaintFont);
-						} else if (0 == i) {
-							canvas.drawText(latitudeTitles.get(i), 0f,
-									super.getHeight() - this.axisMarginBottom
-											- 2f, mPaintFont);
-						}
-					}
-				}
 			}
 		}
 	}
@@ -1482,27 +1647,51 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 		if (false == displayLatitudeTitle) {
 			return;
 		}
-		int counts = latitudeTitles.size();
+		if (latitudeTitles.size() <= 1) {
+			return;
+		}
 		Paint mPaintFont = new Paint();
 		mPaintFont.setColor(latitudeFontColor);
 		mPaintFont.setTextSize(latitudeFontSize);
 		mPaintFont.setAntiAlias(true);
 
-		if (counts > 1) {
-			float postOffset = (super.getHeight() - axisMarginBottom - 2 * axisMarginTop)
-					/ (counts - 1);
-			float offset = super.getHeight() - axisMarginBottom - axisMarginTop;
-			for (int i = 0; i <= counts; i++) {
-				if (i < counts && i > 0) {
-					canvas.drawText(latitudeTitles.get(i), 0f, offset - i
-							* postOffset + latitudeFontSize / 2f, mPaintFont);
-				} else if (0 == i) {
-					canvas.drawText(latitudeTitles.get(i), 0f,
-							super.getHeight() - this.axisMarginBottom - 2f,
+		float postOffset = this.getDataQuadrantPaddingHeight()
+				/ (latitudeTitles.size() - 1);
+
+		float offset = super.getHeight() - borderWidth
+				- axisXTitleQuadrantHeight - axisWidth
+				- dataQuadrantPaddingBottom;
+
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			float startFrom = borderWidth;
+			for (int i = 0; i < latitudeTitles.size(); i++) {
+				if (0 == i) {
+					canvas.drawText(latitudeTitles.get(i), startFrom,
+							super.getHeight() - this.axisXTitleQuadrantHeight
+									- borderWidth - axisWidth - 2f, mPaintFont);
+				} else {
+					canvas.drawText(latitudeTitles.get(i), startFrom, offset
+							- i * postOffset + latitudeFontSize / 2f,
+							mPaintFont);
+				}
+			}
+		} else {
+			float startFrom = super.getWidth() - borderWidth
+					- axisYTitleQuadrantWidth;
+			for (int i = 0; i < latitudeTitles.size(); i++) {
+
+				if (0 == i) {
+					canvas.drawText(latitudeTitles.get(i), startFrom,
+							super.getHeight() - this.axisXTitleQuadrantHeight
+									- borderWidth - axisWidth - 2f, mPaintFont);
+				} else {
+					canvas.drawText(latitudeTitles.get(i), startFrom, offset
+							- i * postOffset + latitudeFontSize / 2f,
 							mPaintFont);
 				}
 			}
 		}
+
 	}
 
 	/**
@@ -1635,6 +1824,21 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	}
 
 	/**
+	 * @return the axisWidth
+	 */
+	public float getAxisWidth() {
+		return axisWidth;
+	}
+
+	/**
+	 * @param axisWidth
+	 *            the axisWidth to set
+	 */
+	public void setAxisWidth(float axisWidth) {
+		this.axisWidth = axisWidth;
+	}
+
+	/**
 	 * @return the longitudeColor
 	 */
 	public int getLongitudeColor() {
@@ -1667,61 +1871,207 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	/**
 	 * @return the axisMarginLeft
 	 */
+	@Deprecated
 	public float getAxisMarginLeft() {
-		return axisMarginLeft;
+		return axisYTitleQuadrantWidth;
 	}
 
 	/**
 	 * @param axisMarginLeft
 	 *            the axisMarginLeft to set
 	 */
+	@Deprecated
 	public void setAxisMarginLeft(float axisMarginLeft) {
-		this.axisMarginLeft = axisMarginLeft;
+		this.axisYTitleQuadrantWidth = axisMarginLeft;
 	}
 
 	/**
-	 * @return the axisMarginBottom
+	 * @return the axisMarginLeft
 	 */
+	public float getAxisYTitleQuadrantWidth() {
+		return axisYTitleQuadrantWidth;
+	}
+
+	/**
+	 * @param axisYTitleQuadrantWidth
+	 *            the axisYTitleQuadrantWidth to set
+	 */
+	public void setAxisYTitleQuadrantWidth(float axisYTitleQuadrantWidth) {
+		this.axisYTitleQuadrantWidth = axisYTitleQuadrantWidth;
+	}
+
+	/**
+	 * @return the axisXTitleQuadrantHeight
+	 */
+	@Deprecated
 	public float getAxisMarginBottom() {
-		return axisMarginBottom;
+		return axisXTitleQuadrantHeight;
 	}
 
 	/**
-	 * @param axisMarginBottom
-	 *            the axisMarginBottom to set
+	 * @param axisXTitleQuadrantHeight
+	 *            the axisXTitleQuadrantHeight to set
 	 */
-	public void setAxisMarginBottom(float axisMarginBottom) {
-		this.axisMarginBottom = axisMarginBottom;
+	@Deprecated
+	public void setAxisMarginBottom(float axisXTitleQuadrantHeight) {
+		this.axisXTitleQuadrantHeight = axisXTitleQuadrantHeight;
 	}
 
 	/**
-	 * @return the axisMarginTop
+	 * @return the axisXTitleQuadrantHeight
 	 */
+	public float getAxisXTitleQuadrantHeight() {
+		return axisXTitleQuadrantHeight;
+	}
+
+	/**
+	 * @param axisXTitleQuadrantHeight
+	 *            the axisXTitleQuadrantHeight to set
+	 */
+	public void setAxisXTitleQuadrantHeight(float axisXTitleQuadrantHeight) {
+		this.axisXTitleQuadrantHeight = axisXTitleQuadrantHeight;
+	}
+
+	/**
+	 * @return the dataQuadrantPaddingTop
+	 */
+	@Deprecated
 	public float getAxisMarginTop() {
-		return axisMarginTop;
+		return dataQuadrantPaddingTop;
 	}
 
 	/**
-	 * @param axisMarginTop
-	 *            the axisMarginTop to set
+	 * @param dataQuadrantPaddingTop
+	 *            the dataQuadrantPaddingTop to set
 	 */
+	@Deprecated
 	public void setAxisMarginTop(float axisMarginTop) {
-		this.axisMarginTop = axisMarginTop;
+		this.dataQuadrantPaddingTop = axisMarginTop;
+		this.dataQuadrantPaddingBottom = axisMarginTop;
 	}
 
 	/**
-	 * @return the axisMarginRight
+	 * @return the dataQuadrantPaddingRight
 	 */
+	@Deprecated
 	public float getAxisMarginRight() {
-		return axisMarginRight;
+		return dataQuadrantPaddingRight;
 	}
 
 	/**
-	 * @param axisMarginRight
-	 *            the axisMarginRight to set
+	 * @param dataQuadrantPaddingRight
+	 *            the dataQuadrantPaddingRight to set
 	 */
+	@Deprecated
 	public void setAxisMarginRight(float axisMarginRight) {
-		this.axisMarginRight = axisMarginRight;
+		this.dataQuadrantPaddingRight = axisMarginRight;
+		this.dataQuadrantPaddingLeft = axisMarginRight;
+	}
+
+	/**
+	 * @return the dataQuadrantPaddingTop
+	 */
+	public float getDataQuadrantPaddingTop() {
+		return dataQuadrantPaddingTop;
+	}
+
+	/**
+	 * @param dataQuadrantPaddingTop
+	 *            the dataQuadrantPaddingTop to set
+	 */
+	public void setDataQuadrantPaddingTop(float dataQuadrantPaddingTop) {
+		this.dataQuadrantPaddingTop = dataQuadrantPaddingTop;
+	}
+
+	/**
+	 * @return the dataQuadrantPaddingLeft
+	 */
+	public float getDataQuadrantPaddingLeft() {
+		return dataQuadrantPaddingLeft;
+	}
+
+	/**
+	 * @param dataQuadrantPaddingLeft
+	 *            the dataQuadrantPaddingLeft to set
+	 */
+	public void setDataQuadrantPaddingLeft(float dataQuadrantPaddingLeft) {
+		this.dataQuadrantPaddingLeft = dataQuadrantPaddingLeft;
+	}
+
+	/**
+	 * @return the dataQuadrantPaddingBottom
+	 */
+	public float getDataQuadrantPaddingBottom() {
+		return dataQuadrantPaddingBottom;
+	}
+
+	/**
+	 * @param dataQuadrantPaddingBottom
+	 *            the dataQuadrantPaddingBottom to set
+	 */
+	public void setDataQuadrantPaddingBottom(float dataQuadrantPaddingBottom) {
+		this.dataQuadrantPaddingBottom = dataQuadrantPaddingBottom;
+	}
+
+	/**
+	 * @return the dataQuadrantPaddingRight
+	 */
+	public float getDataQuadrantPaddingRight() {
+		return dataQuadrantPaddingRight;
+	}
+
+	/**
+	 * @param dataQuadrantPaddingRight
+	 *            the dataQuadrantPaddingRight to set
+	 */
+	public void setDataQuadrantPaddingRight(float dataQuadrantPaddingRight) {
+		this.dataQuadrantPaddingRight = dataQuadrantPaddingRight;
+	}
+
+	/**
+	 * @param padding
+	 *            the dataQuadrantPaddingTop dataQuadrantPaddingBottom
+	 *            dataQuadrantPaddingLeft dataQuadrantPaddingRight to set
+	 * 
+	 */
+	public void setDataQuadrantPadding(float padding) {
+		this.dataQuadrantPaddingTop = padding;
+		this.dataQuadrantPaddingLeft = padding;
+		this.dataQuadrantPaddingBottom = padding;
+		this.dataQuadrantPaddingRight = padding;
+	}
+
+	/**
+	 * @param topnbottom
+	 *            the dataQuadrantPaddingTop dataQuadrantPaddingBottom to set
+	 * @param leftnright
+	 *            the dataQuadrantPaddingLeft dataQuadrantPaddingRight to set
+	 * 
+	 */
+	public void setDataQuadrantPadding(float topnbottom, float leftnright) {
+		this.dataQuadrantPaddingTop = topnbottom;
+		this.dataQuadrantPaddingLeft = leftnright;
+		this.dataQuadrantPaddingBottom = topnbottom;
+		this.dataQuadrantPaddingRight = leftnright;
+	}
+
+	/**
+	 * @param top
+	 *            the dataQuadrantPaddingTop to set
+	 * @param right
+	 *            the dataQuadrantPaddingLeft to set
+	 * @param bottom
+	 *            the dataQuadrantPaddingBottom to set
+	 * @param left
+	 *            the dataQuadrantPaddingRight to set
+	 * 
+	 */
+	public void setDataQuadrantPadding(float top, float right, float bottom,
+			float left) {
+		this.dataQuadrantPaddingTop = top;
+		this.dataQuadrantPaddingLeft = right;
+		this.dataQuadrantPaddingBottom = bottom;
+		this.dataQuadrantPaddingRight = left;
 	}
 
 	/**
@@ -1887,6 +2237,21 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 */
 	public void setBorderColor(int borderColor) {
 		this.borderColor = borderColor;
+	}
+
+	/**
+	 * @return the borderWidth
+	 */
+	public float getBorderWidth() {
+		return borderWidth;
+	}
+
+	/**
+	 * @param borderWidth
+	 *            the borderWidth to set
+	 */
+	public void setBorderWidth(float borderWidth) {
+		this.borderWidth = borderWidth;
 	}
 
 	/**
@@ -2112,21 +2477,6 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 */
 	public void setTouchPoint(PointF touchPoint) {
 		this.touchPoint = touchPoint;
-	}
-
-	/**
-	 * @return the backgroundColor
-	 */
-	public int getBackgroundColor() {
-		return backgroundColor;
-	}
-
-	/**
-	 * @param backgroundColor
-	 *            the backgroundColor to set
-	 */
-	public void setBackgroundColor(int backgroundColor) {
-		this.backgroundColor = backgroundColor;
 	}
 
 	/**

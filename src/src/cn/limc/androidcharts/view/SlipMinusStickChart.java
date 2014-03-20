@@ -46,10 +46,6 @@ import cn.limc.androidcharts.entity.IMeasurable;
  */
 public class SlipMinusStickChart extends SlipStickChart {
 
-	public static final int DEFAULT_STICK_SPACING = 6;
-
-	private int stickSpacing = DEFAULT_STICK_SPACING;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -142,11 +138,10 @@ public class SlipMinusStickChart extends SlipStickChart {
 	 */
 	@Override
 	protected void drawSticks(Canvas canvas) {
-		// stick width
-		float stickWidth = ((super.getWidth() - super.getAxisMarginLeft()) / super
-				.getDisplayNumber()) - stickSpacing;
-		// start point's X
-		float stickX = super.getAxisMarginLeft() + stickSpacing / 2;
+
+		float stickWidth = getDataQuadrantPaddingWidth() / displayNumber
+				- stickSpacing;
+		float stickX = getDataQuadrantPaddingStartX();
 
 		Paint mPaintFill = new Paint();
 		mPaintFill.setStyle(Style.FILL);
@@ -161,16 +156,14 @@ public class SlipMinusStickChart extends SlipStickChart {
 			// display as stick or line
 			for (int i = super.getDisplayFrom(); i < super.getDisplayFrom()
 					+ super.getDisplayNumber(); i++) {
-				IMeasurable e = stickData.get(i);
+				IMeasurable entity = stickData.get(i);
 
-				float highY = (float) ((1f - (e.getHigh() - super.minValue)
+				float highY = (float) ((1f - (entity.getHigh() - minValue)
 						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
-				float lowY = (float) ((1f - (e.getLow() - minValue)
+						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+				float lowY = (float) ((1f - (entity.getLow() - minValue)
 						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
+						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
 
 				// draw stick
 				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
@@ -183,20 +176,4 @@ public class SlipMinusStickChart extends SlipStickChart {
 			}
 		}
 	}
-
-	/**
-	 * @return the stickSpacing
-	 */
-	public int getStickSpacing() {
-		return stickSpacing;
-	}
-
-	/**
-	 * @param stickSpacing
-	 *            the stickSpacing to set
-	 */
-	public void setStickSpacing(int stickSpacing) {
-		this.stickSpacing = stickSpacing;
-	}
-
 }

@@ -149,9 +149,6 @@ public class MACDChart extends SlipStickChart {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 
-		System.out.println("displayFrom=" + displayFrom + "displayNumber="
-				+ displayNumber);
-
 		// 在K线图上增加均线
 		drawLinesData(canvas);
 	}
@@ -170,11 +167,9 @@ public class MACDChart extends SlipStickChart {
 		mPaintStick.setAntiAlias(true);
 
 		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-			// 蜡烛棒宽度
-			float stickWidth = ((super.getWidth() - axisMarginLeft - 2 * axisMarginRight) / displayNumber) - 1;
-
-			// 蜡烛棒起始绘制位置
-			float stickX = axisMarginLeft + axisMarginRight + 1;
+			float stickWidth = getDataQuadrantPaddingWidth() / displayNumber
+					- stickSpacing;
+			float stickX = getDataQuadrantPaddingStartX();
 
 			PointF prePoint = new PointF(0, 0);
 			// 判断显示为方柱或显示为线条
@@ -183,10 +178,10 @@ public class MACDChart extends SlipStickChart {
 
 				float highY = (float) ((1 - (stick.getMacd() - minValue)
 						/ (maxValue - minValue))
-						* (super.getHeight() - axisMarginBottom) - super.axisMarginTop);
+						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
 				float lowY = (float) ((1 - (0 - minValue)
 						/ (maxValue - minValue))
-						* (super.getHeight() - axisMarginBottom) - axisMarginTop);
+						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
 
 				if (stick.getMacd() == 0) {
 					// 没有值的情况下不绘制
@@ -225,13 +220,14 @@ public class MACDChart extends SlipStickChart {
 				}
 
 				// X位移
-				stickX = stickX + 1 + stickWidth;
+				stickX = stickX + stickSpacing + stickWidth;
 			}
 		} else {
-			// float stickWidth = ((rect.size.width - 2 * axisMarginLeft -
-			// axisMarginRight) / displayNumber) - 1;
+			// float stickWidth = ((rect.size.width - 2 *
+			// axisYTitleQuadrantWidth -
+			// dataQuadrantPaddingRight) / displayNumber) - 1;
 			// // 蜡烛棒起始绘制位置
-			// float stickX = rect.size.width - axisMarginRight - 1 -
+			// float stickX = rect.size.width - dataQuadrantPaddingRight - 1 -
 			// stickWidth;
 			// //判断显示为方柱或显示为线条
 			// for (NSUInteger i = 0; i < displayNumber; i++) {
@@ -239,11 +235,11 @@ public class MACDChart extends SlipStickChart {
 			// CCSMACDData *stick = [stickData objectAtIndex:index];
 			//
 			// float highY = ((1 - (stick.macd - minValue) / (maxValue
-			// - minValue)) * (rect.size.height - axisMarginBottom) -
+			// - minValue)) * (rect.size.height - axisXTitleQuadrantHeight) -
 			// super.axisMarginTop);
 			// float lowY = ((1 - (0 - minValue) / (maxValue -
-			// minValue)) * (rect.size.height - axisMarginBottom) -
-			// axisMarginTop);
+			// minValue)) * (rect.size.height - axisXTitleQuadrantHeight) -
+			// dataQuadrantPaddingTop);
 			//
 			// if (stick.macd == 0) {
 			// //没有值的情况下不绘制
@@ -308,20 +304,13 @@ public class MACDChart extends SlipStickChart {
 		mPaintStick.setColor(diffLineColor);
 
 		// 起始位置
-		float startX;
+
 		float lastY = 0;
 
 		// 点线距离
-		float lineLength;
-
-		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-			lineLength = ((super.getWidth() - axisMarginLeft - 2 * axisMarginRight) / displayNumber);
-		} else {
-			lineLength = ((super.getWidth() - 2 * axisMarginLeft - axisMarginRight) / displayNumber);
-		}
-
+		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
 		// 起始点
-		startX = super.axisMarginLeft + lineLength / 2;
+		float startX = getDataQuadrantPaddingStartX() + lineLength / 2f;
 
 		// 判断点的多少
 		if (stickData.size() == 0) {
@@ -332,10 +321,11 @@ public class MACDChart extends SlipStickChart {
 			MACDEntity lineData = (MACDEntity) stickData.get(0);
 			// 获取终点Y坐标
 			float valueY = (float) ((1 - (lineData.getDiff() - minValue)
-					/ (maxValue - minValue))
-					* (super.getHeight() - axisMarginBottom) - axisMarginTop);
+					/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
+					+ getDataQuadrantPaddingStartY();
 
-			canvas.drawLine(startX, valueY, axisMarginLeft, valueY, mPaintStick);
+			canvas.drawLine(startX, valueY, axisYTitleQuadrantWidth, valueY,
+					mPaintStick);
 
 		} else {
 			// 遍历并绘制线条
@@ -344,8 +334,8 @@ public class MACDChart extends SlipStickChart {
 
 				// 获取终点Y坐标
 				float valueY = (float) ((1 - (lineData.getDiff() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - axisMarginBottom) - axisMarginTop);
+						/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
+						+ getDataQuadrantPaddingStartY();
 				// 绘制线条路径
 				if (j == displayFrom || j == 0) {
 					if (lineData.getDiff() == 0) {
@@ -365,7 +355,7 @@ public class MACDChart extends SlipStickChart {
 					}
 				}
 				// X位移
-				startX = startX + lineLength;
+				startX = startX + 1 + lineLength;
 			}
 		}
 	}
@@ -376,21 +366,11 @@ public class MACDChart extends SlipStickChart {
 		mPaintStick.setAntiAlias(true);
 		mPaintStick.setColor(deaLineColor);
 
-		// 起始位置
-		float startX;
 		float lastY = 0;
-
 		// 点线距离
-		float lineLength;
-
-		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-			lineLength = ((super.getWidth() - axisMarginLeft - 2 * axisMarginRight) / displayNumber);
-		} else {
-			lineLength = ((super.getWidth() - 2 * axisMarginLeft - axisMarginRight) / displayNumber);
-		}
-
+		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
 		// 起始点
-		startX = super.axisMarginLeft + lineLength / 2;
+		float startX = getDataQuadrantPaddingStartX() + lineLength / 2f;
 
 		// 判断点的多少
 		if (stickData.size() == 0) {
@@ -400,11 +380,12 @@ public class MACDChart extends SlipStickChart {
 			// 1根则绘制一条直线
 			MACDEntity lineData = (MACDEntity) stickData.get(0);
 			// 获取终点Y坐标
-			float valueY = (float) ((1 - (lineData.getDea() - minValue)
-					/ (maxValue - minValue))
-					* (super.getHeight() - axisMarginBottom) - axisMarginTop);
+			float valueY = (float) ((1f - (lineData.getDea() - minValue)
+					/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
+					+ getDataQuadrantPaddingStartY();
 
-			canvas.drawLine(startX, valueY, axisMarginLeft, valueY, mPaintStick);
+			canvas.drawLine(startX, valueY, axisYTitleQuadrantWidth, valueY,
+					mPaintStick);
 
 		} else {
 			// 遍历并绘制线条
@@ -413,8 +394,8 @@ public class MACDChart extends SlipStickChart {
 
 				// 获取终点Y坐标
 				float valueY = (float) ((1 - (lineData.getDea() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - axisMarginBottom) - axisMarginTop);
+						/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
+						+ getDataQuadrantPaddingStartY();
 				// 绘制线条路径
 				if (j == displayFrom || j == 0) {
 					if (lineData.getDea() == 0) {
@@ -434,7 +415,7 @@ public class MACDChart extends SlipStickChart {
 					}
 				}
 				// X位移
-				startX = startX + lineLength;
+				startX = startX + 1 + lineLength;
 			}
 		}
 	}

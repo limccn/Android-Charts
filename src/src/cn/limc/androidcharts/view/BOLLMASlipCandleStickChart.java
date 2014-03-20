@@ -171,8 +171,11 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 	 * @param canvas
 	 */
 	protected void drawAreas(Canvas canvas) {
+		if (null == bandData) {
+			return;
+		}
 		// distance between two points
-		float lineLength = ((super.getWidth() - super.getAxisMarginLeft()) / displayNumber) - 1;
+		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
 		// start point‘s X
 		float startX;
 		float lastY = 0;
@@ -182,52 +185,55 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 				.get(0);
 		LineEntity<DateValueEntity> line2 = (LineEntity<DateValueEntity>) bandData
 				.get(1);
+		List<DateValueEntity> line1Data = line1.getLineData();
+		List<DateValueEntity> line2Data = line2.getLineData();
 
-		if (line1.isDisplay() && line2.isDisplay()) {
-			Paint mPaint = new Paint();
-			mPaint.setColor(line1.getLineColor());
-			mPaint.setAlpha(70);
-			mPaint.setAntiAlias(true);
-			List<DateValueEntity> line1Data = line1.getLineData();
-			List<DateValueEntity> line2Data = line2.getLineData();
-			// set start point’s X
-			startX = super.getAxisMarginLeft() + lineLength / 2f;
-			Path areaPath = new Path();
-			if (line1Data != null && line2Data != null) {
-				for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
-					float value1 = line1Data.get(j).getValue();
-					float value2 = line2Data.get(j).getValue();
-
-					// calculate Y
-					float valueY1 = (float) ((1f - (value1 - this.getMinValue())
-							/ (this.getMaxValue() - this.getMinValue())) * (super
-							.getHeight() - super.getAxisMarginBottom()));
-					float valueY2 = (float) ((1f - (value2 - this.getMinValue())
-							/ (this.getMaxValue() - this.getMinValue())) * (super
-							.getHeight() - super.getAxisMarginBottom()));
-
-					// 绘制线条路径
-					if (j == displayFrom) {
-						areaPath.moveTo(startX, valueY1);
-						areaPath.lineTo(startX, valueY2);
-						areaPath.moveTo(startX, valueY1);
-					} else {
-						areaPath.lineTo(startX, valueY1);
-						areaPath.lineTo(startX, valueY2);
-						areaPath.lineTo(lastX, lastY);
-
-						areaPath.close();
-						areaPath.moveTo(startX, valueY1);
-					}
-
-					lastX = startX;
-					lastY = valueY2;
-					startX = startX + 1 + lineLength;
-				}
-				areaPath.close();
-				canvas.drawPath(areaPath, mPaint);
-			}
+		if (line1.isDisplay() == false || line2.isDisplay() == false) {
+			return;
 		}
+		if (line1Data == null || line2Data == null) {
+			return;
+		}
+
+		Paint mPaint = new Paint();
+		mPaint.setColor(line1.getLineColor());
+		mPaint.setAlpha(70);
+		mPaint.setAntiAlias(true);
+		// set start point’s X
+		startX = getDataQuadrantPaddingStartX() + lineLength / 2f;
+		Path areaPath = new Path();
+		for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+			float value1 = line1Data.get(j).getValue();
+			float value2 = line2Data.get(j).getValue();
+
+			// calculate Y
+			float valueY1 = (float) ((1f - (value1 - minValue)
+					/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
+					+ getDataQuadrantPaddingStartY();
+			float valueY2 = (float) ((1f - (value2 - minValue)
+					/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
+					+ getDataQuadrantPaddingStartY();
+
+			// 绘制线条路径
+			if (j == displayFrom) {
+				areaPath.moveTo(startX, valueY1);
+				areaPath.lineTo(startX, valueY2);
+				areaPath.moveTo(startX, valueY1);
+			} else {
+				areaPath.lineTo(startX, valueY1);
+				areaPath.lineTo(startX, valueY2);
+				areaPath.lineTo(lastX, lastY);
+
+				areaPath.close();
+				areaPath.moveTo(startX, valueY1);
+			}
+
+			lastX = startX;
+			lastY = valueY2;
+			startX = startX + 1 + lineLength;
+		}
+		areaPath.close();
+		canvas.drawPath(areaPath, mPaint);
 	}
 
 	/**
@@ -244,8 +250,16 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 	 * @param canvas
 	 */
 	protected void drawBandBorder(Canvas canvas) {
+
+		if (null == this.bandData) {
+			return;
+		}
+
+		if (bandData.size() <= 0) {
+			return;
+		}
 		// distance between two points
-		float lineLength = ((super.getWidth() - super.getAxisMarginLeft()) / displayNumber) - 1;
+		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
 		// start point‘s X
 		float startX;
 
@@ -253,34 +267,36 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 		for (int i = 0; i < bandData.size(); i++) {
 			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) bandData
 					.get(i);
-			if (line.isDisplay()) {
-				Paint mPaint = new Paint();
-				mPaint.setColor(line.getLineColor());
-				mPaint.setAntiAlias(true);
-				List<DateValueEntity> lineData = line.getLineData();
-				// set start point’s X
-				startX = super.getAxisMarginLeft() + lineLength / 2f;
-				// start point
-				PointF ptFirst = null;
-				if (lineData != null) {
-					for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
-						float value = lineData.get(j).getValue();
-						// calculate Y
-						float valueY = (float) ((1f - (value - this
-								.getMinValue())
-								/ (this.getMaxValue() - this.getMinValue())) * (super
-								.getHeight() - super.getAxisMarginBottom()));
 
-						// if is not last point connect to previous point
-						if (j > displayFrom) {
-							canvas.drawLine(ptFirst.x, ptFirst.y, startX,
-									valueY, mPaint);
-						}
-						// reset
-						ptFirst = new PointF(startX, valueY);
-						startX = startX + 1 + lineLength;
-					}
+			List<DateValueEntity> lineData = line.getLineData();
+			if (lineData == null) {
+				continue;
+			}
+			if (line.isDisplay() == false) {
+				continue;
+			}
+			Paint mPaint = new Paint();
+			mPaint.setColor(line.getLineColor());
+			mPaint.setAntiAlias(true);
+			// set start point’s X
+			startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+			// start point
+			PointF ptFirst = null;
+			for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+				float value = lineData.get(j).getValue();
+				// calculate Y
+				float valueY = (float) ((1f - (value - minValue)
+						/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
+						+ getDataQuadrantPaddingStartY();
+
+				// if is not last point connect to previous point
+				if (j > displayFrom) {
+					canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+							mPaint);
 				}
+				// reset
+				ptFirst = new PointF(startX, valueY);
+				startX = startX + 1 + lineLength;
 			}
 		}
 	}

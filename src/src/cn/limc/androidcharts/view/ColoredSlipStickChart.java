@@ -115,38 +115,39 @@ public class ColoredSlipStickChart extends SlipStickChart {
 
 	@Override
 	protected void drawSticks(Canvas canvas) {
-		float stickWidth = ((super.getWidth() - super.getAxisMarginLeft() - super
-				.getAxisMarginRight()) / displayNumber) - 1;
-		float stickX = super.getAxisMarginLeft() + 1;
+		if (null == stickData) {
+			return;
+		}
+		if (stickData.size() == 0) {
+			return;
+		}
+
+		float stickWidth = getDataQuadrantPaddingWidth() / displayNumber
+				- stickSpacing;
+		float stickX = getDataQuadrantPaddingStartX();
 
 		Paint mPaintStick = new Paint();
-		if (null != stickData) {
+		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+			ColoredStickEntity entity = (ColoredStickEntity) stickData.get(i);
 
-			for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
-				ColoredStickEntity entity = (ColoredStickEntity) stickData
-						.get(i);
+			float highY = (float) ((1f - (entity.getHigh() - minValue)
+					/ (maxValue - minValue))
+					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+			float lowY = (float) ((1f - (entity.getLow() - minValue)
+					/ (maxValue - minValue))
+					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
 
-				float highY = (float) ((1f - (entity.getHigh() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
-				float lowY = (float) ((1f - (entity.getLow() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
-
-				mPaintStick.setColor(entity.getColor());
-				// stick or line?
-				if (stickWidth >= 2f) {
-					canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
-							mPaintStick);
-				} else {
-					canvas.drawLine(stickX, highY, stickX, lowY, mPaintStick);
-				}
-
-				// next x
-				stickX = stickX + 1 + stickWidth;
+			mPaintStick.setColor(entity.getColor());
+			// stick or line?
+			if (stickWidth >= 2f) {
+				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
+						mPaintStick);
+			} else {
+				canvas.drawLine(stickX, highY, stickX, lowY, mPaintStick);
 			}
+
+			// next x
+			stickX = stickX + stickSpacing + stickWidth;
 		}
 	}
 

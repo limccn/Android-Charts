@@ -411,9 +411,16 @@ public class SlipCandleStickChart extends SlipStickChart {
 	 */
 	@Override
 	protected void drawSticks(Canvas canvas) {
-		float stickWidth = ((super.getWidth() - super.getAxisMarginLeft() - super
-				.getAxisMarginRight()) / displayNumber) - 1;
-		float stickX = super.getAxisMarginLeft() + 1;
+		if (null == stickData) {
+			return;
+		}
+		if (stickData.size() <= 0) {
+			return;
+		}
+
+		float stickWidth = getDataQuadrantPaddingWidth() / displayNumber
+				- stickSpacing;
+		float stickX = getDataQuadrantPaddingStartX();
 
 		Paint mPaintPositive = new Paint();
 		mPaintPositive.setColor(positiveStickFillColor);
@@ -424,294 +431,51 @@ public class SlipCandleStickChart extends SlipStickChart {
 		Paint mPaintCross = new Paint();
 		mPaintCross.setColor(crossStarColor);
 
-		if (null != stickData) {
-			for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
-				OHLCEntity ohlc = (OHLCEntity) stickData.get(i);
-				float openY = (float) ((1f - (ohlc.getOpen() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
-				float highY = (float) ((1f - (ohlc.getHigh() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
-				float lowY = (float) ((1f - (ohlc.getLow() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
-				float closeY = (float) ((1f - (ohlc.getClose() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
+		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+			OHLCEntity ohlc = (OHLCEntity) stickData.get(i);
+			float openY = (float) ((1f - (ohlc.getOpen() - minValue)
+					/ (maxValue - minValue))
+					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+			float highY = (float) ((1f - (ohlc.getHigh() - minValue)
+					/ (maxValue - minValue))
+					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+			float lowY = (float) ((1f - (ohlc.getLow() - minValue)
+					/ (maxValue - minValue))
+					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+			float closeY = (float) ((1f - (ohlc.getClose() - minValue)
+					/ (maxValue - minValue))
+					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
 
-				if (ohlc.getOpen() < ohlc.getClose()) {
-					// stick or line
-					if (stickWidth >= 2f) {
-						canvas.drawRect(stickX, closeY, stickX + stickWidth,
-								openY, mPaintPositive);
-					}
-					canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
-							+ stickWidth / 2f, lowY, mPaintPositive);
-				} else if (ohlc.getOpen() > ohlc.getClose()) {
-					// stick or line
-					if (stickWidth >= 2f) {
-						canvas.drawRect(stickX, openY, stickX + stickWidth,
-								closeY, mPaintNegative);
-					}
-					canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
-							+ stickWidth / 2f, lowY, mPaintNegative);
-				} else {
-					// line or point
-					if (stickWidth >= 2f) {
-						canvas.drawLine(stickX, closeY, stickX + stickWidth,
-								openY, mPaintCross);
-					}
-					canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
-							+ stickWidth / 2f, lowY, mPaintCross);
+			if (ohlc.getOpen() < ohlc.getClose()) {
+				// stick or line
+				if (stickWidth >= 2f) {
+					canvas.drawRect(stickX, closeY, stickX + stickWidth, openY,
+							mPaintPositive);
 				}
-
-				// next x
-				stickX = stickX + 1 + stickWidth;
+				canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
+						+ stickWidth / 2f, lowY, mPaintPositive);
+			} else if (ohlc.getOpen() > ohlc.getClose()) {
+				// stick or line
+				if (stickWidth >= 2f) {
+					canvas.drawRect(stickX, openY, stickX + stickWidth, closeY,
+							mPaintNegative);
+				}
+				canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
+						+ stickWidth / 2f, lowY, mPaintNegative);
+			} else {
+				// line or point
+				if (stickWidth >= 2f) {
+					canvas.drawLine(stickX, closeY, stickX + stickWidth, openY,
+							mPaintCross);
+				}
+				canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
+						+ stickWidth / 2f, lowY, mPaintCross);
 			}
+
+			// next x
+			stickX = stickX + stickSpacing + stickWidth;
 		}
 	}
-
-	// /**
-	// * <p>
-	// * add a new stick data to sticks and refresh this chart
-	// * </p>
-	// * <p>
-	// * 新しいスティックデータを追加する，フラフをレフレシューする
-	// * </p>
-	// * <p>
-	// * 追加一条新数据并刷新当前图表
-	// * </p>
-	// *
-	// * @param entity
-	// * <p>
-	// * data
-	// * </p>
-	// * <p>
-	// * データ
-	// * </p>
-	// * <p>
-	// * 新数据
-	// * </p>
-	// */
-	// public void pushData(OHLCEntity entity) {
-	// if (null != entity) {
-	// // 追�?��据到数据列表
-	// addData(entity);
-	// // 强制重�?
-	// super.postInvalidate();
-	// }
-	// }
-
-	// protected final int NONE = 0;
-	// protected final int ZOOM = 1;
-	// protected final int DOWN = 2;
-	//
-	// protected float olddistance = 0f;
-	// protected float newdistance = 0f;
-	//
-	// protected int TOUCH_MODE;
-	//
-	// protected PointF startPoint;
-	// protected PointF startPointA;
-	// protected PointF startPointB;
-	//
-	// @Override
-	// public boolean onTouchEvent(MotionEvent event) {
-	// if (null == stickData || stickData.size() == 0) {
-	// return false;
-	// }
-	//
-	// final float MIN_LENGTH = (super.getWidth() / 40) < 5 ? 5 : (super
-	// .getWidth() / 50);
-	//
-	// switch (event.getAction() & MotionEvent.ACTION_MASK) {
-	// // 设置拖拉模式
-	// case MotionEvent.ACTION_DOWN:
-	// TOUCH_MODE = DOWN;
-	// if (event.getPointerCount() == 1) {
-	// startPoint = new PointF(event.getX(), event.getY());
-	// }
-	// break;
-	// case MotionEvent.ACTION_UP:
-	// startPointA = null;
-	// startPointB = null;
-	// case MotionEvent.ACTION_POINTER_UP:
-	// TOUCH_MODE = NONE;
-	// startPointA = null;
-	// startPointB = null;
-	// return super.onTouchEvent(event);
-	// // 设置多点触摸模式
-	// case MotionEvent.ACTION_POINTER_DOWN:
-	// olddistance = calcDistance(event);
-	// if (olddistance > MIN_LENGTH) {
-	// TOUCH_MODE = ZOOM;
-	// startPointA = new PointF(event.getX(0), event.getY(0));
-	// startPointB = new PointF(event.getX(1), event.getY(1));
-	// }
-	// break;
-	// case MotionEvent.ACTION_MOVE:
-	// if (TOUCH_MODE == ZOOM) {
-	// newdistance = calcDistance(event);
-	// if (newdistance > MIN_LENGTH) {
-	// if (startPointA.x >= event.getX(0)
-	// && startPointB.x >= event.getX(1)) {
-	// if (displayFrom + displayNumber + 2 < stickData.size()) {
-	// displayFrom = displayFrom + 2;
-	// }
-	// } else if (startPointA.x <= event.getX(0)
-	// && startPointB.x <= event.getX(1)) {
-	// if (displayFrom > 2) {
-	// displayFrom = displayFrom - 2;
-	// }
-	// } else {
-	// if (Math.abs(newdistance - olddistance) > MIN_LENGTH) {
-	//
-	// if (newdistance > olddistance) {
-	// zoomIn();
-	// } else {
-	// zoomOut();
-	// }
-	// // 重置距离
-	// olddistance = newdistance;
-	// }
-	// }
-	// startPointA = new PointF(event.getX(0), event.getY(0));
-	// startPointB = new PointF(event.getX(1), event.getY(1));
-	//
-	// super.postInvalidate();
-	// super.notifyEventAll(this);
-	// }
-	// } else {
-	// // 单点拖动效果
-	// if (event.getPointerCount() == 1) {
-	// float moveXdistance = Math.abs(event.getX() - startPoint.x);
-	// float moveYdistance = Math.abs(event.getY() - startPoint.y);
-	//
-	// if (moveXdistance > 1 || moveYdistance > 1) {
-	//
-	// super.onTouchEvent(event);
-	//
-	// startPoint = new PointF(event.getX(), event.getY());
-	// }
-	// }
-	// }
-	// break;
-	// }
-	// return true;
-	// }
-
-	// /**
-	// * <p>
-	// * calculate the distance between two touch points
-	// * </p>
-	// * <p>
-	// * 複数タッチしたポイントの距離
-	// * </p>
-	// * <p>
-	// * 计算两点触控时两点之间的距离
-	// * </p>
-	// *
-	// * @param event
-	// * @return float
-	// * <p>
-	// * distance
-	// * </p>
-	// * <p>
-	// * 距離
-	// * </p>
-	// * <p>
-	// * 距离
-	// * </p>
-	// */
-	// private float calcDistance(MotionEvent event) {
-	// float x = event.getX(0) - event.getX(1);
-	// float y = event.getY(0) - event.getY(1);
-	// return FloatMath.sqrt(x * x + y * y);
-	// }
-
-	// /**
-	// * <p>
-	// * Zoom in the graph
-	// * </p>
-	// * <p>
-	// * 拡大表示する。
-	// * </p>
-	// * <p>
-	// * 放大表示
-	// * </p>
-	// */
-	// protected void zoomIn() {
-	// if (displayNumber > minDisplayNumber) {
-	// // 区分缩放方向
-	// if (zoomBaseLine == ZOOM_BASE_LINE_CENTER) {
-	// displayNumber = displayNumber - 2;
-	// displayFrom = displayFrom + 1;
-	// } else if (zoomBaseLine == ZOOM_BASE_LINE_LEFT) {
-	// displayNumber = displayNumber - 2;
-	// } else if (zoomBaseLine == ZOOM_BASE_LINE_RIGHT) {
-	// displayNumber = displayNumber - 2;
-	// displayFrom = displayFrom + 2;
-	// }
-	//
-	// // 处理displayNumber越界
-	// if (displayNumber < minDisplayNumber) {
-	// displayNumber = minDisplayNumber;
-	// }
-	//
-	// // 处理displayFrom越界
-	// if (displayFrom + displayNumber >= stickData.size()) {
-	// displayFrom = stickData.size() - displayNumber;
-	// }
-	// }
-	// }
-	//
-	// /**
-	// * <p>
-	// * Zoom out the grid
-	// * </p>
-	// * <p>
-	// * 縮小表示する。
-	// * </p>
-	// * <p>
-	// * 缩小
-	// * </p>
-	// */
-	// protected void zoomOut() {
-	// if (displayNumber < stickData.size() - 1) {
-	// if (displayNumber + 2 > stickData.size() - 1) {
-	// displayNumber = stickData.size() - 1;
-	// displayFrom = 0;
-	// } else {
-	// // 区分缩放方向
-	// if (zoomBaseLine == ZOOM_BASE_LINE_CENTER) {
-	// displayNumber = displayNumber + 2;
-	// if (displayFrom > 1) {
-	// displayFrom = displayFrom - 1;
-	// } else {
-	// displayFrom = 0;
-	// }
-	// } else if (zoomBaseLine == ZOOM_BASE_LINE_LEFT) {
-	// displayNumber = displayNumber + 2;
-	// } else if (zoomBaseLine == ZOOM_BASE_LINE_RIGHT) {
-	// displayNumber = displayNumber + 2;
-	// if (displayFrom > 2) {
-	// displayFrom = displayFrom - 2;
-	// } else {
-	// displayFrom = 0;
-	// }
-	// }
-	// }
-	//
-	// if (displayFrom + displayNumber >= stickData.size()) {
-	// displayNumber = stickData.size() - displayFrom;
-	// }
-	// }
-	// }
 
 	/**
 	 * @return the positiveStickBorderColor

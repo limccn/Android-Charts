@@ -90,7 +90,7 @@ public class SlipLineChart extends GridChart {
 	 * Y的最小表示值
 	 * </p>
 	 */
-	private double minValue;
+	protected double minValue;
 
 	/**
 	 * <p>
@@ -103,7 +103,7 @@ public class SlipLineChart extends GridChart {
 	 * Y的最大表示值
 	 * </p>
 	 */
-	private double maxValue;
+	protected double maxValue;
 
 	/*
 	 * (non-Javadoc)
@@ -325,8 +325,20 @@ public class SlipLineChart extends GridChart {
 		}
 		index = index + displayFrom;
 
-		return String.valueOf(linesData.get(0).getLineData().get(index)
-				.getDate());
+		if (null == this.linesData) {
+			return "";
+		}
+		LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
+				.get(0);
+		List<DateValueEntity> lineData = line.getLineData();
+		if (lineData == null) {
+			return "";
+		}
+		if (line.isDisplay() == false) {
+			return "";
+		}
+
+		return String.valueOf(lineData.get(index).getDate());
 	}
 
 	/*
@@ -429,8 +441,11 @@ public class SlipLineChart extends GridChart {
 	 * @param canvas
 	 */
 	protected void drawLines(Canvas canvas) {
+		if (null == this.linesData) {
+			return;
+		}
 		// distance between two points
-		float lineLength = ((super.getWidth() - super.getAxisMarginLeft()) / displayNumber) - 1;
+		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
 		// start point‘s X
 		float startX;
 
@@ -438,34 +453,36 @@ public class SlipLineChart extends GridChart {
 		for (int i = 0; i < linesData.size(); i++) {
 			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
 					.get(i);
-			if (line.isDisplay()) {
-				Paint mPaint = new Paint();
-				mPaint.setColor(line.getLineColor());
-				mPaint.setAntiAlias(true);
-				List<DateValueEntity> lineData = line.getLineData();
-				// set start point’s X
-				startX = super.getAxisMarginLeft() + lineLength / 2f;
-				// start point
-				PointF ptFirst = null;
-				if (lineData != null) {
-					for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
-						float value = lineData.get(j).getValue();
-						// calculate Y
-						float valueY = (float) ((1f - (value - this
-								.getMinValue())
-								/ (this.getMaxValue() - this.getMinValue())) * (super
-								.getHeight() - super.getAxisMarginBottom()));
 
-						// if is not last point connect to previous point
-						if (j > displayFrom) {
-							canvas.drawLine(ptFirst.x, ptFirst.y, startX,
-									valueY, mPaint);
-						}
-						// reset
-						ptFirst = new PointF(startX, valueY);
-						startX = startX + 1 + lineLength;
-					}
+			List<DateValueEntity> lineData = line.getLineData();
+			if (lineData == null) {
+				continue;
+			}
+			if (line.isDisplay() == false) {
+				continue;
+			}
+			Paint mPaint = new Paint();
+			mPaint.setColor(line.getLineColor());
+			mPaint.setAntiAlias(true);
+			// set start point’s X
+			startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+			// start point
+			PointF ptFirst = null;
+			for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+				float value = lineData.get(j).getValue();
+				// calculate Y
+				float valueY = (float) ((1f - (value - minValue)
+						/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
+						+ getDataQuadrantPaddingStartY();
+
+				// if is not last point connect to previous point
+				if (j > displayFrom) {
+					canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+							mPaint);
 				}
+				// reset
+				ptFirst = new PointF(startX, valueY);
+				startX = startX + 1 + lineLength;
 			}
 		}
 	}

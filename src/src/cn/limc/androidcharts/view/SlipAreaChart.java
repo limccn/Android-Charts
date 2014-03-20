@@ -119,9 +119,7 @@ public class SlipAreaChart extends SlipLineChart {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		// draw lines
-		if (null != linesData) {
-			drawAreas(canvas);
-		}
+		drawAreas(canvas);
 	}
 
 	/**
@@ -138,8 +136,11 @@ public class SlipAreaChart extends SlipLineChart {
 	 * @param canvas
 	 */
 	protected void drawAreas(Canvas canvas) {
+		if (null == linesData) {
+			return;
+		}
 		// distance between two points
-		float lineLength = ((super.getWidth() - super.getAxisMarginLeft()) / displayNumber) - 1;
+		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
 		// start point‘s X
 		float startX;
 
@@ -147,46 +148,44 @@ public class SlipAreaChart extends SlipLineChart {
 		for (int i = 0; i < linesData.size(); i++) {
 			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
 					.get(i);
-			if (line.isDisplay()) {
-				Paint mPaint = new Paint();
-				mPaint.setColor(line.getLineColor());
-				mPaint.setAlpha(70);
-				mPaint.setAntiAlias(true);
-				List<DateValueEntity> lineData = line.getLineData();
-				// set start point’s X
-				startX = super.getAxisMarginLeft() + lineLength / 2f;
-				Path linePath = new Path();
-				if (lineData != null) {
-					for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
-						float value = lineData.get(j).getValue();
-						// calculate Y
-						float valueY = (float) ((1f - (value - this
-								.getMinValue())
-								/ (this.getMaxValue() - this.getMinValue())) * (super
-								.getHeight() - super.getAxisMarginBottom()));
+			List<DateValueEntity> lineData = line.getLineData();
 
-						// if is not last point connect to previous point
-						if (j == displayFrom) {
-							linePath.moveTo(
-									startX,
-									super.getHeight()
-											- super.getAxisMarginBottom());
-							linePath.lineTo(startX, valueY);
-						} else if (j == displayFrom + displayNumber - 1) {
-							linePath.lineTo(startX, valueY);
-							linePath.lineTo(
-									startX,
-									super.getHeight()
-											- super.getAxisMarginBottom());
-						} else {
-							linePath.lineTo(startX, valueY);
-						}
-						startX = startX + 1 + lineLength;
-					}
-					linePath.close();
-					canvas.drawPath(linePath, mPaint);
-				}
+			if (lineData == null) {
+				continue;
 			}
+			if (line.isDisplay() == false) {
+				continue;
+			}
+
+			Paint mPaint = new Paint();
+			mPaint.setColor(line.getLineColor());
+			mPaint.setAlpha(70);
+			mPaint.setAntiAlias(true);
+
+			// set start point’s X
+			startX = getDataQuadrantPaddingStartX() + lineLength / 2f;
+			Path linePath = new Path();
+			for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+				float value = lineData.get(j).getValue();
+				// calculate Y
+				float valueY = (float) ((1f - (value - minValue)
+						/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
+						+ getDataQuadrantPaddingStartY();
+
+				// if is not last point connect to previous point
+				if (j == displayFrom) {
+					linePath.moveTo(startX, getDataQuadrantPaddingEndY());
+					linePath.lineTo(startX, valueY);
+				} else if (j == displayFrom + displayNumber - 1) {
+					linePath.lineTo(startX, valueY);
+					linePath.lineTo(startX, getDataQuadrantPaddingEndY());
+				} else {
+					linePath.lineTo(startX, valueY);
+				}
+				startX = startX + 1 + lineLength;
+			}
+			linePath.close();
+			canvas.drawPath(linePath, mPaint);
 		}
 	}
 }

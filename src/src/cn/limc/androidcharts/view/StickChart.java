@@ -110,7 +110,7 @@ public class StickChart extends GridChart {
 	private int stickFillColor = DEFAULT_STICK_FILL_COLOR;
 
 	public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
-
+	public static final int DEFAULT_STICK_SPACING = 1;
 	/**
 	 * <p>
 	 * data to draw sticks
@@ -164,6 +164,8 @@ public class StickChart extends GridChart {
 	protected double minValue;
 
 	protected boolean autoCalcValueRange = DEFAULT_AUTO_CALC_VALUE_RANGE;
+
+	protected int stickSpacing = DEFAULT_STICK_SPACING;
 
 	/*
 	 * (non-Javadoc)
@@ -528,25 +530,23 @@ public class StickChart extends GridChart {
 			return;
 		}
 
-		float stickWidth = ((super.getWidth() - super.getAxisMarginLeft() - super
-				.getAxisMarginRight()) / maxSticksNum) - 1;
-		float stickX = super.getAxisMarginLeft() + 1;
-
 		Paint mPaintStick = new Paint();
 		mPaintStick.setColor(stickFillColor);
+
+		float stickWidth = getDataQuadrantPaddingWidth() / maxSticksNum
+				- stickSpacing;
+		float stickX = getDataQuadrantPaddingStartX();
+
 		for (int i = 0; i < stickData.size(); i++) {
 			IMeasurable stick = stickData.get(i);
 
 			float highY = (float) ((1f - (stick.getHigh() - minValue)
 					/ (maxValue - minValue))
-					* (super.getHeight() - super.getAxisMarginBottom()) - super
-					.getAxisMarginTop());
+					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
 			float lowY = (float) ((1f - (stick.getLow() - minValue)
 					/ (maxValue - minValue))
-					* (super.getHeight() - super.getAxisMarginBottom()) - super
-					.getAxisMarginTop());
+					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
 
-			// stick or line?
 			if (stickWidth >= 2f) {
 				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
 						mPaintStick);
@@ -555,7 +555,7 @@ public class StickChart extends GridChart {
 			}
 
 			// next x
-			stickX = stickX + 1 + stickWidth;
+			stickX = stickX + stickSpacing + stickWidth;
 		}
 	}
 

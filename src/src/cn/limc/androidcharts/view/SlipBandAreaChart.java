@@ -119,9 +119,7 @@ public class SlipBandAreaChart extends SlipLineChart {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		// draw lines
-		if (null != linesData && linesData.size() >= 2) {
-			drawAreas(canvas);
-		}
+		drawAreas(canvas);
 	}
 
 	/**
@@ -138,62 +136,71 @@ public class SlipBandAreaChart extends SlipLineChart {
 	 * @param canvas
 	 */
 	protected void drawAreas(Canvas canvas) {
-		// distance between two points
-		float lineLength = ((super.getWidth() - super.getAxisMarginLeft()) / displayNumber) - 1;
-		// start point‘s X
-		float startX;
-		float lastY = 0;
-		float lastX = 0;
-
+		if (null == linesData) {
+			return;
+		}
+		if (linesData.size() < 2) {
+			return;
+		}
 		LineEntity<DateValueEntity> line1 = (LineEntity<DateValueEntity>) linesData
 				.get(0);
 		LineEntity<DateValueEntity> line2 = (LineEntity<DateValueEntity>) linesData
 				.get(1);
+		List<DateValueEntity> line1Data = line1.getLineData();
+		List<DateValueEntity> line2Data = line2.getLineData();
 
-		if (line1.isDisplay() && line2.isDisplay()) {
-			Paint mPaint = new Paint();
-			mPaint.setColor(line1.getLineColor());
-			mPaint.setAlpha(70);
-			mPaint.setAntiAlias(true);
-			List<DateValueEntity> line1Data = line1.getLineData();
-			List<DateValueEntity> line2Data = line2.getLineData();
-			// set start point’s X
-			startX = super.getAxisMarginLeft() + lineLength / 2f;
-			Path areaPath = new Path();
-			if (line1Data != null && line2Data != null) {
-				for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
-					float value1 = line1Data.get(j).getValue();
-					float value2 = line2Data.get(j).getValue();
-
-					// calculate Y
-					float valueY1 = (float) ((1f - (value1 - this.getMinValue())
-							/ (this.getMaxValue() - this.getMinValue())) * (super
-							.getHeight() - super.getAxisMarginBottom()));
-					float valueY2 = (float) ((1f - (value2 - this.getMinValue())
-							/ (this.getMaxValue() - this.getMinValue())) * (super
-							.getHeight() - super.getAxisMarginBottom()));
-
-					// 绘制线条路径
-					if (j == displayFrom) {
-						areaPath.moveTo(startX, valueY1);
-						areaPath.lineTo(startX, valueY2);
-						areaPath.moveTo(startX, valueY1);
-					} else {
-						areaPath.lineTo(startX, valueY1);
-						areaPath.lineTo(startX, valueY2);
-						areaPath.lineTo(lastX, lastY);
-
-						areaPath.close();
-						areaPath.moveTo(startX, valueY1);
-					}
-
-					lastX = startX;
-					lastY = valueY2;
-					startX = startX + 1 + lineLength;
-				}
-				areaPath.close();
-				canvas.drawPath(areaPath, mPaint);
-			}
+		if (line1.isDisplay() == false || line2.isDisplay() == false) {
+			return;
 		}
+		if (line1Data == null || line2Data == null) {
+			return;
+		}
+
+		Paint mPaint = new Paint();
+		mPaint.setColor(line1.getLineColor());
+		mPaint.setAlpha(70);
+		mPaint.setAntiAlias(true);
+
+		// distance between two points
+		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
+		// start point‘s X
+		// set start point’s X
+		float startX = getDataQuadrantPaddingStartX() + lineLength / 2f;
+		float lastY = 0;
+		float lastX = 0;
+
+		Path areaPath = new Path();
+
+		for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+			float value1 = line1Data.get(j).getValue();
+			float value2 = line2Data.get(j).getValue();
+
+			// calculate Y
+			float valueY1 = (float) ((1f - (value1 - minValue)
+					/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
+					+ getDataQuadrantPaddingStartY();
+			float valueY2 = (float) ((1f - (value2 - minValue)
+					/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
+					+ getDataQuadrantPaddingStartY();
+
+			// 绘制线条路径
+			if (j == displayFrom) {
+				areaPath.moveTo(startX, valueY1);
+				areaPath.lineTo(startX, valueY2);
+				areaPath.moveTo(startX, valueY1);
+			} else {
+				areaPath.lineTo(startX, valueY1);
+				areaPath.lineTo(startX, valueY2);
+				areaPath.lineTo(lastX, lastY);
+				areaPath.close();
+				areaPath.moveTo(startX, valueY1);
+			}
+
+			lastX = startX;
+			lastY = valueY2;
+			startX = startX + 1 + lineLength;
+		}
+		areaPath.close();
+		canvas.drawPath(areaPath, mPaint);
 	}
 }

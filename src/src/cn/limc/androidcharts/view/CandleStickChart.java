@@ -299,9 +299,16 @@ public class CandleStickChart extends StickChart {
 	 */
 	@Override
 	protected void drawSticks(Canvas canvas) {
-		float stickWidth = ((super.getWidth() - super.getAxisMarginLeft() - super
-				.getAxisMarginRight()) / maxSticksNum) - 1;
-		float stickX = super.getAxisMarginLeft() + 1;
+		if (null == stickData) {
+			return;
+		}
+		if (stickData.size() <= 0) {
+			return;
+		}
+
+		float stickWidth = getDataQuadrantPaddingWidth() / maxSticksNum
+				- stickSpacing;
+		float stickX = getDataQuadrantPaddingStartX();
 
 		Paint mPaintPositive = new Paint();
 		mPaintPositive.setColor(positiveStickFillColor);
@@ -312,55 +319,49 @@ public class CandleStickChart extends StickChart {
 		Paint mPaintCross = new Paint();
 		mPaintCross.setColor(crossStarColor);
 
-		if (null != stickData) {
-			for (int i = 0; i < stickData.size(); i++) {
-				OHLCEntity ohlc = (OHLCEntity) stickData.get(i);
-				float openY = (float) ((1f - (ohlc.getOpen() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
-				float highY = (float) ((1f - (ohlc.getHigh() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
-				float lowY = (float) ((1f - (ohlc.getLow() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
-				float closeY = (float) ((1f - (ohlc.getClose() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
+		for (int i = 0; i < stickData.size(); i++) {
+			OHLCEntity ohlc = (OHLCEntity) stickData.get(i);
+			float openY = (float) ((1f - (ohlc.getOpen() - minValue)
+					/ (maxValue - minValue))
+					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+			float highY = (float) ((1f - (ohlc.getHigh() - minValue)
+					/ (maxValue - minValue))
+					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+			float lowY = (float) ((1f - (ohlc.getLow() - minValue)
+					/ (maxValue - minValue))
+					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+			float closeY = (float) ((1f - (ohlc.getClose() - minValue)
+					/ (maxValue - minValue))
+					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
 
-				if (ohlc.getOpen() < ohlc.getClose()) {
-					// stick or line
-					if (stickWidth >= 2f) {
-						canvas.drawRect(stickX, closeY, stickX + stickWidth,
-								openY, mPaintPositive);
-					}
-					canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
-							+ stickWidth / 2f, lowY, mPaintPositive);
-				} else if (ohlc.getOpen() > ohlc.getClose()) {
-					// stick or line
-					if (stickWidth >= 2f) {
-						canvas.drawRect(stickX, openY, stickX + stickWidth,
-								closeY, mPaintNegative);
-					}
-					canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
-							+ stickWidth / 2f, lowY, mPaintNegative);
-				} else {
-					// line or point
-					if (stickWidth >= 2f) {
-						canvas.drawLine(stickX, closeY, stickX + stickWidth,
-								openY, mPaintCross);
-					}
-					canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
-							+ stickWidth / 2f, lowY, mPaintCross);
+			if (ohlc.getOpen() < ohlc.getClose()) {
+				// stick or line
+				if (stickWidth >= 2f) {
+					canvas.drawRect(stickX, closeY, stickX + stickWidth, openY,
+							mPaintPositive);
 				}
-
-				// next x
-				stickX = stickX + 1 + stickWidth;
+				canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
+						+ stickWidth / 2f, lowY, mPaintPositive);
+			} else if (ohlc.getOpen() > ohlc.getClose()) {
+				// stick or line
+				if (stickWidth >= 2f) {
+					canvas.drawRect(stickX, openY, stickX + stickWidth, closeY,
+							mPaintNegative);
+				}
+				canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
+						+ stickWidth / 2f, lowY, mPaintNegative);
+			} else {
+				// line or point
+				if (stickWidth >= 2f) {
+					canvas.drawLine(stickX, closeY, stickX + stickWidth, openY,
+							mPaintCross);
+				}
+				canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
+						+ stickWidth / 2f, lowY, mPaintCross);
 			}
+
+			// next x
+			stickX = stickX + stickSpacing + stickWidth;
 		}
 	}
 

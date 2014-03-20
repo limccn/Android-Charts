@@ -142,16 +142,24 @@ public class AndroidChartsActivity extends Activity {
 		xtitle.add("13:00");
 		xtitle.add("14:00");
 		xtitle.add("15:00");
-		xtitle.add(" ");
 
 		gridchart.setAxisXColor(Color.LTGRAY);
 		gridchart.setAxisYColor(Color.LTGRAY);
 		gridchart.setBorderColor(Color.LTGRAY);
-		gridchart.setAxisMarginTop(10);
-		gridchart.setAxisMarginLeft(20);
+		gridchart.setLatitudeNum(5);
+		gridchart.setLongitudeNum(6);
+		gridchart.setDataQuadrantPaddingTop(5);
+		gridchart.setDataQuadrantPaddingBottom(5);
+		gridchart.setDataQuadrantPaddingLeft(5);
+		gridchart.setDataQuadrantPaddingRight(5);
+		gridchart.setAxisYTitleQuadrantWidth(50);
+		gridchart.setAxisXTitleQuadrantHeight(20);
+		gridchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		gridchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 		gridchart.setLatitudeTitles(ytitle);
 		gridchart.setLongitudeTitles(xtitle);
-		gridchart.setLongitudeFontSize(10);
+		gridchart.setLongitudeFontSize(14);
+		gridchart.setLatitudeFontSize(14);
 		gridchart.setLongitudeFontColor(Color.WHITE);
 		gridchart.setLatitudeColor(Color.GRAY);
 		gridchart.setLatitudeFontColor(Color.WHITE);
@@ -162,6 +170,8 @@ public class AndroidChartsActivity extends Activity {
 		gridchart.setDisplayLongitude(true);
 		gridchart.setCrossLinesColor(Color.BLUE);
 		gridchart.setCrossLinesFontColor(Color.GREEN);
+		gridchart.setBorderWidth(1);
+		gridchart.setAxisWidth(1);
 	}
 
 	private void initLineChart() {
@@ -189,29 +199,10 @@ public class AndroidChartsActivity extends Activity {
 		MA25.setLineData(initMA(25));
 		lines.add(MA25);
 
-		List<String> ytitle = new ArrayList<String>();
-		ytitle.add("240");
-		ytitle.add("250");
-		ytitle.add("260");
-		ytitle.add("270");
-		ytitle.add("280");
-		List<String> xtitle = new ArrayList<String>();
-		xtitle.add("9:00");
-		xtitle.add("10:00");
-		xtitle.add("11:00");
-		xtitle.add("13:00");
-		xtitle.add("14:00");
-		xtitle.add("15:00");
-		xtitle.add(" ");
-
 		linechart.setAxisXColor(Color.LTGRAY);
 		linechart.setAxisYColor(Color.LTGRAY);
 		linechart.setBorderColor(Color.LTGRAY);
-		linechart.setAxisMarginTop(10);
-		linechart.setAxisMarginLeft(20);
-		linechart.setLatitudeTitles(ytitle);
-		linechart.setLongitudeTitles(xtitle);
-		linechart.setLongitudeFontSize(10);
+		linechart.setLongitudeFontSize(14);
 		linechart.setLongitudeFontColor(Color.WHITE);
 		linechart.setLatitudeColor(Color.GRAY);
 		linechart.setLatitudeFontColor(Color.WHITE);
@@ -223,6 +214,16 @@ public class AndroidChartsActivity extends Activity {
 		linechart.setDisplayLatitudeTitle(true);
 		linechart.setDisplayLatitude(true);
 		linechart.setDisplayLongitude(true);
+		linechart.setLatitudeNum(5);
+		linechart.setLongitudeNum(6);
+		linechart.setDataQuadrantPaddingTop(5);
+		linechart.setDataQuadrantPaddingBottom(5);
+		linechart.setDataQuadrantPaddingLeft(5);
+		linechart.setDataQuadrantPaddingRight(5);
+		linechart.setAxisYTitleQuadrantWidth(50);
+		linechart.setAxisXTitleQuadrantHeight(20);
+		linechart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		linechart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
 
 		// 为chart1增加均线
 		linechart.setLinesData(lines);
@@ -249,9 +250,7 @@ public class AndroidChartsActivity extends Activity {
 		sliplinechart.setAxisXColor(Color.LTGRAY);
 		sliplinechart.setAxisYColor(Color.LTGRAY);
 		sliplinechart.setBorderColor(Color.LTGRAY);
-		sliplinechart.setAxisMarginTop(10);
-		sliplinechart.setAxisMarginLeft(20);
-		sliplinechart.setLongitudeFontSize(10);
+		sliplinechart.setLongitudeFontSize(14);
 		sliplinechart.setLongitudeFontColor(Color.WHITE);
 		sliplinechart.setLatitudeColor(Color.GRAY);
 		sliplinechart.setLatitudeFontColor(Color.WHITE);
@@ -266,6 +265,14 @@ public class AndroidChartsActivity extends Activity {
 		sliplinechart.setDisplayLatitudeTitle(true);
 		sliplinechart.setDisplayLatitude(true);
 		sliplinechart.setDisplayLongitude(true);
+		sliplinechart.setDataQuadrantPaddingTop(5);
+		sliplinechart.setDataQuadrantPaddingBottom(5);
+		sliplinechart.setDataQuadrantPaddingLeft(5);
+		sliplinechart.setDataQuadrantPaddingRight(5);
+		sliplinechart.setAxisYTitleQuadrantWidth(50);
+		sliplinechart.setAxisXTitleQuadrantHeight(20);
+		sliplinechart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		sliplinechart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
 
 		sliplinechart.setLinesData(lines);
 	}
@@ -291,9 +298,7 @@ public class AndroidChartsActivity extends Activity {
 		slipareachart.setAxisXColor(Color.LTGRAY);
 		slipareachart.setAxisYColor(Color.LTGRAY);
 		slipareachart.setBorderColor(Color.LTGRAY);
-		slipareachart.setAxisMarginTop(10);
-		slipareachart.setAxisMarginLeft(20);
-		slipareachart.setLongitudeFontSize(10);
+		slipareachart.setLongitudeFontSize(14);
 		slipareachart.setLongitudeFontColor(Color.WHITE);
 		slipareachart.setLatitudeColor(Color.GRAY);
 		slipareachart.setLatitudeFontColor(Color.WHITE);
@@ -308,6 +313,14 @@ public class AndroidChartsActivity extends Activity {
 		slipareachart.setDisplayLatitudeTitle(true);
 		slipareachart.setDisplayLatitude(true);
 		slipareachart.setDisplayLongitude(true);
+		slipareachart.setDataQuadrantPaddingTop(5);
+		slipareachart.setDataQuadrantPaddingBottom(5);
+		slipareachart.setDataQuadrantPaddingLeft(5);
+		slipareachart.setDataQuadrantPaddingRight(5);
+		slipareachart.setAxisYTitleQuadrantWidth(50);
+		slipareachart.setAxisXTitleQuadrantHeight(20);
+		slipareachart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		slipareachart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
 
 		slipareachart.setLinesData(lines);
 	}
@@ -333,9 +346,7 @@ public class AndroidChartsActivity extends Activity {
 		slipbandchart.setAxisXColor(Color.LTGRAY);
 		slipbandchart.setAxisYColor(Color.LTGRAY);
 		slipbandchart.setBorderColor(Color.LTGRAY);
-		slipbandchart.setAxisMarginTop(10);
-		slipbandchart.setAxisMarginLeft(20);
-		slipbandchart.setLongitudeFontSize(10);
+		slipbandchart.setLongitudeFontSize(14);
 		slipbandchart.setLongitudeFontColor(Color.WHITE);
 		slipbandchart.setLatitudeColor(Color.GRAY);
 		slipbandchart.setLatitudeFontColor(Color.WHITE);
@@ -350,6 +361,14 @@ public class AndroidChartsActivity extends Activity {
 		slipbandchart.setDisplayLatitudeTitle(true);
 		slipbandchart.setDisplayLatitude(true);
 		slipbandchart.setDisplayLongitude(true);
+		slipbandchart.setDataQuadrantPaddingTop(5);
+		slipbandchart.setDataQuadrantPaddingBottom(5);
+		slipbandchart.setDataQuadrantPaddingLeft(5);
+		slipbandchart.setDataQuadrantPaddingRight(5);
+		slipbandchart.setAxisYTitleQuadrantWidth(50);
+		slipbandchart.setAxisXTitleQuadrantHeight(20);
+		slipbandchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		slipbandchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
 
 		slipbandchart.setLinesData(lines);
 	}
@@ -366,8 +385,14 @@ public class AndroidChartsActivity extends Activity {
 		stickchart.setLatitudeFontColor(Color.WHITE);
 		stickchart
 				.setStickFillColor(getResources().getColor(R.drawable.yellow));
-		stickchart.setAxisMarginTop(5);
-		stickchart.setAxisMarginRight(1);
+		stickchart.setDataQuadrantPaddingTop(6);
+		stickchart.setDataQuadrantPaddingBottom(1);
+		stickchart.setDataQuadrantPaddingLeft(1);
+		stickchart.setDataQuadrantPaddingRight(1);
+		stickchart.setAxisYTitleQuadrantWidth(50);
+		stickchart.setAxisXTitleQuadrantHeight(20);
+		stickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		stickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
 
 		// 最大显示足数
 		stickchart.setMaxSticksNum(52);
@@ -402,8 +427,14 @@ public class AndroidChartsActivity extends Activity {
 		slipstickchart.setLatitudeFontColor(Color.WHITE);
 		slipstickchart.setStickFillColor(getResources().getColor(
 				R.drawable.yellow));
-		slipstickchart.setAxisMarginTop(5);
-		slipstickchart.setAxisMarginRight(1);
+		slipstickchart.setDataQuadrantPaddingTop(6);
+		slipstickchart.setDataQuadrantPaddingBottom(1);
+		slipstickchart.setDataQuadrantPaddingLeft(1);
+		slipstickchart.setDataQuadrantPaddingRight(1);
+		slipstickchart.setAxisYTitleQuadrantWidth(50);
+		slipstickchart.setAxisXTitleQuadrantHeight(20);
+		slipstickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		slipstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
 
 		// 最大纬线数
 		slipstickchart.setLatitudeNum(2);
@@ -443,8 +474,6 @@ public class AndroidChartsActivity extends Activity {
 		coloredslipstickchart.setBorderColor(Color.LTGRAY);
 		coloredslipstickchart.setLongitudeFontColor(Color.WHITE);
 		coloredslipstickchart.setLatitudeFontColor(Color.WHITE);
-		coloredslipstickchart.setAxisMarginTop(5);
-		coloredslipstickchart.setAxisMarginRight(1);
 
 		// 最大纬线数
 		coloredslipstickchart.setLatitudeNum(2);
@@ -468,6 +497,16 @@ public class AndroidChartsActivity extends Activity {
 		coloredslipstickchart.setDisplayLatitude(true);
 		coloredslipstickchart.setDisplayLongitude(true);
 		coloredslipstickchart.setBackgroundColor(Color.BLACK);
+
+		coloredslipstickchart.setDataQuadrantPaddingTop(5);
+		coloredslipstickchart.setDataQuadrantPaddingBottom(5);
+		coloredslipstickchart.setDataQuadrantPaddingLeft(5);
+		coloredslipstickchart.setDataQuadrantPaddingRight(5);
+		coloredslipstickchart.setAxisYTitleQuadrantWidth(50);
+		coloredslipstickchart.setAxisXTitleQuadrantHeight(20);
+		coloredslipstickchart
+				.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		coloredslipstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
 
 		// 为chart1增加均线
 		coloredslipstickchart
@@ -510,8 +549,6 @@ public class AndroidChartsActivity extends Activity {
 		mastickchart.setLatitudeFontColor(Color.WHITE);
 		mastickchart.setStickFillColor(getResources().getColor(
 				R.drawable.yellow));
-		mastickchart.setAxisMarginTop(5);
-		mastickchart.setAxisMarginRight(1);
 
 		// 最大显示足数
 		mastickchart.setMaxSticksNum(52);
@@ -530,10 +567,20 @@ public class AndroidChartsActivity extends Activity {
 		mastickchart.setDisplayLongitude(true);
 		mastickchart.setBackgroundColor(Color.BLACK);
 
+		mastickchart.setDataQuadrantPaddingTop(5);
+		mastickchart.setDataQuadrantPaddingBottom(5);
+		mastickchart.setDataQuadrantPaddingLeft(5);
+		mastickchart.setDataQuadrantPaddingRight(5);
+		mastickchart.setAxisYTitleQuadrantWidth(50);
+		mastickchart.setAxisXTitleQuadrantHeight(20);
+		mastickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		mastickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+
 		// 为chart1增加均线
 		mastickchart.setLinesData(vlines);
 		// 为chart1增加均线
 		mastickchart.setStickData(new ListChartData<IStickEntity>(vol));
+
 	}
 
 	private void initMASlipStickChart() {
@@ -572,8 +619,6 @@ public class AndroidChartsActivity extends Activity {
 		maslipstickchart.setLatitudeFontColor(Color.WHITE);
 		maslipstickchart.setStickFillColor(getResources().getColor(
 				R.drawable.yellow));
-		maslipstickchart.setAxisMarginTop(5);
-		maslipstickchart.setAxisMarginRight(1);
 
 		// 最大纬线数
 		maslipstickchart.setLatitudeNum(2);
@@ -597,6 +642,15 @@ public class AndroidChartsActivity extends Activity {
 		maslipstickchart.setDisplayLatitude(true);
 		maslipstickchart.setDisplayLongitude(true);
 		maslipstickchart.setBackgroundColor(Color.BLACK);
+
+		maslipstickchart.setDataQuadrantPaddingTop(5);
+		maslipstickchart.setDataQuadrantPaddingBottom(5);
+		maslipstickchart.setDataQuadrantPaddingLeft(5);
+		maslipstickchart.setDataQuadrantPaddingRight(5);
+		maslipstickchart.setAxisYTitleQuadrantWidth(50);
+		maslipstickchart.setAxisXTitleQuadrantHeight(20);
+		maslipstickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		maslipstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
 
 		// 为chart1增加均线
 		maslipstickchart.setLineData(vlines);
@@ -626,8 +680,6 @@ public class AndroidChartsActivity extends Activity {
 		minusstickchart.setMaxSticksNum(data.size());
 		minusstickchart.setMaxValue(50000);
 		minusstickchart.setMinValue(-50000);
-		minusstickchart.setAxisMarginRight(1);
-		minusstickchart.setAxisMarginTop(5);
 
 		minusstickchart.setBorderColor(Color.GRAY);
 		minusstickchart.setAxisXColor(Color.WHITE);
@@ -648,6 +700,16 @@ public class AndroidChartsActivity extends Activity {
 		minusstickchart.setDisplayLongitude(true);
 		minusstickchart.setStickBorderColor(Color.WHITE);
 		minusstickchart.setStickFillColor(Color.BLUE);
+
+		minusstickchart.setDataQuadrantPaddingTop(5);
+		minusstickchart.setDataQuadrantPaddingBottom(5);
+		minusstickchart.setDataQuadrantPaddingLeft(5);
+		minusstickchart.setDataQuadrantPaddingRight(5);
+		minusstickchart.setAxisYTitleQuadrantWidth(50);
+		minusstickchart.setAxisXTitleQuadrantHeight(20);
+		minusstickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		minusstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+
 	}
 
 	private void initSlipMinusStickChart() {
@@ -696,8 +758,6 @@ public class AndroidChartsActivity extends Activity {
 
 		slipminusstickchart.setMaxValue(50000);
 		slipminusstickchart.setMinValue(-50000);
-		slipminusstickchart.setAxisMarginRight(1);
-		slipminusstickchart.setAxisMarginTop(5);
 
 		slipminusstickchart.setBorderColor(Color.GRAY);
 		slipminusstickchart.setAxisXColor(Color.WHITE);
@@ -723,6 +783,16 @@ public class AndroidChartsActivity extends Activity {
 		slipminusstickchart.setDisplayLongitude(true);
 		slipminusstickchart.setStickBorderColor(Color.WHITE);
 		slipminusstickchart.setStickFillColor(Color.BLUE);
+		slipminusstickchart.setStickSpacing(10);
+
+		slipminusstickchart.setDataQuadrantPaddingTop(5);
+		slipminusstickchart.setDataQuadrantPaddingBottom(5);
+		slipminusstickchart.setDataQuadrantPaddingLeft(5);
+		slipminusstickchart.setDataQuadrantPaddingRight(5);
+		slipminusstickchart.setAxisYTitleQuadrantWidth(50);
+		slipminusstickchart.setAxisXTitleQuadrantHeight(20);
+		slipminusstickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		slipminusstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
 
 		IChartData<IStickEntity> datas = new ListChartData<IStickEntity>(data);
 		slipminusstickchart.setStickData(datas);
@@ -737,7 +807,6 @@ public class AndroidChartsActivity extends Activity {
 		candlestickchart.setBorderColor(Color.LTGRAY);
 		candlestickchart.setLongitudeFontColor(Color.WHITE);
 		candlestickchart.setLatitudeFontColor(Color.WHITE);
-		candlestickchart.setAxisMarginRight(1);
 
 		// 最大显示足数
 		candlestickchart.setMaxSticksNum(52);
@@ -756,6 +825,15 @@ public class AndroidChartsActivity extends Activity {
 		candlestickchart.setDisplayLongitude(true);
 		candlestickchart.setBackgroundColor(Color.BLACK);
 
+		candlestickchart.setDataQuadrantPaddingTop(5);
+		candlestickchart.setDataQuadrantPaddingBottom(5);
+		candlestickchart.setDataQuadrantPaddingLeft(5);
+		candlestickchart.setDataQuadrantPaddingRight(5);
+		candlestickchart.setAxisYTitleQuadrantWidth(50);
+		candlestickchart.setAxisXTitleQuadrantHeight(20);
+		candlestickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		candlestickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+
 		// 为chart2增加均线
 		candlestickchart.setStickData(new ListChartData<IStickEntity>(ohlc));
 	}
@@ -769,7 +847,6 @@ public class AndroidChartsActivity extends Activity {
 		slipcandlestickchart.setBorderColor(Color.LTGRAY);
 		slipcandlestickchart.setLongitudeFontColor(Color.WHITE);
 		slipcandlestickchart.setLatitudeFontColor(Color.WHITE);
-		slipcandlestickchart.setAxisMarginRight(1);
 
 		// 最大纬线数
 		slipcandlestickchart.setLatitudeNum(5);
@@ -793,6 +870,15 @@ public class AndroidChartsActivity extends Activity {
 		slipcandlestickchart.setDisplayLatitude(true);
 		slipcandlestickchart.setDisplayLongitude(true);
 		slipcandlestickchart.setBackgroundColor(Color.BLACK);
+
+		slipcandlestickchart.setDataQuadrantPaddingTop(5);
+		slipcandlestickchart.setDataQuadrantPaddingBottom(5);
+		slipcandlestickchart.setDataQuadrantPaddingLeft(5);
+		slipcandlestickchart.setDataQuadrantPaddingRight(5);
+		slipcandlestickchart.setAxisYTitleQuadrantWidth(50);
+		slipcandlestickchart.setAxisXTitleQuadrantHeight(20);
+		slipcandlestickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		slipcandlestickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
 
 		// 为chart2增加均线
 		slipcandlestickchart
@@ -831,7 +917,6 @@ public class AndroidChartsActivity extends Activity {
 		macandlestickchart.setBorderColor(Color.LTGRAY);
 		macandlestickchart.setLongitudeFontColor(Color.WHITE);
 		macandlestickchart.setLatitudeFontColor(Color.WHITE);
-		macandlestickchart.setAxisMarginRight(1);
 
 		// 最大显示足数
 		macandlestickchart.setMaxSticksNum(52);
@@ -849,6 +934,15 @@ public class AndroidChartsActivity extends Activity {
 		macandlestickchart.setDisplayLatitude(true);
 		macandlestickchart.setDisplayLongitude(true);
 		macandlestickchart.setBackgroundColor(Color.BLACK);
+
+		macandlestickchart.setDataQuadrantPaddingTop(5);
+		macandlestickchart.setDataQuadrantPaddingBottom(5);
+		macandlestickchart.setDataQuadrantPaddingLeft(5);
+		macandlestickchart.setDataQuadrantPaddingRight(5);
+		macandlestickchart.setAxisYTitleQuadrantWidth(50);
+		macandlestickchart.setAxisXTitleQuadrantHeight(20);
+		macandlestickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		macandlestickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
 
 		// 为chart2增加均线
 		macandlestickchart.setLinesData(lines);
@@ -890,7 +984,6 @@ public class AndroidChartsActivity extends Activity {
 		maslipcandlestickchart.setBorderColor(Color.LTGRAY);
 		maslipcandlestickchart.setLongitudeFontColor(Color.WHITE);
 		maslipcandlestickchart.setLatitudeFontColor(Color.WHITE);
-		maslipcandlestickchart.setAxisMarginRight(1);
 
 		// 最大纬线数
 		maslipcandlestickchart.setLatitudeNum(5);
@@ -914,6 +1007,16 @@ public class AndroidChartsActivity extends Activity {
 		maslipcandlestickchart.setDisplayLatitude(true);
 		maslipcandlestickchart.setDisplayLongitude(true);
 		maslipcandlestickchart.setBackgroundColor(Color.BLACK);
+
+		maslipcandlestickchart.setDataQuadrantPaddingTop(5);
+		maslipcandlestickchart.setDataQuadrantPaddingBottom(5);
+		maslipcandlestickchart.setDataQuadrantPaddingLeft(5);
+		maslipcandlestickchart.setDataQuadrantPaddingRight(5);
+		maslipcandlestickchart.setAxisYTitleQuadrantWidth(50);
+		maslipcandlestickchart.setAxisXTitleQuadrantHeight(20);
+		maslipcandlestickchart
+				.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		maslipcandlestickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
 
 		// 为chart2增加均线
 		maslipcandlestickchart.setLinesData(lines);
@@ -969,7 +1072,6 @@ public class AndroidChartsActivity extends Activity {
 		bollmaslipcandlestickchart.setBorderColor(Color.LTGRAY);
 		bollmaslipcandlestickchart.setLongitudeFontColor(Color.WHITE);
 		bollmaslipcandlestickchart.setLatitudeFontColor(Color.WHITE);
-		bollmaslipcandlestickchart.setAxisMarginRight(1);
 
 		// 最大纬线数
 		bollmaslipcandlestickchart.setLatitudeNum(5);
@@ -993,6 +1095,17 @@ public class AndroidChartsActivity extends Activity {
 		bollmaslipcandlestickchart.setDisplayLatitude(true);
 		bollmaslipcandlestickchart.setDisplayLongitude(true);
 		bollmaslipcandlestickchart.setBackgroundColor(Color.BLACK);
+
+		bollmaslipcandlestickchart.setDataQuadrantPaddingTop(5);
+		bollmaslipcandlestickchart.setDataQuadrantPaddingBottom(5);
+		bollmaslipcandlestickchart.setDataQuadrantPaddingLeft(5);
+		bollmaslipcandlestickchart.setDataQuadrantPaddingRight(5);
+		bollmaslipcandlestickchart.setAxisYTitleQuadrantWidth(50);
+		bollmaslipcandlestickchart.setAxisXTitleQuadrantHeight(20);
+		bollmaslipcandlestickchart
+				.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		bollmaslipcandlestickchart
+				.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
 
 		// 为chart2增加均线
 		bollmaslipcandlestickchart.setLinesData(lines);
@@ -1065,12 +1178,12 @@ public class AndroidChartsActivity extends Activity {
 		macdChart = (MACDChart) findViewById(R.id.macdchart);
 		macdChart.setMaxValue(300000);
 		macdChart.setMinValue(-300000);
-		// macdChart.setDisplayCrossXOnTouch(false);
-		// macdChart.setDisplayCrossYOnTouch(false);
+		macdChart.setDisplayCrossXOnTouch(true);
+		macdChart.setDisplayCrossYOnTouch(true);
 		macdChart.setLatitudeNum(4);
 		macdChart.setLongitudeNum(3);
-		// macdChart.setDisplayFrom(0);
-		// macdChart.setDisplayNumber(10);
+		macdChart.setDisplayFrom(0);
+		macdChart.setDisplayNumber(10);
 		macdChart.setMinDisplayNumber(5);
 		macdChart.setZoomBaseLine(SlipStickChart.ZOOM_BASE_LINE_CENTER);
 		macdChart.setAxisXColor(Color.LTGRAY);
@@ -1080,13 +1193,21 @@ public class AndroidChartsActivity extends Activity {
 		macdChart.setBorderColor(Color.LTGRAY);
 		macdChart.setLongitudeFontColor(Color.WHITE);
 		macdChart.setLatitudeFontColor(Color.WHITE);
-		macdChart.setAxisMarginRight(1);
 		macdChart.setMacdDisplayType(MACDChart.MACD_DISPLAY_TYPE_LINE_STICK);
 		macdChart.setPositiveStickColor(Color.RED);
 		macdChart.setNegativeStickColor(Color.CYAN);
 		macdChart.setMacdLineColor(Color.CYAN);
 		macdChart.setDeaLineColor(Color.YELLOW);
 		macdChart.setDiffLineColor(Color.WHITE);
+		macdChart.setDataQuadrantPaddingTop(5);
+		macdChart.setDataQuadrantPaddingBottom(5);
+		macdChart.setDataQuadrantPaddingLeft(5);
+		macdChart.setDataQuadrantPaddingRight(5);
+		macdChart.setAxisYTitleQuadrantWidth(50);
+		macdChart.setAxisXTitleQuadrantHeight(20);
+		macdChart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		macdChart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+
 		// 设置stickData
 		macdChart.setStickData(new ListChartData<IStickEntity>(macd));
 	}

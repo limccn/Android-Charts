@@ -174,9 +174,11 @@ public class MACandleStickChart extends CandleStickChart {
 	 * @param canvas
 	 */
 	protected void drawLines(Canvas canvas) {
+		if (null == this.linesData) {
+			return;
+		}
 		// distance between two points
-		float lineLength = ((super.getWidth() - super.getAxisMarginLeft() - super
-				.getAxisMarginRight()) / super.getMaxSticksNum()) - 1;
+		float lineLength = getDataQuadrantPaddingWidth() / maxSticksNum - 1;
 		// start point‘s X
 		float startX;
 
@@ -184,34 +186,39 @@ public class MACandleStickChart extends CandleStickChart {
 		for (int i = 0; i < linesData.size(); i++) {
 			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
 					.get(i);
-			if (line.isDisplay()) {
-				Paint mPaint = new Paint();
-				mPaint.setColor(line.getLineColor());
-				mPaint.setAntiAlias(true);
-				List<DateValueEntity> lineData = line.getLineData();
-				// set start point’s X
-				startX = super.getAxisMarginLeft() + lineLength / 2f;
-				// start point
-				PointF ptFirst = null;
-				if (lineData != null) {
-					for (int j = 0; j < lineData.size(); j++) {
-						float value = lineData.get(j).getValue();
-						// calculate Y
-						float valueY = (float) ((1f - (value - super
-								.getMinValue())
-								/ (super.getMaxValue() - super.getMinValue())) * (super
-								.getHeight() - super.getAxisMarginBottom()));
 
-						// if is not last point connect to previous point
-						if (j > 0) {
-							canvas.drawLine(ptFirst.x, ptFirst.y, startX,
-									valueY, mPaint);
-						}
-						// reset
-						ptFirst = new PointF(startX, valueY);
-						startX = startX + 1 + lineLength;
-					}
+			List<DateValueEntity> lineData = line.getLineData();
+			if (lineData == null) {
+				continue;
+			}
+			if (line.isDisplay() == false) {
+				continue;
+			}
+
+			Paint mPaint = new Paint();
+			mPaint.setColor(line.getLineColor());
+			mPaint.setAntiAlias(true);
+
+			// set start point’s X
+			startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+			// start point
+			PointF ptFirst = null;
+
+			for (int j = 0; j < lineData.size(); j++) {
+				float value = lineData.get(j).getValue();
+				// calculate Y
+				float valueY = (float) ((1f - (value - minValue)
+						/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
+						+ getDataQuadrantPaddingStartY();
+
+				// if is not last point connect to previous point
+				if (j > 0) {
+					canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+							mPaint);
 				}
+				// reset
+				ptFirst = new PointF(startX, valueY);
+				startX = startX + 1 + lineLength;
 			}
 		}
 	}

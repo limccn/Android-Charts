@@ -21,6 +21,7 @@
 
 package cn.limc.androidcharts.view;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.entity.DateValueEntity;
@@ -31,6 +32,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.util.AttributeSet;
+import android.util.FloatMath;
+import android.view.MotionEvent;
 
 /**
  * 
@@ -297,11 +300,13 @@ public class LineChart extends GridChart {
 		if (autoCalcValueRange) {
 			calcValueRange();
 		}
+
+		initAxisY();
+		initAxisX();
+
 		super.onDraw(canvas);
-		// draw lines
-		if (null != this.linesData) {
-			drawLines(canvas);
-		}
+		drawLines(canvas);
+
 	}
 
 	/**
@@ -318,9 +323,11 @@ public class LineChart extends GridChart {
 	 * @param canvas
 	 */
 	protected void drawLines(Canvas canvas) {
+		if (null == this.linesData) {
+			return;
+		}
 		// distance between two points
-		float lineLength = ((super.getWidth() - super.getAxisMarginLeft() - this
-				.getMaxPointNum()) / this.getMaxPointNum()) - 1;
+		float lineLength = getDataQuadrantPaddingWidth() / maxPointNum - 1;
 		// start point‘s X
 		float startX;
 
@@ -328,35 +335,285 @@ public class LineChart extends GridChart {
 		for (int i = 0; i < linesData.size(); i++) {
 			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
 					.get(i);
-			if (line.isDisplay()) {
-				Paint mPaint = new Paint();
-				mPaint.setColor(line.getLineColor());
-				mPaint.setAntiAlias(true);
-				List<DateValueEntity> lineData = line.getLineData();
-				// set start point’s X
-				startX = super.getAxisMarginLeft() + lineLength / 2f;
-				// start point
-				PointF ptFirst = null;
-				if (lineData != null) {
-					for (int j = 0; j < lineData.size(); j++) {
-						float value = lineData.get(j).getValue();
-						// calculate Y
-						float valueY = (float) ((1f - (value - this
-								.getMinValue())
-								/ (this.getMaxValue() - this.getMinValue())) * (super
-								.getHeight() - super.getAxisMarginBottom()));
+			List<DateValueEntity> lineData = line.getLineData();
+			if (lineData == null) {
+				continue;
+			}
+			if (line.isDisplay() == false) {
+				continue;
+			}
 
-						// if is not last point connect to previous point
-						if (j > 0) {
-							canvas.drawLine(ptFirst.x, ptFirst.y, startX,
-									valueY, mPaint);
-						}
-						// reset
-						ptFirst = new PointF(startX, valueY);
-						startX = startX + 1 + lineLength;
-					}
+			Paint mPaint = new Paint();
+			mPaint.setColor(line.getLineColor());
+			mPaint.setAntiAlias(true);
+			// set start point’s X
+			startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+			// start point
+			PointF ptFirst = null;
+			for (int j = 0; j < lineData.size(); j++) {
+				float value = lineData.get(j).getValue();
+				// calculate Y
+				float valueY = (float) ((1f - (value - minValue)
+						/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
+						+ getDataQuadrantPaddingStartY();
+
+				// if is not last point connect to previous point
+				if (j > 0) {
+					canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+							mPaint);
+				}
+				// reset
+				ptFirst = new PointF(startX, valueY);
+				startX = startX + lineLength;
+			}
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @param value
+	 * 
+	 * @see cn.limc.androidcharts.view.GridChart#getAxisXGraduate(Object)
+	 */
+	@Override
+	public String getAxisXGraduate(Object value) {
+
+		float graduate = Float.valueOf(super.getAxisXGraduate(value));
+		int index = (int) Math.floor(graduate * maxPointNum);
+
+		if (index >= maxPointNum) {
+			index = maxPointNum - 1;
+		} else if (index < 0) {
+			index = 0;
+		}
+
+		if (null == this.linesData) {
+			return "";
+		}
+		LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
+				.get(0);
+		List<DateValueEntity> lineData = line.getLineData();
+		if (lineData == null) {
+			return "";
+		}
+		if (line.isDisplay() == false) {
+			return "";
+		}
+		return String.valueOf(lineData.get(index).getDate());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @param value
+	 * 
+	 * @see cn.limc.androidcharts.view.GridChart#getAxisYGraduate(Object)
+	 */
+	@Override
+	public String getAxisYGraduate(Object value) {
+		float graduate = Float.valueOf(super.getAxisYGraduate(value));
+		return String.valueOf((int) Math.floor(graduate * (maxValue - minValue)
+				+ minValue));
+	}
+
+	/**
+	 * <p>
+	 * initialize degrees on Y axis
+	 * </p>
+	 * <p>
+	 * Y軸の目盛を初期化
+	 * </p>
+	 * <p>
+	 * 初始化Y轴的坐标值
+	 * </p>
+	 */
+	protected void initAxisY() {
+		this.calcValueRange();
+		List<String> TitleY = new ArrayList<String>();
+		float average = (int) ((maxValue - minValue) / this.getLatitudeNum());
+		;
+		// calculate degrees on Y axis
+		for (int i = 0; i < this.getLatitudeNum(); i++) {
+			String value = String.valueOf((int) Math.floor(minValue + i
+					* average));
+			if (value.length() < super.getLatitudeMaxTitleLength()) {
+				while (value.length() < super.getLatitudeMaxTitleLength()) {
+					value = new String(" ") + value;
 				}
 			}
+			TitleY.add(value);
+		}
+		// calculate last degrees by use max value
+		String value = String.valueOf((int) Math.floor(((int) maxValue)));
+		if (value.length() < super.getLatitudeMaxTitleLength()) {
+			while (value.length() < super.getLatitudeMaxTitleLength()) {
+				value = new String(" ") + value;
+			}
+		}
+		TitleY.add(value);
+
+		super.setLatitudeTitles(TitleY);
+	}
+
+	/**
+	 * <p>
+	 * initialize degrees on Y axis
+	 * </p>
+	 * <p>
+	 * Y軸の目盛を初期化
+	 * </p>
+	 * <p>
+	 * 初始化Y轴的坐标值
+	 * </p>
+	 */
+	protected void initAxisX() {
+		List<String> TitleX = new ArrayList<String>();
+		if (null != linesData && linesData.size() > 0) {
+			float average = maxPointNum / this.getLongitudeNum();
+			for (int i = 0; i < this.getLongitudeNum(); i++) {
+				int index = (int) Math.floor(i * average);
+				if (index > maxPointNum - 1) {
+					index = maxPointNum - 1;
+				}
+				TitleX.add(String.valueOf(
+						linesData.get(0).getLineData().get(index).getDate())
+						.substring(4));
+			}
+			TitleX.add(String.valueOf(
+					linesData.get(0).getLineData().get(maxPointNum - 1)
+							.getDate()).substring(4));
+		}
+		super.setLongitudeTitles(TitleX);
+	}
+
+	private final int NONE = 0;
+	private final int ZOOM = 1;
+	private final int DOWN = 2;
+
+	private float olddistance = 0f;
+	private float newdistance = 0f;
+
+	private int TOUCH_MODE;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * <p>Called when chart is touched<p> <p>チャートをタッチしたら、メソッドを呼ぶ<p>
+	 * <p>图表点击时调用<p>
+	 * 
+	 * @param event
+	 * 
+	 * @see android.view.View#onTouchEvent(MotionEvent)
+	 */
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+
+		final float MIN_LENGTH = (super.getWidth() / 40) < 5 ? 5 : (super
+				.getWidth() / 50);
+
+		switch (event.getAction() & MotionEvent.ACTION_MASK) {
+		case MotionEvent.ACTION_DOWN:
+			TOUCH_MODE = DOWN;
+			break;
+		case MotionEvent.ACTION_UP:
+		case MotionEvent.ACTION_POINTER_UP:
+			TOUCH_MODE = NONE;
+			return super.onTouchEvent(event);
+		case MotionEvent.ACTION_POINTER_DOWN:
+			olddistance = calcDistance(event);
+			if (olddistance > MIN_LENGTH) {
+				TOUCH_MODE = ZOOM;
+			}
+			break;
+		case MotionEvent.ACTION_MOVE:
+			if (TOUCH_MODE == ZOOM) {
+				newdistance = calcDistance(event);
+				if (newdistance > MIN_LENGTH
+						&& Math.abs(newdistance - olddistance) > MIN_LENGTH) {
+
+					if (newdistance > olddistance) {
+						zoomIn();
+					} else {
+						zoomOut();
+					}
+					olddistance = newdistance;
+
+					super.postInvalidate();
+					super.notifyEventAll(this);
+				}
+			}
+			break;
+		}
+		return true;
+	}
+
+	/**
+	 * <p>
+	 * calculate the distance between two touch points
+	 * </p>
+	 * <p>
+	 * 複数タッチしたポイントの距離
+	 * </p>
+	 * <p>
+	 * 计算两点触控时两点之间的距离
+	 * </p>
+	 * 
+	 * @param event
+	 * @return float
+	 *         <p>
+	 *         distance
+	 *         </p>
+	 *         <p>
+	 *         距離
+	 *         </p>
+	 *         <p>
+	 *         距离
+	 *         </p>
+	 */
+	private float calcDistance(MotionEvent event) {
+		float x = event.getX(0) - event.getX(1);
+		float y = event.getY(0) - event.getY(1);
+		return FloatMath.sqrt(x * x + y * y);
+	}
+
+	/**
+	 * <p>
+	 * Zoom in the graph
+	 * </p>
+	 * <p>
+	 * 拡大表示する。
+	 * </p>
+	 * <p>
+	 * 放大表示
+	 * </p>
+	 */
+	protected void zoomIn() {
+		if (null == linesData || linesData.size() <= 0) {
+			return;
+		}
+		if (maxPointNum > 10) {
+			maxPointNum = maxPointNum - 3;
+		}
+	}
+
+	/**
+	 * <p>
+	 * Zoom out the grid
+	 * </p>
+	 * <p>
+	 * 縮小表示する。
+	 * </p>
+	 * <p>
+	 * 缩小
+	 * </p>
+	 */
+	protected void zoomOut() {
+		if (null == linesData || linesData.size() <= 0) {
+			return;
+		}
+		if (maxPointNum < linesData.get(0).getLineData().size() - 1) {
+			maxPointNum = maxPointNum + 3;
 		}
 	}
 
