@@ -163,200 +163,96 @@ public class MACDChart extends SlipStickChart {
 			return;
 		}
 
+		if (macdDisplayType == MACD_DISPLAY_TYPE_LINE) {
+			this.drawMacdLine(canvas);
+			return;
+		}
+
 		Paint mPaintStick = new Paint();
 		mPaintStick.setAntiAlias(true);
 
-		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-			float stickWidth = getDataQuadrantPaddingWidth() / displayNumber
-					- stickSpacing;
-			float stickX = getDataQuadrantPaddingStartX();
+		float stickWidth = getDataQuadrantPaddingWidth() / displayNumber
+				- stickSpacing;
+		float stickX = getDataQuadrantPaddingStartX();
 
-			PointF prePoint = new PointF(0, 0);
-			// 判断显示为方柱或显示为线条
-			for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
-				MACDEntity stick = (MACDEntity) stickData.get(i);
+		// 判断显示为方柱或显示为线条
+		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+			MACDEntity stick = (MACDEntity) stickData.get(i);
 
-				float highY = (float) ((1 - (stick.getMacd() - minValue)
-						/ (maxValue - minValue))
-						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
-				float lowY = (float) ((1 - (0 - minValue)
-						/ (maxValue - minValue))
-						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
-
-				if (stick.getMacd() == 0) {
-					// 没有值的情况下不绘制
-					continue;
-				}
-
-				// 柱状线颜色设定
-				if (stick.getMacd() > 0) {
-					mPaintStick.setColor(positiveStickColor);
-				} else {
-					mPaintStick.setColor(negativeStickColor);
-				}
-
-				if (macdDisplayType == MACD_DISPLAY_TYPE_STICK) {
-					// 绘制数据，根据宽度判断绘制直线或方柱
-					if (stickWidth >= 2) {
-						canvas.drawRect(stickX, highY, stickWidth,
-								lowY - highY, mPaintStick);
-					} else {
-						canvas.drawLine(stickX, highY, stickX, lowY,
-								mPaintStick);
-					}
-				} else if (macdDisplayType == MACD_DISPLAY_TYPE_LINE) {
-					mPaintStick.setColor(macdLineColor);
-					// 绘制线条
-					if (i == displayFrom) {
-						prePoint = new PointF(stickX + stickWidth / 2, highY);
-					} else {
-						canvas.drawLine(prePoint.x, prePoint.y, stickX
-								+ stickWidth / 2, highY, mPaintStick);
-						prePoint = new PointF(stickX + stickWidth / 2, highY);
-					}
-				} else if (macdDisplayType == MACD_DISPLAY_TYPE_LINE_STICK) {
-					canvas.drawLine(stickX + stickWidth / 2, highY, stickX
-							+ stickWidth / 2, lowY, mPaintStick);
-				}
-
-				// X位移
-				stickX = stickX + stickSpacing + stickWidth;
+			float highY;
+			float lowY;
+			if (stick.getMacd() == 0) {
+				// 没有值的情况下不绘制
+				continue;
 			}
-		} else {
-			// float stickWidth = ((rect.size.width - 2 *
-			// axisYTitleQuadrantWidth -
-			// dataQuadrantPaddingRight) / displayNumber) - 1;
-			// // 蜡烛棒起始绘制位置
-			// float stickX = rect.size.width - dataQuadrantPaddingRight - 1 -
-			// stickWidth;
-			// //判断显示为方柱或显示为线条
-			// for (NSUInteger i = 0; i < displayNumber; i++) {
-			// NSUInteger index = displayFrom + displayNumber - 1 - i;
-			// CCSMACDData *stick = [stickData objectAtIndex:index];
-			//
-			// float highY = ((1 - (stick.macd - minValue) / (maxValue
-			// - minValue)) * (rect.size.height - axisXTitleQuadrantHeight) -
-			// super.axisMarginTop);
-			// float lowY = ((1 - (0 - minValue) / (maxValue -
-			// minValue)) * (rect.size.height - axisXTitleQuadrantHeight) -
-			// dataQuadrantPaddingTop);
-			//
-			// if (stick.macd == 0) {
-			// //没有值的情况下不绘制
-			// } else {
-			//
-			// //柱状线颜色设定
-			// if (stick.macd > 0) {
-			// CGContextSetStrokeColorWithColor(context,
-			// positiveStickColor.CGColor);
-			// CGContextSetFillColorWithColor(context,
-			// positiveStickColor.CGColor);
-			// } else {
-			// CGContextSetStrokeColorWithColor(context,
-			// negativeStickColor.CGColor);
-			// CGContextSetFillColorWithColor(context,
-			// negativeStickColor.CGColor);
-			// }
-			//
-			// if (macdDisplayType == CCSMACDChartDisplayTypeStick) {
-			// //绘制数据，根据宽度判断绘制直线或方柱
-			// if (stickWidth >= 2) {
-			// CGContextAddRect(context, CGRectMake(stickX, highY, stickWidth,
-			// lowY - highY));
-			// //填充路径
-			// CGContextFillPath(context);
-			// } else {
-			// CGContextMoveToPoint(context, stickX, highY);
-			// CGContextAddLineToPoint(context, stickX, lowY);
-			// //绘制线条
-			// CGContextStrokePath(context);
-			// }
-			// } else if (macdDisplayType ==
-			// CCSMACDChartDisplayTypeLineStick) {
-			// CGContextMoveToPoint(context, stickX - stickWidth / 2, highY);
-			// CGContextAddLineToPoint(context, stickX - stickWidth / 2, lowY);
-			// //绘制线条
-			// CGContextStrokePath(context);
-			// } else {
-			// //绘制线条
-			// if (index == displayFrom + displayNumber - 1) {
-			// CGContextMoveToPoint(context, stickX - stickWidth / 2, highY);
-			// } else if (index == 0) {
-			// CGContextAddLineToPoint(context, stickX - stickWidth / 2, highY);
-			// CGContextSetStrokeColorWithColor(context,
-			// macdLineColor.CGColor);
-			// CGContextStrokePath(context);
-			// } else {
-			// CGContextAddLineToPoint(context, stickX - stickWidth / 2, highY);
-			// }
-			// }
-			//
-			// }
-			// //X位移
-			// stickX = stickX - 1 - stickWidth;
-			// }
+			// 柱状线颜色设定
+			if (stick.getMacd() > 0) {
+				mPaintStick.setColor(positiveStickColor);
+				highY = (float) ((1 - (stick.getMacd() - minValue)
+						/ (maxValue - minValue))
+						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+				lowY = (float) ((1 - (0 - minValue) / (maxValue - minValue))
+						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+
+			} else {
+				mPaintStick.setColor(negativeStickColor);
+				highY = (float) ((1 - (0 - minValue) / (maxValue - minValue))
+						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+
+				lowY = (float) ((1 - (stick.getMacd() - minValue)
+						/ (maxValue - minValue))
+						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+
+			}
+
+			if (macdDisplayType == MACD_DISPLAY_TYPE_STICK) {
+				// 绘制数据，根据宽度判断绘制直线或方柱
+				if (stickWidth >= 2) {
+					canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
+							mPaintStick);
+				} else {
+					canvas.drawLine(stickX, highY, stickX, lowY, mPaintStick);
+				}
+			} else if (macdDisplayType == MACD_DISPLAY_TYPE_LINE_STICK) {
+				canvas.drawLine(stickX + stickWidth / 2, highY, stickX
+						+ stickWidth / 2, lowY, mPaintStick);
+			}
+
+			// X位移
+			stickX = stickX + stickSpacing + stickWidth;
 		}
 	}
 
 	protected void drawDiffLine(Canvas canvas) {
+
+		if (null == this.stickData) {
+			return;
+		}
 		Paint mPaintStick = new Paint();
 		mPaintStick.setAntiAlias(true);
 		mPaintStick.setColor(diffLineColor);
 
-		// 起始位置
-
-		float lastY = 0;
-
-		// 点线距离
+		// distance between two points
 		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
-		// 起始点
-		float startX = getDataQuadrantPaddingStartX() + lineLength / 2f;
-
-		// 判断点的多少
-		if (stickData.size() == 0) {
-			// 0根则返回
-			return;
-		} else if (stickData.size() == 1) {
-			// 1根则绘制一条直线
-			MACDEntity lineData = (MACDEntity) stickData.get(0);
-			// 获取终点Y坐标
-			float valueY = (float) ((1 - (lineData.getDiff() - minValue)
+		// start point‘s X
+		float startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+		// start point
+		PointF ptFirst = null;
+		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+			MACDEntity entity = (MACDEntity) stickData.get(i);
+			// calculate Y
+			float valueY = (float) ((1f - (entity.getDiff() - minValue)
 					/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
 					+ getDataQuadrantPaddingStartY();
 
-			canvas.drawLine(startX, valueY, axisYTitleQuadrantWidth, valueY,
-					mPaintStick);
-
-		} else {
-			// 遍历并绘制线条
-			for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
-				MACDEntity lineData = (MACDEntity) stickData.get(j);
-
-				// 获取终点Y坐标
-				float valueY = (float) ((1 - (lineData.getDiff() - minValue)
-						/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
-						+ getDataQuadrantPaddingStartY();
-				// 绘制线条路径
-				if (j == displayFrom || j == 0) {
-					if (lineData.getDiff() == 0) {
-					} else {
-						lastY = valueY;
-					}
-				} else {
-					MACDEntity preLineData = (MACDEntity) stickData.get(j - 1);
-					if (lineData.getDiff() == 0) {
-					} else {
-						if (preLineData.getDiff() == 0) {
-						} else {
-							canvas.drawLine(startX - lineLength, lastY, startX,
-									valueY, mPaintStick);
-							lastY = valueY;
-						}
-					}
-				}
-				// X位移
-				startX = startX + 1 + lineLength;
+			// if is not last point connect to previous point
+			if (i > displayFrom) {
+				canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+						mPaintStick);
 			}
+			// reset
+			ptFirst = new PointF(startX, valueY);
+			startX = startX + 1 + lineLength;
 		}
 	}
 
@@ -365,58 +261,56 @@ public class MACDChart extends SlipStickChart {
 		Paint mPaintStick = new Paint();
 		mPaintStick.setAntiAlias(true);
 		mPaintStick.setColor(deaLineColor);
-
-		float lastY = 0;
-		// 点线距离
+		// distance between two points
 		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
-		// 起始点
-		float startX = getDataQuadrantPaddingStartX() + lineLength / 2f;
-
-		// 判断点的多少
-		if (stickData.size() == 0) {
-			// 0根则返回
-			return;
-		} else if (stickData.size() == 1) {
-			// 1根则绘制一条直线
-			MACDEntity lineData = (MACDEntity) stickData.get(0);
-			// 获取终点Y坐标
-			float valueY = (float) ((1f - (lineData.getDea() - minValue)
+		// set start point’s X
+		float startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+		// start point
+		PointF ptFirst = null;
+		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+			MACDEntity entity = (MACDEntity) stickData.get(i);
+			// calculate Y
+			float valueY = (float) ((1f - (entity.getDea() - minValue)
 					/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
 					+ getDataQuadrantPaddingStartY();
 
-			canvas.drawLine(startX, valueY, axisYTitleQuadrantWidth, valueY,
-					mPaintStick);
-
-		} else {
-			// 遍历并绘制线条
-			for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
-				MACDEntity lineData = (MACDEntity) stickData.get(j);
-
-				// 获取终点Y坐标
-				float valueY = (float) ((1 - (lineData.getDea() - minValue)
-						/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
-						+ getDataQuadrantPaddingStartY();
-				// 绘制线条路径
-				if (j == displayFrom || j == 0) {
-					if (lineData.getDea() == 0) {
-					} else {
-						lastY = valueY;
-					}
-				} else {
-					MACDEntity preLineData = (MACDEntity) stickData.get(j - 1);
-					if (lineData.getDea() == 0) {
-					} else {
-						if (preLineData.getDea() == 0) {
-						} else {
-							canvas.drawLine(startX - lineLength, lastY, startX,
-									valueY, mPaintStick);
-							lastY = valueY;
-						}
-					}
-				}
-				// X位移
-				startX = startX + 1 + lineLength;
+			// if is not last point connect to previous point
+			if (i > displayFrom) {
+				canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+						mPaintStick);
 			}
+			// reset
+			ptFirst = new PointF(startX, valueY);
+			startX = startX + 1 + lineLength;
+		}
+	}
+
+	protected void drawMacdLine(Canvas canvas) {
+		Paint mPaintStick = new Paint();
+		mPaintStick.setAntiAlias(true);
+		mPaintStick.setColor(macdLineColor);
+
+		// distance between two points
+		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
+		// set start point’s X
+		float startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+		// start point
+		PointF ptFirst = null;
+		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+			MACDEntity entity = (MACDEntity) stickData.get(i);
+			// calculate Y
+			float valueY = (float) ((1f - (entity.getMacd() - minValue)
+					/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
+					+ getDataQuadrantPaddingStartY();
+
+			// if is not last point connect to previous point
+			if (i > displayFrom) {
+				canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+						mPaintStick);
+			}
+			// reset
+			ptFirst = new PointF(startX, valueY);
+			startX = startX + 1 + lineLength;
 		}
 	}
 

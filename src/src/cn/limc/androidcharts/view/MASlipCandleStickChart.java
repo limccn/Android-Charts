@@ -199,14 +199,17 @@ public class MASlipCandleStickChart extends SlipCandleStickChart {
 		for (int i = 0; i < linesData.size(); i++) {
 			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
 					.get(i);
-
-			List<DateValueEntity> lineData = line.getLineData();
-			if (lineData == null) {
+			if (line == null) {
 				continue;
 			}
 			if (line.isDisplay() == false) {
 				continue;
 			}
+			List<DateValueEntity> lineData = line.getLineData();
+			if (lineData == null) {
+				continue;
+			}
+
 			Paint mPaint = new Paint();
 			mPaint.setColor(line.getLineColor());
 			mPaint.setAntiAlias(true);

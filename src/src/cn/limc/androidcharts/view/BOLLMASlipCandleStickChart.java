@@ -267,12 +267,14 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 		for (int i = 0; i < bandData.size(); i++) {
 			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) bandData
 					.get(i);
-
-			List<DateValueEntity> lineData = line.getLineData();
-			if (lineData == null) {
+			if (line == null) {
 				continue;
 			}
 			if (line.isDisplay() == false) {
+				continue;
+			}
+			List<DateValueEntity> lineData = line.getLineData();
+			if (lineData == null) {
 				continue;
 			}
 			Paint mPaint = new Paint();

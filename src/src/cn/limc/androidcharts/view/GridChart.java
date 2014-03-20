@@ -993,26 +993,14 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 
-		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-			if (event.getX() < borderWidth + axisYTitleQuadrantWidth) {
-				return false;
-			}
-		} else {
-			if (event.getX() > super.getWidth() - borderWidth
-					- axisYTitleQuadrantWidth) {
-				return false;
-			}
+		if (event.getX() < getDataQuadrantPaddingStartX()
+				|| event.getX() > getDataQuadrantPaddingEndX()) {
+			return false;
 		}
 
-		if (axisXPosition == AXIS_X_POSITION_BOTTOM) {
-			if (event.getY() > super.getHeight() - borderWidth
-					- axisXTitleQuadrantHeight) {
-				return false;
-			}
-		} else {
-			if (event.getY() < borderWidth + axisXTitleQuadrantHeight) {
-				return false;
-			}
+		if (event.getY() < getDataQuadrantPaddingStartY()
+				|| event.getY() > getDataQuadrantPaddingEndY()) {
+			return false;
 		}
 
 		// touched points, if touch point is only one
@@ -1121,6 +1109,68 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 		canvas.drawText(content, ptStart.x, ptStart.y + fontSize, mPaintBoxLine);
 	}
 
+	protected float getDataQuadrantWidth() {
+		return super.getWidth() - axisYTitleQuadrantWidth - 2 * borderWidth
+				- axisWidth;
+	}
+
+	protected float getDataQuadrantHeight() {
+		return super.getHeight() - axisXTitleQuadrantHeight - 2 * borderWidth
+				- axisWidth;
+	}
+
+	protected float getDataQuadrantStartX() {
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			return borderWidth + axisYTitleQuadrantWidth + axisWidth;
+		} else {
+			return borderWidth;
+		}
+	}
+
+	protected float getDataQuadrantPaddingStartX() {
+		return getDataQuadrantStartX() + dataQuadrantPaddingLeft;
+	}
+
+	protected float getDataQuadrantEndX() {
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			return super.getWidth() - borderWidth;
+		} else {
+			return super.getWidth() - borderWidth - axisYTitleQuadrantWidth
+					- axisWidth;
+		}
+	}
+
+	protected float getDataQuadrantPaddingEndX() {
+		return getDataQuadrantEndX() - dataQuadrantPaddingRight;
+	}
+
+	protected float getDataQuadrantStartY() {
+		return borderWidth;
+	}
+
+	protected float getDataQuadrantPaddingStartY() {
+		return getDataQuadrantStartY() + dataQuadrantPaddingTop;
+	}
+
+	protected float getDataQuadrantEndY() {
+		return super.getHeight() - borderWidth - axisXTitleQuadrantHeight
+				- axisWidth;
+	}
+
+	protected float getDataQuadrantPaddingEndY() {
+		return getDataQuadrantEndY() - dataQuadrantPaddingTop;
+	}
+
+	protected float getDataQuadrantPaddingWidth() {
+		return getDataQuadrantWidth() - dataQuadrantPaddingLeft
+				- dataQuadrantPaddingRight;
+	}
+
+	protected float getDataQuadrantPaddingHeight() {
+		return getDataQuadrantHeight() - dataQuadrantPaddingTop
+				- dataQuadrantPaddingBottom;
+	}
+
 	/**
 	 * <p>
 	 * calculate degree title on X axis
@@ -1155,72 +1205,9 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 *         </p>
 	 */
 	public String getAxisXGraduate(Object value) {
-		// TODO:计算方式调整
 		float valueLength = ((Float) value).floatValue()
-				- axisYTitleQuadrantWidth - dataQuadrantPaddingLeft;
+				- getDataQuadrantPaddingStartX();
 		return String.valueOf(valueLength / this.getDataQuadrantPaddingWidth());
-	}
-
-	protected float getDataQuadrantWidth() {
-		return super.getWidth() - axisYTitleQuadrantWidth - 2 * borderWidth
-				- axisWidth;
-	}
-
-	protected float getDataQuadrantHeight() {
-		return super.getHeight() - axisXTitleQuadrantHeight - 2 * borderWidth
-				- axisWidth;
-	}
-
-	protected float getDataQuadrantStartX() {
-		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-			return borderWidth + axisYTitleQuadrantWidth + axisWidth;
-		} else {
-			return borderWidth;
-		}
-	}
-
-	protected float getDataQuadrantPaddingStartX() {
-		return getDataQuadrantStartX() + dataQuadrantPaddingLeft;
-	}
-
-	protected float getDataQuadrantEndX() {
-		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-			return super.getWidth() - borderWidth - axisYTitleQuadrantWidth
-					- axisWidth;
-		} else {
-			return super.getWidth() - borderWidth;
-		}
-	}
-
-	protected float getDataQuadrantPaddingEndX() {
-		return getDataQuadrantStartX() - dataQuadrantPaddingRight;
-	}
-
-	protected float getDataQuadrantStartY() {
-		return borderWidth;
-	}
-
-	protected float getDataQuadrantPaddingStartY() {
-		return getDataQuadrantStartY() + dataQuadrantPaddingTop;
-	}
-
-	protected float getDataQuadrantEndY() {
-		return super.getHeight() - borderWidth - axisXTitleQuadrantHeight
-				- axisWidth;
-	}
-
-	protected float getDataQuadrantPaddingEndY() {
-		return getDataQuadrantEndY() - dataQuadrantPaddingTop;
-	}
-
-	protected float getDataQuadrantPaddingWidth() {
-		return getDataQuadrantWidth() - dataQuadrantPaddingLeft
-				- dataQuadrantPaddingRight;
-	}
-
-	protected float getDataQuadrantPaddingHeight() {
-		return getDataQuadrantHeight() - dataQuadrantPaddingTop
-				- dataQuadrantPaddingBottom;
 	}
 
 	/**
@@ -1257,9 +1244,8 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 *         </p>
 	 */
 	public String getAxisYGraduate(Object value) {
-		// TODO:计算方式调整
-		float valueLength = this.getDataQuadrantPaddingHeight()
-				- (((Float) value).floatValue());
+		float valueLength = ((Float) value).floatValue()
+				- getDataQuadrantPaddingStartY();
 		return String
 				.valueOf(valueLength / this.getDataQuadrantPaddingHeight());
 	}

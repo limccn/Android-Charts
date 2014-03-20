@@ -223,7 +223,7 @@ public class AndroidChartsActivity extends Activity {
 		linechart.setAxisYTitleQuadrantWidth(50);
 		linechart.setAxisXTitleQuadrantHeight(20);
 		linechart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		linechart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+		linechart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart1增加均线
 		linechart.setLinesData(lines);
@@ -272,7 +272,7 @@ public class AndroidChartsActivity extends Activity {
 		sliplinechart.setAxisYTitleQuadrantWidth(50);
 		sliplinechart.setAxisXTitleQuadrantHeight(20);
 		sliplinechart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		sliplinechart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+		sliplinechart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		sliplinechart.setLinesData(lines);
 	}
@@ -320,7 +320,7 @@ public class AndroidChartsActivity extends Activity {
 		slipareachart.setAxisYTitleQuadrantWidth(50);
 		slipareachart.setAxisXTitleQuadrantHeight(20);
 		slipareachart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		slipareachart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+		slipareachart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		slipareachart.setLinesData(lines);
 	}
@@ -368,7 +368,7 @@ public class AndroidChartsActivity extends Activity {
 		slipbandchart.setAxisYTitleQuadrantWidth(50);
 		slipbandchart.setAxisXTitleQuadrantHeight(20);
 		slipbandchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		slipbandchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+		slipbandchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		slipbandchart.setLinesData(lines);
 	}
@@ -392,7 +392,7 @@ public class AndroidChartsActivity extends Activity {
 		stickchart.setAxisYTitleQuadrantWidth(50);
 		stickchart.setAxisXTitleQuadrantHeight(20);
 		stickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		stickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+		stickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		// 最大显示足数
 		stickchart.setMaxSticksNum(52);
@@ -434,7 +434,7 @@ public class AndroidChartsActivity extends Activity {
 		slipstickchart.setAxisYTitleQuadrantWidth(50);
 		slipstickchart.setAxisXTitleQuadrantHeight(20);
 		slipstickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		slipstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+		slipstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		// 最大纬线数
 		slipstickchart.setLatitudeNum(2);
@@ -506,7 +506,7 @@ public class AndroidChartsActivity extends Activity {
 		coloredslipstickchart.setAxisXTitleQuadrantHeight(20);
 		coloredslipstickchart
 				.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		coloredslipstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+		coloredslipstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart1增加均线
 		coloredslipstickchart
@@ -574,7 +574,7 @@ public class AndroidChartsActivity extends Activity {
 		mastickchart.setAxisYTitleQuadrantWidth(50);
 		mastickchart.setAxisXTitleQuadrantHeight(20);
 		mastickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		mastickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+		mastickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart1增加均线
 		mastickchart.setLinesData(vlines);
@@ -650,7 +650,7 @@ public class AndroidChartsActivity extends Activity {
 		maslipstickchart.setAxisYTitleQuadrantWidth(50);
 		maslipstickchart.setAxisXTitleQuadrantHeight(20);
 		maslipstickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		maslipstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+		maslipstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart1增加均线
 		maslipstickchart.setLineData(vlines);
@@ -708,7 +708,7 @@ public class AndroidChartsActivity extends Activity {
 		minusstickchart.setAxisYTitleQuadrantWidth(50);
 		minusstickchart.setAxisXTitleQuadrantHeight(20);
 		minusstickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		minusstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+		minusstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 	}
 
@@ -792,7 +792,7 @@ public class AndroidChartsActivity extends Activity {
 		slipminusstickchart.setAxisYTitleQuadrantWidth(50);
 		slipminusstickchart.setAxisXTitleQuadrantHeight(20);
 		slipminusstickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		slipminusstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+		slipminusstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		IChartData<IStickEntity> datas = new ListChartData<IStickEntity>(data);
 		slipminusstickchart.setStickData(datas);
@@ -832,7 +832,7 @@ public class AndroidChartsActivity extends Activity {
 		candlestickchart.setAxisYTitleQuadrantWidth(50);
 		candlestickchart.setAxisXTitleQuadrantHeight(20);
 		candlestickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		candlestickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+		candlestickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart2增加均线
 		candlestickchart.setStickData(new ListChartData<IStickEntity>(ohlc));
@@ -878,7 +878,7 @@ public class AndroidChartsActivity extends Activity {
 		slipcandlestickchart.setAxisYTitleQuadrantWidth(50);
 		slipcandlestickchart.setAxisXTitleQuadrantHeight(20);
 		slipcandlestickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		slipcandlestickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+		slipcandlestickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart2增加均线
 		slipcandlestickchart
@@ -942,7 +942,7 @@ public class AndroidChartsActivity extends Activity {
 		macandlestickchart.setAxisYTitleQuadrantWidth(50);
 		macandlestickchart.setAxisXTitleQuadrantHeight(20);
 		macandlestickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		macandlestickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+		macandlestickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart2增加均线
 		macandlestickchart.setLinesData(lines);
@@ -1016,7 +1016,8 @@ public class AndroidChartsActivity extends Activity {
 		maslipcandlestickchart.setAxisXTitleQuadrantHeight(20);
 		maslipcandlestickchart
 				.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		maslipcandlestickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+		maslipcandlestickchart
+				.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart2增加均线
 		maslipcandlestickchart.setLinesData(lines);
@@ -1105,7 +1106,7 @@ public class AndroidChartsActivity extends Activity {
 		bollmaslipcandlestickchart
 				.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
 		bollmaslipcandlestickchart
-				.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+				.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart2增加均线
 		bollmaslipcandlestickchart.setLinesData(lines);
@@ -1193,7 +1194,7 @@ public class AndroidChartsActivity extends Activity {
 		macdChart.setBorderColor(Color.LTGRAY);
 		macdChart.setLongitudeFontColor(Color.WHITE);
 		macdChart.setLatitudeFontColor(Color.WHITE);
-		macdChart.setMacdDisplayType(MACDChart.MACD_DISPLAY_TYPE_LINE_STICK);
+		macdChart.setMacdDisplayType(MACDChart.MACD_DISPLAY_TYPE_STICK);
 		macdChart.setPositiveStickColor(Color.RED);
 		macdChart.setNegativeStickColor(Color.CYAN);
 		macdChart.setMacdLineColor(Color.CYAN);
@@ -1206,7 +1207,7 @@ public class AndroidChartsActivity extends Activity {
 		macdChart.setAxisYTitleQuadrantWidth(50);
 		macdChart.setAxisXTitleQuadrantHeight(20);
 		macdChart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		macdChart.setAxisYPosition(GridChart.AXIS_Y_POSITION_LEFT);
+		macdChart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		// 设置stickData
 		macdChart.setStickData(new ListChartData<IStickEntity>(macd));

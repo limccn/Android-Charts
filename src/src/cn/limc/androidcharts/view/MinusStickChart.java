@@ -92,37 +92,9 @@ public class MinusStickChart extends StickChart {
 		super(context, attrs);
 	}
 
-	@Override
-	protected void calcDataValueRange() {
-
-		double maxValue = Integer.MIN_VALUE;
-		double minValue = Integer.MAX_VALUE;
-
-		IMeasurable first = this.stickData.get(0);
-		// 第一个stick为停盘的情况
-		if (first.getHigh() == 0 && first.getLow() == 0) {
-
-		} else {
-			maxValue = first.getHigh();
-			minValue = first.getLow();
-		}
-
-		// 判断显示为方柱或显示为线条
-		for (int i = 0; i < this.stickData.size(); i++) {
-			IMeasurable stick = this.stickData.get(i);
-			if (stick.getLow() < minValue) {
-				minValue = stick.getLow();
-			}
-
-			if (stick.getHigh() > maxValue) {
-				maxValue = stick.getHigh();
-			}
-
-		}
-
-		this.maxValue = maxValue;
-		this.minValue = minValue;
-	}
+	// @Override
+	// protected void calcDataValueRange() {
+	// }
 
 	@Override
 	protected void calcValueRangePaddingZero() {
@@ -143,9 +115,12 @@ public class MinusStickChart extends StickChart {
 	 */
 	@Override
 	protected void drawSticks(Canvas canvas) {
-		float stickWidth = getDataQuadrantPaddingWidth() / maxSticksNum
-				- stickSpacing;
-		float stickX = getDataQuadrantPaddingStartX();
+		if (null == stickData) {
+			return;
+		}
+		if (stickData.size() <= 0) {
+			return;
+		}
 
 		Paint mPaintFill = new Paint();
 		mPaintFill.setStyle(Style.FILL);
@@ -156,8 +131,12 @@ public class MinusStickChart extends StickChart {
 		mPaintBorder.setStrokeWidth(2);
 		mPaintBorder.setColor(super.getStickBorderColor());
 
-		if (null != stickData) {
-			// display as stick or line
+		float stickWidth = getDataQuadrantPaddingWidth() / maxSticksNum
+				- stickSpacing;
+
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+
+			float stickX = getDataQuadrantPaddingStartX();
 			for (int i = 0; i < stickData.size(); i++) {
 				IMeasurable entity = stickData.get(i);
 
@@ -176,6 +155,28 @@ public class MinusStickChart extends StickChart {
 
 				// next x
 				stickX = stickX + stickSpacing + stickWidth;
+			}
+		} else {
+
+			float stickX = getDataQuadrantPaddingEndX() - stickWidth;
+			for (int i = stickData.size() - 1; i >= 0; i--) {
+				IMeasurable stick = stickData.get(i);
+
+				float highY = (float) ((1f - (stick.getHigh() - minValue)
+						/ (maxValue - minValue))
+						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+				float lowY = (float) ((1f - (stick.getLow() - minValue)
+						/ (maxValue - minValue))
+						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+
+				// draw stick
+				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
+						mPaintFill);
+				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
+						mPaintBorder);
+
+				// next x
+				stickX = stickX - stickSpacing - stickWidth;
 			}
 		}
 	}

@@ -149,8 +149,8 @@ public class SlipLineChart extends GridChart {
 	}
 
 	protected void calcDataValueRange() {
-		double maxValue = 0;
-		double minValue = Integer.MAX_VALUE;
+		double maxValue = Double.MIN_VALUE;
+		double minValue = Double.MAX_VALUE;
 		// 逐条输出MA线
 		for (int i = 0; i < this.linesData.size(); i++) {
 			LineEntity<DateValueEntity> line = this.linesData.get(i);
@@ -330,11 +330,14 @@ public class SlipLineChart extends GridChart {
 		}
 		LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
 				.get(0);
-		List<DateValueEntity> lineData = line.getLineData();
-		if (lineData == null) {
+		if (line == null) {
 			return "";
 		}
 		if (line.isDisplay() == false) {
+			return "";
+		}
+		List<DateValueEntity> lineData = line.getLineData();
+		if (lineData == null) {
 			return "";
 		}
 
@@ -453,12 +456,14 @@ public class SlipLineChart extends GridChart {
 		for (int i = 0; i < linesData.size(); i++) {
 			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
 					.get(i);
-
-			List<DateValueEntity> lineData = line.getLineData();
-			if (lineData == null) {
+			if (line == null) {
 				continue;
 			}
 			if (line.isDisplay() == false) {
+				continue;
+			}
+			List<DateValueEntity> lineData = line.getLineData();
+			if (lineData == null) {
 				continue;
 			}
 			Paint mPaint = new Paint();

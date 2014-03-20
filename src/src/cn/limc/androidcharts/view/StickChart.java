@@ -209,10 +209,14 @@ public class StickChart extends GridChart {
 	}
 
 	protected void calcDataValueRange() {
-		double maxValue = 0;
-		double minValue = Integer.MAX_VALUE;
-
-		IMeasurable first = this.stickData.get(0);
+		double maxValue = Double.MIN_VALUE;
+		double minValue = Double.MAX_VALUE;
+		IMeasurable first;
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			first = this.stickData.get(0);
+		} else {
+			first = this.stickData.get(stickData.size() - 1);
+		}
 		// 第一个stick为停盘的情况
 		if (first.getHigh() == 0 && first.getLow() == 0) {
 
@@ -221,9 +225,13 @@ public class StickChart extends GridChart {
 			minValue = first.getLow();
 		}
 
-		// 判断显示为方柱或显示为线条
-		for (int i = 0; i < this.stickData.size(); i++) {
-			IMeasurable stick = this.stickData.get(i);
+		for (int i = 0; i < this.maxSticksNum; i++) {
+			IMeasurable stick;
+			if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+				stick = this.stickData.get(i);
+			} else {
+				stick = this.stickData.get(stickData.size() - 1 - i);
+			}
 			if (stick.getLow() < minValue) {
 				minValue = stick.getLow();
 			}
@@ -535,28 +543,55 @@ public class StickChart extends GridChart {
 
 		float stickWidth = getDataQuadrantPaddingWidth() / maxSticksNum
 				- stickSpacing;
-		float stickX = getDataQuadrantPaddingStartX();
 
-		for (int i = 0; i < stickData.size(); i++) {
-			IMeasurable stick = stickData.get(i);
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
 
-			float highY = (float) ((1f - (stick.getHigh() - minValue)
-					/ (maxValue - minValue))
-					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
-			float lowY = (float) ((1f - (stick.getLow() - minValue)
-					/ (maxValue - minValue))
-					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+			float stickX = getDataQuadrantPaddingStartX();
 
-			if (stickWidth >= 2f) {
-				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
-						mPaintStick);
-			} else {
-				canvas.drawLine(stickX, highY, stickX, lowY, mPaintStick);
+			for (int i = 0; i < stickData.size(); i++) {
+				IMeasurable stick = stickData.get(i);
+
+				float highY = (float) ((1f - (stick.getHigh() - minValue)
+						/ (maxValue - minValue))
+						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+				float lowY = (float) ((1f - (stick.getLow() - minValue)
+						/ (maxValue - minValue))
+						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+
+				if (stickWidth >= 2f) {
+					canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
+							mPaintStick);
+				} else {
+					canvas.drawLine(stickX, highY, stickX, lowY, mPaintStick);
+				}
+
+				// next x
+				stickX = stickX + stickSpacing + stickWidth;
 			}
+		} else {
+			float stickX = getDataQuadrantPaddingEndX() - stickWidth;
+			for (int i = stickData.size() - 1; i >= 0; i--) {
+				IMeasurable stick = stickData.get(i);
 
-			// next x
-			stickX = stickX + stickSpacing + stickWidth;
+				float highY = (float) ((1f - (stick.getHigh() - minValue)
+						/ (maxValue - minValue))
+						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+				float lowY = (float) ((1f - (stick.getLow() - minValue)
+						/ (maxValue - minValue))
+						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+
+				if (stickWidth >= 2f) {
+					canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
+							mPaintStick);
+				} else {
+					canvas.drawLine(stickX, highY, stickX, lowY, mPaintStick);
+				}
+
+				// next x
+				stickX = stickX - stickSpacing - stickWidth;
+			}
 		}
+
 	}
 
 	/**
@@ -748,7 +783,7 @@ public class StickChart extends GridChart {
 	 * </p>
 	 */
 	protected void zoomOut() {
-		if (maxSticksNum < stickData.size() - 1) {
+		if (maxSticksNum < stickData.size() - 1 - 3) {
 			maxSticksNum = maxSticksNum + 3;
 		}
 	}

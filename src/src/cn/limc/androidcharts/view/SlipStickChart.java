@@ -223,8 +223,8 @@ public class SlipStickChart extends GridChart {
 
 	protected void calcDataValueRange() {
 
-		double maxValue = 0;
-		double minValue = Integer.MAX_VALUE;
+		double maxValue = Double.MIN_VALUE;
+		double minValue = Double.MAX_VALUE;
 
 		IMeasurable first = this.stickData.get(0);
 		// 第一个stick为停盘的情况
