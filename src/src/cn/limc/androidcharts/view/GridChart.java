@@ -1158,7 +1158,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	}
 
 	protected float getDataQuadrantPaddingEndY() {
-		return getDataQuadrantEndY() - dataQuadrantPaddingTop;
+		return getDataQuadrantEndY() - dataQuadrantPaddingBottom;
 	}
 
 	protected float getDataQuadrantPaddingWidth() {

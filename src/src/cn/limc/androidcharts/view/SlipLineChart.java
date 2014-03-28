@@ -523,8 +523,10 @@ public class SlipLineChart extends GridChart {
 			}
 			break;
 		case MotionEvent.ACTION_UP:
+			TOUCH_MODE = NONE;
 			startPointA = null;
 			startPointB = null;
+			return super.onTouchEvent(event);
 		case MotionEvent.ACTION_POINTER_UP:
 			TOUCH_MODE = NONE;
 			startPointA = null;
