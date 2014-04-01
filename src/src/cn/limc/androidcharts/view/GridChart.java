@@ -873,7 +873,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 单点触控的选中点的X
 	 * </p>
 	 */
-	private float clickPostX = 0f;
+	private float clickPostX;
 
 	/**
 	 * <p>
@@ -886,7 +886,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 单点触控的选中点的Y
 	 * </p>
 	 */
-	private float clickPostY = 0f;
+	private float clickPostY;
 
 	/**
 	 * <p>
@@ -1265,10 +1265,10 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 */
 	protected void drawVerticalLine(Canvas canvas) {
 
-		if (displayLongitudeTitle == false) {
+		if (!displayLongitudeTitle) {
 			return;
 		}
-		if (displayCrossXOnTouch == false) {
+		if (!displayCrossXOnTouch) {
 			return;
 		}
 		if (clickPostX <= 0) {
@@ -1281,13 +1281,13 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 		float lineVLength = getDataQuadrantHeight() + axisWidth;
 
 		// TODO calculate points to draw
-		PointF BoxVS = new PointF(clickPostX - longitudeFontSize * 5f / 2f,
+		PointF boxVS = new PointF(clickPostX - longitudeFontSize * 5f / 2f,
 				borderWidth + lineVLength);
-		PointF BoxVE = new PointF(clickPostX + longitudeFontSize * 5f / 2f,
+		PointF boxVE = new PointF(clickPostX + longitudeFontSize * 5f / 2f,
 				borderWidth + lineVLength + axisXTitleQuadrantHeight);
 
 		// draw text
-		drawAlphaTextBox(BoxVS, BoxVE, getAxisXGraduate(clickPostX),
+		drawAlphaTextBox(boxVS, boxVE, getAxisXGraduate(clickPostX),
 				longitudeFontSize, canvas);
 
 		canvas.drawLine(clickPostX, borderWidth, clickPostX, lineVLength,
@@ -1296,10 +1296,10 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 
 	protected void drawHorizontalLine(Canvas canvas) {
 
-		if (displayLatitudeTitle == false) {
+		if (!displayLatitudeTitle) {
 			return;
 		}
-		if (displayCrossYOnTouch == false) {
+		if (!displayCrossYOnTouch) {
 			return;
 		}
 		if (clickPostY <= 0) {
@@ -1312,27 +1312,27 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 		float lineHLength = getDataQuadrantWidth() + axisWidth;
 
 		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-			PointF BoxHS = new PointF(borderWidth, clickPostY
+			PointF boxHS = new PointF(borderWidth, clickPostY
 					- latitudeFontSize / 2f - 2);
-			PointF BoxHE = new PointF(borderWidth + axisYTitleQuadrantWidth,
+			PointF boxHE = new PointF(borderWidth + axisYTitleQuadrantWidth,
 					clickPostY + latitudeFontSize / 2f + 2);
 
 			// draw text
-			drawAlphaTextBox(BoxHS, BoxHE, getAxisYGraduate(clickPostY),
+			drawAlphaTextBox(boxHS, boxHE, getAxisYGraduate(clickPostY),
 					latitudeFontSize, canvas);
 
 			canvas.drawLine(borderWidth + axisYTitleQuadrantWidth, clickPostY,
 					borderWidth + axisYTitleQuadrantWidth + lineHLength,
 					clickPostY, mPaint);
 		} else {
-			PointF BoxHS = new PointF(super.getWidth() - borderWidth
+			PointF boxHS = new PointF(super.getWidth() - borderWidth
 					- axisYTitleQuadrantWidth, clickPostY - latitudeFontSize
 					/ 2f - 2);
-			PointF BoxHE = new PointF(super.getWidth() - borderWidth,
+			PointF boxHE = new PointF(super.getWidth() - borderWidth,
 					clickPostY + latitudeFontSize / 2f + 2);
 
 			// draw text
-			drawAlphaTextBox(BoxHS, BoxHE, getAxisYGraduate(clickPostY),
+			drawAlphaTextBox(boxHS, boxHE, getAxisYGraduate(clickPostY),
 					latitudeFontSize, canvas);
 
 			canvas.drawLine(borderWidth, clickPostY, borderWidth + lineHLength,
@@ -1445,7 +1445,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 		if (null == longitudeTitles) {
 			return;
 		}
-		if (false == displayLongitude) {
+		if (!displayLongitude) {
 			return;
 		}
 		int counts = longitudeTitles.size();
@@ -1493,10 +1493,10 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 		if (null == longitudeTitles) {
 			return;
 		}
-		if (false == displayLongitude) {
+		if (!displayLongitude) {
 			return;
 		}
-		if (false == displayLongitudeTitle) {
+		if (!displayLongitudeTitle) {
 			return;
 		}
 
@@ -1566,10 +1566,10 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 		if (null == latitudeTitles) {
 			return;
 		}
-		if (false == displayLatitude) {
+		if (!displayLatitude) {
 			return;
 		}
-		if (false == displayLatitudeTitle) {
+		if (!displayLatitudeTitle) {
 			return;
 		}
 		if (latitudeTitles.size() <= 1) {
@@ -1630,7 +1630,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 		if (null == latitudeTitles) {
 			return;
 		}
-		if (false == displayLatitudeTitle) {
+		if (!displayLatitudeTitle) {
 			return;
 		}
 		if (latitudeTitles.size() <= 1) {
@@ -1692,7 +1692,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * </p>
 	 */
 	protected void zoomIn() {
-
+		//DO NOTHING
 	}
 
 	/**
@@ -1707,7 +1707,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * </p>
 	 */
 	protected void zoomOut() {
-
+		//DO NOTHING
 	}
 
 	/*
@@ -1751,9 +1751,9 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 
 	 * @see cn.limc.androidcharts.event.ITouchEventNotify#removeNotify(int)
 	 */
-	public void removeNotify(int i) {
-		if (null != notifyList && notifyList.size() > i) {
-			notifyList.remove(i);
+	public void removeNotify(int index) {
+		if (null != notifyList && notifyList.size() > index) {
+			notifyList.remove(index);
 		}
 	}
 

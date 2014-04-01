@@ -421,7 +421,7 @@ public class StickChart extends GridChart {
 	 * </p>
 	 */
 	protected void initAxisX() {
-		List<String> TitleX = new ArrayList<String>();
+		List<String> titleX = new ArrayList<String>();
 		if (null != stickData && stickData.size() > 0) {
 			float average = maxSticksNum / this.getLongitudeNum();
 			for (int i = 0; i < this.getLongitudeNum(); i++) {
@@ -429,14 +429,14 @@ public class StickChart extends GridChart {
 				if (index > maxSticksNum - 1) {
 					index = maxSticksNum - 1;
 				}
-				TitleX.add(String.valueOf(stickData.get(index).getDate())
+				titleX.add(String.valueOf(stickData.get(index).getDate())
 						.substring(4));
 			}
-			TitleX.add(String
+			titleX.add(String
 					.valueOf(stickData.get(maxSticksNum - 1).getDate())
 					.substring(4));
 		}
-		super.setLongitudeTitles(TitleX);
+		super.setLongitudeTitles(titleX);
 	}
 
 	/**
@@ -490,7 +490,7 @@ public class StickChart extends GridChart {
 	 * </p>
 	 */
 	protected void initAxisY() {
-		List<String> TitleY = new ArrayList<String>();
+		List<String> titleY = new ArrayList<String>();
 		float average = (int) ((maxValue - minValue) / this.getLatitudeNum()) / 100 * 100;
 		;
 		// calculate degrees on Y axis
@@ -499,22 +499,22 @@ public class StickChart extends GridChart {
 					* average));
 			if (value.length() < super.getLatitudeMaxTitleLength()) {
 				while (value.length() < super.getLatitudeMaxTitleLength()) {
-					value = new String(" ") + value;
+					value = " " + value;
 				}
 			}
-			TitleY.add(value);
+			titleY.add(value);
 		}
 		// calculate last degrees by use max value
 		String value = String.valueOf((int) Math
 				.floor(((int) maxValue) / 100 * 100));
 		if (value.length() < super.getLatitudeMaxTitleLength()) {
 			while (value.length() < super.getLatitudeMaxTitleLength()) {
-				value = new String(" ") + value;
+				value = " " + value;
 			}
 		}
-		TitleY.add(value);
+		titleY.add(value);
 
-		super.setLatitudeTitles(TitleY);
+		super.setLatitudeTitles(titleY);
 	}
 
 	/**
@@ -671,7 +671,7 @@ public class StickChart extends GridChart {
 	private float olddistance = 0f;
 	private float newdistance = 0f;
 
-	private int TOUCH_MODE;
+	private int touchMode;
 
 	/*
 	 * (non-Javadoc)
@@ -691,20 +691,20 @@ public class StickChart extends GridChart {
 
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_DOWN:
-			TOUCH_MODE = DOWN;
+			touchMode = DOWN;
 			break;
 		case MotionEvent.ACTION_UP:
 		case MotionEvent.ACTION_POINTER_UP:
-			TOUCH_MODE = NONE;
+			touchMode = NONE;
 			return super.onTouchEvent(event);
 		case MotionEvent.ACTION_POINTER_DOWN:
 			olddistance = calcDistance(event);
 			if (olddistance > MIN_LENGTH) {
-				TOUCH_MODE = ZOOM;
+				touchMode = ZOOM;
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if (TOUCH_MODE == ZOOM) {
+			if (touchMode == ZOOM) {
 				newdistance = calcDistance(event);
 				if (newdistance > MIN_LENGTH
 						&& Math.abs(newdistance - olddistance) > MIN_LENGTH) {

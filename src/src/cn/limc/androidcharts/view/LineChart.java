@@ -269,7 +269,7 @@ public class LineChart extends GridChart {
 				&& (long) (this.minValue) % rate != 0) {
 			// 最大值加上轴差
 			this.minValue = (long) this.minValue
-					- ((long) (this.minValue) % rate);
+					- (long) (this.minValue) % rate;
 		}
 		// 等分轴修正
 		if (this.latitudeNum > 0
@@ -277,8 +277,8 @@ public class LineChart extends GridChart {
 						% (this.latitudeNum * rate) != 0) {
 			// 最大值加上轴差
 			this.maxValue = (long) this.maxValue
-					+ (this.latitudeNum * rate)
-					- ((long) (this.maxValue - this.minValue) % (this.latitudeNum * rate));
+					+ this.latitudeNum * rate
+					- (long) (this.maxValue - this.minValue) % (this.latitudeNum * rate);
 		}
 	}
 
@@ -470,7 +470,7 @@ public class LineChart extends GridChart {
 	 */
 	protected void initAxisY() {
 		this.calcValueRange();
-		List<String> TitleY = new ArrayList<String>();
+		List<String> titleY = new ArrayList<String>();
 		float average = (int) ((maxValue - minValue) / this.getLatitudeNum());
 		;
 		// calculate degrees on Y axis
@@ -479,21 +479,21 @@ public class LineChart extends GridChart {
 					* average));
 			if (value.length() < super.getLatitudeMaxTitleLength()) {
 				while (value.length() < super.getLatitudeMaxTitleLength()) {
-					value = new String(" ") + value;
+					value = " " + value;
 				}
 			}
-			TitleY.add(value);
+			titleY.add(value);
 		}
 		// calculate last degrees by use max value
 		String value = String.valueOf((int) Math.floor(((int) maxValue)));
 		if (value.length() < super.getLatitudeMaxTitleLength()) {
 			while (value.length() < super.getLatitudeMaxTitleLength()) {
-				value = new String(" ") + value;
+				value = " " + value;
 			}
 		}
-		TitleY.add(value);
+		titleY.add(value);
 
-		super.setLatitudeTitles(TitleY);
+		super.setLatitudeTitles(titleY);
 	}
 
 	/**
@@ -508,7 +508,7 @@ public class LineChart extends GridChart {
 	 * </p>
 	 */
 	protected void initAxisX() {
-		List<String> TitleX = new ArrayList<String>();
+		List<String> titleX = new ArrayList<String>();
 		if (null != linesData && linesData.size() > 0) {
 			float average = maxPointNum / this.getLongitudeNum();
 			for (int i = 0; i < this.getLongitudeNum(); i++) {
@@ -516,15 +516,15 @@ public class LineChart extends GridChart {
 				if (index > maxPointNum - 1) {
 					index = maxPointNum - 1;
 				}
-				TitleX.add(String.valueOf(
+				titleX.add(String.valueOf(
 						linesData.get(0).getLineData().get(index).getDate())
 						.substring(4));
 			}
-			TitleX.add(String.valueOf(
+			titleX.add(String.valueOf(
 					linesData.get(0).getLineData().get(maxPointNum - 1)
 							.getDate()).substring(4));
 		}
-		super.setLongitudeTitles(TitleX);
+		super.setLongitudeTitles(titleX);
 	}
 
 	private final int NONE = 0;
@@ -534,7 +534,7 @@ public class LineChart extends GridChart {
 	private float olddistance = 0f;
 	private float newdistance = 0f;
 
-	private int TOUCH_MODE;
+	private int touchMode;
 
 	/*
 	 * (non-Javadoc)
@@ -549,25 +549,25 @@ public class LineChart extends GridChart {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 
-		final float MIN_LENGTH = (super.getWidth() / 40) < 5 ? 5 : (super
-				.getWidth() / 50);
+		final float MIN_LENGTH = super.getWidth() / 40 < 5 ? 5 : super
+				.getWidth() / 50;
 
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_DOWN:
-			TOUCH_MODE = DOWN;
+			touchMode = DOWN;
 			break;
 		case MotionEvent.ACTION_UP:
 		case MotionEvent.ACTION_POINTER_UP:
-			TOUCH_MODE = NONE;
+			touchMode = NONE;
 			return super.onTouchEvent(event);
 		case MotionEvent.ACTION_POINTER_DOWN:
 			olddistance = calcDistance(event);
 			if (olddistance > MIN_LENGTH) {
-				TOUCH_MODE = ZOOM;
+				touchMode = ZOOM;
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if (TOUCH_MODE == ZOOM) {
+			if (touchMode == ZOOM) {
 				newdistance = calcDistance(event);
 				if (newdistance > MIN_LENGTH
 						&& Math.abs(newdistance - olddistance) > MIN_LENGTH) {
