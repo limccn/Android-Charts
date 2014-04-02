@@ -1927,8 +1927,8 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	}
 
 	/**
-	 * @param dataQuadrantPaddingTop
-	 *            the dataQuadrantPaddingTop to set
+	 * @param axisMarginTop
+	 *            the axisMarginTop to set
 	 */
 	@Deprecated
 	public void setAxisMarginTop(float axisMarginTop) {
@@ -1945,8 +1945,8 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	}
 
 	/**
-	 * @param dataQuadrantPaddingRight
-	 *            the dataQuadrantPaddingRight to set
+	 * @param axisMarginRight
+	 *            the axisMarginRight to set
 	 */
 	@Deprecated
 	public void setAxisMarginRight(float axisMarginRight) {

@@ -24,8 +24,9 @@ package cn.limc.androidcharts.event;
 import java.util.List;
 
 import cn.limc.androidcharts.entity.DateValueEntity;
+import cn.limc.androidcharts.entity.IChartData;
+import cn.limc.androidcharts.entity.IStickEntity;
 import cn.limc.androidcharts.entity.LineEntity;
-import cn.limc.androidcharts.entity.StickEntity;
 import cn.limc.androidcharts.view.GridChart;
 import cn.limc.androidcharts.view.MAStickChart;
 
@@ -39,38 +40,38 @@ public class MAStickChartTouchEventAssemble implements ITouchEventResponse {
 	private TextView tvV;
 
 	public void notifyEvent(GridChart chart, int index) {
-		// MAStickChart machart = (MAStickChart) chart;
-		//
-		// List<StickEntity> stickData = machart.getStickData();
-		// List<LineEntity<DateValueEntity>> lineData = machart.getLinesData();
-		//
-		// if (null == stickData || null == lineData) {
-		// return;
-		// }
-		//
-		// LineEntity<DateValueEntity> ma5 = lineData.get(0);
-		// LineEntity<DateValueEntity> ma10 = lineData.get(1);
-		// LineEntity<DateValueEntity> ma25 = lineData.get(2);
-		//
-		// if (index >= stickData.size() || index < 0) {
-		// return;
-		// // index = stickData.size() -1;
-		// }
-		//
-		// StickEntity e = stickData.get(index);
-		// if (null != tvV) {
-		// tvV.setText(String.valueOf((int) (e.getHigh())));
-		// }
+		 MAStickChart machart = (MAStickChart) chart;
+		
+		 IChartData<IStickEntity> stickData = machart.getStickData();
+		 List<LineEntity<DateValueEntity>> lineData = machart.getLinesData();
+		
+		 if (null == stickData || null == lineData) {
+		 return;
+		 }
+		
+		 LineEntity<DateValueEntity> ma5 = lineData.get(0);
+		 LineEntity<DateValueEntity> ma10 = lineData.get(1);
+		 LineEntity<DateValueEntity> ma25 = lineData.get(2);
+		
+		 if (index >= stickData.size() || index < 0) {
+		 return;
+		 // index = stickData.size() -1;
+		 }
+		
+		 IStickEntity e = stickData.get(index);
+		 if (null != tvV) {
+		 tvV.setText(String.valueOf((int) (e.getHigh())));
+		 }
 
-		// tvMA5.setText(ma5.getTitle() + "="
-		// +String.valueOf((int)ma5.getLineData().get(index).floatValue()));
-		// tvMA5.setTextColor(ma5.getLineColor());
-		// tvMA10.setText(ma10.getTitle() + "="
-		// +String.valueOf((int)ma10.getLineData().get(index).floatValue()));
-		// tvMA10.setTextColor(ma10.getLineColor());
-		// tvMA25.setText(ma25.getTitle() + "="
-		// +String.valueOf((int)ma25.getLineData().get(index).floatValue()));
-		// tvMA25.setTextColor(ma25.getLineColor());
+		 tvMA5.setText(ma5.getTitle() + "="
+		 +String.valueOf((int)ma5.getLineData().get(index).getValue()));
+		 tvMA5.setTextColor(ma5.getLineColor());
+		 tvMA10.setText(ma10.getTitle() + "="
+		 +String.valueOf((int)ma10.getLineData().get(index).getValue()));
+		 tvMA10.setTextColor(ma10.getLineColor());
+		 tvMA25.setText(ma25.getTitle() + "="
+		 +String.valueOf((int)ma25.getLineData().get(index).getValue()));
+		 tvMA25.setTextColor(ma25.getLineColor());
 	}
 
 	public void notifyEvent(GridChart chart) {
