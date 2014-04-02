@@ -39,7 +39,7 @@ package cn.limc.androidcharts.entity;
 public interface IChartData<T> {
 	int size();
 
-	T get(int i);
+	T get(int index);
 
 	boolean hasData();
 

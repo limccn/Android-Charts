@@ -56,7 +56,7 @@ import android.util.AttributeSet;
  * @version v1.0 2011/05/30 14:01:54
  * 
  */
-public class SpiderWebChart extends BaseChart {
+public class SpiderWebChart extends AbstractBaseChart {
 
 	/**
 	 * <p>
@@ -349,7 +349,7 @@ public class SpiderWebChart extends BaseChart {
 	 * 
 	 * @param context
 	 * 
-	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context)
+	 * @see cn.limc.androidcharts.view.AbstractBaseChart#BaseChart(Context)
 	 */
 	public SpiderWebChart(Context context) {
 		super(context);
@@ -364,7 +364,7 @@ public class SpiderWebChart extends BaseChart {
 	 * 
 	 * @param defStyle
 	 * 
-	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context,AttributeSet,
+	 * @see cn.limc.androidcharts.view.AbstractBaseChart#BaseChart(Context,AttributeSet,
 	 * int)
 	 */
 	public SpiderWebChart(Context context, AttributeSet attrs, int defStyle) {
@@ -378,7 +378,7 @@ public class SpiderWebChart extends BaseChart {
 	 * 
 	 * @param attrs
 	 * 
-	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context,
+	 * @see cn.limc.androidcharts.view.AbstractBaseChart#BaseChart(Context,
 	 * AttributeSet)
 	 */
 	public SpiderWebChart(Context context, AttributeSet attrs) {

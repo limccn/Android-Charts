@@ -49,14 +49,15 @@ public class MACandleStickChartTouchEventAssemble implements
 	private TextView tvValue;
 	private TextView tvChange;
 
-	public void notifyEvent(GridChart chart, int index) {
+	public void notifyEvent(GridChart chart, int ix) {
+		 int index =ix;
 
 		 MACandleStickChart machart = (MACandleStickChart) chart;
 		
-		 IChartData<IStickEntity> OHLCData = machart.getStickData();
+		 IChartData<IStickEntity> ohlcData = machart.getStickData();
 		 List<LineEntity<DateValueEntity>> lineData = machart.getLinesData();
 		
-		 if (null == OHLCData || null == lineData) {
+		 if (null == ohlcData || null == lineData) {
 		 return;
 		 }
 		
@@ -64,61 +65,61 @@ public class MACandleStickChartTouchEventAssemble implements
 		 LineEntity<DateValueEntity> ma10 = lineData.get(1);
 		 LineEntity<DateValueEntity> ma25 = lineData.get(2);
 		
-		 if (index >= OHLCData.size() || index < 0) {
+		 if (index >= ohlcData.size() || index < 0) {
 		 return;
 		 // index = OHLCData.size() -1;
 		 }
 		
-		 OHLCEntity e = (OHLCEntity)OHLCData.get(index);
-		 OHLCEntity e1;
+		 OHLCEntity entity = (OHLCEntity)ohlcData.get(index);
+		 OHLCEntity entity1;
 		
-		 if (index >= OHLCData.size()) {
-		 index = OHLCData.size() - 1;
+		 if (index >= ohlcData.size()) {
+		 index = ohlcData.size() - 1;
 		 }
 		
 		 if (index > 0) {
-		 e1 = (OHLCEntity)OHLCData.get(index - 1);
+		 entity1 = (OHLCEntity)ohlcData.get(index - 1);
 		 } else {
-		 e1 = e;
+		 entity1 = entity;
 		 }
-		 double close = e1.getClose();
+		 double close = entity1.getClose();
 		
 		 if (null != tvO) {
-		 tvO.setText(String.valueOf((int) (e.getOpen())));
-		 tvO.setTextColor(getColor(e.getOpen(), close));
+		 tvO.setText(String.valueOf((int) (entity.getOpen())));
+		 tvO.setTextColor(getColor(entity.getOpen(), close));
 		 }
 		 if (null != tvH) {
-		 tvH.setText(String.valueOf((int) (e.getHigh())));
-		 tvH.setTextColor(getColor(e.getHigh(), close));
+		 tvH.setText(String.valueOf((int) (entity.getHigh())));
+		 tvH.setTextColor(getColor(entity.getHigh(), close));
 		 }
 		 if (null != tvL) {
-		 tvL.setText(String.valueOf((int) (e.getLow())));
-		 tvL.setTextColor(getColor(e.getLow(), close));
+		 tvL.setText(String.valueOf((int) (entity.getLow())));
+		 tvL.setTextColor(getColor(entity.getLow(), close));
 		 }
 		 if (null != tvC) {
-		 tvC.setText(String.valueOf((int) (e.getClose())));
-		 tvC.setTextColor(getColor(e.getClose(), close));
+		 tvC.setText(String.valueOf((int) (entity.getClose())));
+		 tvC.setTextColor(getColor(entity.getClose(), close));
 		 }
 		 if (null != tvD) {
-		 String date = String.valueOf((int) (e.getDate())).substring(2);
+		 String date = String.valueOf((int) (entity.getDate())).substring(2);
 		 tvD.setText(new StringBuffer().append(date.substring(0, 2))
 		 .append("/").append(date.substring(2, 4)).append("/")
 		 .append(date.substring(4, 6)).toString());
 		 }
 		
-		 int change = (int) (e.getClose() - close);
+		 int change = (int) (entity.getClose() - close);
 		 float rate = ((int) (change / close * 10000)) / 100f;
 		 String strRate = String.valueOf(rate) + "%";
 		
 		 if (null != tvValue) {
-		 tvValue.setText(String.valueOf((int) (e.getClose())));
-		 tvValue.setTextColor(getColor(e.getClose(), close));
+		 tvValue.setText(String.valueOf((int) (entity.getClose())));
+		 tvValue.setTextColor(getColor(entity.getClose(), close));
 		 }
 		 if (null != tvChange) {
 		 tvChange.setText(new StringBuffer().append(change > 0 ? "+" : "")
 		 .append(String.valueOf(change)).append("(").append(strRate)
 		 .append(")").toString());
-		 tvChange.setTextColor(getColor(e.getClose(), close));
+		 tvChange.setTextColor(getColor(entity.getClose(), close));
 		 }
 
 		 tvMA5.setText(ma5.getTitle() + "="

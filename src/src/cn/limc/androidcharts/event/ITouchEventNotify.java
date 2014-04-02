@@ -111,7 +111,7 @@ public interface ITouchEventNotify {
 	 *            index
 	 *            </p>
 	 */
-	public void removeNotify(int i);
+	public void removeNotify(int index);
 
 	/**
 	 * <p>

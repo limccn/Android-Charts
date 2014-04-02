@@ -172,7 +172,7 @@ public class StickChart extends GridChart {
 	 * 
 	 * @param context
 	 * 
-	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context)
+	 * @see cn.limc.androidcharts.view.AbstractBaseChart#BaseChart(Context)
 	 */
 	public StickChart(Context context) {
 		super(context);
@@ -187,7 +187,7 @@ public class StickChart extends GridChart {
 	 * 
 	 * @param defStyle
 	 * 
-	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context,
+	 * @see cn.limc.androidcharts.view.AbstractBaseChart#BaseChart(Context,
 	 * AttributeSet, int)
 	 */
 	public StickChart(Context context, AttributeSet attrs, int defStyle) {
@@ -201,7 +201,7 @@ public class StickChart extends GridChart {
 	 * 
 	 * @param attrs
 	 * 
-	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context,
+	 * @see cn.limc.androidcharts.view.AbstractBaseChart#BaseChart(Context,
 	 * AttributeSet)
 	 */
 	public StickChart(Context context, AttributeSet attrs) {
@@ -668,8 +668,8 @@ public class StickChart extends GridChart {
 	private final int ZOOM = 1;
 	private final int DOWN = 2;
 
-	private float olddistance = 0f;
-	private float newdistance = 0f;
+	private float olddistance;
+	private float newdistance;
 
 	private int touchMode;
 

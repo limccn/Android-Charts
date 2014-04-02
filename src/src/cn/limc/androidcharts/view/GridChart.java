@@ -56,7 +56,7 @@ import android.view.MotionEvent;
  * @version v1.0 2011/05/30 14:19:50
  * 
  */
-public class GridChart extends BaseChart implements ITouchEventNotify,
+public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		ITouchEventResponse {
 
 	public static final int AXIS_X_POSITION_BOTTOM = 1 << 0;
@@ -906,7 +906,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 
 	 * @param context
 	 * 
-	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context)
+	 * @see cn.limc.androidcharts.view.AbstractBaseChart#BaseChart(Context)
 	 */
 	public GridChart(Context context) {
 		super(context);
@@ -921,7 +921,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 
 	 * @param defStyle
 	 * 
-	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context,
+	 * @see cn.limc.androidcharts.view.AbstractBaseChart#BaseChart(Context,
 	 * AttributeSet, int)
 	 */
 	public GridChart(Context context, AttributeSet attrs, int defStyle) {
@@ -935,7 +935,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 
 	 * @param attrs
 	 * 
-	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context,
+	 * @see cn.limc.androidcharts.view.AbstractBaseChart#BaseChart(Context,
 	 * AttributeSet)
 	 */
 	public GridChart(Context context, AttributeSet attrs) {

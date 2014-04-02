@@ -46,20 +46,20 @@ public class ListChartData<T> implements IChartData<T> {
 		return datas.size();
 	}
 
-	public T get(int i) {
-		return datas.get(i);
+	public T get(int index) {
+		return datas.get(index);
 	}
 
 	public boolean hasData() {
-		return datas != null && datas.size() > 0;
+		return datas != null && !datas.isEmpty();
 	}
 
 	public boolean hasNoData() {
-		return hasData() == false;
+		return !hasData();
 	}
 
 	public void add(T data) {
-		if (null == datas || 0 == datas.size()) {
+		if (null == datas || datas.isEmpty()) {
 			datas = new ArrayList<T>();
 		}
 		datas.add(data);
@@ -81,8 +81,8 @@ public class ListChartData<T> implements IChartData<T> {
 		datas = new ArrayList<T>();
 	}
 
-	public ListChartData(List<T> d) {
+	public ListChartData(List<T> data) {
 		datas = new ArrayList<T>();
-		datas.addAll(d);
+		datas.addAll(data);
 	}
 }

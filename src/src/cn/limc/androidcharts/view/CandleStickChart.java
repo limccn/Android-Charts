@@ -188,7 +188,7 @@ public class CandleStickChart extends StickChart {
 	 * 
 	 * @param context
 	 * 
-	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context)
+	 * @see cn.limc.androidcharts.view.AbstractBaseChart#BaseChart(Context)
 	 */
 	public CandleStickChart(Context context) {
 		super(context);
@@ -203,7 +203,7 @@ public class CandleStickChart extends StickChart {
 	 * 
 	 * @param defStyle
 	 * 
-	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context,
+	 * @see cn.limc.androidcharts.view.AbstractBaseChart#BaseChart(Context,
 	 * AttributeSet, int)
 	 */
 	public CandleStickChart(Context context, AttributeSet attrs, int defStyle) {
@@ -217,7 +217,7 @@ public class CandleStickChart extends StickChart {
 	 * 
 	 * @param attrs
 	 * 
-	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context,
+	 * @see cn.limc.androidcharts.view.AbstractBaseChart#BaseChart(Context,
 	 * AttributeSet)
 	 */
 	public CandleStickChart(Context context, AttributeSet attrs) {

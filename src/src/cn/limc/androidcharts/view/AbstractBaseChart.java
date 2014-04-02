@@ -1,5 +1,5 @@
 /*
- * BaseChart.java
+ * AbstractBaseChart.java
  * Android-Charts
  *
  * Created by limc on 2013.
@@ -41,9 +41,9 @@ import android.view.View;
  * @version v1.0 2011/05/29 15:17:50
  * 
  */
-public abstract class BaseChart extends View implements IChart {
+public abstract class AbstractBaseChart extends View implements IChart {
 
-	public static final String LOG_TAG = "BaseChart";
+	public static final String LOG_TAG = "AbstractBaseChart";
 
 	/*
 	 * (non-Javadoc)
@@ -52,7 +52,7 @@ public abstract class BaseChart extends View implements IChart {
 	 * 
 	 * @see android.view.View#BaseChart(Context)
 	 */
-	public BaseChart(Context context) {
+	public AbstractBaseChart(Context context) {
 		super(context);
 	}
 
@@ -65,7 +65,7 @@ public abstract class BaseChart extends View implements IChart {
 	 * 
 	 * @see android.view.View#BaseChart(Context, AttributeSet)
 	 */
-	public BaseChart(Context context, AttributeSet attrs) {
+	public AbstractBaseChart(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
@@ -80,7 +80,7 @@ public abstract class BaseChart extends View implements IChart {
 	 * 
 	 * @see android.view.View#BaseChart(Context, AttributeSet, int)
 	 */
-	public BaseChart(Context context, AttributeSet attrs, int defStyle) {
+	public AbstractBaseChart(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 

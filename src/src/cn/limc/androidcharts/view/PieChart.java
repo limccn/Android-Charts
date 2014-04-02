@@ -55,7 +55,7 @@ import android.util.AttributeSet;
  * @version v1.0 2011/05/29 15:15:03
  * 
  */
-public class PieChart extends BaseChart {
+public class PieChart extends AbstractBaseChart {
 
 	/**
 	 * <p>
@@ -231,7 +231,7 @@ public class PieChart extends BaseChart {
 	 * 
 	 * @param context
 	 * 
-	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context)
+	 * @see cn.limc.androidcharts.view.AbstractBaseChart#BaseChart(Context)
 	 */
 	public PieChart(Context context) {
 		super(context);
@@ -246,7 +246,7 @@ public class PieChart extends BaseChart {
 	 * 
 	 * @param defStyle
 	 * 
-	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context,
+	 * @see cn.limc.androidcharts.view.AbstractBaseChart#BaseChart(Context,
 	 * AttributeSet, int)
 	 */
 	public PieChart(Context context, AttributeSet attrs, int defStyle) {
@@ -260,7 +260,7 @@ public class PieChart extends BaseChart {
 	 * 
 	 * @param attrs
 	 * 
-	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context,
+	 * @see cn.limc.androidcharts.view.AbstractBaseChart#BaseChart(Context,
 	 * AttributeSet)
 	 */
 	public PieChart(Context context, AttributeSet attrs) {
