@@ -233,7 +233,7 @@ public class MACDChart extends SlipStickChart {
 		mPaintStick.setColor(diffLineColor);
 
 		// distance between two points
-		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
+		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - stickSpacing;
 		// start point‘s X
 		float startX = getDataQuadrantPaddingStartX() + lineLength / 2;
 		// start point
@@ -252,7 +252,7 @@ public class MACDChart extends SlipStickChart {
 			}
 			// reset
 			ptFirst = new PointF(startX, valueY);
-			startX = startX + 1 + lineLength;
+			startX = startX + stickSpacing + lineLength;
 		}
 	}
 
@@ -262,7 +262,7 @@ public class MACDChart extends SlipStickChart {
 		mPaintStick.setAntiAlias(true);
 		mPaintStick.setColor(deaLineColor);
 		// distance between two points
-		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
+		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - stickSpacing;
 		// set start point’s X
 		float startX = getDataQuadrantPaddingStartX() + lineLength / 2;
 		// start point
@@ -281,7 +281,7 @@ public class MACDChart extends SlipStickChart {
 			}
 			// reset
 			ptFirst = new PointF(startX, valueY);
-			startX = startX + 1 + lineLength;
+			startX = startX + stickSpacing + lineLength;
 		}
 	}
 
@@ -291,7 +291,7 @@ public class MACDChart extends SlipStickChart {
 		mPaintStick.setColor(macdLineColor);
 
 		// distance between two points
-		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
+		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - stickSpacing;
 		// set start point’s X
 		float startX = getDataQuadrantPaddingStartX() + lineLength / 2;
 		// start point
@@ -310,7 +310,7 @@ public class MACDChart extends SlipStickChart {
 			}
 			// reset
 			ptFirst = new PointF(startX, valueY);
-			startX = startX + 1 + lineLength;
+			startX = startX + stickSpacing + lineLength;
 		}
 	}
 

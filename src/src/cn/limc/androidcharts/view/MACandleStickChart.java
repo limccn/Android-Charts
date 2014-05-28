@@ -191,7 +191,7 @@ public class MACandleStickChart extends CandleStickChart {
 			return;
 		}
 		// distance between two points
-		float lineLength = getDataQuadrantPaddingWidth() / maxSticksNum - 1;
+		float lineLength = getDataQuadrantPaddingWidth() / maxSticksNum - stickSpacing;
 		// start point‘s X
 		float startX;
 
@@ -233,7 +233,7 @@ public class MACandleStickChart extends CandleStickChart {
 					}
 					// reset
 					ptFirst = new PointF(startX, valueY);
-					startX = startX + 1 + lineLength;
+					startX = startX + stickSpacing + lineLength;
 				}
 			} else {
 				// set start point’s X
@@ -252,7 +252,7 @@ public class MACandleStickChart extends CandleStickChart {
 					}
 					// reset
 					ptFirst = new PointF(startX, valueY);
-					startX = startX - 1 - lineLength;
+					startX = startX - stickSpacing - lineLength;
 				}
 			}
 		}

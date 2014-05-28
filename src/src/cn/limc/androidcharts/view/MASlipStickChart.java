@@ -190,7 +190,7 @@ public class MASlipStickChart extends SlipStickChart {
 			return;
 		}
 		// distance between two points
-		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
+		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - stickSpacing;
 		// start point‘s X
 		float startX;
 
@@ -231,7 +231,7 @@ public class MASlipStickChart extends SlipStickChart {
 				}
 				// reset
 				ptFirst = new PointF(startX, valueY);
-				startX = startX + 1 + lineLength;
+				startX = startX + stickSpacing + lineLength;
 			}
 		}
 	}

@@ -187,7 +187,7 @@ public class MAStickChart extends StickChart {
 			return;
 		}
 		// distance between two points
-		float lineLength = getDataQuadrantPaddingWidth() / maxSticksNum - 1;
+		float lineLength = getDataQuadrantPaddingWidth() / maxSticksNum - stickSpacing;
 		// start point‘s X
 		float startX;
 
@@ -230,7 +230,7 @@ public class MAStickChart extends StickChart {
 					}
 					// reset
 					ptFirst = new PointF(startX, valueY);
-					startX = startX + 1 + lineLength;
+					startX = startX + stickSpacing + lineLength;
 				}
 			} else {
 				// set start point’s X
@@ -249,7 +249,7 @@ public class MAStickChart extends StickChart {
 					}
 					// reset
 					ptFirst = new PointF(startX, valueY);
-					startX = startX - 1 - lineLength;
+					startX = startX - stickSpacing - lineLength;
 				}
 			}
 		}

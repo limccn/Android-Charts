@@ -191,7 +191,7 @@ public class MASlipCandleStickChart extends SlipCandleStickChart {
 			return;
 		}
 		// distance between two points
-		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
+		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - stickSpacing;
 		// start point‘s X
 		float startX;
 
@@ -232,7 +232,7 @@ public class MASlipCandleStickChart extends SlipCandleStickChart {
 				}
 				// reset
 				ptFirst = new PointF(startX, valueY);
-				startX = startX + 1 + lineLength;
+				startX = startX + stickSpacing + lineLength;
 			}
 		}
 	}
