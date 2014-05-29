@@ -32,6 +32,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Paint.Style;
 import android.graphics.PathEffect;
 import android.graphics.PointF;
@@ -287,6 +288,9 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	 * </p>
 	 */
 	public static final boolean DEFAULT_DISPLAY_LONGITUDE_TITLE = Boolean.TRUE;
+	
+	public static final float DEFAULT_LONGITUDE_WIDTH = 1f;
+	
 
 	/**
 	 * <p>
@@ -300,6 +304,8 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	 * </p>
 	 */
 	public static final boolean DEFAULT_DISPLAY_LATITUDE_TITLE = Boolean.TRUE;
+	
+	public static final float DEFAULT_LATITUDE_WIDTH = 1f;
 
 	/**
 	 * <p>
@@ -409,7 +415,7 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	 * </p>
 	 */
 	public static final PathEffect DEFAULT_DASH_EFFECT = new DashPathEffect(
-			new float[] { 3, 3, 3, 3 }, 1);
+			new float[] { 6, 3, 6, 3 }, 1);
 
 	/**
 	 * <p>
@@ -573,6 +579,8 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	 * </p>
 	 */
 	private boolean displayLongitudeTitle = DEFAULT_DISPLAY_LONGITUDE_TITLE;
+	
+	private float longitudeWidth = DEFAULT_LONGITUDE_WIDTH;
 
 	/**
 	 * <p>
@@ -586,6 +594,8 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	 * </p>
 	 */
 	private boolean displayLatitudeTitle = DEFAULT_DISPLAY_LATITUDE_TITLE;
+	
+	private float latitudeWidth = DEFAULT_LATITUDE_WIDTH;
 
 	/**
 	 * <p>
@@ -1452,7 +1462,10 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		float length = getDataQuadrantHeight();
 
 		Paint mPaintLine = new Paint();
+		mPaintLine.setStyle(Style.STROKE);
 		mPaintLine.setColor(longitudeColor);
+		mPaintLine.setStrokeWidth(longitudeWidth);
+		mPaintLine.setAntiAlias(true);
 		if (dashLongitude) {
 			mPaintLine.setPathEffect(dashEffect);
 		}
@@ -1469,8 +1482,12 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 			}
 
 			for (int i = 0; i < counts; i++) {
-				canvas.drawLine(offset + i * postOffset, borderWidth, offset
-						+ i * postOffset, length, mPaintLine);
+				Path path = new Path();
+				path.moveTo(offset + i * postOffset, borderWidth);
+				path.lineTo(offset + i * postOffset, length);
+				canvas.drawPath(path, mPaintLine);
+//				canvas.drawLine(offset + i * postOffset, borderWidth, offset
+//						+ i * postOffset, length, mPaintLine);
 			}
 		}
 	}
@@ -1577,9 +1594,12 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		}
 
 		float length = getDataQuadrantWidth();
-
+		
 		Paint mPaintLine = new Paint();
+		mPaintLine.setStyle(Style.STROKE);
 		mPaintLine.setColor(latitudeColor);
+		mPaintLine.setStrokeWidth(latitudeWidth);
+		mPaintLine.setAntiAlias(true);
 		if (dashLatitude) {
 			mPaintLine.setPathEffect(dashEffect);
 		}
@@ -1599,16 +1619,22 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
 			float startFrom = borderWidth + axisYTitleQuadrantWidth + axisWidth;
 			for (int i = 0; i < latitudeTitles.size(); i++) {
-				canvas.drawLine(startFrom, offset - i * postOffset, startFrom
-						+ length, offset - i * postOffset, mPaintLine);
-
+				Path path = new Path();
+				path.moveTo(startFrom, offset - i * postOffset);
+				path.lineTo(startFrom + length, offset - i * postOffset);
+				canvas.drawPath(path, mPaintLine);
+//				canvas.drawLine(startFrom, offset - i * postOffset, startFrom
+//						+ length, offset - i * postOffset, mPaintLine);
 			}
 		} else {
 			float startFrom = borderWidth;
 			for (int i = 0; i < latitudeTitles.size(); i++) {
-				canvas.drawLine(startFrom, offset - i * postOffset, startFrom
-						+ length, offset - i * postOffset, mPaintLine);
-
+				Path path = new Path();
+				path.moveTo(startFrom, offset - i * postOffset);
+				path.lineTo(startFrom + length, offset - i * postOffset);
+				canvas.drawPath(path, mPaintLine);
+//				canvas.drawLine(startFrom, offset - i * postOffset, startFrom
+//						+ length, offset - i * postOffset, mPaintLine);
 			}
 		}
 	}
@@ -2194,6 +2220,34 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	public void setDashEffect(PathEffect dashEffect) {
 		this.dashEffect = dashEffect;
 	}
+	
+	/**
+	 * @return the longitudeWidth
+	 */
+	public float getLongitudeWidth() {
+		return longitudeWidth;
+	}
+
+	/**
+	 * @param longitudeWidth the longitudeWidth to set
+	 */
+	public void setLongitudeWidth(float longitudeWidth) {
+		this.longitudeWidth = longitudeWidth;
+	}
+
+	/**
+	 * @return the latitudeWidth
+	 */
+	public float getLatitudeWidth() {
+		return latitudeWidth;
+	}
+
+	/**
+	 * @param latitudeWidth the latitudeWidth to set
+	 */
+	public void setLatitudeWidth(float latitudeWidth) {
+		this.latitudeWidth = latitudeWidth;
+	}
 
 	/**
 	 * @return the displayBorder
@@ -2494,5 +2548,4 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	public void setAxisYPosition(int axisYPosition) {
 		this.axisYPosition = axisYPosition;
 	}
-
 }
