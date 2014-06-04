@@ -39,6 +39,7 @@ public interface ISlipable {
 	static final int SLIP_DIRECTION_BOTTOM = 3;
 	static final int SLIP_DIRECTION_LEFT = 4;
 	
+	static final int SLIP_STEP = 4;
 	
 	void moveLeft();
 	void moveRight();

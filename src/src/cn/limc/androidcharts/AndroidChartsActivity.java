@@ -40,6 +40,7 @@ import cn.limc.androidcharts.view.CandleStickChart;
 import cn.limc.androidcharts.view.ColoredSlipStickChart;
 import cn.limc.androidcharts.view.GridChart;
 import cn.limc.androidcharts.view.ISlipable.OnSlipGestureListener;
+import cn.limc.androidcharts.view.ITouchable.OnTouchGestureListener;
 import cn.limc.androidcharts.view.IZoomable;
 import cn.limc.androidcharts.view.IZoomable.OnZoomGestureListener;
 import cn.limc.androidcharts.view.LineChart;
@@ -63,6 +64,7 @@ import cn.limc.androidcharts.R;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.os.Bundle;
 
 public class AndroidChartsActivity extends Activity {
@@ -1045,6 +1047,33 @@ public class AndroidChartsActivity extends Activity {
 				bollmaslipcandlestickchart.postInvalidate();
 			}
 		});
+		
+		maslipcandlestickchart.setOnTouchGestureListener(new OnTouchGestureListener() {
+			
+			public void onTouchUp(PointF touchPointF, int selectedIndex) {
+				bollmaslipcandlestickchart.setTouchPoint(touchPointF);
+				bollmaslipcandlestickchart.setClickPostX(touchPointF.x);
+				bollmaslipcandlestickchart.setClickPostY(touchPointF.y);
+				
+				bollmaslipcandlestickchart.postInvalidate();
+			}
+			
+			public void onTouchMoved(PointF touchPointF, int selectedIndex) {
+				bollmaslipcandlestickchart.setTouchPoint(touchPointF);
+				bollmaslipcandlestickchart.setClickPostX(touchPointF.x);
+				bollmaslipcandlestickchart.setClickPostY(touchPointF.y);
+				
+				bollmaslipcandlestickchart.postInvalidate();
+			}
+			
+			public void onTouchDown(PointF touchPointF, int selectedIndex) {
+				bollmaslipcandlestickchart.setTouchPoint(touchPointF);
+				bollmaslipcandlestickchart.setClickPostX(touchPointF.x);
+				bollmaslipcandlestickchart.setClickPostY(touchPointF.y);
+				
+				bollmaslipcandlestickchart.postInvalidate();
+			}
+		});
 	}
 
 	private void initBOLLMASlipCandleStickChart() {
@@ -1148,6 +1177,30 @@ public class AndroidChartsActivity extends Activity {
 			public void onSlip(int direction, int displayFrom, int displayNumber) {
 				maslipcandlestickchart.setDisplayFrom(displayFrom);
 				maslipcandlestickchart.setDisplayNumber(displayNumber);
+				maslipcandlestickchart.postInvalidate();
+			}
+		});
+		
+		bollmaslipcandlestickchart.setOnTouchGestureListener(new OnTouchGestureListener() {
+			
+			public void onTouchUp(PointF touchPointF, int selectedIndex) {
+				maslipcandlestickchart.setTouchPoint(touchPointF);
+				maslipcandlestickchart.setClickPostX(touchPointF.x);
+				maslipcandlestickchart.setClickPostY(touchPointF.y);
+				maslipcandlestickchart.postInvalidate();
+			}
+			
+			public void onTouchMoved(PointF touchPointF, int selectedIndex) {
+				maslipcandlestickchart.setTouchPoint(touchPointF);
+				maslipcandlestickchart.setClickPostX(touchPointF.x);
+				maslipcandlestickchart.setClickPostY(touchPointF.y);
+				maslipcandlestickchart.postInvalidate();
+			}
+			
+			public void onTouchDown(PointF touchPointF, int selectedIndex) {
+				maslipcandlestickchart.setTouchPoint(touchPointF);
+				maslipcandlestickchart.setClickPostX(touchPointF.x);
+				maslipcandlestickchart.setClickPostY(touchPointF.y);
 				maslipcandlestickchart.postInvalidate();
 			}
 		});

@@ -40,6 +40,8 @@ public interface ITouchable {
 	static final int TOUCH_MODE_NONE = 0;
 	static final int TOUCH_MODE_SINGLE = 1;
 	static final int TOUCH_MODE_MULTI = 2;
+	
+	static final int TOUCH_MOVE_MIN_DISTANCE = 6;
 
 	void setOnTouchGestureListener(OnTouchGestureListener listener);
 

@@ -23,6 +23,7 @@
 package cn.limc.androidcharts.view;
 
 
+
 /** 
  * <p>en</p>
  * <p>jp</p>
@@ -41,6 +42,8 @@ public interface IZoomable {
 	static final int ZOOM_NONE = 0;
 	static final int ZOOM_IN = 1;
 	static final int ZOOM_OUT = 2;
+	
+	static final int ZOOM_STEP = 4;
 	
 	void zoomIn();
 	void zoomOut();

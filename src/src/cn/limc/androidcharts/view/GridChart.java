@@ -104,7 +104,7 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	 * </p>
 	 */
 	public static final int DEFAULT_AXIS_Y_COLOR = Color.RED;
-	public static final float DEFAULT_AXIS_WIDTH = 1;
+	public static final float DEFAULT_AXIS_WIDTH = 1f;
 
 	public static final int DEFAULT_AXIS_X_POSITION = AXIS_X_POSITION_BOTTOM;
 
@@ -870,33 +870,7 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	 * 单点触控的选中点
 	 * </p>
 	 */
-	private PointF touchPoint;
-
-	/**
-	 * <p>
-	 * Touched point’s X value inside of grid
-	 * </p>
-	 * <p>
-	 * タッチしたポイントのX
-	 * </p>
-	 * <p>
-	 * 单点触控的选中点的X
-	 * </p>
-	 */
-	private float clickPostX;
-
-	/**
-	 * <p>
-	 * Touched point’s Y value inside of grid
-	 * </p>
-	 * <p>
-	 * タッチしたポイントのY
-	 * </p>
-	 * <p>
-	 * 单点触控的选中点的Y
-	 * </p>
-	 */
-	private float clickPostY;
+	protected PointF touchPoint;
 
 	/**
 	 * <p>
@@ -1020,30 +994,24 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		// touched points, if touch point is only one
 		if (event.getPointerCount() == 1) {
 			// 获取点击坐标
-
-			clickPostX = event.getX();
-			clickPostY = event.getY();
-
-			PointF point = new PointF(clickPostX, clickPostY);
+			PointF point = new PointF(event.getX(), event.getY());
 			touchPoint = point;
-
-			// redraw
-			super.invalidate();
-
-			// do notify
-			notifyEventAll(this);
 			
 			// call back to listener
 			if (onTouchGestureListener != null) {
 				onTouchGestureListener.onTouchDown(point, TOUCH_NO_SELECTED_INDEX);
 			}
+			// redraw
+			super.postInvalidate();
+			
+			// do notify
+			notifyEventAll(this);
 
 		} else if (event.getPointerCount() == 2) {
 		}
-
 		return super.onTouchEvent(event);
 	}
-
+	
 	/**
 	 * <p>
 	 * draw some text with border
@@ -1290,7 +1258,10 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		if (!displayCrossXOnTouch) {
 			return;
 		}
-		if (clickPostX <= 0) {
+		if (touchPoint == null) {
+			return;
+		}
+		if (touchPoint.x <= 0) {
 			return;
 		}
 
@@ -1300,16 +1271,16 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		float lineVLength = getDataQuadrantHeight() + axisWidth;
 
 		// TODO calculate points to draw
-		PointF boxVS = new PointF(clickPostX - longitudeFontSize * 5f / 2f,
+		PointF boxVS = new PointF(touchPoint.x - longitudeFontSize * 5f / 2f,
 				borderWidth + lineVLength);
-		PointF boxVE = new PointF(clickPostX + longitudeFontSize * 5f / 2f,
+		PointF boxVE = new PointF(touchPoint.x + longitudeFontSize * 5f / 2f,
 				borderWidth + lineVLength + axisXTitleQuadrantHeight);
 
 		// draw text
-		drawAlphaTextBox(boxVS, boxVE, getAxisXGraduate(clickPostX),
+		drawAlphaTextBox(boxVS, boxVE, getAxisXGraduate(touchPoint.x),
 				longitudeFontSize, canvas);
 
-		canvas.drawLine(clickPostX, borderWidth, clickPostX, lineVLength,
+		canvas.drawLine(touchPoint.x, borderWidth, touchPoint.x, lineVLength,
 				mPaint);
 	}
 
@@ -1321,7 +1292,10 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		if (!displayCrossYOnTouch) {
 			return;
 		}
-		if (clickPostY <= 0) {
+		if (touchPoint == null) {
+			return;
+		}
+		if (touchPoint.y <= 0) {
 			return;
 		}
 
@@ -1331,31 +1305,31 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		float lineHLength = getDataQuadrantWidth() + axisWidth;
 
 		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-			PointF boxHS = new PointF(borderWidth, clickPostY
+			PointF boxHS = new PointF(borderWidth, touchPoint.y
 					- latitudeFontSize / 2f - 2);
 			PointF boxHE = new PointF(borderWidth + axisYTitleQuadrantWidth,
-					clickPostY + latitudeFontSize / 2f + 2);
+					touchPoint.y + latitudeFontSize / 2f + 2);
 
 			// draw text
-			drawAlphaTextBox(boxHS, boxHE, getAxisYGraduate(clickPostY),
+			drawAlphaTextBox(boxHS, boxHE, getAxisYGraduate(touchPoint.y),
 					latitudeFontSize, canvas);
 
-			canvas.drawLine(borderWidth + axisYTitleQuadrantWidth, clickPostY,
+			canvas.drawLine(borderWidth + axisYTitleQuadrantWidth, touchPoint.y,
 					borderWidth + axisYTitleQuadrantWidth + lineHLength,
-					clickPostY, mPaint);
+					touchPoint.y, mPaint);
 		} else {
 			PointF boxHS = new PointF(super.getWidth() - borderWidth
-					- axisYTitleQuadrantWidth, clickPostY - latitudeFontSize
+					- axisYTitleQuadrantWidth, touchPoint.y - latitudeFontSize
 					/ 2f - 2);
 			PointF boxHE = new PointF(super.getWidth() - borderWidth,
-					clickPostY + latitudeFontSize / 2f + 2);
+					touchPoint.y + latitudeFontSize / 2f + 2);
 
 			// draw text
-			drawAlphaTextBox(boxHS, boxHE, getAxisYGraduate(clickPostY),
+			drawAlphaTextBox(boxHS, boxHE, getAxisYGraduate(touchPoint.y),
 					latitudeFontSize, canvas);
 
-			canvas.drawLine(borderWidth, clickPostY, borderWidth + lineHLength,
-					clickPostY, mPaint);
+			canvas.drawLine(borderWidth, touchPoint.y, borderWidth + lineHLength,
+					touchPoint.y, mPaint);
 		}
 
 	}
@@ -1756,10 +1730,8 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	public void notifyEvent(GridChart chart) {
 		PointF point = chart.getTouchPoint();
 		if (null != point) {
-			clickPostX = point.x;
-			clickPostY = point.y;
+			touchPoint = new PointF(touchPoint.x, touchPoint.y);
 		}
-		touchPoint = new PointF(clickPostX, clickPostY);
 		super.invalidate();
 	}
 
@@ -2471,31 +2443,48 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	/**
 	 * @return the clickPostX
 	 */
+	@Deprecated
 	public float getClickPostX() {
-		return clickPostX;
+		if (touchPoint == null) {
+			return 0f;
+		}else{
+			return touchPoint.x;
+		}
+
 	}
 
 	/**
 	 * @param clickPostX
 	 *            the clickPostX to set
 	 */
+	@Deprecated
 	public void setClickPostX(float clickPostX) {
-		this.clickPostX = clickPostX;
+		if (clickPostX >= 0) {
+			this.touchPoint.x = clickPostX;
+		}
 	}
 
 	/**
 	 * @return the clickPostY
 	 */
+	@Deprecated
 	public float getClickPostY() {
-		return clickPostY;
+		if (touchPoint == null) {
+			return 0f;
+		} else {
+			return touchPoint.y;
+		}
 	}
 
 	/**
-	 * @param clickPostY
+	 * @param touchPoint.y
 	 *            the clickPostY to set
 	 */
+	@Deprecated
 	public void setClickPostY(float clickPostY) {
-		this.clickPostY = clickPostY;
+		if (clickPostY >= 0) {
+			this.touchPoint.y = clickPostY;
+		}
 	}
 
 	/**

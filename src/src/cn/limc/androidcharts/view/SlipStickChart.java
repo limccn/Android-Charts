@@ -551,7 +551,6 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	protected float olddistance = 0f;
 	protected float newdistance = 0f;
 
-	protected PointF startPoint;
 	protected PointF startPointA;
 	protected PointF startPointB;
 
@@ -569,14 +568,29 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 		case MotionEvent.ACTION_DOWN:
 			touchMode = TOUCH_MODE_SINGLE;
 			if (event.getPointerCount() == 1) {
-				startPoint = new PointF(event.getX(), event.getY());
+				touchPoint = new PointF(event.getX(), event.getY());
+				if (onTouchGestureListener != null) {
+					onTouchGestureListener.onTouchDown(touchPoint, getSelectedIndex());
+				}
+				super.postInvalidate();
+				//Notifier
+				super.notifyEventAll(this);
 			}
 			break;
 		case MotionEvent.ACTION_UP:
 			touchMode = TOUCH_MODE_NONE;
 			startPointA = null;
 			startPointB = null;
-			return super.onTouchEvent(event);
+			if (event.getPointerCount() == 1) {
+				touchPoint = new PointF(event.getX(), event.getY());
+				if (onTouchGestureListener != null) {
+					onTouchGestureListener.onTouchUp(touchPoint, getSelectedIndex());
+				}
+				super.postInvalidate();
+				//Notifier
+				super.notifyEventAll(this);
+			}
+			break;
 		case MotionEvent.ACTION_POINTER_UP:
 			touchMode = TOUCH_MODE_NONE;
 			startPointA = null;
@@ -621,15 +635,20 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 			} else {
 				// 单点拖动效果
 				if (event.getPointerCount() == 1) {
-					float moveXdistance = Math.abs(event.getX() - startPoint.x);
-					float moveYdistance = Math.abs(event.getY() - startPoint.y);
+					float moveXdistance = Math.abs(event.getX() - touchPoint.x);
+					float moveYdistance = Math.abs(event.getY() - touchPoint.y);
 
-					if (moveXdistance > 1 || moveYdistance > 1) {
-
-						super.onTouchEvent(event);
-
-						startPoint = new PointF(event.getX(), event.getY());
+					if (moveXdistance > TOUCH_MOVE_MIN_DISTANCE || moveYdistance > TOUCH_MOVE_MIN_DISTANCE) {
+						touchPoint = new PointF(event.getX(), event.getY());
+						
+						// call back to listener
+						if (onTouchGestureListener != null) {
+							onTouchGestureListener.onTouchMoved(touchPoint,getSelectedIndex());
+						}
 					}
+					
+					super.postInvalidate();
+					super.notifyEventAll(this);
 				}
 			}
 			break;
@@ -668,8 +687,8 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	
 	public void moveRight() {
 		int dataSize = stickData.size();
-		if (displayFrom + displayNumber < dataSize - 8) {
-			displayFrom = displayFrom + 8;
+		if (displayFrom + displayNumber < dataSize - SLIP_STEP) {
+			displayFrom = displayFrom + SLIP_STEP;
 		} else {
 			displayFrom = dataSize - displayNumber;
 		}
@@ -688,10 +707,10 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	public void moveLeft() {
 		int dataSize = stickData.size();
 		
-		if (displayFrom <= 8) {
+		if (displayFrom <= SLIP_STEP) {
 			displayFrom = 0;
-		} else if (displayFrom > 8) {
-			displayFrom = displayFrom - 8;
+		} else if (displayFrom > SLIP_STEP) {
+			displayFrom = displayFrom - SLIP_STEP;
 		} else {
 
 		}
@@ -722,13 +741,13 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 		if (displayNumber > minDisplayNumber) {
 			// 区分缩放方向
 			if (zoomBaseLine == ZOOM_BASE_LINE_CENTER) {
-				displayNumber = displayNumber - 2;
-				displayFrom = displayFrom + 1;
+				displayNumber = displayNumber - ZOOM_STEP;
+				displayFrom = displayFrom + ZOOM_STEP / 2;
 			} else if (zoomBaseLine == ZOOM_BASE_LINE_LEFT) {
-				displayNumber = displayNumber - 2;
+				displayNumber = displayNumber - ZOOM_STEP;
 			} else if (zoomBaseLine == ZOOM_BASE_LINE_RIGHT) {
-				displayNumber = displayNumber - 2;
-				displayFrom = displayFrom + 2;
+				displayNumber = displayNumber - ZOOM_STEP;
+				displayFrom = displayFrom + ZOOM_STEP;
 			}
 
 			// 处理displayNumber越界
@@ -761,24 +780,24 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	 */
 	public void zoomOut() {
 		if (displayNumber < stickData.size() - 1) {
-			if (displayNumber + 2 > stickData.size() - 1) {
+			if (displayNumber + ZOOM_STEP > stickData.size() - 1) {
 				displayNumber = stickData.size() - 1;
 				displayFrom = 0;
 			} else {
 				// 区分缩放方向
 				if (zoomBaseLine == ZOOM_BASE_LINE_CENTER) {
-					displayNumber = displayNumber + 2;
+					displayNumber = displayNumber + ZOOM_STEP;
 					if (displayFrom > 1) {
-						displayFrom = displayFrom - 1;
+						displayFrom = displayFrom - ZOOM_STEP / 2;
 					} else {
 						displayFrom = 0;
 					}
 				} else if (zoomBaseLine == ZOOM_BASE_LINE_LEFT) {
-					displayNumber = displayNumber + 2;
+					displayNumber = displayNumber + ZOOM_STEP;
 				} else if (zoomBaseLine == ZOOM_BASE_LINE_RIGHT) {
-					displayNumber = displayNumber + 2;
-					if (displayFrom > 2) {
-						displayFrom = displayFrom - 2;
+					displayNumber = displayNumber + ZOOM_STEP;
+					if (displayFrom > ZOOM_STEP) {
+						displayFrom = displayFrom - ZOOM_STEP;
 					} else {
 						displayFrom = 0;
 					}

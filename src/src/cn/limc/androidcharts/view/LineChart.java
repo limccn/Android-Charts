@@ -550,9 +550,31 @@ public class LineChart extends GridChart implements IZoomable {
 
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_DOWN:
-			touchMode = TOUCH_MODE_SINGLE;
+			if (event.getPointerCount() == 1) {
+				touchMode = TOUCH_MODE_SINGLE;
+				touchPoint = new PointF(event.getX(), event.getY());
+				if (onTouchGestureListener != null) {
+					onTouchGestureListener.onTouchDown(touchPoint,
+							TOUCH_NO_SELECTED_INDEX);
+				}
+				super.postInvalidate();
+				// Notifier
+				super.notifyEventAll(this);
+			}
 			break;
 		case MotionEvent.ACTION_UP:
+			touchMode = TOUCH_MODE_NONE;
+			if (event.getPointerCount() == 1) {
+				touchPoint = new PointF(event.getX(), event.getY());
+				if (onTouchGestureListener != null) {
+					onTouchGestureListener.onTouchUp(touchPoint,
+							TOUCH_NO_SELECTED_INDEX);
+				}
+				super.postInvalidate();
+				// Notifier
+				super.notifyEventAll(this);
+			}
+			break;
 		case MotionEvent.ACTION_POINTER_UP:
 			touchMode = TOUCH_MODE_NONE;
 			return super.onTouchEvent(event);
@@ -577,15 +599,35 @@ public class LineChart extends GridChart implements IZoomable {
 
 					super.postInvalidate();
 					super.notifyEventAll(this);
-					
-					//Listener
+
+					// Listener
 					if (onZoomGestureListener != null) {
 						if (newdistance > olddistance) {
-							onZoomGestureListener.onZoom(ZOOM_IN, 0, maxPointNum);
+							onZoomGestureListener.onZoom(ZOOM_IN, 0,
+									maxPointNum);
 						} else {
-							onZoomGestureListener.onZoom(ZOOM_OUT, 0, maxPointNum);
+							onZoomGestureListener.onZoom(ZOOM_OUT, 0,
+									maxPointNum);
 						}
 					}
+				}
+			} else {
+				// single touch point moved
+				if (event.getPointerCount() == 1) {
+					float moveXdistance = Math.abs(event.getX() - touchPoint.x);
+					float moveYdistance = Math.abs(event.getY() - touchPoint.y);
+					if (moveXdistance > TOUCH_MOVE_MIN_DISTANCE || moveYdistance > TOUCH_MOVE_MIN_DISTANCE) {
+						touchPoint = new PointF(event.getX(), event.getY());
+						// call back to listener
+						if (onTouchGestureListener != null) {
+							onTouchGestureListener.onTouchMoved(touchPoint,
+									TOUCH_NO_SELECTED_INDEX);
+						}
+					}
+					// redraw
+					super.postInvalidate();
+					// Notifier
+					super.notifyEventAll(this);
 				}
 			}
 			break;
@@ -638,7 +680,7 @@ public class LineChart extends GridChart implements IZoomable {
 			return;
 		}
 		if (maxPointNum > 10) {
-			maxPointNum = maxPointNum - 3;
+			maxPointNum = maxPointNum - ZOOM_STEP;
 		}
 		
 		//Listener
@@ -662,8 +704,8 @@ public class LineChart extends GridChart implements IZoomable {
 		if (null == linesData || linesData.size() <= 0) {
 			return;
 		}
-		if (maxPointNum < linesData.get(0).getLineData().size() - 1 - 3) {
-			maxPointNum = maxPointNum + 3;
+		if (maxPointNum < linesData.get(0).getLineData().size() - 1 - ZOOM_STEP) {
+			maxPointNum = maxPointNum + ZOOM_STEP;
 		}
 		
 		//Listener

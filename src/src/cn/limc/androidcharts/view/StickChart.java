@@ -33,6 +33,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.FloatMath;
 import android.view.MotionEvent;
@@ -464,7 +465,7 @@ public class StickChart extends GridChart implements IZoomable {
 	 *         </p>
 	 */
 	public int getSelectedIndex() {
-		if (null == super.getTouchPoint()) {
+		if (null == touchPoint) {
 			return 0;
 		}
 		float graduate = Float.valueOf(super.getAxisXGraduate(super
@@ -687,12 +688,34 @@ public class StickChart extends GridChart implements IZoomable {
 
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_DOWN:
-			touchMode = TOUCH_MODE_SINGLE;
+			if (event.getPointerCount() == 1) {
+				touchMode = TOUCH_MODE_SINGLE;
+				touchPoint = new PointF(event.getX(), event.getY());
+				if (onTouchGestureListener != null) {
+					onTouchGestureListener.onTouchDown(touchPoint,
+							getSelectedIndex());
+				}
+				super.postInvalidate();
+				// Notifier
+				super.notifyEventAll(this);
+			}
 			break;
 		case MotionEvent.ACTION_UP:
+			touchMode = TOUCH_MODE_NONE;
+			if (event.getPointerCount() == 1) {
+				touchPoint = new PointF(event.getX(), event.getY());
+				if (onTouchGestureListener != null) {
+					onTouchGestureListener.onTouchUp(touchPoint,
+							getSelectedIndex());
+				}
+				super.postInvalidate();
+				// Notifier
+				super.notifyEventAll(this);
+			}
+			break;
 		case MotionEvent.ACTION_POINTER_UP:
 			touchMode = TOUCH_MODE_NONE;
-			return super.onTouchEvent(event);
+			break;
 		case MotionEvent.ACTION_POINTER_DOWN:
 			olddistance = calcDistance(event);
 			if (olddistance > MIN_LENGTH) {
@@ -713,7 +736,25 @@ public class StickChart extends GridChart implements IZoomable {
 					olddistance = newdistance;
 
 					super.postInvalidate();
-					//Notifier
+					// Notifier
+					super.notifyEventAll(this);
+				}
+			} else {
+				// single touch point moved
+				if (event.getPointerCount() == 1) {
+					float moveXdistance = Math.abs(event.getX() - touchPoint.x);
+					float moveYdistance = Math.abs(event.getY() - touchPoint.y);
+					if (moveXdistance > TOUCH_MOVE_MIN_DISTANCE || moveYdistance > TOUCH_MOVE_MIN_DISTANCE) {
+						touchPoint = new PointF(event.getX(), event.getY());
+						// call back to listener
+						if (onTouchGestureListener != null) {
+							onTouchGestureListener.onTouchMoved(touchPoint,
+									getSelectedIndex());
+						}
+					}
+					// redraw
+					super.postInvalidate();
+					// Notifier
 					super.notifyEventAll(this);
 				}
 			}
@@ -764,7 +805,7 @@ public class StickChart extends GridChart implements IZoomable {
 	 */
 	public void zoomIn() {
 		if (maxSticksNum > 10) {
-			maxSticksNum = maxSticksNum - 3;
+			maxSticksNum = maxSticksNum - ZOOM_STEP;
 		}
 		
 		//Listener
@@ -785,8 +826,8 @@ public class StickChart extends GridChart implements IZoomable {
 	 * </p>
 	 */
 	public void zoomOut() {
-		if (maxSticksNum < stickData.size() - 1 - 3) {
-			maxSticksNum = maxSticksNum + 3;
+		if (maxSticksNum < stickData.size() - 1 - ZOOM_STEP) {
+			maxSticksNum = maxSticksNum + ZOOM_STEP;
 		}
 		
 		//Listener
