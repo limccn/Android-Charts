@@ -55,7 +55,7 @@ import android.view.MotionEvent;
  * @version v1.0 2011/05/30 14:58:59
  * 
  */
-public class StickChart extends GridChart {
+public class StickChart extends GridChart implements IZoomable {
 
 	/**
 	 * <p>
@@ -166,6 +166,8 @@ public class StickChart extends GridChart {
 	protected boolean autoCalcValueRange = DEFAULT_AUTO_CALC_VALUE_RANGE;
 
 	protected int stickSpacing = DEFAULT_STICK_SPACING;
+	
+	protected OnZoomGestureListener onZoomGestureListener;
 
 	/*
 	 * (non-Javadoc)
@@ -664,14 +666,8 @@ public class StickChart extends GridChart {
 		}
 	}
 
-	private final int NONE = 0;
-	private final int ZOOM = 1;
-	private final int DOWN = 2;
-
 	private float olddistance;
 	private float newdistance;
-
-	private int touchMode;
 
 	/*
 	 * (non-Javadoc)
@@ -691,20 +687,20 @@ public class StickChart extends GridChart {
 
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_DOWN:
-			touchMode = DOWN;
+			touchMode = TOUCH_MODE_SINGLE;
 			break;
 		case MotionEvent.ACTION_UP:
 		case MotionEvent.ACTION_POINTER_UP:
-			touchMode = NONE;
+			touchMode = TOUCH_MODE_NONE;
 			return super.onTouchEvent(event);
 		case MotionEvent.ACTION_POINTER_DOWN:
 			olddistance = calcDistance(event);
 			if (olddistance > MIN_LENGTH) {
-				touchMode = ZOOM;
+				touchMode = TOUCH_MODE_MULTI;
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if (touchMode == ZOOM) {
+			if (touchMode == TOUCH_MODE_MULTI) {
 				newdistance = calcDistance(event);
 				if (newdistance > MIN_LENGTH
 						&& Math.abs(newdistance - olddistance) > MIN_LENGTH) {
@@ -717,6 +713,7 @@ public class StickChart extends GridChart {
 					olddistance = newdistance;
 
 					super.postInvalidate();
+					//Notifier
 					super.notifyEventAll(this);
 				}
 			}
@@ -765,9 +762,14 @@ public class StickChart extends GridChart {
 	 * 放大表示
 	 * </p>
 	 */
-	protected void zoomIn() {
+	public void zoomIn() {
 		if (maxSticksNum > 10) {
 			maxSticksNum = maxSticksNum - 3;
+		}
+		
+		//Listener
+		if (onZoomGestureListener != null) {
+			onZoomGestureListener.onZoom(ZOOM_IN, 0, maxSticksNum);
 		}
 	}
 
@@ -782,9 +784,14 @@ public class StickChart extends GridChart {
 	 * 缩小
 	 * </p>
 	 */
-	protected void zoomOut() {
+	public void zoomOut() {
 		if (maxSticksNum < stickData.size() - 1 - 3) {
 			maxSticksNum = maxSticksNum + 3;
+		}
+		
+		//Listener
+		if (onZoomGestureListener != null) {
+			onZoomGestureListener.onZoom(ZOOM_OUT, 0, maxSticksNum);
 		}
 	}
 
@@ -891,5 +898,12 @@ public class StickChart extends GridChart {
 	 */
 	public void setAutoCalcValueRange(boolean autoCalcValueRange) {
 		this.autoCalcValueRange = autoCalcValueRange;
+	}
+	
+	/**
+	 * @param listener the OnZoomGestureListener to set
+	 */
+	public void setOnZoomGestureListener(OnZoomGestureListener listener) {
+		this.onZoomGestureListener = listener;
 	}
 }

@@ -58,14 +58,14 @@ import android.view.MotionEvent;
  * 
  */
 public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
-		ITouchEventResponse {
+		ITouchEventResponse, ITouchable {
 
 	public static final int AXIS_X_POSITION_BOTTOM = 1 << 0;
 	@Deprecated
 	public static final int AXIS_X_POSITION_TOP = 1 << 1;
 	public static final int AXIS_Y_POSITION_LEFT = 1 << 2;
 	public static final int AXIS_Y_POSITION_RIGHT = 1 << 3;
-
+	
 	/**
 	 * <p>
 	 * default background color
@@ -910,6 +910,10 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	 * </p>
 	 */
 	private List<ITouchEventResponse> notifyList;
+	
+	protected OnTouchGestureListener onTouchGestureListener;
+	
+	protected int touchMode = TOUCH_MODE_NONE;
 
 	/*
 	 * (non-Javadoc)
@@ -1028,6 +1032,11 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 
 			// do notify
 			notifyEventAll(this);
+			
+			// call back to listener
+			if (onTouchGestureListener != null) {
+				onTouchGestureListener.onTouchDown(point, TOUCH_NO_SELECTED_INDEX);
+			}
 
 		} else if (event.getPointerCount() == 2) {
 		}
@@ -2547,5 +2556,14 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	 */
 	public void setAxisYPosition(int axisYPosition) {
 		this.axisYPosition = axisYPosition;
+	}
+	
+	
+	/**
+	 * @param listener
+	 *            the OnTouchGestureListener to set
+	 */
+	public void setOnTouchGestureListener(OnTouchGestureListener listener) {
+		this.onTouchGestureListener = listener;
 	}
 }

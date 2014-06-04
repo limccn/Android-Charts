@@ -53,11 +53,7 @@ import android.view.MotionEvent;
  * @version v1.0 2014-1-20 下午2:03:08
  * 
  */
-public class SlipStickChart extends GridChart {
-
-	public static final int ZOOM_BASE_LINE_CENTER = 0;
-	public static final int ZOOM_BASE_LINE_LEFT = 1;
-	public static final int ZOOM_BASE_LINE_RIGHT = 2;
+public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 
 	public static final int DEFAULT_DISPLAY_FROM = 0;
 	public static final int DEFAULT_DISPLAY_NUMBER = 50;
@@ -164,6 +160,9 @@ public class SlipStickChart extends GridChart {
 	 * </p>
 	 */
 	protected double minValue;
+	
+	protected OnZoomGestureListener onZoomGestureListener;
+	protected OnSlipGestureListener onSlipGestureListener;
 
 	/**
 	 * <p>
@@ -549,15 +548,8 @@ public class SlipStickChart extends GridChart {
 			stickX = stickX + stickSpacing + stickWidth;
 		}
 	}
-
-	protected final int NONE = 0;
-	protected final int ZOOM = 1;
-	protected final int DOWN = 2;
-
 	protected float olddistance = 0f;
 	protected float newdistance = 0f;
-
-	protected int touchMode;
 
 	protected PointF startPoint;
 	protected PointF startPointA;
@@ -575,18 +567,18 @@ public class SlipStickChart extends GridChart {
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		// 设置拖拉模式
 		case MotionEvent.ACTION_DOWN:
-			touchMode = DOWN;
+			touchMode = TOUCH_MODE_SINGLE;
 			if (event.getPointerCount() == 1) {
 				startPoint = new PointF(event.getX(), event.getY());
 			}
 			break;
 		case MotionEvent.ACTION_UP:
-			touchMode = NONE;
+			touchMode = TOUCH_MODE_NONE;
 			startPointA = null;
 			startPointB = null;
 			return super.onTouchEvent(event);
 		case MotionEvent.ACTION_POINTER_UP:
-			touchMode = NONE;
+			touchMode = TOUCH_MODE_NONE;
 			startPointA = null;
 			startPointB = null;
 			return super.onTouchEvent(event);
@@ -594,25 +586,21 @@ public class SlipStickChart extends GridChart {
 		case MotionEvent.ACTION_POINTER_DOWN:
 			olddistance = calcDistance(event);
 			if (olddistance > MIN_LENGTH) {
-				touchMode = ZOOM;
+				touchMode = TOUCH_MODE_MULTI;
 				startPointA = new PointF(event.getX(0), event.getY(0));
 				startPointB = new PointF(event.getX(1), event.getY(1));
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if (touchMode == ZOOM) {
+			if (touchMode == TOUCH_MODE_MULTI) {
 				newdistance = calcDistance(event);
 				if (newdistance > MIN_LENGTH) {
 					if (startPointA.x >= event.getX(0)
 							&& startPointB.x >= event.getX(1)) {
-						if (displayFrom + displayNumber + 2 < stickData.size()) {
-							displayFrom = displayFrom + 2;
-						}
+						moveRight();
 					} else if (startPointA.x <= event.getX(0)
 							&& startPointB.x <= event.getX(1)) {
-						if (displayFrom > 2) {
-							displayFrom = displayFrom - 2;
-						}
+						moveLeft();
 					} else {
 						if (Math.abs(newdistance - olddistance) > MIN_LENGTH) {
 							if (newdistance > olddistance) {
@@ -677,6 +665,47 @@ public class SlipStickChart extends GridChart {
 		float y = event.getY(0) - event.getY(1);
 		return FloatMath.sqrt(x * x + y * y);
 	}
+	
+	public void moveRight() {
+		int dataSize = stickData.size();
+		if (displayFrom + displayNumber < dataSize - 8) {
+			displayFrom = displayFrom + 8;
+		} else {
+			displayFrom = dataSize - displayNumber;
+		}
+
+		// 处理displayFrom越界
+		if (displayFrom + displayNumber >= dataSize) {
+			displayFrom = dataSize - displayNumber;
+		}
+		
+		//Listener
+		if (onSlipGestureListener != null) {
+			onSlipGestureListener.onSlip(SLIP_DIRECTION_RIGHT, displayFrom, displayNumber);
+		}
+	}
+
+	public void moveLeft() {
+		int dataSize = stickData.size();
+		
+		if (displayFrom <= 8) {
+			displayFrom = 0;
+		} else if (displayFrom > 8) {
+			displayFrom = displayFrom - 8;
+		} else {
+
+		}
+
+		// 处理displayFrom越界
+		if (displayFrom + displayNumber >= dataSize) {
+			displayFrom = dataSize - displayNumber;
+		}
+		
+		//Listener
+		if (onSlipGestureListener != null) {
+			onSlipGestureListener.onSlip(SLIP_DIRECTION_LEFT, displayFrom, displayNumber);
+		}
+	}
 
 	/**
 	 * <p>
@@ -689,7 +718,7 @@ public class SlipStickChart extends GridChart {
 	 * 放大表示
 	 * </p>
 	 */
-	protected void zoomIn() {
+	public void zoomIn() {
 		if (displayNumber > minDisplayNumber) {
 			// 区分缩放方向
 			if (zoomBaseLine == ZOOM_BASE_LINE_CENTER) {
@@ -711,6 +740,11 @@ public class SlipStickChart extends GridChart {
 			if (displayFrom + displayNumber >= stickData.size()) {
 				displayFrom = stickData.size() - displayNumber;
 			}
+			
+			//Listener
+			if (onZoomGestureListener != null) {
+				onZoomGestureListener.onZoom(ZOOM_IN, displayFrom, displayNumber);
+			}
 		}
 	}
 
@@ -725,7 +759,7 @@ public class SlipStickChart extends GridChart {
 	 * 缩小
 	 * </p>
 	 */
-	protected void zoomOut() {
+	public void zoomOut() {
 		if (displayNumber < stickData.size() - 1) {
 			if (displayNumber + 2 > stickData.size() - 1) {
 				displayNumber = stickData.size() - 1;
@@ -753,6 +787,11 @@ public class SlipStickChart extends GridChart {
 
 			if (displayFrom + displayNumber >= stickData.size()) {
 				displayNumber = stickData.size() - displayFrom;
+			}
+			
+			//Listener
+			if (onZoomGestureListener != null) {
+				onZoomGestureListener.onZoom(ZOOM_OUT, displayFrom, displayNumber);
 			}
 		}
 	}
@@ -968,5 +1007,18 @@ public class SlipStickChart extends GridChart {
 	public void setStickSpacing(int stickSpacing) {
 		this.stickSpacing = stickSpacing;
 	}
-
+	
+	/**
+	 * @param listener the OnZoomGestureListener to set
+	 */
+	public void setOnZoomGestureListener(OnZoomGestureListener listener) {
+		this.onZoomGestureListener = listener;
+	}
+	
+	/**
+	 * @param listener the OnSlipGestureListener to set
+	 */
+	public void setOnSlipGestureListener(OnSlipGestureListener listener) {
+		this.onSlipGestureListener = listener;
+	}
 }

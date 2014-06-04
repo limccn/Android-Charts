@@ -39,6 +39,9 @@ import cn.limc.androidcharts.view.BOLLMASlipCandleStickChart;
 import cn.limc.androidcharts.view.CandleStickChart;
 import cn.limc.androidcharts.view.ColoredSlipStickChart;
 import cn.limc.androidcharts.view.GridChart;
+import cn.limc.androidcharts.view.ISlipable.OnSlipGestureListener;
+import cn.limc.androidcharts.view.IZoomable;
+import cn.limc.androidcharts.view.IZoomable.OnZoomGestureListener;
 import cn.limc.androidcharts.view.LineChart;
 import cn.limc.androidcharts.view.MACDChart;
 import cn.limc.androidcharts.view.MACandleStickChart;
@@ -260,7 +263,7 @@ public class AndroidChartsActivity extends Activity {
 		sliplinechart.setDisplayFrom(10);
 		sliplinechart.setDisplayNumber(30);
 		sliplinechart.setMinDisplayNumber(5);
-		sliplinechart.setZoomBaseLine(0);
+		sliplinechart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 		sliplinechart.setDisplayLongitudeTitle(true);
 		sliplinechart.setDisplayLatitudeTitle(true);
 		sliplinechart.setDisplayLatitude(true);
@@ -308,7 +311,7 @@ public class AndroidChartsActivity extends Activity {
 		slipareachart.setDisplayFrom(10);
 		slipareachart.setDisplayNumber(30);
 		slipareachart.setMinDisplayNumber(5);
-		slipareachart.setZoomBaseLine(0);
+		slipareachart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 		slipareachart.setDisplayLongitudeTitle(true);
 		slipareachart.setDisplayLatitudeTitle(true);
 		slipareachart.setDisplayLatitude(true);
@@ -356,7 +359,7 @@ public class AndroidChartsActivity extends Activity {
 		slipbandchart.setDisplayFrom(10);
 		slipbandchart.setDisplayNumber(30);
 		slipbandchart.setMinDisplayNumber(5);
-		slipbandchart.setZoomBaseLine(0);
+		slipbandchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 		slipbandchart.setDisplayLongitudeTitle(true);
 		slipbandchart.setDisplayLatitudeTitle(true);
 		slipbandchart.setDisplayLatitude(true);
@@ -451,7 +454,7 @@ public class AndroidChartsActivity extends Activity {
 
 		slipstickchart.setMinDisplayNumber(5);
 
-		slipstickchart.setZoomBaseLine(0);
+		slipstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 
 		slipstickchart.setDisplayLongitudeTitle(true);
 		slipstickchart.setDisplayLatitudeTitle(true);
@@ -490,7 +493,7 @@ public class AndroidChartsActivity extends Activity {
 
 		coloredslipstickchart.setMinDisplayNumber(5);
 
-		coloredslipstickchart.setZoomBaseLine(0);
+		coloredslipstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 
 		coloredslipstickchart.setDisplayLongitudeTitle(true);
 		coloredslipstickchart.setDisplayLatitudeTitle(true);
@@ -635,7 +638,7 @@ public class AndroidChartsActivity extends Activity {
 
 		maslipstickchart.setMinDisplayNumber(5);
 
-		maslipstickchart.setZoomBaseLine(0);
+		maslipstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 
 		maslipstickchart.setDisplayLongitudeTitle(true);
 		maslipstickchart.setDisplayLatitudeTitle(true);
@@ -774,7 +777,7 @@ public class AndroidChartsActivity extends Activity {
 		slipminusstickchart.setDisplayNumber(10);
 		slipminusstickchart.setMinDisplayNumber(5);
 
-		slipminusstickchart.setZoomBaseLine(0);
+		slipminusstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 		slipminusstickchart.setDisplayLongitudeTitle(true);
 		slipminusstickchart.setDisplayLatitudeTitle(true);
 		slipminusstickchart.setDisplayCrossXOnTouch(false);
@@ -863,7 +866,7 @@ public class AndroidChartsActivity extends Activity {
 
 		slipcandlestickchart.setMinDisplayNumber(5);
 
-		slipcandlestickchart.setZoomBaseLine(0);
+		slipcandlestickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 
 		slipcandlestickchart.setDisplayLongitudeTitle(true);
 		slipcandlestickchart.setDisplayLatitudeTitle(true);
@@ -1000,7 +1003,7 @@ public class AndroidChartsActivity extends Activity {
 
 		maslipcandlestickchart.setMinDisplayNumber(5);
 
-		maslipcandlestickchart.setZoomBaseLine(0);
+		maslipcandlestickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 
 		maslipcandlestickchart.setDisplayLongitudeTitle(true);
 		maslipcandlestickchart.setDisplayLatitudeTitle(true);
@@ -1025,7 +1028,23 @@ public class AndroidChartsActivity extends Activity {
 		// 为chart2增加均线
 		maslipcandlestickchart.setStickData(new ListChartData<IStickEntity>(
 				ohlc));
-
+		
+		maslipcandlestickchart.setOnZoomGestureListener(new OnZoomGestureListener() {
+			public void onZoom(int zoom, int displayFrom, int displayNumber) {
+				bollmaslipcandlestickchart.setDisplayFrom(displayFrom);
+				bollmaslipcandlestickchart.setDisplayNumber(displayNumber);
+				
+				bollmaslipcandlestickchart.postInvalidate();
+			}
+		});
+		
+		maslipcandlestickchart.setOnSlipGestureListener(new OnSlipGestureListener() {
+			public void onSlip(int direction, int displayFrom, int displayNumber) {
+				bollmaslipcandlestickchart.setDisplayFrom(displayFrom);
+				bollmaslipcandlestickchart.setDisplayNumber(displayNumber);
+				bollmaslipcandlestickchart.postInvalidate();
+			}
+		});
 	}
 
 	private void initBOLLMASlipCandleStickChart() {
@@ -1089,7 +1108,7 @@ public class AndroidChartsActivity extends Activity {
 
 		bollmaslipcandlestickchart.setMinDisplayNumber(5);
 
-		bollmaslipcandlestickchart.setZoomBaseLine(0);
+		bollmaslipcandlestickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 
 		bollmaslipcandlestickchart.setDisplayLongitudeTitle(true);
 		bollmaslipcandlestickchart.setDisplayLatitudeTitle(true);
@@ -1115,6 +1134,23 @@ public class AndroidChartsActivity extends Activity {
 		// 为chart2增加均线
 		bollmaslipcandlestickchart
 				.setStickData(new ListChartData<IStickEntity>(ohlc));
+		
+		bollmaslipcandlestickchart.setOnZoomGestureListener(new OnZoomGestureListener() {
+			public void onZoom(int zoom, int displayFrom, int displayNumber) {
+				maslipcandlestickchart.setDisplayFrom(displayFrom);
+				maslipcandlestickchart.setDisplayNumber(displayNumber);
+				
+				maslipcandlestickchart.postInvalidate();
+			}
+		});
+		
+		bollmaslipcandlestickchart.setOnSlipGestureListener(new OnSlipGestureListener() {
+			public void onSlip(int direction, int displayFrom, int displayNumber) {
+				maslipcandlestickchart.setDisplayFrom(displayFrom);
+				maslipcandlestickchart.setDisplayNumber(displayNumber);
+				maslipcandlestickchart.postInvalidate();
+			}
+		});
 
 	}
 
@@ -1186,7 +1222,7 @@ public class AndroidChartsActivity extends Activity {
 		macdChart.setDisplayFrom(0);
 		macdChart.setDisplayNumber(10);
 		macdChart.setMinDisplayNumber(5);
-		macdChart.setZoomBaseLine(SlipStickChart.ZOOM_BASE_LINE_CENTER);
+		macdChart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 		macdChart.setAxisXColor(Color.LTGRAY);
 		macdChart.setAxisYColor(Color.LTGRAY);
 		macdChart.setLatitudeColor(Color.GRAY);

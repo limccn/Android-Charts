@@ -51,7 +51,7 @@ import android.view.MotionEvent;
  * @version v1.0 2011/05/30 14:23:53
  * @see GridChart
  */
-public class LineChart extends GridChart {
+public class LineChart extends GridChart implements IZoomable {
 	/**
 	 * <p>
 	 * data to draw lines
@@ -106,6 +106,8 @@ public class LineChart extends GridChart {
 
 	public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
 	private boolean autoCalcValueRange = DEFAULT_AUTO_CALC_VALUE_RANGE;
+	
+	protected OnZoomGestureListener onZoomGestureListener;
 
 	/*
 	 * (non-Javadoc)
@@ -527,14 +529,8 @@ public class LineChart extends GridChart {
 		super.setLongitudeTitles(titleX);
 	}
 
-	private final int NONE = 0;
-	private final int ZOOM = 1;
-	private final int DOWN = 2;
-
 	private float olddistance = 0f;
 	private float newdistance = 0f;
-
-	private int touchMode;
 
 	/*
 	 * (non-Javadoc)
@@ -554,20 +550,20 @@ public class LineChart extends GridChart {
 
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_DOWN:
-			touchMode = DOWN;
+			touchMode = TOUCH_MODE_SINGLE;
 			break;
 		case MotionEvent.ACTION_UP:
 		case MotionEvent.ACTION_POINTER_UP:
-			touchMode = NONE;
+			touchMode = TOUCH_MODE_NONE;
 			return super.onTouchEvent(event);
 		case MotionEvent.ACTION_POINTER_DOWN:
 			olddistance = calcDistance(event);
 			if (olddistance > MIN_LENGTH) {
-				touchMode = ZOOM;
+				touchMode = TOUCH_MODE_MULTI;
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if (touchMode == ZOOM) {
+			if (touchMode == TOUCH_MODE_MULTI) {
 				newdistance = calcDistance(event);
 				if (newdistance > MIN_LENGTH
 						&& Math.abs(newdistance - olddistance) > MIN_LENGTH) {
@@ -581,6 +577,15 @@ public class LineChart extends GridChart {
 
 					super.postInvalidate();
 					super.notifyEventAll(this);
+					
+					//Listener
+					if (onZoomGestureListener != null) {
+						if (newdistance > olddistance) {
+							onZoomGestureListener.onZoom(ZOOM_IN, 0, maxPointNum);
+						} else {
+							onZoomGestureListener.onZoom(ZOOM_OUT, 0, maxPointNum);
+						}
+					}
 				}
 			}
 			break;
@@ -628,12 +633,17 @@ public class LineChart extends GridChart {
 	 * 放大表示
 	 * </p>
 	 */
-	protected void zoomIn() {
+	public void zoomIn() {
 		if (null == linesData || linesData.size() <= 0) {
 			return;
 		}
 		if (maxPointNum > 10) {
 			maxPointNum = maxPointNum - 3;
+		}
+		
+		//Listener
+		if (onZoomGestureListener != null) {
+			onZoomGestureListener.onZoom(ZOOM_IN, 0, maxPointNum);
 		}
 	}
 
@@ -648,12 +658,17 @@ public class LineChart extends GridChart {
 	 * 缩小
 	 * </p>
 	 */
-	protected void zoomOut() {
+	public void zoomOut() {
 		if (null == linesData || linesData.size() <= 0) {
 			return;
 		}
 		if (maxPointNum < linesData.get(0).getLineData().size() - 1 - 3) {
 			maxPointNum = maxPointNum + 3;
+		}
+		
+		//Listener
+		if (onZoomGestureListener != null) {
+			onZoomGestureListener.onZoom(ZOOM_OUT, 0, maxPointNum);
 		}
 	}
 
@@ -732,4 +747,11 @@ public class LineChart extends GridChart {
 		this.autoCalcValueRange = autoCalcValueRange;
 	}
 
+	/**
+	 * @param listener the OnZoomGestureListener to set
+	 * 
+	 */
+	public void setOnZoomGestureListener(OnZoomGestureListener listener) {
+		this.onZoomGestureListener = listener;
+	}
 }

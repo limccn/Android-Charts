@@ -50,16 +50,12 @@ import cn.limc.androidcharts.entity.LineEntity;
  * @version v1.0 2014/01/21 14:20:35
  * 
  */
-public class SlipLineChart extends GridChart {
-
-	public static final int ZOOM_BASE_LINE_CENTER = 0;
-	public static final int ZOOM_BASE_LINE_LEFT = 1;
-	public static final int ZOOM_BASE_LINE_RIGHT = 2;
+public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
 
 	public static final int DEFAULT_DISPLAY_FROM = 0;
 	public static final int DEFAULT_DISPLAY_NUMBER = 50;
 	public static final int DEFAULT_MIN_DISPLAY_NUMBER = 20;
-	public static final int DEFAULT_ZOOM_BASE_LINE = 20;
+	public static final int DEFAULT_ZOOM_BASE_LINE = ZOOM_BASE_LINE_CENTER;
 
 	protected int displayFrom = DEFAULT_DISPLAY_FROM;
 	protected int displayNumber = DEFAULT_DISPLAY_NUMBER;
@@ -104,6 +100,9 @@ public class SlipLineChart extends GridChart {
 	 * </p>
 	 */
 	protected double maxValue;
+	
+	protected OnZoomGestureListener onZoomGestureListener;
+	protected OnSlipGestureListener onSlipGestureListener;
 
 	/*
 	 * (non-Javadoc)
@@ -492,14 +491,9 @@ public class SlipLineChart extends GridChart {
 		}
 	}
 
-	protected final int NONE = 0;
-	protected final int ZOOM = 1;
-	protected final int DOWN = 2;
 
 	protected float olddistance = 0f;
 	protected float newdistance = 0f;
-
-	protected int touchMode;
 
 	protected PointF startPoint;
 	protected PointF startPointA;
@@ -517,18 +511,18 @@ public class SlipLineChart extends GridChart {
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		// 设置拖拉模式
 		case MotionEvent.ACTION_DOWN:
-			touchMode = DOWN;
+			touchMode = TOUCH_MODE_SINGLE;
 			if (event.getPointerCount() == 1) {
 				startPoint = new PointF(event.getX(), event.getY());
 			}
 			break;
 		case MotionEvent.ACTION_UP:
-			touchMode = NONE;
+			touchMode = TOUCH_MODE_NONE;
 			startPointA = null;
 			startPointB = null;
 			return super.onTouchEvent(event);
 		case MotionEvent.ACTION_POINTER_UP:
-			touchMode = NONE;
+			touchMode = TOUCH_MODE_NONE;
 			startPointA = null;
 			startPointB = null;
 			return super.onTouchEvent(event);
@@ -536,26 +530,21 @@ public class SlipLineChart extends GridChart {
 		case MotionEvent.ACTION_POINTER_DOWN:
 			olddistance = calcDistance(event);
 			if (olddistance > MIN_LENGTH) {
-				touchMode = ZOOM;
+				touchMode = TOUCH_MODE_MULTI;
 				startPointA = new PointF(event.getX(0), event.getY(0));
 				startPointB = new PointF(event.getX(1), event.getY(1));
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if (touchMode == ZOOM) {
+			if (touchMode == TOUCH_MODE_MULTI) {
 				newdistance = calcDistance(event);
 				if (newdistance > MIN_LENGTH) {
 					if (startPointA.x >= event.getX(0)
 							&& startPointB.x >= event.getX(1)) {
-						if (displayFrom + displayNumber + 2 < linesData.get(0)
-								.getLineData().size()) {
-							displayFrom = displayFrom + 2;
-						}
+						moveRight();
 					} else if (startPointA.x <= event.getX(0)
 							&& startPointB.x <= event.getX(1)) {
-						if (displayFrom > 2) {
-							displayFrom = displayFrom - 2;
-						}
+						moveLeft();
 					} else {
 						if (Math.abs(newdistance - olddistance) > MIN_LENGTH) {
 
@@ -621,6 +610,47 @@ public class SlipLineChart extends GridChart {
 		float y = event.getY(0) - event.getY(1);
 		return FloatMath.sqrt(x * x + y * y);
 	}
+	
+	public void moveRight() {
+		int dataSize = linesData.get(0).getLineData().size();
+		if (displayFrom + displayNumber < dataSize - 8) {
+			displayFrom = displayFrom + 8;
+		} else {
+			displayFrom = dataSize - displayNumber;
+		}
+
+		// 处理displayFrom越界
+		if (displayFrom + displayNumber >= dataSize) {
+			displayFrom = dataSize - displayNumber;
+		}
+		
+		//Listener
+		if (onSlipGestureListener != null) {
+			onSlipGestureListener.onSlip(SLIP_DIRECTION_RIGHT, displayFrom, displayNumber);
+		}
+	}
+
+	public void moveLeft() {
+		int dataSize = linesData.get(0).getLineData().size();
+		
+		if (displayFrom <= 8) {
+			displayFrom = 0;
+		} else if (displayFrom > 8) {
+			displayFrom = displayFrom - 8;
+		} else {
+
+		}
+
+		// 处理displayFrom越界
+		if (displayFrom + displayNumber >= dataSize) {
+			displayFrom = dataSize - displayNumber;
+		}
+		
+		//Listener
+		if (onSlipGestureListener != null) {
+			onSlipGestureListener.onSlip(SLIP_DIRECTION_LEFT, displayFrom, displayNumber);
+		}
+	}
 
 	/**
 	 * <p>
@@ -633,7 +663,7 @@ public class SlipLineChart extends GridChart {
 	 * 放大表示
 	 * </p>
 	 */
-	protected void zoomIn() {
+	public void zoomIn() {
 		if (displayNumber > minDisplayNumber) {
 			// 区分缩放方向
 			if (zoomBaseLine == ZOOM_BASE_LINE_CENTER) {
@@ -657,6 +687,11 @@ public class SlipLineChart extends GridChart {
 				displayFrom = linesData.get(0).getLineData().size()
 						- displayNumber;
 			}
+			
+			//Listener
+			if (onZoomGestureListener != null) {
+				onZoomGestureListener.onZoom(ZOOM_IN, displayFrom, displayNumber);
+			}
 		}
 	}
 
@@ -671,10 +706,12 @@ public class SlipLineChart extends GridChart {
 	 * 缩小
 	 * </p>
 	 */
-	protected void zoomOut() {
-		if (displayNumber < linesData.get(0).getLineData().size() - 1) {
-			if (displayNumber + 2 > linesData.get(0).getLineData().size() - 1) {
-				displayNumber = linesData.get(0).getLineData().size() - 1;
+	public void zoomOut() {
+		int dataSize = linesData.get(0).getLineData().size();
+		
+		if (displayNumber < dataSize - 1) {
+			if (displayNumber + 2 > dataSize - 1) {
+				displayNumber = dataSize - 1;
 				displayFrom = 0;
 			} else {
 				// 区分缩放方向
@@ -697,10 +734,13 @@ public class SlipLineChart extends GridChart {
 				}
 			}
 
-			if (displayFrom + displayNumber >= linesData.get(0).getLineData()
-					.size()) {
-				displayNumber = linesData.get(0).getLineData().size()
-						- displayFrom;
+			if (displayFrom + displayNumber >= dataSize) {
+				displayNumber = dataSize - displayFrom;
+			}
+			
+			//Listener
+			if (onZoomGestureListener != null) {
+				onZoomGestureListener.onZoom(ZOOM_OUT, displayFrom, displayNumber);
 			}
 		}
 	}
@@ -808,5 +848,19 @@ public class SlipLineChart extends GridChart {
 	 */
 	public void setLinesData(List<LineEntity<DateValueEntity>> linesData) {
 		this.linesData = linesData;
+	}
+	
+	/**
+	 * @param listener the OnZoomGestureListener to set
+	 */
+	public void setOnZoomGestureListener(OnZoomGestureListener listener) {
+		this.onZoomGestureListener = listener;
+	}
+	
+	/**
+	 * @param listener the OnSlipGestureListener to set
+	 */
+	public void setOnSlipGestureListener(OnSlipGestureListener listener) {
+		this.onSlipGestureListener = listener;
 	}
 }
