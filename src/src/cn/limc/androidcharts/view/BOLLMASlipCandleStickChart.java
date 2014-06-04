@@ -175,7 +175,7 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 			return;
 		}
 		// distance between two points
-		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength;
 		// start point‘s X
 		float startX;
 		float lastY = 0;
@@ -200,7 +200,13 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 		mPaint.setAlpha(70);
 		mPaint.setAntiAlias(true);
 		// set start point’s X
-		startX = getDataQuadrantPaddingStartX() + lineLength / 2f;
+		if (stickAlignType == ALIGN_TYPE_CENTER) {
+            lineLength= (getDataQuadrantPaddingWidth() / displayNumber) - stickSpacing;
+            startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+        }else {
+            lineLength= (getDataQuadrantPaddingWidth() / (displayNumber - 1)) - stickSpacing;
+            startX = getDataQuadrantPaddingStartX();
+        }
 		Path areaPath = new Path();
 		for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
 			float value1 = line1Data.get(j).getValue();

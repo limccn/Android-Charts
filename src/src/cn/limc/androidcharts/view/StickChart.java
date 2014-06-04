@@ -57,6 +57,7 @@ import android.view.MotionEvent;
  * 
  */
 public class StickChart extends GridChart implements IZoomable {
+	public static final int DEFAULT_STICK_ALIGN_TYPE = ALIGN_TYPE_CENTER;
 
 	/**
 	 * <p>
@@ -109,6 +110,8 @@ public class StickChart extends GridChart implements IZoomable {
 	 * </p>
 	 */
 	private int stickFillColor = DEFAULT_STICK_FILL_COLOR;
+	
+	private int stickAlignType = DEFAULT_STICK_ALIGN_TYPE;
 
 	public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
 	public static final int DEFAULT_STICK_SPACING = 1;
@@ -411,6 +414,24 @@ public class StickChart extends GridChart implements IZoomable {
 		// notifyEventAll
 		super.notifyEventAll(this);
 	}
+	
+	public float longitudePostOffset(){
+		if (stickAlignType == ALIGN_TYPE_CENTER) {
+			float stickWidth = getDataQuadrantPaddingWidth() / maxSticksNum;
+			return (this.getDataQuadrantPaddingWidth() - stickWidth)/ (longitudeTitles.size() - 1);
+	    }else{
+			return this.getDataQuadrantPaddingWidth()/ (longitudeTitles.size() - 1);
+	    }
+	}
+	
+	public float longitudeOffset(){
+		if (stickAlignType == ALIGN_TYPE_CENTER) {
+			float stickWidth = getDataQuadrantPaddingWidth() / maxSticksNum;
+			return getDataQuadrantPaddingStartX() + stickWidth / 2;
+		}else{
+			return getDataQuadrantPaddingStartX();
+		}
+	}
 
 	/**
 	 * <p>
@@ -682,7 +703,14 @@ public class StickChart extends GridChart implements IZoomable {
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-
+		//valid
+		if (!isValidTouchPoint(event.getX(),event.getY())) {
+			return false;
+		}
+		if (null == stickData || stickData.size() == 0) {
+			return false;
+		}
+		
 		final float MIN_LENGTH = (super.getWidth() / 40) < 5 ? 5 : (super
 				.getWidth() / 50);
 
@@ -946,5 +974,33 @@ public class StickChart extends GridChart implements IZoomable {
 	 */
 	public void setOnZoomGestureListener(OnZoomGestureListener listener) {
 		this.onZoomGestureListener = listener;
+	}
+
+	/**
+	 * @return the stickAlignType
+	 */
+	public int getStickAlignType() {
+		return stickAlignType;
+	}
+
+	/**
+	 * @param stickAlignType the stickAlignType to set
+	 */
+	public void setStickAlignType(int stickAlignType) {
+		this.stickAlignType = stickAlignType;
+	}
+
+	/**
+	 * @return the stickSpacing
+	 */
+	public int getStickSpacing() {
+		return stickSpacing;
+	}
+
+	/**
+	 * @param stickSpacing the stickSpacing to set
+	 */
+	public void setStickSpacing(int stickSpacing) {
+		this.stickSpacing = stickSpacing;
 	}
 }

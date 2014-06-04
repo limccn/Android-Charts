@@ -140,7 +140,7 @@ public class SlipAreaChart extends SlipLineChart {
 			return;
 		}
 		// distance between two points
-		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
+		float lineLength;
 		// start point‘s X
 		float startX;
 
@@ -165,7 +165,14 @@ public class SlipAreaChart extends SlipLineChart {
 			mPaint.setAntiAlias(true);
 
 			// set start point’s X
-			startX = getDataQuadrantPaddingStartX() + lineLength / 2f;
+			if (lineAlignType == ALIGN_TYPE_CENTER) {
+                lineLength= (getDataQuadrantPaddingWidth() / displayNumber);
+                startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+            }else {
+                lineLength= (getDataQuadrantPaddingWidth() / (displayNumber - 1));
+                startX = getDataQuadrantPaddingStartX();
+            }
+			
 			Path linePath = new Path();
 			for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
 				float value = lineData.get(j).getValue();
@@ -184,7 +191,7 @@ public class SlipAreaChart extends SlipLineChart {
 				} else {
 					linePath.lineTo(startX, valueY);
 				}
-				startX = startX + 1 + lineLength;
+				startX = startX + lineLength;
 			}
 			linePath.close();
 			canvas.drawPath(linePath, mPaint);

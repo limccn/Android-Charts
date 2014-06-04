@@ -55,6 +55,8 @@ import android.view.MotionEvent;
  */
 public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 
+	public static final int DEFAULT_STICK_ALIGN_TYPE = ALIGN_TYPE_CENTER;
+	
 	public static final int DEFAULT_DISPLAY_FROM = 0;
 	public static final int DEFAULT_DISPLAY_NUMBER = 50;
 	public static final int DEFAULT_MIN_DISPLAY_NUMBER = 20;
@@ -121,6 +123,8 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	 * </p>
 	 */
 	private int stickFillColor = DEFAULT_STICK_FILL_COLOR;
+	
+	protected int stickAlignType = DEFAULT_STICK_ALIGN_TYPE;
 
 	/**
 	 * <p>
@@ -424,6 +428,24 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 		super.notifyEventAll(this);
 	}
 
+	public float longitudePostOffset(){
+		if (stickAlignType == ALIGN_TYPE_CENTER) {
+			float stickWidth = getDataQuadrantPaddingWidth() / displayNumber;
+			return (this.getDataQuadrantPaddingWidth() - stickWidth)/ (longitudeTitles.size() - 1);
+	    }else{
+			return this.getDataQuadrantPaddingWidth()/ (longitudeTitles.size() - 1);
+	    }
+	}
+
+	public float longitudeOffset(){
+		if (stickAlignType == ALIGN_TYPE_CENTER) {
+			float stickWidth = getDataQuadrantPaddingWidth() / displayNumber;
+			return getDataQuadrantPaddingStartX() + stickWidth / 2;
+		}else{
+			return getDataQuadrantPaddingStartX();
+		}
+	}
+	
 	/**
 	 * <p>
 	 * initialize degrees on Y axis
@@ -556,6 +578,11 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+		//valid
+		if (!isValidTouchPoint(event.getX(),event.getY())) {
+			return false;
+		}
+		
 		if (null == stickData || stickData.size() == 0) {
 			return false;
 		}
@@ -1039,5 +1066,33 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	 */
 	public void setOnSlipGestureListener(OnSlipGestureListener listener) {
 		this.onSlipGestureListener = listener;
+	}
+
+	/**
+	 * @return the stickAlignType
+	 */
+	public int getStickAlignType() {
+		return stickAlignType;
+	}
+
+	/**
+	 * @param stickAlignType the stickAlignType to set
+	 */
+	public void setStickAlignType(int stickAlignType) {
+		this.stickAlignType = stickAlignType;
+	}
+
+	/**
+	 * @return the autoCalcValueRange
+	 */
+	public boolean isAutoCalcValueRange() {
+		return autoCalcValueRange;
+	}
+
+	/**
+	 * @param autoCalcValueRange the autoCalcValueRange to set
+	 */
+	public void setAutoCalcValueRange(boolean autoCalcValueRange) {
+		this.autoCalcValueRange = autoCalcValueRange;
 	}
 }

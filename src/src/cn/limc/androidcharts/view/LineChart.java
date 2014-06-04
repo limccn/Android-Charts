@@ -52,6 +52,7 @@ import android.view.MotionEvent;
  * @see GridChart
  */
 public class LineChart extends GridChart implements IZoomable {
+	public static final int DEFAULT_LINE_ALIGN_TYPE = ALIGN_TYPE_JUSTIFY;
 	/**
 	 * <p>
 	 * data to draw lines
@@ -103,6 +104,8 @@ public class LineChart extends GridChart implements IZoomable {
 	 * </p>
 	 */
 	private double maxValue;
+	
+	private int lineAlignType = DEFAULT_LINE_ALIGN_TYPE;
 
 	public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
 	private boolean autoCalcValueRange = DEFAULT_AUTO_CALC_VALUE_RANGE;
@@ -342,7 +345,7 @@ public class LineChart extends GridChart implements IZoomable {
 			return;
 		}
 		// distance between two points
-		float lineLength = getDataQuadrantPaddingWidth() / maxPointNum - 1;
+		float lineLength;
 		// start point‘s X
 		float startX;
 
@@ -367,9 +370,15 @@ public class LineChart extends GridChart implements IZoomable {
 			// start point
 			PointF ptFirst = null;
 			if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-				// set start point’s X
-				startX = getDataQuadrantPaddingStartX() + lineLength / 2;
-				for (int j = 0; j < lineData.size(); j++) {
+	            if (lineAlignType == ALIGN_TYPE_CENTER) {
+	                lineLength= (getDataQuadrantPaddingWidth() / maxPointNum);
+	                startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+	            }else {
+	                lineLength= (getDataQuadrantPaddingWidth() / (maxPointNum - 1));
+	                startX = getDataQuadrantPaddingStartX();
+	            }
+				
+				for (int j = 0; j < maxPointNum; j++) {
 					float value = lineData.get(j).getValue();
 					// calculate Y
 					float valueY = (float) ((1f - (value - minValue)
@@ -383,12 +392,18 @@ public class LineChart extends GridChart implements IZoomable {
 					}
 					// reset
 					ptFirst = new PointF(startX, valueY);
-					startX = startX + 1 + lineLength;
+					startX = startX + lineLength;
 				}
 			} else {
-				// set start point’s X
-				startX = getDataQuadrantPaddingEndX() - lineLength / 2;
-				for (int j = lineData.size() - 1; j >= 0; j--) {
+	            if (lineAlignType == ALIGN_TYPE_CENTER) {
+	                lineLength= (getDataQuadrantPaddingWidth() / maxPointNum);
+	                startX = getDataQuadrantPaddingEndX() - lineLength / 2;
+	            }else {
+	                lineLength= (getDataQuadrantPaddingWidth() / (maxPointNum - 1));
+	                startX = getDataQuadrantPaddingEndX();
+	            }
+	            
+				for (int j = maxPointNum - 1; j >= 0; j--) {
 					float value = lineData.get(j).getValue();
 					// calculate Y
 					float valueY = (float) ((1f - (value - minValue)
@@ -396,13 +411,13 @@ public class LineChart extends GridChart implements IZoomable {
 							+ getDataQuadrantPaddingStartY();
 
 					// if is not last point connect to previous point
-					if (j < lineData.size() - 1) {
+					if (j < maxPointNum - 1) {
 						canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
 								mPaint);
 					}
 					// reset
 					ptFirst = new PointF(startX, valueY);
-					startX = startX - 1 - lineLength;
+					startX = startX - lineLength;
 				}
 			}
 		}
@@ -457,6 +472,24 @@ public class LineChart extends GridChart implements IZoomable {
 		float graduate = Float.valueOf(super.getAxisYGraduate(value));
 		return String.valueOf((int) Math.floor(graduate * (maxValue - minValue)
 				+ minValue));
+	}
+	
+	public float longitudePostOffset(){
+		if (lineAlignType == ALIGN_TYPE_CENTER) {
+			float lineLength = getDataQuadrantPaddingWidth() / maxPointNum;
+			return (this.getDataQuadrantPaddingWidth() - lineLength)/ (longitudeTitles.size() - 1);
+	    }else{
+			return this.getDataQuadrantPaddingWidth()/ (longitudeTitles.size() - 1);
+	    }
+	}
+	
+	public float longitudeOffset(){
+		if (lineAlignType == ALIGN_TYPE_CENTER) {
+			float lineLength = getDataQuadrantPaddingWidth() / maxPointNum;
+			return getDataQuadrantPaddingStartX() + lineLength / 2;
+		}else{
+			return getDataQuadrantPaddingStartX();
+		}
 	}
 
 	/**
@@ -544,7 +577,14 @@ public class LineChart extends GridChart implements IZoomable {
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-
+		//valid
+		if (!isValidTouchPoint(event.getX(),event.getY())) {
+			return false;
+		}
+		if (null == linesData || linesData.size() == 0) {
+			return false;
+		}
+		
 		final float MIN_LENGTH = super.getWidth() / 40 < 5 ? 5 : super
 				.getWidth() / 50;
 
@@ -795,5 +835,19 @@ public class LineChart extends GridChart implements IZoomable {
 	 */
 	public void setOnZoomGestureListener(OnZoomGestureListener listener) {
 		this.onZoomGestureListener = listener;
+	}
+
+	/**
+	 * @return the lineAlignType
+	 */
+	public int getLineAlignType() {
+		return lineAlignType;
+	}
+
+	/**
+	 * @param lineAlignType the lineAlignType to set
+	 */
+	public void setLineAlignType(int lineAlignType) {
+		this.lineAlignType = lineAlignType;
 	}
 }

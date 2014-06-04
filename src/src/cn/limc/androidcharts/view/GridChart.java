@@ -58,7 +58,7 @@ import android.view.MotionEvent;
  * 
  */
 public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
-		ITouchEventResponse, ITouchable {
+		ITouchEventResponse, ITouchable, IFlexableGrid {
 
 	public static final int AXIS_X_POSITION_BOTTOM = 1 << 0;
 	@Deprecated
@@ -805,7 +805,7 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	 * X轴标题数组
 	 * </p>
 	 */
-	private List<String> longitudeTitles;
+	protected List<String> longitudeTitles;
 
 	/**
 	 * <p>
@@ -818,7 +818,7 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	 * Y轴标题数组
 	 * </p>
 	 */
-	private List<String> latitudeTitles;
+	protected List<String> latitudeTitles;
 
 	/**
 	 * <p>
@@ -980,17 +980,9 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-
-		if (event.getX() < getDataQuadrantPaddingStartX()
-				|| event.getX() > getDataQuadrantPaddingEndX()) {
+		if (!isValidTouchPoint(event.getX(),event.getY())) {
 			return false;
 		}
-
-		if (event.getY() < getDataQuadrantPaddingStartY()
-				|| event.getY() > getDataQuadrantPaddingEndY()) {
-			return false;
-		}
-
 		// touched points, if touch point is only one
 		if (event.getPointerCount() == 1) {
 			// 获取点击坐标
@@ -1010,6 +1002,18 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		} else if (event.getPointerCount() == 2) {
 		}
 		return super.onTouchEvent(event);
+	}
+	
+	protected boolean isValidTouchPoint (float x , float y) {
+		if (x < getDataQuadrantPaddingStartX()
+				|| x > getDataQuadrantPaddingEndX()) {
+			return false;
+		}
+		if (y < getDataQuadrantPaddingStartY()
+				|| y > getDataQuadrantPaddingEndY()) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -1234,7 +1238,7 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		float valueLength = ((Float) value).floatValue()
 				- getDataQuadrantPaddingStartY();
 		return String
-				.valueOf(valueLength / this.getDataQuadrantPaddingHeight());
+				.valueOf(1f - valueLength / this.getDataQuadrantPaddingHeight());
 	}
 
 	/**
@@ -1421,6 +1425,14 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		canvas.drawLine(postX, borderWidth, postX, length, mPaint);
 	}
 
+	public float longitudePostOffset(){
+		return this.getDataQuadrantPaddingWidth() / (longitudeTitles.size() - 1);
+	}
+	
+	public float longitudeOffset(){
+		return getDataQuadrantPaddingStartX();
+	}
+	
 	/**
 	 * <p>
 	 * draw longitude lines
@@ -1453,24 +1465,14 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 			mPaintLine.setPathEffect(dashEffect);
 		}
 		if (counts > 1) {
-			float postOffset = this.getDataQuadrantPaddingWidth()
-					/ (counts - 1);
-
-			float offset;
-			if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-				offset = borderWidth + axisYTitleQuadrantWidth + axisWidth
-						+ dataQuadrantPaddingLeft;
-			} else {
-				offset = borderWidth + dataQuadrantPaddingLeft;
-			}
+			float postOffset = longitudePostOffset();
+			float offset = longitudeOffset();
 
 			for (int i = 0; i < counts; i++) {
 				Path path = new Path();
 				path.moveTo(offset + i * postOffset, borderWidth);
 				path.lineTo(offset + i * postOffset, length);
 				canvas.drawPath(path, mPaintLine);
-//				canvas.drawLine(offset + i * postOffset, borderWidth, offset
-//						+ i * postOffset, length, mPaintLine);
 			}
 		}
 	}
@@ -1499,7 +1501,6 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		if (!displayLongitudeTitle) {
 			return;
 		}
-
 		if (longitudeTitles.size() <= 1) {
 			return;
 		}
@@ -1509,41 +1510,19 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		mPaintFont.setTextSize(longitudeFontSize);
 		mPaintFont.setAntiAlias(true);
 
-		float postOffset = this.getDataQuadrantPaddingWidth()
-				/ (longitudeTitles.size() - 1);
+		float postOffset = longitudePostOffset();
 
-		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-			float offset = borderWidth + axisYTitleQuadrantWidth + axisWidth
-					+ dataQuadrantPaddingLeft;
-			for (int i = 0; i < longitudeTitles.size(); i++) {
-				if (0 == i) {
-					canvas.drawText(longitudeTitles.get(i), offset + 2f,
-							super.getHeight() - axisXTitleQuadrantHeight
-									+ longitudeFontSize, mPaintFont);
-				} else {
-					canvas.drawText(longitudeTitles.get(i), offset + i
-							* postOffset - (longitudeTitles.get(i).length())
-							* longitudeFontSize / 2f, super.getHeight()
-							- axisXTitleQuadrantHeight + longitudeFontSize,
-							mPaintFont);
-				}
-			}
-
-		} else {
-			float offset = borderWidth + dataQuadrantPaddingLeft;
-			for (int i = 0; i < longitudeTitles.size(); i++) {
-				if (0 == i) {
-					canvas.drawText(longitudeTitles.get(i), offset + 2f,
-							super.getHeight() - axisXTitleQuadrantHeight
-									+ longitudeFontSize, mPaintFont);
-				} else {
-					canvas.drawText(longitudeTitles.get(i), offset + i
-							* postOffset - (longitudeTitles.get(i).length())
-							* longitudeFontSize / 2f, super.getHeight()
-							- axisXTitleQuadrantHeight + longitudeFontSize,
-							mPaintFont);
-				}
-
+		float offset = longitudeOffset();
+		for (int i = 0; i < longitudeTitles.size(); i++) {
+			if (0 == i) {
+				canvas.drawText(longitudeTitles.get(i), offset + 2f,
+						super.getHeight() - axisXTitleQuadrantHeight
+								+ longitudeFontSize, mPaintFont);
+			} else {
+				canvas.drawText(longitudeTitles.get(i), offset + i * postOffset
+						- (longitudeTitles.get(i).length()) * longitudeFontSize
+						/ 2f, super.getHeight() - axisXTitleQuadrantHeight
+						+ longitudeFontSize, mPaintFont);
 			}
 		}
 	}
@@ -1606,8 +1585,6 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 				path.moveTo(startFrom, offset - i * postOffset);
 				path.lineTo(startFrom + length, offset - i * postOffset);
 				canvas.drawPath(path, mPaintLine);
-//				canvas.drawLine(startFrom, offset - i * postOffset, startFrom
-//						+ length, offset - i * postOffset, mPaintLine);
 			}
 		} else {
 			float startFrom = borderWidth;
@@ -1616,8 +1593,6 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 				path.moveTo(startFrom, offset - i * postOffset);
 				path.lineTo(startFrom + length, offset - i * postOffset);
 				canvas.drawPath(path, mPaintLine);
-//				canvas.drawLine(startFrom, offset - i * postOffset, startFrom
-//						+ length, offset - i * postOffset, mPaintLine);
 			}
 		}
 	}

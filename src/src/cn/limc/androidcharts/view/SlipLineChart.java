@@ -51,6 +51,8 @@ import cn.limc.androidcharts.entity.LineEntity;
  * 
  */
 public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
+	
+	public static final int DEFAULT_LINE_ALIGN_TYPE = ALIGN_TYPE_CENTER;
 
 	public static final int DEFAULT_DISPLAY_FROM = 0;
 	public static final int DEFAULT_DISPLAY_NUMBER = 50;
@@ -100,6 +102,8 @@ public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
 	 * </p>
 	 */
 	protected double maxValue;
+	
+	protected int lineAlignType = DEFAULT_LINE_ALIGN_TYPE;
 	
 	protected OnZoomGestureListener onZoomGestureListener;
 	protected OnSlipGestureListener onSlipGestureListener;
@@ -357,6 +361,25 @@ public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
 				+ minValue));
 	}
 
+	
+	public float longitudePostOffset(){
+		if (lineAlignType == ALIGN_TYPE_CENTER) {
+			float lineLength = getDataQuadrantPaddingWidth() / displayNumber;
+			return (this.getDataQuadrantPaddingWidth() - lineLength)/ (longitudeTitles.size() - 1);
+	    }else{
+			return this.getDataQuadrantPaddingWidth()/ (longitudeTitles.size() - 1);
+	    }
+	}
+	
+	public float longitudeOffset(){
+		if (lineAlignType == ALIGN_TYPE_CENTER) {
+			float lineLength = getDataQuadrantPaddingWidth() / displayNumber;
+			return getDataQuadrantPaddingStartX() + lineLength / 2;
+		}else{
+			return getDataQuadrantPaddingStartX();
+		}
+	}
+	
 	/**
 	 * <p>
 	 * initialize degrees on Y axis
@@ -447,7 +470,7 @@ public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
 			return;
 		}
 		// distance between two points
-		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - 1;
+		float lineLength;
 		// start point‘s X
 		float startX;
 
@@ -469,7 +492,13 @@ public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
 			mPaint.setColor(line.getLineColor());
 			mPaint.setAntiAlias(true);
 			// set start point’s X
-			startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+			if (lineAlignType == ALIGN_TYPE_CENTER) {
+                lineLength= (getDataQuadrantPaddingWidth() / displayNumber);
+                startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+            }else {
+                lineLength= (getDataQuadrantPaddingWidth() / (displayNumber - 1));
+                startX = getDataQuadrantPaddingStartX();
+            }
 			// start point
 			PointF ptFirst = null;
 			for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
@@ -486,7 +515,7 @@ public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
 				}
 				// reset
 				ptFirst = new PointF(startX, valueY);
-				startX = startX + 1 + lineLength;
+				startX = startX + lineLength;
 			}
 		}
 	}
@@ -500,6 +529,11 @@ public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+		//valid
+		if (!isValidTouchPoint(event.getX(),event.getY())) {
+			return false;
+		}
+		
 		if (null == linesData || linesData.size() == 0) {
 			return false;
 		}
@@ -880,5 +914,19 @@ public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
 	 */
 	public void setOnSlipGestureListener(OnSlipGestureListener listener) {
 		this.onSlipGestureListener = listener;
+	}
+
+	/**
+	 * @return the lineAlignType
+	 */
+	public int getLineAlignType() {
+		return lineAlignType;
+	}
+
+	/**
+	 * @param lineAlignType the lineAlignType to set
+	 */
+	public void setLineAlignType(int lineAlignType) {
+		this.lineAlignType = lineAlignType;
 	}
 }
