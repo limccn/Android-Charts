@@ -1052,25 +1052,16 @@ public class AndroidChartsActivity extends Activity {
 			
 			public void onTouchUp(PointF touchPointF, int selectedIndex) {
 				bollmaslipcandlestickchart.setTouchPoint(touchPointF);
-				bollmaslipcandlestickchart.setClickPostX(touchPointF.x);
-				bollmaslipcandlestickchart.setClickPostY(touchPointF.y);
-				
 				bollmaslipcandlestickchart.postInvalidate();
 			}
 			
 			public void onTouchMoved(PointF touchPointF, int selectedIndex) {
 				bollmaslipcandlestickchart.setTouchPoint(touchPointF);
-				bollmaslipcandlestickchart.setClickPostX(touchPointF.x);
-				bollmaslipcandlestickchart.setClickPostY(touchPointF.y);
-				
 				bollmaslipcandlestickchart.postInvalidate();
 			}
 			
 			public void onTouchDown(PointF touchPointF, int selectedIndex) {
 				bollmaslipcandlestickchart.setTouchPoint(touchPointF);
-				bollmaslipcandlestickchart.setClickPostX(touchPointF.x);
-				bollmaslipcandlestickchart.setClickPostY(touchPointF.y);
-				
 				bollmaslipcandlestickchart.postInvalidate();
 			}
 		});
@@ -1168,7 +1159,6 @@ public class AndroidChartsActivity extends Activity {
 			public void onZoom(int zoom, int displayFrom, int displayNumber) {
 				maslipcandlestickchart.setDisplayFrom(displayFrom);
 				maslipcandlestickchart.setDisplayNumber(displayNumber);
-				
 				maslipcandlestickchart.postInvalidate();
 			}
 		});
@@ -1185,22 +1175,16 @@ public class AndroidChartsActivity extends Activity {
 			
 			public void onTouchUp(PointF touchPointF, int selectedIndex) {
 				maslipcandlestickchart.setTouchPoint(touchPointF);
-				maslipcandlestickchart.setClickPostX(touchPointF.x);
-				maslipcandlestickchart.setClickPostY(touchPointF.y);
 				maslipcandlestickchart.postInvalidate();
 			}
 			
 			public void onTouchMoved(PointF touchPointF, int selectedIndex) {
 				maslipcandlestickchart.setTouchPoint(touchPointF);
-				maslipcandlestickchart.setClickPostX(touchPointF.x);
-				maslipcandlestickchart.setClickPostY(touchPointF.y);
 				maslipcandlestickchart.postInvalidate();
 			}
 			
 			public void onTouchDown(PointF touchPointF, int selectedIndex) {
 				maslipcandlestickchart.setTouchPoint(touchPointF);
-				maslipcandlestickchart.setClickPostX(touchPointF.x);
-				maslipcandlestickchart.setClickPostY(touchPointF.y);
 				maslipcandlestickchart.postInvalidate();
 			}
 		});

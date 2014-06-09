@@ -658,9 +658,13 @@ public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
 	 *         </p>
 	 */
 	protected float calcDistance(MotionEvent event) {
-		float x = event.getX(0) - event.getX(1);
-		float y = event.getY(0) - event.getY(1);
-		return FloatMath.sqrt(x * x + y * y);
+		if(event.getPointerCount() <= 1) {
+			return 0f;
+		}else{
+			float x = event.getX(0) - event.getX(1);
+			float y = event.getY(0) - event.getY(1);
+			return FloatMath.sqrt(x * x + y * y);
+		}
 	}
 	
 	public void moveRight() {
