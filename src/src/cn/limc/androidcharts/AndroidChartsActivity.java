@@ -415,6 +415,11 @@ public class AndroidChartsActivity extends Activity {
 		stickchart.setDisplayLatitude(true);
 		stickchart.setDisplayLongitude(true);
 		stickchart.setBackgroundColor(Color.BLACK);
+		
+		stickchart.setDataMultiple(100);
+		stickchart.setAxisYDecimalFormat("#,##0.00");
+		stickchart.setAxisXDateTargetFormat("yyyy/MM/dd");
+		stickchart.setAxisXDateSourceFormat("yyyyMMdd");
 
 		// 为chart1增加均线
 		stickchart.setStickData(new ListChartData<IStickEntity>(vol));
@@ -463,7 +468,12 @@ public class AndroidChartsActivity extends Activity {
 		slipstickchart.setDisplayLatitude(true);
 		slipstickchart.setDisplayLongitude(true);
 		slipstickchart.setBackgroundColor(Color.BLACK);
-
+		
+		slipstickchart.setDataMultiple(100);
+		slipstickchart.setAxisYDecimalFormat("#,##0.00");
+		slipstickchart.setAxisXDateTargetFormat("yyyy/MM/dd");
+		slipstickchart.setAxisXDateSourceFormat("yyyyMMdd");
+		
 		IChartData<IStickEntity> vol = new ListChartData<IStickEntity>(this.vol);
 		// 为chart1增加均线
 		slipstickchart.setStickData(vol);

@@ -21,7 +21,11 @@
 
 package cn.limc.androidcharts.view;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import cn.limc.androidcharts.entity.IChartData;
@@ -29,6 +33,7 @@ import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.IStickEntity;
 import cn.limc.androidcharts.entity.StickEntity;
 
+import android.R.string;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -65,6 +70,11 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 
 	public static final int DEFAULT_STICK_SPACING = 1;
 
+	public static final int DEFAULT_DATA_MULTIPLE = 1;
+	public static final String DEFAULT_AXIS_Y_DECIMAL_FORMAT = "#,##0";
+	public static final String DEFAULT_AXIS_X_DATE_TARGET_FORMAT = "yyyy/MM/dd";
+	public static final String DEFAULT_AXIS_X_DATE_SOURCE_FORMAT = "yyyyMMdd";
+	
 	protected int displayFrom = DEFAULT_DISPLAY_FROM;
 	protected int displayNumber = DEFAULT_DISPLAY_NUMBER;
 	protected int minDisplayNumber = DEFAULT_MIN_DISPLAY_NUMBER;
@@ -138,7 +148,12 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	 * </p>
 	 */
 	protected IChartData<IStickEntity> stickData;
-
+	
+	protected int dataMultiple =  DEFAULT_DATA_MULTIPLE;
+	protected String axisYDecimalFormat = DEFAULT_AXIS_Y_DECIMAL_FORMAT;
+	protected String axisXDateTargetFormat = DEFAULT_AXIS_X_DATE_TARGET_FORMAT;
+	protected String axisXDateSourceFormat = DEFAULT_AXIS_X_DATE_SOURCE_FORMAT;
+	
 	/**
 	 * <p>
 	 * max value of Y axis
@@ -391,7 +406,7 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 
 		index = index + displayFrom;
 
-		return String.valueOf(stickData.get(index).getDate());
+		return formatAxisXDegree(stickData.get(index).getDate());
 	}
 
 	/*
@@ -404,8 +419,8 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	@Override
 	public String getAxisYGraduate(Object value) {
 		float graduate = Float.valueOf(super.getAxisYGraduate(value));
-		return String.valueOf((int) Math.floor(graduate * (maxValue - minValue)
-				+ minValue));
+		return formatAxisYDegree(graduate * (maxValue - minValue)
+				+ minValue);
 	}
 
 	/*
@@ -467,12 +482,9 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 					index = displayNumber - 1;
 				}
 				index = index + displayFrom;
-				titleX.add(String.valueOf(stickData.get(index).getDate())
-						.substring(4));
+				titleX.add(formatAxisXDegree(stickData.get(index).getDate()));
 			}
-			titleX.add(String.valueOf(
-					stickData.get(displayFrom + displayNumber - 1).getDate())
-					.substring(4));
+			titleX.add(formatAxisXDegree(stickData.get(displayFrom + displayNumber - 1).getDate()));
 		}
 		super.setLongitudeTitles(titleX);
 	}
@@ -508,12 +520,12 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	protected void initAxisY() {
 		this.calcValueRange();
 		List<String> titleY = new ArrayList<String>();
-		float average = (int) ((maxValue - minValue) / this.getLatitudeNum()) / 100 * 100;
-		;
+		double average = (maxValue - minValue) / this.getLatitudeNum();
+		
 		// calculate degrees on Y axis
 		for (int i = 0; i < this.getLatitudeNum(); i++) {
-			String value = String.valueOf((int) Math.floor(minValue + i
-					* average));
+			String value = formatAxisYDegree(minValue + i * average);
+			// padding space
 			if (value.length() < super.getLatitudeMaxTitleLength()) {
 				while (value.length() < super.getLatitudeMaxTitleLength()) {
 					value = " " + value;
@@ -522,8 +534,8 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 			titleY.add(value);
 		}
 		// calculate last degrees by use max value
-		String value = String.valueOf((int) Math
-				.floor(((int) maxValue) / 100 * 100));
+		String value = formatAxisYDegree(maxValue);
+		// padding space
 		if (value.length() < super.getLatitudeMaxTitleLength()) {
 			while (value.length() < super.getLatitudeMaxTitleLength()) {
 				value = " " + value;
@@ -532,6 +544,20 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 		titleY.add(value);
 
 		super.setLatitudeTitles(titleY);
+	}
+	
+	public String formatAxisYDegree(double value) {
+		return new DecimalFormat(axisYDecimalFormat).format(Math.floor(value)/dataMultiple);
+	}
+	
+	public String formatAxisXDegree(int date) {
+		try {
+			Date dt = new SimpleDateFormat(axisXDateSourceFormat).parse(String
+					.valueOf(date));
+			return new SimpleDateFormat(axisXDateTargetFormat).format(dt);
+		} catch (ParseException e) {
+			return "";
+		}
 	}
 
 	protected void drawSticks(Canvas canvas) {
@@ -1098,5 +1124,68 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	 */
 	public void setAutoCalcValueRange(boolean autoCalcValueRange) {
 		this.autoCalcValueRange = autoCalcValueRange;
+	}
+
+	/**
+	 * @return the dataMultiple
+	 */
+	public int getDataMultiple() {
+		return dataMultiple;
+	}
+
+	/**
+	 * @param dataMultiple the dataMultiple to set
+	 */
+	public void setDataMultiple(int dataMultiple) {
+		this.dataMultiple = dataMultiple;
+	}
+
+	/**
+	 * @return the axisYDecimalFormat
+	 */
+	public String getAxisYDecimalFormat() {
+		return axisYDecimalFormat;
+	}
+
+	/**
+	 * @param axisYDecimalFormat the axisYDecimalFormat to set
+	 */
+	public void setAxisYDecimalFormat(String axisYDecimalFormat) {
+		this.axisYDecimalFormat = axisYDecimalFormat;
+	}
+
+	/**
+	 * @return the axisXDateTargetFormat
+	 */
+	public String getAxisXDateTargetFormat() {
+		return axisXDateTargetFormat;
+	}
+
+	/**
+	 * @param axisXDateTargetFormat the axisXDateTargetFormat to set
+	 */
+	public void setAxisXDateTargetFormat(String axisXDateTargetFormat) {
+		this.axisXDateTargetFormat = axisXDateTargetFormat;
+	}
+
+	/**
+	 * @return the axisXDateSourceFormat
+	 */
+	public String getAxisXDateSourceFormat() {
+		return axisXDateSourceFormat;
+	}
+
+	/**
+	 * @param axisXDateSourceFormat the axisXDateSourceFormat to set
+	 */
+	public void setAxisXDateSourceFormat(String axisXDateSourceFormat) {
+		this.axisXDateSourceFormat = axisXDateSourceFormat;
+	}
+
+	/**
+	 * @return the defaultDataMultiple
+	 */
+	public static int getDefaultDataMultiple() {
+		return DEFAULT_DATA_MULTIPLE;
 	}
 }
