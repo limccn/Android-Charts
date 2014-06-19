@@ -1,5 +1,5 @@
 /*
- * ISlipable.java
+ * IZoomable.java
  * Android-Charts
  *
  * Created by limc on 2014.
@@ -20,7 +20,9 @@
  */
 
 
-package cn.limc.androidcharts.view;
+package cn.limc.androidcharts.common;
+
+
 
 /** 
  * <p>en</p>
@@ -28,25 +30,27 @@ package cn.limc.androidcharts.view;
  * <p>cn</p>
  *
  * @author limc 
- * @version v1.0 2014/05/29 16:49:51 
+ * @version v1.0 2014/05/29 16:49:01 
  *  
  */
-public interface ISlipable {	
+public interface IZoomable {
 	
-	static final int SLIP_DIRECTION_NONE = 0;
-	static final int SLIP_DIRECTION_TOP = 1;
-	static final int SLIP_DIRECTION_RIGHT = 2;
-	static final int SLIP_DIRECTION_BOTTOM = 3;
-	static final int SLIP_DIRECTION_LEFT = 4;
+	static final int ZOOM_BASE_LINE_CENTER = 0;
+	static final int ZOOM_BASE_LINE_LEFT = 1;
+	static final int ZOOM_BASE_LINE_RIGHT = 2;
 	
-	static final int SLIP_STEP = 4;
+	static final int ZOOM_NONE = 0;
+	static final int ZOOM_IN = 1;
+	static final int ZOOM_OUT = 2;
 	
-	void moveLeft();
-	void moveRight();
+	static final int ZOOM_STEP = 4;
 	
-	void setOnSlipGestureListener(OnSlipGestureListener listener);
+	void zoomIn();
+	void zoomOut();
 	
-	interface OnSlipGestureListener{
-		void onSlip(int direction, int displayFrom , int displayNumber);
+	void setOnZoomGestureListener(OnZoomGestureListener listener);
+
+	interface OnZoomGestureListener{
+		void onZoom(int zoom, int displayFrom , int displayNumber);
 	}
 }

@@ -21,19 +21,17 @@
 
 package cn.limc.androidcharts.view;
 
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import cn.limc.androidcharts.common.IDataCursor;
+import cn.limc.androidcharts.common.ISlipable;
+import cn.limc.androidcharts.common.IZoomable;
 import cn.limc.androidcharts.entity.IChartData;
 import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.IStickEntity;
 import cn.limc.androidcharts.entity.StickEntity;
 
-import android.R.string;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -58,7 +56,7 @@ import android.view.MotionEvent;
  * @version v1.0 2014-1-20 下午2:03:08
  * 
  */
-public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
+public class SlipStickChart extends DataGridChart implements IDataCursor,ISlipable ,IZoomable {
 
 	public static final int DEFAULT_STICK_ALIGN_TYPE = ALIGN_TYPE_CENTER;
 	
@@ -69,11 +67,8 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
 
 	public static final int DEFAULT_STICK_SPACING = 1;
-
-	public static final int DEFAULT_DATA_MULTIPLE = 1;
-	public static final String DEFAULT_AXIS_Y_DECIMAL_FORMAT = "#,##0";
-	public static final String DEFAULT_AXIS_X_DATE_TARGET_FORMAT = "yyyy/MM/dd";
-	public static final String DEFAULT_AXIS_X_DATE_SOURCE_FORMAT = "yyyyMMdd";
+	
+	public static final int DEFAULT_BIND_CROSS_LINES_TO_STICK = BIND_TO_TYPE_BOTH;
 	
 	protected int displayFrom = DEFAULT_DISPLAY_FROM;
 	protected int displayNumber = DEFAULT_DISPLAY_NUMBER;
@@ -149,10 +144,7 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	 */
 	protected IChartData<IStickEntity> stickData;
 	
-	protected int dataMultiple =  DEFAULT_DATA_MULTIPLE;
-	protected String axisYDecimalFormat = DEFAULT_AXIS_Y_DECIMAL_FORMAT;
-	protected String axisXDateTargetFormat = DEFAULT_AXIS_X_DATE_TARGET_FORMAT;
-	protected String axisXDateSourceFormat = DEFAULT_AXIS_X_DATE_SOURCE_FORMAT;
+	protected int bindCrossLinesToStick = DEFAULT_BIND_CROSS_LINES_TO_STICK;
 	
 	/**
 	 * <p>
@@ -254,8 +246,7 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 		}
 
 		// 判断显示为方柱或显示为线条
-		for (int i = this.displayFrom; i < this.displayFrom
-				+ this.displayNumber; i++) {
+		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
 			IMeasurable stick = this.stickData.get(i);
 			if (stick.getLow() < minValue) {
 				minValue = stick.getLow();
@@ -396,15 +387,15 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	@Override
 	public String getAxisXGraduate(Object value) {
 		float graduate = Float.valueOf(super.getAxisXGraduate(value));
-		int index = (int) Math.floor(graduate * displayNumber);
+		int index = (int) Math.floor(graduate * getDisplayNumber());
 
-		if (index >= displayNumber) {
-			index = displayNumber - 1;
+		if (index >= getDisplayNumber()) {
+			index = getDisplayNumber() - 1;
 		} else if (index < 0) {
 			index = 0;
 		}
 
-		index = index + displayFrom;
+		index = index + getDisplayFrom();
 
 		return formatAxisXDegree(stickData.get(index).getDate());
 	}
@@ -445,7 +436,7 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 
 	public float longitudePostOffset(){
 		if (stickAlignType == ALIGN_TYPE_CENTER) {
-			float stickWidth = getDataQuadrantPaddingWidth() / displayNumber;
+			float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber();
 			return (this.getDataQuadrantPaddingWidth() - stickWidth)/ (longitudeTitles.size() - 1);
 	    }else{
 			return this.getDataQuadrantPaddingWidth()/ (longitudeTitles.size() - 1);
@@ -454,7 +445,7 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 
 	public float longitudeOffset(){
 		if (stickAlignType == ALIGN_TYPE_CENTER) {
-			float stickWidth = getDataQuadrantPaddingWidth() / displayNumber;
+			float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber();
 			return getDataQuadrantPaddingStartX() + stickWidth / 2;
 		}else{
 			return getDataQuadrantPaddingStartX();
@@ -475,36 +466,43 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	protected void initAxisX() {
 		List<String> titleX = new ArrayList<String>();
 		if (null != stickData && stickData.size() > 0) {
-			float average = displayNumber / this.getLongitudeNum();
+			float average = getDisplayNumber() / this.getLongitudeNum();
 			for (int i = 0; i < this.getLongitudeNum(); i++) {
 				int index = (int) Math.floor(i * average);
-				if (index > displayNumber - 1) {
-					index = displayNumber - 1;
+				if (index > getDisplayNumber() - 1) {
+					index = getDisplayNumber() - 1;
 				}
-				index = index + displayFrom;
+				index = index + getDisplayFrom();
 				titleX.add(formatAxisXDegree(stickData.get(index).getDate()));
 			}
-			titleX.add(formatAxisXDegree(stickData.get(displayFrom + displayNumber - 1).getDate()));
+			titleX.add(formatAxisXDegree(stickData.get(getDisplayTo() - 1).getDate()));
 		}
 		super.setLongitudeTitles(titleX);
-	}
-
+	}	
+	
 	public int getSelectedIndex() {
-		if (null == super.getTouchPoint()) {
+		if (null == touchPoint) {
 			return 0;
 		}
-		float graduate = Float.valueOf(super.getAxisXGraduate(super
-				.getTouchPoint().x));
-		int index = (int) Math.floor(graduate * displayNumber);
+		return calcSelectedIndex(touchPoint.x, touchPoint.y);
+	}
+	
+	protected int calcSelectedIndex(float x ,float y) {
+		if (!isValidTouchPoint(x,y)) {
+			return 0;
+		}
+		float graduate = Float.valueOf(super.getAxisXGraduate(x));
+		int index = (int) Math.floor(graduate * getDisplayNumber());
 
-		if (index >= displayNumber) {
-			index = displayNumber - 1;
+		if (index >= getDisplayNumber()) {
+			index = getDisplayNumber() - 1;
 		} else if (index < 0) {
 			index = 0;
 		}
-		index = index + displayFrom;
+		index = index + getDisplayFrom();
 		return index;
 	}
+
 
 	/**
 	 * <p>
@@ -545,20 +543,6 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 
 		super.setLatitudeTitles(titleY);
 	}
-	
-	public String formatAxisYDegree(double value) {
-		return new DecimalFormat(axisYDecimalFormat).format(Math.floor(value)/dataMultiple);
-	}
-	
-	public String formatAxisXDegree(int date) {
-		try {
-			Date dt = new SimpleDateFormat(axisXDateSourceFormat).parse(String
-					.valueOf(date));
-			return new SimpleDateFormat(axisXDateTargetFormat).format(dt);
-		} catch (ParseException e) {
-			return "";
-		}
-	}
 
 	protected void drawSticks(Canvas canvas) {
 		if (null == stickData) {
@@ -571,11 +555,11 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 		Paint mPaintStick = new Paint();
 		mPaintStick.setColor(stickFillColor);
 
-		float stickWidth = getDataQuadrantPaddingWidth() / displayNumber
+		float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber()
 				- stickSpacing;
 		float stickX = getDataQuadrantPaddingStartX();
 
-		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
 			IMeasurable stick = stickData.get(i);
 			float highY = (float) ((1f - (stick.getHigh() - minValue)
 					/ (maxValue - minValue))
@@ -621,7 +605,7 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 		case MotionEvent.ACTION_DOWN:
 			touchMode = TOUCH_MODE_SINGLE;
 			if (event.getPointerCount() == 1) {
-				touchPoint = new PointF(event.getX(), event.getY());
+				touchPoint = calcTouchedPoint(event.getX(), event.getY());
 				if (onTouchGestureListener != null) {
 					onTouchGestureListener.onTouchDown(touchPoint, getSelectedIndex());
 				}
@@ -635,7 +619,7 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 			startPointA = null;
 			startPointB = null;
 			if (event.getPointerCount() == 1) {
-				touchPoint = new PointF(event.getX(), event.getY());
+				touchPoint = calcTouchedPoint(event.getX(), event.getY());
 				if (onTouchGestureListener != null) {
 					onTouchGestureListener.onTouchUp(touchPoint, getSelectedIndex());
 				}
@@ -692,7 +676,7 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 					float moveYdistance = Math.abs(event.getY() - touchPoint.y);
 
 					if (moveXdistance > TOUCH_MOVE_MIN_DISTANCE || moveYdistance > TOUCH_MOVE_MIN_DISTANCE) {
-						touchPoint = new PointF(event.getX(), event.getY());
+						touchPoint = calcTouchedPoint(event.getX(), event.getY());
 						
 						// call back to listener
 						if (onTouchGestureListener != null) {
@@ -707,6 +691,41 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 			break;
 		}
 		return true;
+	}
+	
+	protected PointF calcTouchedPoint(float x ,float y) {
+		if (!isValidTouchPoint(x,y)) {
+			return new PointF(0,0);
+		}
+		
+		if (bindCrossLinesToStick == BIND_TO_TYPE_NONE) {
+			return new PointF(x, y);
+		} else if (bindCrossLinesToStick == BIND_TO_TYPE_BOTH) {
+			PointF bindPointF = calcBindPoint(x, y);
+			return bindPointF;
+		} else if (bindCrossLinesToStick == BIND_TO_TYPE_HIRIZIONAL) {
+			PointF bindPointF = calcBindPoint(x, y);
+			return new PointF(bindPointF.x, y);
+		} else if (bindCrossLinesToStick == BIND_TO_TYPE_VERTICAL) {
+			PointF bindPointF = calcBindPoint(x, y);
+			return new PointF(x, bindPointF.y);
+		} else {
+			return new PointF(x, y);
+		}
+	}
+	
+	protected PointF calcBindPoint(float x ,float y) {
+		float calcX = 0;
+		float calcY = 0;
+		int index = calcSelectedIndex(x,y);
+		float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber();
+		IMeasurable stick = stickData.get(index);
+		calcY = (float) ((1f - (stick.getHigh() - minValue)
+				/ (maxValue - minValue))
+				* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+		calcX = getDataQuadrantPaddingStartX() + stickWidth * (index - getDisplayFrom()) + stickWidth / 2;
+		
+		return new PointF(calcX,calcY);
 	}
 
 	/**
@@ -744,42 +763,42 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	
 	public void moveRight() {
 		int dataSize = stickData.size();
-		if (displayFrom + displayNumber < dataSize - SLIP_STEP) {
-			displayFrom = displayFrom + SLIP_STEP;
+		if (getDisplayTo() < dataSize - SLIP_STEP) {
+			setDisplayFrom(getDisplayFrom() + SLIP_STEP);
 		} else {
-			displayFrom = dataSize - displayNumber;
+			setDisplayFrom(dataSize - getDisplayNumber());
 		}
 
 		// 处理displayFrom越界
-		if (displayFrom + displayNumber >= dataSize) {
-			displayFrom = dataSize - displayNumber;
+		if (getDisplayTo() >= dataSize) {
+			setDisplayFrom(dataSize - getDisplayNumber());
 		}
 		
 		//Listener
 		if (onSlipGestureListener != null) {
-			onSlipGestureListener.onSlip(SLIP_DIRECTION_RIGHT, displayFrom, displayNumber);
+			onSlipGestureListener.onSlip(SLIP_DIRECTION_RIGHT, getDisplayFrom(), getDisplayNumber());
 		}
 	}
 
 	public void moveLeft() {
 		int dataSize = stickData.size();
 		
-		if (displayFrom <= SLIP_STEP) {
-			displayFrom = 0;
-		} else if (displayFrom > SLIP_STEP) {
-			displayFrom = displayFrom - SLIP_STEP;
+		if (getDisplayFrom() <= SLIP_STEP) {
+			setDisplayFrom(0);
+		} else if (getDisplayFrom() > SLIP_STEP) {
+			setDisplayFrom(getDisplayFrom() - SLIP_STEP);
 		} else {
 
 		}
 
 		// 处理displayFrom越界
-		if (displayFrom + displayNumber >= dataSize) {
-			displayFrom = dataSize - displayNumber;
+		if (getDisplayTo() >= dataSize) {
+			setDisplayFrom(dataSize - getDisplayNumber());
 		}
 		
 		//Listener
 		if (onSlipGestureListener != null) {
-			onSlipGestureListener.onSlip(SLIP_DIRECTION_LEFT, displayFrom, displayNumber);
+			onSlipGestureListener.onSlip(SLIP_DIRECTION_LEFT, getDisplayFrom(), getDisplayNumber());
 		}
 	}
 
@@ -795,31 +814,31 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	 * </p>
 	 */
 	public void zoomIn() {
-		if (displayNumber > minDisplayNumber) {
+		if (getDisplayNumber() > getMinDisplayNumber()) {
 			// 区分缩放方向
 			if (zoomBaseLine == ZOOM_BASE_LINE_CENTER) {
-				displayNumber = displayNumber - ZOOM_STEP;
-				displayFrom = displayFrom + ZOOM_STEP / 2;
+				setDisplayNumber(getDisplayNumber() - ZOOM_STEP);
+				setDisplayFrom(getDisplayFrom() + ZOOM_STEP / 2);
 			} else if (zoomBaseLine == ZOOM_BASE_LINE_LEFT) {
-				displayNumber = displayNumber - ZOOM_STEP;
+				setDisplayNumber(getDisplayNumber() - ZOOM_STEP);
 			} else if (zoomBaseLine == ZOOM_BASE_LINE_RIGHT) {
-				displayNumber = displayNumber - ZOOM_STEP;
-				displayFrom = displayFrom + ZOOM_STEP;
+				setDisplayNumber(getDisplayNumber() - ZOOM_STEP);
+				setDisplayFrom(getDisplayFrom() + ZOOM_STEP);
 			}
 
 			// 处理displayNumber越界
-			if (displayNumber < minDisplayNumber) {
-				displayNumber = minDisplayNumber;
+			if (getDisplayNumber() < getMinDisplayNumber()) {
+				setDisplayNumber(getMinDisplayNumber());
 			}
 
 			// 处理displayFrom越界
-			if (displayFrom + displayNumber >= stickData.size()) {
-				displayFrom = stickData.size() - displayNumber;
+			if (getDisplayTo() >= stickData.size()) {
+				setDisplayFrom(stickData.size() - getDisplayNumber());
 			}
 			
 			//Listener
 			if (onZoomGestureListener != null) {
-				onZoomGestureListener.onZoom(ZOOM_IN, displayFrom, displayNumber);
+				onZoomGestureListener.onZoom(ZOOM_IN, getDisplayFrom(), getDisplayNumber());
 			}
 		}
 	}
@@ -836,38 +855,38 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	 * </p>
 	 */
 	public void zoomOut() {
-		if (displayNumber < stickData.size() - 1) {
-			if (displayNumber + ZOOM_STEP > stickData.size() - 1) {
-				displayNumber = stickData.size() - 1;
-				displayFrom = 0;
+		if (getDisplayNumber() < stickData.size() - 1) {
+			if (getDisplayNumber() + ZOOM_STEP > stickData.size() - 1) {
+				setDisplayNumber(stickData.size() - 1);
+				setDisplayFrom(0);
 			} else {
 				// 区分缩放方向
 				if (zoomBaseLine == ZOOM_BASE_LINE_CENTER) {
-					displayNumber = displayNumber + ZOOM_STEP;
-					if (displayFrom > 1) {
-						displayFrom = displayFrom - ZOOM_STEP / 2;
+					setDisplayNumber(getDisplayNumber() + ZOOM_STEP);
+					if (getDisplayFrom() > 1) {
+						setDisplayFrom(getDisplayFrom() - ZOOM_STEP / 2);
 					} else {
-						displayFrom = 0;
+						setDisplayFrom(0);
 					}
 				} else if (zoomBaseLine == ZOOM_BASE_LINE_LEFT) {
-					displayNumber = displayNumber + ZOOM_STEP;
+					setDisplayNumber(getDisplayNumber() + ZOOM_STEP);
 				} else if (zoomBaseLine == ZOOM_BASE_LINE_RIGHT) {
-					displayNumber = displayNumber + ZOOM_STEP;
-					if (displayFrom > ZOOM_STEP) {
-						displayFrom = displayFrom - ZOOM_STEP;
+					setDisplayNumber(getDisplayNumber() + ZOOM_STEP);
+					if (getDisplayFrom() > ZOOM_STEP) {
+						setDisplayFrom(getDisplayFrom() - ZOOM_STEP);
 					} else {
-						displayFrom = 0;
+						setDisplayFrom(0);
 					}
 				}
 			}
 
-			if (displayFrom + displayNumber >= stickData.size()) {
-				displayNumber = stickData.size() - displayFrom;
+			if (getDisplayTo() >= stickData.size()) {
+				setDisplayNumber(stickData.size() - getDisplayFrom());
 			}
 			
 			//Listener
 			if (onZoomGestureListener != null) {
-				onZoomGestureListener.onZoom(ZOOM_OUT, displayFrom, displayNumber);
+				onZoomGestureListener.onZoom(ZOOM_OUT, getDisplayFrom(), getDisplayNumber());
 			}
 		}
 	}
@@ -934,46 +953,74 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 		}
 	}
 
-	/**
-	 * @return the displayFrom
+	
+	/* (non-Javadoc)
+	 * 
+	 * @return 
+	 * @see cn.limc.androidcharts.common.IDataCursor#getDisplayFrom() 
 	 */
 	public int getDisplayFrom() {
 		return displayFrom;
 	}
 
-	/**
-	 * @param displayFrom
-	 *            the displayFrom to set
+	/* (non-Javadoc)
+	 * 
+	 * @param displayFrom 
+	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayFrom(int) 
 	 */
 	public void setDisplayFrom(int displayFrom) {
 		this.displayFrom = displayFrom;
 	}
+	
+	/* (non-Javadoc)
+	 * 
+	 * @return 
+	 * @see cn.limc.androidcharts.common.IDataCursor#getDisplayTo() 
+	 */
+	public int getDisplayTo() {
+		return displayFrom + displayNumber;
+	}
 
-	/**
-	 * @return the displayNumber
+	/* (non-Javadoc)
+	 * 
+	 * @param displayTo 
+	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayTo(int) 
+	 */
+	public void setDisplayTo(int displayTo) {
+		// TODO 
+	}
+
+	/* (non-Javadoc)
+	 * 
+	 * @return 
+	 * @see cn.limc.androidcharts.common.IDataCursor#getDisplayNumber() 
 	 */
 	public int getDisplayNumber() {
 		return displayNumber;
 	}
 
-	/**
-	 * @param displayNumber
-	 *            the displayNumber to set
+	/* (non-Javadoc)
+	 * 
+	 * @param displayNumber 
+	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayNumber(int) 
 	 */
 	public void setDisplayNumber(int displayNumber) {
 		this.displayNumber = displayNumber;
 	}
 
-	/**
-	 * @return the minDisplayNumber
+	/* (non-Javadoc)
+	 * 
+	 * @return 
+	 * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber() 
 	 */
 	public int getMinDisplayNumber() {
 		return minDisplayNumber;
 	}
 
-	/**
-	 * @param minDisplayNumber
-	 *            the minDisplayNumber to set
+	/* (non-Javadoc)
+	 * 
+	 * @param minDisplayNumber 
+	 * @see cn.limc.androidcharts.common.IDataCursor#setMinDisplayNumber(int) 
 	 */
 	public void setMinDisplayNumber(int minDisplayNumber) {
 		this.minDisplayNumber = minDisplayNumber;
@@ -1124,68 +1171,5 @@ public class SlipStickChart extends GridChart implements ISlipable ,IZoomable {
 	 */
 	public void setAutoCalcValueRange(boolean autoCalcValueRange) {
 		this.autoCalcValueRange = autoCalcValueRange;
-	}
-
-	/**
-	 * @return the dataMultiple
-	 */
-	public int getDataMultiple() {
-		return dataMultiple;
-	}
-
-	/**
-	 * @param dataMultiple the dataMultiple to set
-	 */
-	public void setDataMultiple(int dataMultiple) {
-		this.dataMultiple = dataMultiple;
-	}
-
-	/**
-	 * @return the axisYDecimalFormat
-	 */
-	public String getAxisYDecimalFormat() {
-		return axisYDecimalFormat;
-	}
-
-	/**
-	 * @param axisYDecimalFormat the axisYDecimalFormat to set
-	 */
-	public void setAxisYDecimalFormat(String axisYDecimalFormat) {
-		this.axisYDecimalFormat = axisYDecimalFormat;
-	}
-
-	/**
-	 * @return the axisXDateTargetFormat
-	 */
-	public String getAxisXDateTargetFormat() {
-		return axisXDateTargetFormat;
-	}
-
-	/**
-	 * @param axisXDateTargetFormat the axisXDateTargetFormat to set
-	 */
-	public void setAxisXDateTargetFormat(String axisXDateTargetFormat) {
-		this.axisXDateTargetFormat = axisXDateTargetFormat;
-	}
-
-	/**
-	 * @return the axisXDateSourceFormat
-	 */
-	public String getAxisXDateSourceFormat() {
-		return axisXDateSourceFormat;
-	}
-
-	/**
-	 * @param axisXDateSourceFormat the axisXDateSourceFormat to set
-	 */
-	public void setAxisXDateSourceFormat(String axisXDateSourceFormat) {
-		this.axisXDateSourceFormat = axisXDateSourceFormat;
-	}
-
-	/**
-	 * @return the defaultDataMultiple
-	 */
-	public static int getDefaultDataMultiple() {
-		return DEFAULT_DATA_MULTIPLE;
 	}
 }

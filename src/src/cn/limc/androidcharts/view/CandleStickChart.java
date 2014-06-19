@@ -28,6 +28,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.util.AttributeSet;
 
 /**
@@ -420,6 +421,30 @@ public class CandleStickChart extends StickChart {
 				stickX = stickX - stickSpacing - stickWidth;
 			}
 		}
+	}
+	
+	protected PointF calcBindPoint(float x ,float y) {
+		float calcX = 0;
+		float calcY = 0;
+		
+		int index = calcSelectedIndex(x,y);
+		
+		float stickWidth = getDataQuadrantPaddingWidth() / maxSticksNum;
+		OHLCEntity stick = (OHLCEntity)stickData.get(index);
+		calcY = (float) ((1f - (stick.getClose() - minValue)
+				/ (maxValue - minValue))
+				* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			calcX = getDataQuadrantPaddingStartX() + stickWidth * index + stickWidth / 2;
+		}else{
+			if(stickData.size() - index <= maxSticksNum){
+				calcX = getDataQuadrantPaddingEndX() - stickWidth * (stickData.size() - index) + stickWidth /2 ;
+			}else{
+				calcX = x;
+			}
+		}
+		
+		return new PointF(calcX,calcY);
 	}
 
 	/**

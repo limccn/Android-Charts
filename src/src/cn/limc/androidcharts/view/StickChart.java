@@ -21,17 +21,14 @@
 
 package cn.limc.androidcharts.view;
 
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import cn.limc.androidcharts.common.IDataCursor;
+import cn.limc.androidcharts.common.IZoomable;
 import cn.limc.androidcharts.entity.IChartData;
 import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.IStickEntity;
-import cn.limc.androidcharts.entity.StickEntity;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -60,7 +57,7 @@ import android.view.MotionEvent;
  * @version v1.0 2011/05/30 14:58:59
  * 
  */
-public class StickChart extends GridChart implements IZoomable {
+public class StickChart extends DataGridChart implements IDataCursor, IZoomable{		
 	public static final int DEFAULT_STICK_ALIGN_TYPE = ALIGN_TYPE_CENTER;
 
 	/**
@@ -120,10 +117,8 @@ public class StickChart extends GridChart implements IZoomable {
 	public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
 	public static final int DEFAULT_STICK_SPACING = 1;
 	
-	public static final int DEFAULT_DATA_MULTIPLE = 1;
-	public static final String DEFAULT_AXIS_Y_DECIMAL_FORMAT = "#,##0";
-	public static final String DEFAULT_AXIS_X_DATE_TARGET_FORMAT = "yyyy/MM/dd";
-	public static final String DEFAULT_AXIS_X_DATE_SOURCE_FORMAT = "yyyyMMdd";
+	public static final int DEFAULT_BIND_CROSS_LINES_TO_STICK = BIND_TO_TYPE_BOTH;
+	
 	/**
 	 * <p>
 	 * data to draw sticks
@@ -136,11 +131,6 @@ public class StickChart extends GridChart implements IZoomable {
 	 * </p>
 	 */
 	protected IChartData<IStickEntity> stickData;
-	
-	protected int dataMultiple =  DEFAULT_DATA_MULTIPLE;
-	protected String axisYDecimalFormat = DEFAULT_AXIS_Y_DECIMAL_FORMAT;
-	protected String axisXDateTargetFormat = DEFAULT_AXIS_X_DATE_TARGET_FORMAT;
-	protected String axisXDateSourceFormat = DEFAULT_AXIS_X_DATE_SOURCE_FORMAT;
 
 	/**
 	 * <p>
@@ -154,6 +144,9 @@ public class StickChart extends GridChart implements IZoomable {
 	 * </p>
 	 */
 	protected int maxSticksNum;
+	
+	protected int minDisplayNum = MINI_DISPLAY_NUM;
+	
 
 	/**
 	 * <p>
@@ -185,8 +178,10 @@ public class StickChart extends GridChart implements IZoomable {
 
 	protected int stickSpacing = DEFAULT_STICK_SPACING;
 	
+	protected int bindCrossLinesToStick = DEFAULT_BIND_CROSS_LINES_TO_STICK;
+	
 	protected OnZoomGestureListener onZoomGestureListener;
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -231,12 +226,7 @@ public class StickChart extends GridChart implements IZoomable {
 	protected void calcDataValueRange() {
 		double maxValue = Double.MIN_VALUE;
 		double minValue = Double.MAX_VALUE;
-		IMeasurable first;
-		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-			first = this.stickData.get(0);
-		} else {
-			first = this.stickData.get(stickData.size() - 1);
-		}
+		IMeasurable first = this.stickData.get(getDisplayFrom());
 		// 第一个stick为停盘的情况
 		if (first.getHigh() == 0 && first.getLow() == 0) {
 
@@ -245,13 +235,10 @@ public class StickChart extends GridChart implements IZoomable {
 			minValue = first.getLow();
 		}
 
-		for (int i = 0; i < this.maxSticksNum; i++) {
+		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
 			IMeasurable stick;
-			if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-				stick = this.stickData.get(i);
-			} else {
-				stick = this.stickData.get(stickData.size() - 1 - i);
-			}
+			stick = this.stickData.get(i);
+			
 			if (stick.getLow() < minValue) {
 				minValue = stick.getLow();
 			}
@@ -383,10 +370,10 @@ public class StickChart extends GridChart implements IZoomable {
 	@Override
 	public String getAxisXGraduate(Object value) {
 		float graduate = Float.valueOf(super.getAxisXGraduate(value));
-		int index = (int) Math.floor(graduate * maxSticksNum);
+		int index = (int) Math.floor(graduate * getDisplayNumber());
 
-		if (index >= maxSticksNum) {
-			index = maxSticksNum - 1;
+		if (index >= getDisplayNumber()) {
+			index = getDisplayNumber() - 1;
 		} else if (index < 0) {
 			index = 0;
 		}
@@ -415,22 +402,22 @@ public class StickChart extends GridChart implements IZoomable {
 	 * @see
 	 * cn.limc.androidcharts.event.ITouchEventResponse#notifyEvent(GridChart)
 	 */
-	@Override
-	public void notifyEvent(GridChart chart) {
-		CandleStickChart candlechart = (CandleStickChart) chart;
-
-		this.maxSticksNum = candlechart.getMaxSticksNum();
-
-		super.setDisplayCrossYOnTouch(false);
-		// notifyEvent
-		super.notifyEvent(chart);
-		// notifyEventAll
-		super.notifyEventAll(this);
-	}
+//	@Override
+//	public void notifyEvent(GridChart chart) {
+//		CandleStickChart candlechart = (CandleStickChart) chart;
+//
+//		this.maxSticksNum = candlechart.getMaxSticksNum();
+//
+//		super.setDisplayCrossYOnTouch(false);
+//		// notifyEvent
+//		super.notifyEvent(chart);
+//		// notifyEventAll
+//		super.notifyEventAll(this);
+//	}
 	
 	public float longitudePostOffset(){
 		if (stickAlignType == ALIGN_TYPE_CENTER) {
-			float stickWidth = getDataQuadrantPaddingWidth() / maxSticksNum;
+			float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber();
 			return (this.getDataQuadrantPaddingWidth() - stickWidth)/ (longitudeTitles.size() - 1);
 	    }else{
 			return this.getDataQuadrantPaddingWidth()/ (longitudeTitles.size() - 1);
@@ -439,7 +426,7 @@ public class StickChart extends GridChart implements IZoomable {
 	
 	public float longitudeOffset(){
 		if (stickAlignType == ALIGN_TYPE_CENTER) {
-			float stickWidth = getDataQuadrantPaddingWidth() / maxSticksNum;
+			float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber();
 			return getDataQuadrantPaddingStartX() + stickWidth / 2;
 		}else{
 			return getDataQuadrantPaddingStartX();
@@ -460,15 +447,15 @@ public class StickChart extends GridChart implements IZoomable {
 	protected void initAxisX() {
 		List<String> titleX = new ArrayList<String>();
 		if (null != stickData && stickData.size() > 0) {
-			float average = maxSticksNum / this.getLongitudeNum();
+			float average = getDisplayNumber() / this.getLongitudeNum();
 			for (int i = 0; i < this.getLongitudeNum(); i++) {
 				int index = (int) Math.floor(i * average);
-				if (index > maxSticksNum - 1) {
-					index = maxSticksNum - 1;
+				if (index > getDisplayNumber() - 1) {
+					index = getDisplayNumber() - 1;
 				}
 				titleX.add(formatAxisXDegree(stickData.get(index).getDate()));
 			}
-			titleX.add(formatAxisXDegree(stickData.get(maxSticksNum - 1).getDate()));
+			titleX.add(formatAxisXDegree(stickData.get(getDisplayNumber() - 1).getDate()));
 		}
 		super.setLongitudeTitles(titleX);
 	}
@@ -499,17 +486,23 @@ public class StickChart extends GridChart implements IZoomable {
 		if (null == touchPoint) {
 			return 0;
 		}
-		float graduate = Float.valueOf(super.getAxisXGraduate(super
-				.getTouchPoint().x));
-		int index = (int) Math.floor(graduate * maxSticksNum);
+		return calcSelectedIndex(touchPoint.x, touchPoint.y);
+	}
+	
+	protected int calcSelectedIndex(float x ,float y) {
+		if (!isValidTouchPoint(x,y)) {
+			return 0;
+		}
+		float graduate = Float.valueOf(super.getAxisXGraduate(x));
+		int index = (int) Math.floor(graduate * getDisplayNumber());
 
-		if (index >= maxSticksNum) {
-			index = maxSticksNum - 1;
+		if (index >= getDisplayNumber()) {
+			index = getDisplayNumber() - 1;
 		} else if (index < 0) {
 			index = 0;
 		}
-
-		return index;
+		
+		return getDisplayFrom() + index;
 	}
 
 	/**
@@ -549,19 +542,7 @@ public class StickChart extends GridChart implements IZoomable {
 		super.setLatitudeTitles(titleY);
 	}
 	
-	public String formatAxisYDegree(double value) {
-		return new DecimalFormat(axisYDecimalFormat).format(Math.floor(value)/dataMultiple);
-	}
 	
-	public String formatAxisXDegree(int date) {
-		try {
-			Date dt = new SimpleDateFormat(axisXDateSourceFormat).parse(String
-					.valueOf(date));
-			return new SimpleDateFormat(axisXDateTargetFormat).format(dt);
-		} catch (ParseException e) {
-			return "";
-		}
-	}
 
 	/**
 	 * <p>
@@ -587,7 +568,7 @@ public class StickChart extends GridChart implements IZoomable {
 		Paint mPaintStick = new Paint();
 		mPaintStick.setColor(stickFillColor);
 
-		float stickWidth = getDataQuadrantPaddingWidth() / maxSticksNum
+		float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber()
 				- stickSpacing;
 
 		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
@@ -640,75 +621,75 @@ public class StickChart extends GridChart implements IZoomable {
 
 	}
 
-	/**
-	 * <p>
-	 * add a new stick data to sticks and refresh this chart
-	 * </p>
-	 * <p>
-	 * 新しいスティックデータを追加する，フラフをレフレシューする
-	 * </p>
-	 * <p>
-	 * 追加一条新数据并刷新当前图表
-	 * </p>
-	 * 
-	 * @param entity
-	 *            <p>
-	 *            data
-	 *            </p>
-	 *            <p>
-	 *            データ
-	 *            </p>
-	 *            <p>
-	 *            新数据
-	 *            </p>
-	 */
-	public void pushData(StickEntity entity) {
-		if (null != entity) {
-			addData(entity);
-			super.postInvalidate();
-		}
-	}
+//	/**
+//	 * <p>
+//	 * add a new stick data to sticks and refresh this chart
+//	 * </p>
+//	 * <p>
+//	 * 新しいスティックデータを追加する，フラフをレフレシューする
+//	 * </p>
+//	 * <p>
+//	 * 追加一条新数据并刷新当前图表
+//	 * </p>
+//	 * 
+//	 * @param entity
+//	 *            <p>
+//	 *            data
+//	 *            </p>
+//	 *            <p>
+//	 *            データ
+//	 *            </p>
+//	 *            <p>
+//	 *            新数据
+//	 *            </p>
+//	 */
+//	public void pushData(StickEntity entity) {
+//		if (null != entity) {
+//			addData(entity);
+//			super.postInvalidate();
+//		}
+//	}
 
-	/**
-	 * <p>
-	 * add a new stick data to sticks
-	 * </p>
-	 * <p>
-	 * 新しいスティックデータを追加する
-	 * </p>
-	 * <p>
-	 * 追加一条新数据
-	 * </p>
-	 * 
-	 * @param entity
-	 *            <p>
-	 *            data
-	 *            </p>
-	 *            <p>
-	 *            データ
-	 *            </p>
-	 *            <p>
-	 *            新数据
-	 *            </p>
-	 */
-	public void addData(StickEntity entity) {
-		if (null != entity) {
-			// add
-			this.stickData.add(entity);
-
-			if (this.maxValue < entity.getHigh()) {
-				this.maxValue = ((int) entity.getHigh()) / 100 * 100;
-			}
-
-			if (this.maxValue < entity.getLow()) {
-				this.minValue = ((int) entity.getLow()) / 100 * 100;
-			}
-
-			if (stickData.size() > maxSticksNum) {
-				maxSticksNum = maxSticksNum + 1;
-			}
-		}
-	}
+//	/**
+//	 * <p>
+//	 * add a new stick data to sticks
+//	 * </p>
+//	 * <p>
+//	 * 新しいスティックデータを追加する
+//	 * </p>
+//	 * <p>
+//	 * 追加一条新数据
+//	 * </p>
+//	 * 
+//	 * @param entity
+//	 *            <p>
+//	 *            data
+//	 *            </p>
+//	 *            <p>
+//	 *            データ
+//	 *            </p>
+//	 *            <p>
+//	 *            新数据
+//	 *            </p>
+//	 */
+//	public void addData(StickEntity entity) {
+//		if (null != entity) {
+//			// add
+//			this.stickData.add(entity);
+//
+//			if (this.maxValue < entity.getHigh()) {
+//				this.maxValue = ((int) entity.getHigh()) / 100 * 100;
+//			}
+//
+//			if (this.maxValue < entity.getLow()) {
+//				this.minValue = ((int) entity.getLow()) / 100 * 100;
+//			}
+//
+//			if (stickData.size() > maxSticksNum) {
+//				maxSticksNum = maxSticksNum + 1;
+//			}
+//		}
+//	}
 
 	private float olddistance;
 	private float newdistance;
@@ -740,7 +721,7 @@ public class StickChart extends GridChart implements IZoomable {
 		case MotionEvent.ACTION_DOWN:
 			if (event.getPointerCount() == 1) {
 				touchMode = TOUCH_MODE_SINGLE;
-				touchPoint = new PointF(event.getX(), event.getY());
+				touchPoint = calcTouchedPoint(event.getX(), event.getY());
 				if (onTouchGestureListener != null) {
 					onTouchGestureListener.onTouchDown(touchPoint,
 							getSelectedIndex());
@@ -753,7 +734,7 @@ public class StickChart extends GridChart implements IZoomable {
 		case MotionEvent.ACTION_UP:
 			touchMode = TOUCH_MODE_NONE;
 			if (event.getPointerCount() == 1) {
-				touchPoint = new PointF(event.getX(), event.getY());
+				touchPoint = calcTouchedPoint(event.getX(), event.getY());
 				if (onTouchGestureListener != null) {
 					onTouchGestureListener.onTouchUp(touchPoint,
 							getSelectedIndex());
@@ -795,7 +776,8 @@ public class StickChart extends GridChart implements IZoomable {
 					float moveXdistance = Math.abs(event.getX() - touchPoint.x);
 					float moveYdistance = Math.abs(event.getY() - touchPoint.y);
 					if (moveXdistance > TOUCH_MOVE_MIN_DISTANCE || moveYdistance > TOUCH_MOVE_MIN_DISTANCE) {
-						touchPoint = new PointF(event.getX(), event.getY());
+//						touchPoint = new PointF(event.getX(), event.getY());
+						touchPoint = calcTouchedPoint(event.getX(), event.getY());
 						// call back to listener
 						if (onTouchGestureListener != null) {
 							onTouchGestureListener.onTouchMoved(touchPoint,
@@ -812,7 +794,42 @@ public class StickChart extends GridChart implements IZoomable {
 		}
 		return true;
 	}
-
+	
+	protected PointF calcTouchedPoint(float x ,float y) {
+		if (!isValidTouchPoint(x,y)) {
+			return new PointF(0,0);
+		}
+		if (bindCrossLinesToStick == BIND_TO_TYPE_NONE) {
+			return new PointF(x, y);
+		} else if (bindCrossLinesToStick == BIND_TO_TYPE_BOTH) {
+			PointF bindPointF = calcBindPoint(x, y);
+			return bindPointF;
+		} else if (bindCrossLinesToStick == BIND_TO_TYPE_HIRIZIONAL) {
+			PointF bindPointF = calcBindPoint(x, y);
+			return new PointF(bindPointF.x, y);
+		} else if (bindCrossLinesToStick == BIND_TO_TYPE_VERTICAL) {
+			PointF bindPointF = calcBindPoint(x, y);
+			return new PointF(x, bindPointF.y);
+		} else {
+			return new PointF(x, y);
+		}	
+	}
+	
+	protected PointF calcBindPoint(float x ,float y) {
+		float calcX = 0;
+		float calcY = 0;
+		
+		int index = calcSelectedIndex(x,y);
+		
+		float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber();
+		IMeasurable stick = stickData.get(index);
+		calcY = (float) ((1f - (stick.getHigh() - minValue)
+				/ (maxValue - minValue))
+				* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+		calcX = getDataQuadrantPaddingStartX() + stickWidth * (index - getDisplayFrom()) + stickWidth / 2;
+		
+		return new PointF(calcX,calcY);
+	}
 	/**
 	 * <p>
 	 * calculate the distance between two touch points
@@ -858,13 +875,13 @@ public class StickChart extends GridChart implements IZoomable {
 	 * </p>
 	 */
 	public void zoomIn() {
-		if (maxSticksNum > 10) {
-			maxSticksNum = maxSticksNum - ZOOM_STEP;
+		if (getDisplayNumber() > getMinDisplayNumber()) {
+			setDisplayNumber(getDisplayNumber() - ZOOM_STEP);;
 		}
 		
 		//Listener
 		if (onZoomGestureListener != null) {
-			onZoomGestureListener.onZoom(ZOOM_IN, 0, maxSticksNum);
+			onZoomGestureListener.onZoom(ZOOM_IN, getDisplayFrom(), getDisplayNumber());
 		}
 	}
 
@@ -880,13 +897,17 @@ public class StickChart extends GridChart implements IZoomable {
 	 * </p>
 	 */
 	public void zoomOut() {
-		if (maxSticksNum < stickData.size() - 1 - ZOOM_STEP) {
-			maxSticksNum = maxSticksNum + ZOOM_STEP;
+//		if (maxSticksNum < stickData.size() - 1 - ZOOM_STEP) {
+//			maxSticksNum = maxSticksNum + ZOOM_STEP;
+//		}
+		
+		if (getDisplayNumber() < stickData.size() - 1 - ZOOM_STEP) {
+			setDisplayNumber(getDisplayNumber() + ZOOM_STEP);
 		}
 		
 		//Listener
 		if (onZoomGestureListener != null) {
-			onZoomGestureListener.onZoom(ZOOM_OUT, 0, maxSticksNum);
+			onZoomGestureListener.onZoom(ZOOM_OUT, getDisplayFrom(), getDisplayNumber());
 		}
 	}
 
@@ -938,6 +959,7 @@ public class StickChart extends GridChart implements IZoomable {
 	/**
 	 * @return the maxSticksNum
 	 */
+	@Deprecated
 	public int getMaxSticksNum() {
 		return maxSticksNum;
 	}
@@ -946,6 +968,7 @@ public class StickChart extends GridChart implements IZoomable {
 	 * @param maxSticksNum
 	 *            the maxSticksNum to set
 	 */
+	@Deprecated
 	public void setMaxSticksNum(int maxSticksNum) {
 		this.maxSticksNum = maxSticksNum;
 	}
@@ -1031,58 +1054,96 @@ public class StickChart extends GridChart implements IZoomable {
 	}
 
 	/**
-	 * @return the dataMultiple
+	 * @return the bindCrossLinesToStick
 	 */
-	public int getDataMultiple() {
-		return dataMultiple;
+	public int getBindCrossLinesToStick() {
+		return bindCrossLinesToStick;
 	}
 
 	/**
-	 * @param dataMultiple the dataMultiple to set
+	 * @param bindCrossLinesToStick the bindCrossLinesToStick to set
 	 */
-	public void setDataMultiple(int dataMultiple) {
-		this.dataMultiple = dataMultiple;
+	public void setBindCrossLinesToStick(int bindCrossLinesToStick) {
+		this.bindCrossLinesToStick = bindCrossLinesToStick;
 	}
 
-	/**
-	 * @return the axisYDecimalFormat
+	/* (non-Javadoc)
+	 * 
+	 * @return 
+	 * @see cn.limc.androidcharts.common.IDataCursor#displayFrom() 
 	 */
-	public String getAxisYDecimalFormat() {
-		return axisYDecimalFormat;
+	public int getDisplayFrom() {
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			return 0;
+		}else{
+			return stickData.size() - maxSticksNum;
+		}
 	}
 
-	/**
-	 * @param axisYDecimalFormat the axisYDecimalFormat to set
+	/* (non-Javadoc)
+	 * 
+	 * @return 
+	 * @see cn.limc.androidcharts.common.IDataCursor#displayNumber() 
 	 */
-	public void setAxisYDecimalFormat(String axisYDecimalFormat) {
-		this.axisYDecimalFormat = axisYDecimalFormat;
+	public int getDisplayNumber() {
+		return maxSticksNum;
 	}
 
-	/**
-	 * @return the axisXDateTargetFormat
+	/* (non-Javadoc)
+	 * 
+	 * @return 
+	 * @see cn.limc.androidcharts.common.IDataCursor#displayTo() 
 	 */
-	public String getAxisXDateTargetFormat() {
-		return axisXDateTargetFormat;
+	public int getDisplayTo() {
+		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			return maxSticksNum;
+		}else{
+			return stickData.size() - 1;
+		}
 	}
 
-	/**
-	 * @param axisXDateTargetFormat the axisXDateTargetFormat to set
+	/* (non-Javadoc)
+	 * 
+	 * @param displayFrom 
+	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayFrom(int) 
 	 */
-	public void setAxisXDateTargetFormat(String axisXDateTargetFormat) {
-		this.axisXDateTargetFormat = axisXDateTargetFormat;
+	public void setDisplayFrom(int displayFrom) {
+		//TODO
 	}
 
-	/**
-	 * @return the axisXDateSourceFormat
+	/* (non-Javadoc)
+	 * 
+	 * @param displayNumber 
+	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayNumber(int) 
 	 */
-	public String getAxisXDateSourceFormat() {
-		return axisXDateSourceFormat;
+	public void setDisplayNumber(int displayNumber) {
+		maxSticksNum = displayNumber;
 	}
 
-	/**
-	 * @param axisXDateSourceFormat the axisXDateSourceFormat to set
+	/* (non-Javadoc)
+	 * 
+	 * @param displayTo 
+	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayTo(int) 
 	 */
-	public void setAxisXDateSourceFormat(String axisXDateSourceFormat) {
-		this.axisXDateSourceFormat = axisXDateSourceFormat;
+	public void setDisplayTo(int displayTo) {
+		//TODO
+	}
+
+	/* (non-Javadoc)
+	 * 
+	 * @return 
+	 * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber() 
+	 */
+	public int getMinDisplayNumber() {
+		return minDisplayNum;
+	}
+
+	/* (non-Javadoc)
+	 * 
+	 * @param minDisplayNumber 
+	 * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber(int) 
+	 */
+	public void setMinDisplayNumber(int minDisplayNumber) {
+		this.minDisplayNum = minDisplayNumber;
 	}
 }

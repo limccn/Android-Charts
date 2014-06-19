@@ -27,6 +27,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.util.AttributeSet;
 
 /**
@@ -329,6 +330,21 @@ public class SlipCandleStickChart extends SlipStickChart {
 			// next x
 			stickX = stickX + stickSpacing + stickWidth;
 		}
+	}
+	
+	@Override
+	protected PointF calcBindPoint(float x ,float y) {
+		float calcX = 0;
+		float calcY = 0;
+		int index = calcSelectedIndex(x,y);
+		float stickWidth = getDataQuadrantPaddingWidth() / displayNumber;
+		OHLCEntity stick = (OHLCEntity)stickData.get(index);
+		calcY = (float) ((1f - (stick.getClose() - minValue)
+				/ (maxValue - minValue))
+				* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+		calcX = getDataQuadrantPaddingStartX() + stickWidth * (index - displayFrom) + stickWidth / 2;
+		
+		return new PointF(calcX,calcY);
 	}
 
 	/**

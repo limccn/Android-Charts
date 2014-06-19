@@ -1,5 +1,5 @@
 /*
- * IFlexableGrid.java
+ * ICrossLines.java
  * Android-Charts
  *
  * Created by limc on 2014.
@@ -20,7 +20,7 @@
  */
 
 
-package cn.limc.androidcharts.view;
+package cn.limc.androidcharts.common;
 
 /** 
  * <p>en</p>
@@ -28,13 +28,18 @@ package cn.limc.androidcharts.view;
  * <p>cn</p>
  *
  * @author limc 
- * @version v1.0 2014/06/04 17:42:28 
+ * @version v1.0 2014/06/18 14:46:30 
  *  
  */
-public interface IFlexableGrid {
-	static final int ALIGN_TYPE_CENTER = 0;
-	static final int ALIGN_TYPE_JUSTIFY = 1;
+public interface ICrossLines {
+	public static final int BIND_TO_TYPE_NONE = 0;
+	public static final int BIND_TO_TYPE_HIRIZIONAL = 1;
+	public static final int BIND_TO_TYPE_VERTICAL = 2;
+	public static final int BIND_TO_TYPE_BOTH = 3;
 	
-	float longitudePostOffset();
-	float longitudeOffset();
+	public static final int DISPLAY_NONE = 0;
+	public static final int DISPLAY_HIRIZIONAL = 1;
+	public static final int DISPLAY_VERTICAL = 2;
+	public static final int DISPLAY_BOTH = 3;
+	
 }

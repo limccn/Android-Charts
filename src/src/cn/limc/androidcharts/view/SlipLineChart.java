@@ -32,6 +32,8 @@ import android.util.AttributeSet;
 import android.util.FloatMath;
 import android.view.MotionEvent;
 
+import cn.limc.androidcharts.common.ISlipable;
+import cn.limc.androidcharts.common.IZoomable;
 import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
 

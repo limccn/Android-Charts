@@ -19,7 +19,7 @@
  * limitations under the License.
  */
 
-package cn.limc.androidcharts.view;
+package cn.limc.androidcharts.common;
 
 /**
  * <p>

@@ -24,6 +24,7 @@ package cn.limc.androidcharts.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.limc.androidcharts.common.IZoomable;
 import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
 

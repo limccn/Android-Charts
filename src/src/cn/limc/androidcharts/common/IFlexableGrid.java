@@ -1,5 +1,5 @@
 /*
- * IZoomable.java
+ * IFlexableGrid.java
  * Android-Charts
  *
  * Created by limc on 2014.
@@ -20,9 +20,7 @@
  */
 
 
-package cn.limc.androidcharts.view;
-
-
+package cn.limc.androidcharts.common;
 
 /** 
  * <p>en</p>
@@ -30,27 +28,13 @@ package cn.limc.androidcharts.view;
  * <p>cn</p>
  *
  * @author limc 
- * @version v1.0 2014/05/29 16:49:01 
+ * @version v1.0 2014/06/04 17:42:28 
  *  
  */
-public interface IZoomable {
+public interface IFlexableGrid {
+	static final int ALIGN_TYPE_CENTER = 0;
+	static final int ALIGN_TYPE_JUSTIFY = 1;
 	
-	static final int ZOOM_BASE_LINE_CENTER = 0;
-	static final int ZOOM_BASE_LINE_LEFT = 1;
-	static final int ZOOM_BASE_LINE_RIGHT = 2;
-	
-	static final int ZOOM_NONE = 0;
-	static final int ZOOM_IN = 1;
-	static final int ZOOM_OUT = 2;
-	
-	static final int ZOOM_STEP = 4;
-	
-	void zoomIn();
-	void zoomOut();
-	
-	void setOnZoomGestureListener(OnZoomGestureListener listener);
-
-	interface OnZoomGestureListener{
-		void onZoom(int zoom, int displayFrom , int displayNumber);
-	}
+	float longitudePostOffset();
+	float longitudeOffset();
 }

@@ -24,6 +24,9 @@ package cn.limc.androidcharts.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.limc.androidcharts.common.ICrossLines;
+import cn.limc.androidcharts.common.IFlexableGrid;
+import cn.limc.androidcharts.common.ITouchable;
 import cn.limc.androidcharts.event.ITouchEventNotify;
 import cn.limc.androidcharts.event.ITouchEventResponse;
 
@@ -58,7 +61,7 @@ import android.view.MotionEvent;
  * 
  */
 public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
-		ITouchEventResponse, ITouchable, IFlexableGrid {
+		ITouchEventResponse, ITouchable, IFlexableGrid, ICrossLines {
 
 	public static final int AXIS_X_POSITION_BOTTOM = 1 << 0;
 	@Deprecated

@@ -21,6 +21,7 @@
 
 package cn.limc.androidcharts.view;
 
+import cn.limc.androidcharts.common.IChart;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
