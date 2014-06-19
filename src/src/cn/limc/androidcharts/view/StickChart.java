@@ -21,10 +21,6 @@
 
 package cn.limc.androidcharts.view;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import cn.limc.androidcharts.common.IDataCursor;
 import cn.limc.androidcharts.common.IZoomable;
 import cn.limc.androidcharts.entity.IChartData;
 import cn.limc.androidcharts.entity.IMeasurable;
@@ -34,9 +30,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.util.AttributeSet;
-import android.util.FloatMath;
 import android.view.MotionEvent;
 
 /**
@@ -57,8 +51,7 @@ import android.view.MotionEvent;
  * @version v1.0 2011/05/30 14:58:59
  * 
  */
-public class StickChart extends DataGridChart implements IDataCursor, IZoomable{		
-	public static final int DEFAULT_STICK_ALIGN_TYPE = ALIGN_TYPE_CENTER;
+public class StickChart extends PeriodDataGridChart implements IZoomable{		
 
 	/**
 	 * <p>
@@ -97,7 +90,7 @@ public class StickChart extends DataGridChart implements IDataCursor, IZoomable{
 	 * 表示柱条的边框颜色
 	 * </p>
 	 */
-	private int stickBorderColor = DEFAULT_STICK_BORDER_COLOR;
+	protected int stickBorderColor = DEFAULT_STICK_BORDER_COLOR;
 
 	/**
 	 * <p>
@@ -110,27 +103,10 @@ public class StickChart extends DataGridChart implements IDataCursor, IZoomable{
 	 * 表示柱条的填充颜色
 	 * </p>
 	 */
-	private int stickFillColor = DEFAULT_STICK_FILL_COLOR;
-	
-	private int stickAlignType = DEFAULT_STICK_ALIGN_TYPE;
+	protected int stickFillColor = DEFAULT_STICK_FILL_COLOR;
 
-	public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
 	public static final int DEFAULT_STICK_SPACING = 1;
 	
-	public static final int DEFAULT_BIND_CROSS_LINES_TO_STICK = BIND_TO_TYPE_BOTH;
-	
-	/**
-	 * <p>
-	 * data to draw sticks
-	 * </p>
-	 * <p>
-	 * スティックを書く用データ
-	 * </p>
-	 * <p>
-	 * 绘制柱条用的数据
-	 * </p>
-	 */
-	protected IChartData<IStickEntity> stickData;
 
 	/**
 	 * <p>
@@ -146,39 +122,8 @@ public class StickChart extends DataGridChart implements IDataCursor, IZoomable{
 	protected int maxSticksNum;
 	
 	protected int minDisplayNum = MINI_DISPLAY_NUM;
-	
-
-	/**
-	 * <p>
-	 * max value of Y axis
-	 * </p>
-	 * <p>
-	 * Y軸の最大値
-	 * </p>
-	 * <p>
-	 * Y的最大表示值
-	 * </p>
-	 */
-	protected double maxValue;
-
-	/**
-	 * <p>
-	 * min value of Y axis
-	 * </p>
-	 * <p>
-	 * Y軸の最小値
-	 * </p>
-	 * <p>
-	 * Y的最小表示值
-	 * </p>
-	 */
-	protected double minValue;
-
-	protected boolean autoCalcValueRange = DEFAULT_AUTO_CALC_VALUE_RANGE;
 
 	protected int stickSpacing = DEFAULT_STICK_SPACING;
-	
-	protected int bindCrossLinesToStick = DEFAULT_BIND_CROSS_LINES_TO_STICK;
 	
 	protected OnZoomGestureListener onZoomGestureListener;
 	
@@ -223,120 +168,6 @@ public class StickChart extends DataGridChart implements IDataCursor, IZoomable{
 		super(context, attrs);
 	}
 
-	protected void calcDataValueRange() {
-		double maxValue = Double.MIN_VALUE;
-		double minValue = Double.MAX_VALUE;
-		IMeasurable first = this.stickData.get(getDisplayFrom());
-		// 第一个stick为停盘的情况
-		if (first.getHigh() == 0 && first.getLow() == 0) {
-
-		} else {
-			maxValue = first.getHigh();
-			minValue = first.getLow();
-		}
-
-		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
-			IMeasurable stick;
-			stick = this.stickData.get(i);
-			
-			if (stick.getLow() < minValue) {
-				minValue = stick.getLow();
-			}
-
-			if (stick.getHigh() > maxValue) {
-				maxValue = stick.getHigh();
-			}
-
-		}
-
-		this.maxValue = maxValue;
-		this.minValue = minValue;
-	}
-
-	protected void calcValueRangePaddingZero() {
-		double maxValue = this.maxValue;
-		double minValue = this.minValue;
-
-		if ((long) maxValue > (long) minValue) {
-			if ((maxValue - minValue) < 10 && minValue > 1) {
-				this.maxValue = (long) (maxValue + 1);
-				this.minValue = (long) (minValue - 1);
-			} else {
-				this.maxValue = (long) (maxValue + (maxValue - minValue) * 0.1);
-				this.minValue = (long) (minValue - (maxValue - minValue) * 0.1);
-				if (this.minValue < 0) {
-					this.minValue = 0;
-				}
-			}
-		} else if ((long) maxValue == (long) minValue) {
-			if (maxValue <= 10 && maxValue > 1) {
-				this.maxValue = maxValue + 1;
-				this.minValue = minValue - 1;
-			} else if (maxValue <= 100 && maxValue > 10) {
-				this.maxValue = maxValue + 10;
-				this.minValue = minValue - 10;
-			} else if (maxValue <= 1000 && maxValue > 100) {
-				this.maxValue = maxValue + 100;
-				this.minValue = minValue - 100;
-			} else if (maxValue <= 10000 && maxValue > 1000) {
-				this.maxValue = maxValue + 1000;
-				this.minValue = minValue - 1000;
-			} else if (maxValue <= 100000 && maxValue > 10000) {
-				this.maxValue = maxValue + 10000;
-				this.minValue = minValue - 10000;
-			} else if (maxValue <= 1000000 && maxValue > 100000) {
-				this.maxValue = maxValue + 100000;
-				this.minValue = minValue - 100000;
-			} else if (maxValue <= 10000000 && maxValue > 1000000) {
-				this.maxValue = maxValue + 1000000;
-				this.minValue = minValue - 1000000;
-			} else if (maxValue <= 100000000 && maxValue > 10000000) {
-				this.maxValue = maxValue + 10000000;
-				this.minValue = minValue - 10000000;
-			}
-		} else {
-			this.maxValue = 0;
-			this.minValue = 0;
-		}
-
-	}
-
-	protected void calcValueRangeFormatForAxis() {
-		// 修正最大值和最小值
-		long rate = (long) (this.maxValue - this.minValue) / (this.latitudeNum);
-		String strRate = String.valueOf(rate);
-		float first = Integer.parseInt(String.valueOf(strRate.charAt(0))) + 1.0f;
-		if (first > 0 && strRate.length() > 1) {
-			float second = Integer.parseInt(String.valueOf(strRate.charAt(1)));
-			if (second < 5) {
-				first = first - 0.5f;
-			}
-			rate = (long) (first * Math.pow(10, strRate.length() - 1));
-		} else {
-			rate = 1;
-		}
-		// 等分轴修正
-		if (this.latitudeNum > 0
-				&& (long) (this.maxValue - this.minValue)
-						% (this.latitudeNum * rate) != 0) {
-			// 最大值加上轴差
-			this.maxValue = (long) this.maxValue
-					+ (this.latitudeNum * rate)
-					- ((long) (this.maxValue - this.minValue) % (this.latitudeNum * rate));
-		}
-	}
-
-	protected void calcValueRange() {
-		if (this.stickData != null && this.stickData.size() > 0) {
-			this.calcDataValueRange();
-			this.calcValueRangePaddingZero();
-		} else {
-			this.maxValue = 0;
-			this.minValue = 0;
-		}
-		this.calcValueRangeFormatForAxis();
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -349,200 +180,14 @@ public class StickChart extends DataGridChart implements IDataCursor, IZoomable{
 	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
-
 		if (this.autoCalcValueRange) {
 			calcValueRange();
 		}
 		initAxisY();
 		initAxisX();
 		super.onDraw(canvas);
-
 		drawSticks(canvas);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param value
-	 * 
-	 * @see cn.limc.androidcharts.view.GridChart#getAxisXGraduate(Object)
-	 */
-	@Override
-	public String getAxisXGraduate(Object value) {
-		float graduate = Float.valueOf(super.getAxisXGraduate(value));
-		int index = (int) Math.floor(graduate * getDisplayNumber());
-
-		if (index >= getDisplayNumber()) {
-			index = getDisplayNumber() - 1;
-		} else if (index < 0) {
-			index = 0;
-		}
-
-		return formatAxisXDegree(stickData.get(index).getDate());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param value
-	 * 
-	 * @see cn.limc.androidcharts.view.GridChart#getAxisYGraduate(Object)
-	 */
-	@Override
-	public String getAxisYGraduate(Object value) {
-		float graduate = Float.valueOf(super.getAxisYGraduate(value));
-		return formatAxisYDegree(graduate * (maxValue - minValue) + minValue);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param value
-	 * 
-	 * @see
-	 * cn.limc.androidcharts.event.ITouchEventResponse#notifyEvent(GridChart)
-	 */
-//	@Override
-//	public void notifyEvent(GridChart chart) {
-//		CandleStickChart candlechart = (CandleStickChart) chart;
-//
-//		this.maxSticksNum = candlechart.getMaxSticksNum();
-//
-//		super.setDisplayCrossYOnTouch(false);
-//		// notifyEvent
-//		super.notifyEvent(chart);
-//		// notifyEventAll
-//		super.notifyEventAll(this);
-//	}
-	
-	public float longitudePostOffset(){
-		if (stickAlignType == ALIGN_TYPE_CENTER) {
-			float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber();
-			return (this.getDataQuadrantPaddingWidth() - stickWidth)/ (longitudeTitles.size() - 1);
-	    }else{
-			return this.getDataQuadrantPaddingWidth()/ (longitudeTitles.size() - 1);
-	    }
-	}
-	
-	public float longitudeOffset(){
-		if (stickAlignType == ALIGN_TYPE_CENTER) {
-			float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber();
-			return getDataQuadrantPaddingStartX() + stickWidth / 2;
-		}else{
-			return getDataQuadrantPaddingStartX();
-		}
-	}
-
-	/**
-	 * <p>
-	 * initialize degrees on X axis
-	 * </p>
-	 * <p>
-	 * X軸の目盛を初期化
-	 * </p>
-	 * <p>
-	 * 初始化X轴的坐标值
-	 * </p>
-	 */
-	protected void initAxisX() {
-		List<String> titleX = new ArrayList<String>();
-		if (null != stickData && stickData.size() > 0) {
-			float average = getDisplayNumber() / this.getLongitudeNum();
-			for (int i = 0; i < this.getLongitudeNum(); i++) {
-				int index = (int) Math.floor(i * average);
-				if (index > getDisplayNumber() - 1) {
-					index = getDisplayNumber() - 1;
-				}
-				titleX.add(formatAxisXDegree(stickData.get(index).getDate()));
-			}
-			titleX.add(formatAxisXDegree(stickData.get(getDisplayNumber() - 1).getDate()));
-		}
-		super.setLongitudeTitles(titleX);
-	}
-
-	/**
-	 * <p>
-	 * get current selected data index
-	 * </p>
-	 * <p>
-	 * 選択したスティックのインデックス
-	 * </p>
-	 * <p>
-	 * 获取当前选中的柱条的index
-	 * </p>
-	 * 
-	 * @return int
-	 *         <p>
-	 *         index
-	 *         </p>
-	 *         <p>
-	 *         インデックス
-	 *         </p>
-	 *         <p>
-	 *         index
-	 *         </p>
-	 */
-	public int getSelectedIndex() {
-		if (null == touchPoint) {
-			return 0;
-		}
-		return calcSelectedIndex(touchPoint.x, touchPoint.y);
-	}
-	
-	protected int calcSelectedIndex(float x ,float y) {
-		if (!isValidTouchPoint(x,y)) {
-			return 0;
-		}
-		float graduate = Float.valueOf(super.getAxisXGraduate(x));
-		int index = (int) Math.floor(graduate * getDisplayNumber());
-
-		if (index >= getDisplayNumber()) {
-			index = getDisplayNumber() - 1;
-		} else if (index < 0) {
-			index = 0;
-		}
-		
-		return getDisplayFrom() + index;
-	}
-
-	/**
-	 * <p>
-	 * initialize degrees on Y axis
-	 * </p>
-	 * <p>
-	 * Y軸の目盛を初期化
-	 * </p>
-	 * <p>
-	 * 初始化Y轴的坐标值
-	 * </p>
-	 */
-	protected void initAxisY() {
-		List<String> titleY = new ArrayList<String>();
-		double average = (maxValue - minValue) / this.getLatitudeNum();
-		;
-		// calculate degrees on Y axis
-		for (int i = 0; i < this.getLatitudeNum(); i++) {
-			String value = formatAxisYDegree(minValue + i * average);
-			if (value.length() < super.getLatitudeMaxTitleLength()) {
-				while (value.length() < super.getLatitudeMaxTitleLength()) {
-					value = " " + value;
-				}
-			}
-			titleY.add(value);
-		}
-		// calculate last degrees by use max value
-		String value = formatAxisYDegree(maxValue);
-		if (value.length() < super.getLatitudeMaxTitleLength()) {
-			while (value.length() < super.getLatitudeMaxTitleLength()) {
-				value = " " + value;
-			}
-		}
-		titleY.add(value);
-
-		super.setLatitudeTitles(titleY);
-	}
-	
-	
 
 	/**
 	 * <p>
@@ -620,76 +265,6 @@ public class StickChart extends DataGridChart implements IDataCursor, IZoomable{
 		}
 
 	}
-
-//	/**
-//	 * <p>
-//	 * add a new stick data to sticks and refresh this chart
-//	 * </p>
-//	 * <p>
-//	 * 新しいスティックデータを追加する，フラフをレフレシューする
-//	 * </p>
-//	 * <p>
-//	 * 追加一条新数据并刷新当前图表
-//	 * </p>
-//	 * 
-//	 * @param entity
-//	 *            <p>
-//	 *            data
-//	 *            </p>
-//	 *            <p>
-//	 *            データ
-//	 *            </p>
-//	 *            <p>
-//	 *            新数据
-//	 *            </p>
-//	 */
-//	public void pushData(StickEntity entity) {
-//		if (null != entity) {
-//			addData(entity);
-//			super.postInvalidate();
-//		}
-//	}
-
-//	/**
-//	 * <p>
-//	 * add a new stick data to sticks
-//	 * </p>
-//	 * <p>
-//	 * 新しいスティックデータを追加する
-//	 * </p>
-//	 * <p>
-//	 * 追加一条新数据
-//	 * </p>
-//	 * 
-//	 * @param entity
-//	 *            <p>
-//	 *            data
-//	 *            </p>
-//	 *            <p>
-//	 *            データ
-//	 *            </p>
-//	 *            <p>
-//	 *            新数据
-//	 *            </p>
-//	 */
-//	public void addData(StickEntity entity) {
-//		if (null != entity) {
-//			// add
-//			this.stickData.add(entity);
-//
-//			if (this.maxValue < entity.getHigh()) {
-//				this.maxValue = ((int) entity.getHigh()) / 100 * 100;
-//			}
-//
-//			if (this.maxValue < entity.getLow()) {
-//				this.minValue = ((int) entity.getLow()) / 100 * 100;
-//			}
-//
-//			if (stickData.size() > maxSticksNum) {
-//				maxSticksNum = maxSticksNum + 1;
-//			}
-//		}
-//	}
 
 	private float olddistance;
 	private float newdistance;
@@ -794,74 +369,6 @@ public class StickChart extends DataGridChart implements IDataCursor, IZoomable{
 		}
 		return true;
 	}
-	
-	protected PointF calcTouchedPoint(float x ,float y) {
-		if (!isValidTouchPoint(x,y)) {
-			return new PointF(0,0);
-		}
-		if (bindCrossLinesToStick == BIND_TO_TYPE_NONE) {
-			return new PointF(x, y);
-		} else if (bindCrossLinesToStick == BIND_TO_TYPE_BOTH) {
-			PointF bindPointF = calcBindPoint(x, y);
-			return bindPointF;
-		} else if (bindCrossLinesToStick == BIND_TO_TYPE_HIRIZIONAL) {
-			PointF bindPointF = calcBindPoint(x, y);
-			return new PointF(bindPointF.x, y);
-		} else if (bindCrossLinesToStick == BIND_TO_TYPE_VERTICAL) {
-			PointF bindPointF = calcBindPoint(x, y);
-			return new PointF(x, bindPointF.y);
-		} else {
-			return new PointF(x, y);
-		}	
-	}
-	
-	protected PointF calcBindPoint(float x ,float y) {
-		float calcX = 0;
-		float calcY = 0;
-		
-		int index = calcSelectedIndex(x,y);
-		
-		float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber();
-		IMeasurable stick = stickData.get(index);
-		calcY = (float) ((1f - (stick.getHigh() - minValue)
-				/ (maxValue - minValue))
-				* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
-		calcX = getDataQuadrantPaddingStartX() + stickWidth * (index - getDisplayFrom()) + stickWidth / 2;
-		
-		return new PointF(calcX,calcY);
-	}
-	/**
-	 * <p>
-	 * calculate the distance between two touch points
-	 * </p>
-	 * <p>
-	 * 複数タッチしたポイントの距離
-	 * </p>
-	 * <p>
-	 * 计算两点触控时两点之间的距离
-	 * </p>
-	 * 
-	 * @param event
-	 * @return float
-	 *         <p>
-	 *         distance
-	 *         </p>
-	 *         <p>
-	 *         距離
-	 *         </p>
-	 *         <p>
-	 *         距离
-	 *         </p>
-	 */
-	protected float calcDistance(MotionEvent event) {
-		if(event.getPointerCount() <= 1) {
-			return 0f;
-		}else{
-			float x = event.getX(0) - event.getX(1);
-			float y = event.getY(0) - event.getY(1);
-			return FloatMath.sqrt(x * x + y * y);
-		}
-	}
 
 	/**
 	 * <p>
@@ -896,11 +403,7 @@ public class StickChart extends DataGridChart implements IDataCursor, IZoomable{
 	 * 缩小
 	 * </p>
 	 */
-	public void zoomOut() {
-//		if (maxSticksNum < stickData.size() - 1 - ZOOM_STEP) {
-//			maxSticksNum = maxSticksNum + ZOOM_STEP;
-//		}
-		
+	public void zoomOut() {		
 		if (getDisplayNumber() < stickData.size() - 1 - ZOOM_STEP) {
 			setDisplayNumber(getDisplayNumber() + ZOOM_STEP);
 		}
@@ -972,71 +475,12 @@ public class StickChart extends DataGridChart implements IDataCursor, IZoomable{
 	public void setMaxSticksNum(int maxSticksNum) {
 		this.maxSticksNum = maxSticksNum;
 	}
-
-	/**
-	 * @return the maxValue
-	 */
-	public double getMaxValue() {
-		return maxValue;
-	}
-
-	/**
-	 * @param maxValue
-	 *            the maxValue to set
-	 */
-	public void setMaxValue(double maxValue) {
-		this.maxValue = maxValue;
-	}
-
-	/**
-	 * @return the minValue
-	 */
-	public double getMinValue() {
-		return minValue;
-	}
-
-	/**
-	 * @param minValue
-	 *            the minValue to set
-	 */
-	public void setMinValue(double minValue) {
-		this.minValue = minValue;
-	}
-
-	/**
-	 * @return the autoCalcValueRange
-	 */
-	public boolean isAutoCalcValueRange() {
-		return autoCalcValueRange;
-	}
-
-	/**
-	 * @param autoCalcValueRange
-	 *            the autoCalcValueRange to set
-	 */
-	public void setAutoCalcValueRange(boolean autoCalcValueRange) {
-		this.autoCalcValueRange = autoCalcValueRange;
-	}
 	
 	/**
 	 * @param listener the OnZoomGestureListener to set
 	 */
 	public void setOnZoomGestureListener(OnZoomGestureListener listener) {
 		this.onZoomGestureListener = listener;
-	}
-
-	/**
-	 * @return the stickAlignType
-	 */
-	public int getStickAlignType() {
-		return stickAlignType;
-	}
-
-	/**
-	 * @param stickAlignType the stickAlignType to set
-	 */
-	public void setStickAlignType(int stickAlignType) {
-		this.stickAlignType = stickAlignType;
 	}
 
 	/**

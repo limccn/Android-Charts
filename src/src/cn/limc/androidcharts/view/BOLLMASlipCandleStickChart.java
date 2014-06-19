@@ -200,7 +200,7 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 		mPaint.setAlpha(70);
 		mPaint.setAntiAlias(true);
 		// set start point’s X
-		if (stickAlignType == ALIGN_TYPE_CENTER) {
+		if (gridAlignType == ALIGN_TYPE_CENTER) {
             lineLength= (getDataQuadrantPaddingWidth() / displayNumber) - stickSpacing;
             startX = getDataQuadrantPaddingStartX() + lineLength / 2;
         }else {
