@@ -1,5 +1,5 @@
 /*
- * IZoomable.java
+ * OnZoomGestureListener.java
  * Android-Charts
  *
  * Created by limc on 2014.
@@ -20,9 +20,8 @@
  */
 
 
-package cn.limc.androidcharts.common;
-
-
+package cn.limc.androidcharts.event;
+import android.view.MotionEvent;
 
 /** 
  * <p>en</p>
@@ -30,27 +29,32 @@ package cn.limc.androidcharts.common;
  * <p>cn</p>
  *
  * @author limc 
- * @version v1.0 2014/05/29 16:49:01 
+ * @version v1.0 2014/06/23 15:53:23 
  *  
  */
-public interface IZoomable {
-	
-	static final int ZOOM_BASE_LINE_CENTER = 0;
-	static final int ZOOM_BASE_LINE_LEFT = 1;
-	static final int ZOOM_BASE_LINE_RIGHT = 2;
-	
-	static final int ZOOM_NONE = 0;
-	static final int ZOOM_IN = 1;
-	static final int ZOOM_OUT = 2;
-	
-	static final int ZOOM_STEP = 4;
-	
-	void zoomIn();
-	void zoomOut();
-	
-	void setOnZoomGestureListener(OnZoomGestureListener listener);
+public class OnZoomGestureListener {
 
-	interface OnZoomGestureListener{
-		void onZoom(int zoom, int displayFrom , int displayNumber);
+	private IZoomable chart;
+	
+	/** 
+	 * <p>Constructor of OnZoomGestureListener</p>
+	 * <p>OnZoomGestureListener类对象的构造函数</p>
+	 * <p>OnZoomGestureListenerのコンストラクター</p>
+	 * 
+	 */
+	public OnZoomGestureListener(IZoomable zoomable) {
+		this.chart = zoomable;
+	}
+	
+	public void onZoomIn(MotionEvent event){
+		if (chart != null) {
+			chart.zoomIn();
+		}
+	}
+	
+	public void onZoomOut(MotionEvent event){
+		if (chart != null) {
+			chart.zoomOut();
+		}
 	}
 }

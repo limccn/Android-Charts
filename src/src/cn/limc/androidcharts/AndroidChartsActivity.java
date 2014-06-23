@@ -24,13 +24,10 @@ package cn.limc.androidcharts;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.limc.androidcharts.common.IZoomable;
-import cn.limc.androidcharts.common.ISlipable.OnSlipGestureListener;
-import cn.limc.androidcharts.common.ITouchable.OnTouchGestureListener;
-import cn.limc.androidcharts.common.IZoomable.OnZoomGestureListener;
 import cn.limc.androidcharts.entity.ColoredStickEntity;
 import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.IChartData;
+import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.IStickEntity;
 import cn.limc.androidcharts.entity.LineEntity;
 import cn.limc.androidcharts.entity.ListChartData;
@@ -39,6 +36,7 @@ import cn.limc.androidcharts.entity.OHLCEntity;
 import cn.limc.androidcharts.entity.StickEntity;
 import cn.limc.androidcharts.entity.TitleValueColorEntity;
 import cn.limc.androidcharts.entity.TitleValueEntity;
+import cn.limc.androidcharts.event.IZoomable;
 import cn.limc.androidcharts.view.BOLLMASlipCandleStickChart;
 import cn.limc.androidcharts.view.CandleStickChart;
 import cn.limc.androidcharts.view.ColoredSlipStickChart;
@@ -388,8 +386,6 @@ public class AndroidChartsActivity extends Activity {
 		stickchart.setBorderColor(Color.LTGRAY);
 		stickchart.setLongitudeFontColor(Color.WHITE);
 		stickchart.setLatitudeFontColor(Color.WHITE);
-		stickchart
-				.setStickFillColor(getResources().getColor(R.drawable.yellow));
 		stickchart.setDataQuadrantPaddingTop(6);
 		stickchart.setDataQuadrantPaddingBottom(1);
 		stickchart.setDataQuadrantPaddingLeft(1);
@@ -415,11 +411,12 @@ public class AndroidChartsActivity extends Activity {
 		stickchart.setDisplayLatitude(true);
 		stickchart.setDisplayLongitude(true);
 		stickchart.setBackgroundColor(Color.BLACK);
-		
+
 		stickchart.setDataMultiple(100);
 		stickchart.setAxisYDecimalFormat("#,##0.00");
 		stickchart.setAxisXDateTargetFormat("yyyy/MM/dd");
 		stickchart.setAxisXDateSourceFormat("yyyyMMdd");
+		
 
 		// 为chart1增加均线
 		stickchart.setStickData(new ListChartData<IStickEntity>(vol));
@@ -435,8 +432,6 @@ public class AndroidChartsActivity extends Activity {
 		slipstickchart.setBorderColor(Color.LTGRAY);
 		slipstickchart.setLongitudeFontColor(Color.WHITE);
 		slipstickchart.setLatitudeFontColor(Color.WHITE);
-		slipstickchart.setStickFillColor(getResources().getColor(
-				R.drawable.yellow));
 		slipstickchart.setDataQuadrantPaddingTop(6);
 		slipstickchart.setDataQuadrantPaddingBottom(1);
 		slipstickchart.setDataQuadrantPaddingLeft(1);
@@ -468,12 +463,12 @@ public class AndroidChartsActivity extends Activity {
 		slipstickchart.setDisplayLatitude(true);
 		slipstickchart.setDisplayLongitude(true);
 		slipstickchart.setBackgroundColor(Color.BLACK);
-		
+
 		slipstickchart.setDataMultiple(100);
 		slipstickchart.setAxisYDecimalFormat("#,##0.00");
 		slipstickchart.setAxisXDateTargetFormat("yyyy/MM/dd");
 		slipstickchart.setAxisXDateSourceFormat("yyyyMMdd");
-		
+
 		IChartData<IStickEntity> vol = new ListChartData<IStickEntity>(this.vol);
 		// 为chart1增加均线
 		slipstickchart.setStickData(vol);
@@ -522,7 +517,7 @@ public class AndroidChartsActivity extends Activity {
 		coloredslipstickchart
 				.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
 		coloredslipstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
-
+		
 		// 为chart1增加均线
 		coloredslipstickchart
 				.setStickData(new ListChartData<IStickEntity>(volc));
@@ -562,8 +557,6 @@ public class AndroidChartsActivity extends Activity {
 		mastickchart.setBorderColor(Color.LTGRAY);
 		mastickchart.setLongitudeFontColor(Color.WHITE);
 		mastickchart.setLatitudeFontColor(Color.WHITE);
-		mastickchart.setStickFillColor(getResources().getColor(
-				R.drawable.yellow));
 
 		// 最大显示足数
 		mastickchart.setMaxSticksNum(52);
@@ -632,8 +625,6 @@ public class AndroidChartsActivity extends Activity {
 		maslipstickchart.setBorderColor(Color.LTGRAY);
 		maslipstickchart.setLongitudeFontColor(Color.WHITE);
 		maslipstickchart.setLatitudeFontColor(Color.WHITE);
-		maslipstickchart.setStickFillColor(getResources().getColor(
-				R.drawable.yellow));
 
 		// 最大纬线数
 		maslipstickchart.setLatitudeNum(2);
@@ -713,8 +704,6 @@ public class AndroidChartsActivity extends Activity {
 		minusstickchart.setDisplayCrossYOnTouch(false);
 		minusstickchart.setDisplayLatitude(true);
 		minusstickchart.setDisplayLongitude(true);
-		minusstickchart.setStickBorderColor(Color.WHITE);
-		minusstickchart.setStickFillColor(Color.BLUE);
 
 		minusstickchart.setDataQuadrantPaddingTop(5);
 		minusstickchart.setDataQuadrantPaddingBottom(5);
@@ -796,8 +785,6 @@ public class AndroidChartsActivity extends Activity {
 		slipminusstickchart.setDisplayCrossYOnTouch(false);
 		slipminusstickchart.setDisplayLatitude(true);
 		slipminusstickchart.setDisplayLongitude(true);
-		slipminusstickchart.setStickBorderColor(Color.WHITE);
-		slipminusstickchart.setStickFillColor(Color.BLUE);
 		slipminusstickchart.setStickSpacing(10);
 
 		slipminusstickchart.setDataQuadrantPaddingTop(5);
@@ -1040,41 +1027,50 @@ public class AndroidChartsActivity extends Activity {
 		// 为chart2增加均线
 		maslipcandlestickchart.setStickData(new ListChartData<IStickEntity>(
 				ohlc));
-		
-		maslipcandlestickchart.setOnZoomGestureListener(new OnZoomGestureListener() {
-			public void onZoom(int zoom, int displayFrom, int displayNumber) {
-				bollmaslipcandlestickchart.setDisplayFrom(displayFrom);
-				bollmaslipcandlestickchart.setDisplayNumber(displayNumber);
-				
-				bollmaslipcandlestickchart.postInvalidate();
-			}
-		});
-		
-		maslipcandlestickchart.setOnSlipGestureListener(new OnSlipGestureListener() {
-			public void onSlip(int direction, int displayFrom, int displayNumber) {
-				bollmaslipcandlestickchart.setDisplayFrom(displayFrom);
-				bollmaslipcandlestickchart.setDisplayNumber(displayNumber);
-				bollmaslipcandlestickchart.postInvalidate();
-			}
-		});
-		
-		maslipcandlestickchart.setOnTouchGestureListener(new OnTouchGestureListener() {
-			
-			public void onTouchUp(PointF touchPointF, int selectedIndex) {
-				bollmaslipcandlestickchart.setTouchPoint(touchPointF);
-				bollmaslipcandlestickchart.postInvalidate();
-			}
-			
-			public void onTouchMoved(PointF touchPointF, int selectedIndex) {
-				bollmaslipcandlestickchart.setTouchPoint(touchPointF);
-				bollmaslipcandlestickchart.postInvalidate();
-			}
-			
-			public void onTouchDown(PointF touchPointF, int selectedIndex) {
-				bollmaslipcandlestickchart.setTouchPoint(touchPointF);
-				bollmaslipcandlestickchart.postInvalidate();
-			}
-		});
+
+//		maslipcandlestickchart
+//				.setOnZoomGestureListener(new OnZoomGestureListener() {
+//					public void onZoom(int zoom, int displayFrom,
+//							int displayNumber) {
+//						bollmaslipcandlestickchart.setDisplayFrom(displayFrom);
+//						bollmaslipcandlestickchart
+//								.setDisplayNumber(displayNumber);
+//
+//						bollmaslipcandlestickchart.postInvalidate();
+//					}
+//				});
+//
+//		maslipcandlestickchart
+//				.setOnSlipGestureListener(new OnSlipGestureListener() {
+//					public void onSlip(int direction, int displayFrom,
+//							int displayNumber) {
+//						bollmaslipcandlestickchart.setDisplayFrom(displayFrom);
+//						bollmaslipcandlestickchart
+//								.setDisplayNumber(displayNumber);
+//						bollmaslipcandlestickchart.postInvalidate();
+//					}
+//				});
+//
+//		maslipcandlestickchart
+//				.setOnTouchGestureListener(new OnTouchGestureListener() {
+//
+//					public void onTouchUp(PointF touchPointF, int selectedIndex) {
+//						bollmaslipcandlestickchart.setTouchPoint(touchPointF);
+//						bollmaslipcandlestickchart.postInvalidate();
+//					}
+//
+//					public void onTouchMoved(PointF touchPointF,
+//							int selectedIndex) {
+//						bollmaslipcandlestickchart.setTouchPoint(touchPointF);
+//						bollmaslipcandlestickchart.postInvalidate();
+//					}
+//
+//					public void onTouchDown(PointF touchPointF,
+//							int selectedIndex) {
+//						bollmaslipcandlestickchart.setTouchPoint(touchPointF);
+//						bollmaslipcandlestickchart.postInvalidate();
+//					}
+//				});
 	}
 
 	private void initBOLLMASlipCandleStickChart() {
@@ -1138,7 +1134,8 @@ public class AndroidChartsActivity extends Activity {
 
 		bollmaslipcandlestickchart.setMinDisplayNumber(5);
 
-		bollmaslipcandlestickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+		bollmaslipcandlestickchart
+				.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 
 		bollmaslipcandlestickchart.setDisplayLongitudeTitle(true);
 		bollmaslipcandlestickchart.setDisplayLatitudeTitle(true);
@@ -1164,40 +1161,47 @@ public class AndroidChartsActivity extends Activity {
 		// 为chart2增加均线
 		bollmaslipcandlestickchart
 				.setStickData(new ListChartData<IStickEntity>(ohlc));
-		
-		bollmaslipcandlestickchart.setOnZoomGestureListener(new OnZoomGestureListener() {
-			public void onZoom(int zoom, int displayFrom, int displayNumber) {
-				maslipcandlestickchart.setDisplayFrom(displayFrom);
-				maslipcandlestickchart.setDisplayNumber(displayNumber);
-				maslipcandlestickchart.postInvalidate();
-			}
-		});
-		
-		bollmaslipcandlestickchart.setOnSlipGestureListener(new OnSlipGestureListener() {
-			public void onSlip(int direction, int displayFrom, int displayNumber) {
-				maslipcandlestickchart.setDisplayFrom(displayFrom);
-				maslipcandlestickchart.setDisplayNumber(displayNumber);
-				maslipcandlestickchart.postInvalidate();
-			}
-		});
-		
-		bollmaslipcandlestickchart.setOnTouchGestureListener(new OnTouchGestureListener() {
-			
-			public void onTouchUp(PointF touchPointF, int selectedIndex) {
-				maslipcandlestickchart.setTouchPoint(touchPointF);
-				maslipcandlestickchart.postInvalidate();
-			}
-			
-			public void onTouchMoved(PointF touchPointF, int selectedIndex) {
-				maslipcandlestickchart.setTouchPoint(touchPointF);
-				maslipcandlestickchart.postInvalidate();
-			}
-			
-			public void onTouchDown(PointF touchPointF, int selectedIndex) {
-				maslipcandlestickchart.setTouchPoint(touchPointF);
-				maslipcandlestickchart.postInvalidate();
-			}
-		});
+
+//		bollmaslipcandlestickchart
+//				.setOnZoomGestureListener(new OnZoomGestureListener() {
+//					public void onZoom(int zoom, int displayFrom,
+//							int displayNumber) {
+//						maslipcandlestickchart.setDisplayFrom(displayFrom);
+//						maslipcandlestickchart.setDisplayNumber(displayNumber);
+//						maslipcandlestickchart.postInvalidate();
+//					}
+//				});
+//
+//		bollmaslipcandlestickchart
+//				.setOnSlipGestureListener(new OnSlipGestureListener() {
+//					public void onSlip(int direction, int displayFrom,
+//							int displayNumber) {
+//						maslipcandlestickchart.setDisplayFrom(displayFrom);
+//						maslipcandlestickchart.setDisplayNumber(displayNumber);
+//						maslipcandlestickchart.postInvalidate();
+//					}
+//				});
+//
+//		bollmaslipcandlestickchart
+//				.setOnTouchGestureListener(new OnTouchGestureListener() {
+//
+//					public void onTouchUp(PointF touchPointF, int selectedIndex) {
+//						maslipcandlestickchart.setTouchPoint(touchPointF);
+//						maslipcandlestickchart.postInvalidate();
+//					}
+//
+//					public void onTouchMoved(PointF touchPointF,
+//							int selectedIndex) {
+//						maslipcandlestickchart.setTouchPoint(touchPointF);
+//						maslipcandlestickchart.postInvalidate();
+//					}
+//
+//					public void onTouchDown(PointF touchPointF,
+//							int selectedIndex) {
+//						maslipcandlestickchart.setTouchPoint(touchPointF);
+//						maslipcandlestickchart.postInvalidate();
+//					}
+//				});
 
 	}
 

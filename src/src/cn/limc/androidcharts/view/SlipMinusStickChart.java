@@ -23,11 +23,10 @@ package cn.limc.androidcharts.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.util.AttributeSet;
 
 import cn.limc.androidcharts.entity.IMeasurable;
+import cn.limc.androidcharts.mole.StickMole;
 
 /**
  * <p>
@@ -119,14 +118,6 @@ public class SlipMinusStickChart extends SlipStickChart {
 		this.minValue = minValue;
 	}
 
-	@Override
-	protected void calcValueRangePaddingZero() {
-	}
-
-	@Override
-	protected void calcValueRangeFormatForAxis() {
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -138,38 +129,19 @@ public class SlipMinusStickChart extends SlipStickChart {
 	 */
 	@Override
 	protected void drawSticks(Canvas canvas) {
-
 		float stickWidth = getDataQuadrantPaddingWidth() / displayNumber
 				- stickSpacing;
 		float stickX = getDataQuadrantPaddingStartX();
-
-		Paint mPaintFill = new Paint();
-		mPaintFill.setStyle(Style.FILL);
-		mPaintFill.setColor(super.getStickFillColor());
-
-		Paint mPaintBorder = new Paint();
-		mPaintBorder.setStyle(Style.STROKE);
-		mPaintBorder.setStrokeWidth(2);
-		mPaintBorder.setColor(super.getStickBorderColor());
 
 		if (null != stickData) {
 			// display as stick or line
 			for (int i = super.getDisplayFrom(); i < super.getDisplayFrom()
 					+ super.getDisplayNumber(); i++) {
-				IMeasurable entity = stickData.get(i);
+				IMeasurable stick = stickData.get(i);
 
-				float highY = (float) ((1f - (entity.getHigh() - minValue)
-						/ (maxValue - minValue))
-						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
-				float lowY = (float) ((1f - (entity.getLow() - minValue)
-						/ (maxValue - minValue))
-						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
-
-				// draw stick
-				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
-						mPaintFill);
-				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
-						mPaintBorder);
+				StickMole mole = (StickMole)provider.getMole();
+				mole.setUp(this,stick,stickX,stickWidth);
+				mole.draw(canvas);
 
 				// next x
 				stickX = stickX + stickSpacing + stickWidth;

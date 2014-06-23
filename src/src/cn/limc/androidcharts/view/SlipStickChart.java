@@ -21,12 +21,16 @@
 
 package cn.limc.androidcharts.view;
 
-import cn.limc.androidcharts.common.ISlipable;
 import cn.limc.androidcharts.entity.IMeasurable;
+import cn.limc.androidcharts.event.ISlipable;
+import cn.limc.androidcharts.event.OnSlipGestureListener;
+import cn.limc.androidcharts.event.OnTouchGestureListener;
+import cn.limc.androidcharts.event.OnZoomGestureListener;
+import cn.limc.androidcharts.event.SlipGestureDetector;
+import cn.limc.androidcharts.mole.StickMole;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -57,8 +61,9 @@ public class SlipStickChart extends StickChart implements ISlipable {
 	protected int displayNumber = DEFAULT_DISPLAY_NUMBER;
 	protected int minDisplayNumber = DEFAULT_MIN_DISPLAY_NUMBER;
 	protected int zoomBaseLine = DEFAULT_ZOOM_BASE_LINE;
-
-	protected OnSlipGestureListener onSlipGestureListener;
+	
+	protected OnSlipGestureListener onSlipGestureListener = new OnSlipGestureListener(this);
+	protected SlipGestureDetector slipGestureDetector = new SlipGestureDetector(this,this,this);
 
 	/**
 	 * <p>
@@ -140,29 +145,16 @@ public class SlipStickChart extends StickChart implements ISlipable {
 			return;
 		}
 
-		Paint mPaintStick = new Paint();
-		mPaintStick.setColor(stickFillColor);
-
 		float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber()
 				- stickSpacing;
 		float stickX = getDataQuadrantPaddingStartX();
 
 		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
 			IMeasurable stick = stickData.get(i);
-			float highY = (float) ((1f - (stick.getHigh() - minValue)
-					/ (maxValue - minValue))
-					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
-			float lowY = (float) ((1f - (stick.getLow() - minValue)
-					/ (maxValue - minValue))
-					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
-
-			// stick or line?
-			if (stickWidth >= 2f) {
-				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
-						mPaintStick);
-			} else {
-				canvas.drawLine(stickX, highY, stickX, lowY, mPaintStick);
-			}
+			
+			StickMole mole = (StickMole)provider.getMole();
+			mole.setUp(this,stick,stickX,stickWidth);
+			mole.draw(canvas);
 
 			// next x
 			stickX = stickX + stickSpacing + stickWidth;
@@ -189,110 +181,10 @@ public class SlipStickChart extends StickChart implements ISlipable {
 		if (!isValidTouchPoint(event.getX(), event.getY())) {
 			return false;
 		}
-
 		if (null == stickData || stickData.size() == 0) {
 			return false;
 		}
-
-		final float MIN_LENGTH = (super.getWidth() / 40) < 5 ? 5 : (super
-				.getWidth() / 50);
-
-		switch (event.getAction() & MotionEvent.ACTION_MASK) {
-		// 设置拖拉模式
-		case MotionEvent.ACTION_DOWN:
-			touchMode = TOUCH_MODE_SINGLE;
-			if (event.getPointerCount() == 1) {
-				touchPoint = calcTouchedPoint(event.getX(), event.getY());
-				if (onTouchGestureListener != null) {
-					onTouchGestureListener.onTouchDown(touchPoint,
-							getSelectedIndex());
-				}
-				super.postInvalidate();
-				// Notifier
-				super.notifyEventAll(this);
-			}
-			break;
-		case MotionEvent.ACTION_UP:
-			touchMode = TOUCH_MODE_NONE;
-			startPointA = null;
-			startPointB = null;
-			if (event.getPointerCount() == 1) {
-				touchPoint = calcTouchedPoint(event.getX(), event.getY());
-				if (onTouchGestureListener != null) {
-					onTouchGestureListener.onTouchUp(touchPoint,
-							getSelectedIndex());
-				}
-				super.postInvalidate();
-				// Notifier
-				super.notifyEventAll(this);
-			}
-			break;
-		case MotionEvent.ACTION_POINTER_UP:
-			touchMode = TOUCH_MODE_NONE;
-			startPointA = null;
-			startPointB = null;
-			return super.onTouchEvent(event);
-			// 设置多点触摸模式
-		case MotionEvent.ACTION_POINTER_DOWN:
-			olddistance = calcDistance(event);
-			if (olddistance > MIN_LENGTH) {
-				touchMode = TOUCH_MODE_MULTI;
-				startPointA = new PointF(event.getX(0), event.getY(0));
-				startPointB = new PointF(event.getX(1), event.getY(1));
-			}
-			break;
-		case MotionEvent.ACTION_MOVE:
-			if (touchMode == TOUCH_MODE_MULTI) {
-				newdistance = calcDistance(event);
-				if (newdistance > MIN_LENGTH) {
-					if (startPointA.x >= event.getX(0)
-							&& startPointB.x >= event.getX(1)) {
-						moveRight();
-					} else if (startPointA.x <= event.getX(0)
-							&& startPointB.x <= event.getX(1)) {
-						moveLeft();
-					} else {
-						if (Math.abs(newdistance - olddistance) > MIN_LENGTH) {
-							if (newdistance > olddistance) {
-								zoomIn();
-							} else {
-								zoomOut();
-							}
-							// 重置距离
-							olddistance = newdistance;
-						}
-					}
-					startPointA = new PointF(event.getX(0), event.getY(0));
-					startPointB = new PointF(event.getX(1), event.getY(1));
-
-					super.postInvalidate();
-					super.notifyEventAll(this);
-				}
-			} else {
-				// 单点拖动效果
-				if (event.getPointerCount() == 1) {
-					float moveXdistance = Math.abs(event.getX() - touchPoint.x);
-					float moveYdistance = Math.abs(event.getY() - touchPoint.y);
-
-					if (moveXdistance > TOUCH_MOVE_MIN_DISTANCE
-							|| moveYdistance > TOUCH_MOVE_MIN_DISTANCE) {
-						touchPoint = calcTouchedPoint(event.getX(),
-								event.getY());
-
-						// call back to listener
-						if (onTouchGestureListener != null) {
-							onTouchGestureListener.onTouchMoved(touchPoint,
-									getSelectedIndex());
-						}
-					}
-
-					super.postInvalidate();
-					super.notifyEventAll(this);
-				}
-			}
-			break;
-		}
-		return true;
+		return slipGestureDetector.onTouchEvent(event);
 	}
 
 	/* (non-Javadoc)
@@ -311,12 +203,14 @@ public class SlipStickChart extends StickChart implements ISlipable {
 		if (getDisplayTo() >= dataSize) {
 			setDisplayFrom(dataSize - getDisplayNumber());
 		}
+		
+		this.postInvalidate();
 
-		// Listener
-		if (onSlipGestureListener != null) {
-			onSlipGestureListener.onSlip(SLIP_DIRECTION_RIGHT,
-					getDisplayFrom(), getDisplayNumber());
-		}
+//		// Listener
+//		if (onSlipGestureListener != null) {
+//			onSlipGestureListener.onSlip(SLIP_DIRECTION_RIGHT,
+//					getDisplayFrom(), getDisplayNumber());
+//		}
 	}
 
 	/* (non-Javadoc)
@@ -338,12 +232,14 @@ public class SlipStickChart extends StickChart implements ISlipable {
 		if (getDisplayTo() >= dataSize) {
 			setDisplayFrom(dataSize - getDisplayNumber());
 		}
+		
+		this.postInvalidate();
 
-		// Listener
-		if (onSlipGestureListener != null) {
-			onSlipGestureListener.onSlip(SLIP_DIRECTION_LEFT, getDisplayFrom(),
-					getDisplayNumber());
-		}
+//		// Listener
+//		if (onSlipGestureListener != null) {
+//			onSlipGestureListener.onSlip(SLIP_DIRECTION_LEFT, getDisplayFrom(),
+//					getDisplayNumber());
+//		}
 	}
 	
 	/*
@@ -374,12 +270,14 @@ public class SlipStickChart extends StickChart implements ISlipable {
 			if (getDisplayTo() >= stickData.size()) {
 				setDisplayFrom(stickData.size() - getDisplayNumber());
 			}
+			
+			this.postInvalidate();
 
-			// Listener
-			if (onZoomGestureListener != null) {
-				onZoomGestureListener.onZoom(ZOOM_IN, getDisplayFrom(),
-						getDisplayNumber());
-			}
+//			// Listener
+//			if (onZoomGestureListener != null) {
+//				onZoomGestureListener.onZoom(ZOOM_IN, getDisplayFrom(),
+//						getDisplayNumber());
+//			}
 		}
 	}
 
@@ -420,11 +318,13 @@ public class SlipStickChart extends StickChart implements ISlipable {
 				setDisplayNumber(stickData.size() - getDisplayFrom());
 			}
 
-			// Listener
-			if (onZoomGestureListener != null) {
-				onZoomGestureListener.onZoom(ZOOM_OUT, getDisplayFrom(),
-						getDisplayNumber());
-			}
+			this.postInvalidate();
+			
+//			// Listener
+//			if (onZoomGestureListener != null) {
+//				onZoomGestureListener.onZoom(ZOOM_OUT, getDisplayFrom(),
+//						getDisplayNumber());
+//			}
 		}
 	}
 
@@ -535,11 +435,22 @@ public class SlipStickChart extends StickChart implements ISlipable {
 		this.zoomBaseLine = zoomBaseLine;
 	}
 
-	/**
-	 * @param listener
-	 *            the OnSlipGestureListener to set
+	/* (non-Javadoc)
+	 * 
+	 * @param listener 
+	 * @see cn.limc.androidcharts.event.ISlipable#setOnSlipGestureListener(cn.limc.androidcharts.event.OnSlipGestureListener) 
 	 */
 	public void setOnSlipGestureListener(OnSlipGestureListener listener) {
 		this.onSlipGestureListener = listener;
+		
 	}
+
+	/* (non-Javadoc)
+	 * 
+	 * @return 
+	 * @see cn.limc.androidcharts.event.ISlipable#getOnSlipGestureListener() 
+	 */
+	public OnSlipGestureListener getOnSlipGestureListener() {
+		 return onSlipGestureListener;
+	}	
 }

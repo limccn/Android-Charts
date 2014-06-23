@@ -22,11 +22,10 @@
 package cn.limc.androidcharts.view;
 
 import cn.limc.androidcharts.entity.IMeasurable;
+import cn.limc.androidcharts.mole.StickMole;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.util.AttributeSet;
 
 /**
@@ -46,10 +45,6 @@ import android.util.AttributeSet;
  * 
  */
 public class MinusStickChart extends StickChart {
-
-	public static final int DEFAULT_STICK_SPACING = 6;
-
-	private int stickSpacing = DEFAULT_STICK_SPACING;
 
 	/*
 	 * (non-Javadoc)
@@ -92,18 +87,6 @@ public class MinusStickChart extends StickChart {
 		super(context, attrs);
 	}
 
-	// @Override
-	// protected void calcDataValueRange() {
-	// }
-
-	@Override
-	protected void calcValueRangePaddingZero() {
-	}
-
-	@Override
-	protected void calcValueRangeFormatForAxis() {
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -122,15 +105,6 @@ public class MinusStickChart extends StickChart {
 			return;
 		}
 
-		Paint mPaintFill = new Paint();
-		mPaintFill.setStyle(Style.FILL);
-		mPaintFill.setColor(super.getStickFillColor());
-
-		Paint mPaintBorder = new Paint();
-		mPaintBorder.setStyle(Style.STROKE);
-		mPaintBorder.setStrokeWidth(2);
-		mPaintBorder.setColor(super.getStickBorderColor());
-
 		float stickWidth = getDataQuadrantPaddingWidth() / maxSticksNum
 				- stickSpacing;
 
@@ -138,61 +112,23 @@ public class MinusStickChart extends StickChart {
 
 			float stickX = getDataQuadrantPaddingStartX();
 			for (int i = 0; i < stickData.size(); i++) {
-				IMeasurable entity = stickData.get(i);
-
-				float highY = (float) ((1f - (entity.getHigh() - minValue)
-						/ (maxValue - minValue))
-						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
-				float lowY = (float) ((1f - (entity.getLow() - minValue)
-						/ (maxValue - minValue))
-						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
-
-				// draw stick
-				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
-						mPaintFill);
-				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
-						mPaintBorder);
-
+				IMeasurable stick = stickData.get(i);
+				StickMole mole = (StickMole)provider.getMole();
+				mole.setUp(this,stick,stickX,stickWidth);
+				mole.draw(canvas);
 				// next x
 				stickX = stickX + stickSpacing + stickWidth;
 			}
 		} else {
-
 			float stickX = getDataQuadrantPaddingEndX() - stickWidth;
 			for (int i = stickData.size() - 1; i >= 0; i--) {
 				IMeasurable stick = stickData.get(i);
-
-				float highY = (float) ((1f - (stick.getHigh() - minValue)
-						/ (maxValue - minValue))
-						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
-				float lowY = (float) ((1f - (stick.getLow() - minValue)
-						/ (maxValue - minValue))
-						* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
-
-				// draw stick
-				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
-						mPaintFill);
-				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
-						mPaintBorder);
-
+				StickMole mole = (StickMole)provider.getMole();
+				mole.setUp(this,stick,stickX,stickWidth);
+				mole.draw(canvas);
 				// next x
 				stickX = stickX - stickSpacing - stickWidth;
 			}
 		}
-	}
-
-	/**
-	 * @return the stickSpacing
-	 */
-	public int getStickSpacing() {
-		return stickSpacing;
-	}
-
-	/**
-	 * @param stickSpacing
-	 *            the stickSpacing to set
-	 */
-	public void setStickSpacing(int stickSpacing) {
-		this.stickSpacing = stickSpacing;
 	}
 }

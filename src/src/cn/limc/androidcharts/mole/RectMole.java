@@ -1,5 +1,5 @@
 /*
- * ITouchable.java
+ * AbstractCubeMole.java
  * Android-Charts
  *
  * Created by limc on 2014.
@@ -20,9 +20,8 @@
  */
 
 
-package cn.limc.androidcharts.common;
-
-import android.graphics.PointF;
+package cn.limc.androidcharts.mole;
+import android.graphics.Canvas;
 
 /** 
  * <p>en</p>
@@ -30,24 +29,17 @@ import android.graphics.PointF;
  * <p>cn</p>
  *
  * @author limc 
- * @version v1.0 2014/05/30 16:26:03 
+ * @version v1.0 2014/06/19 16:30:02 
  *  
  */
-public interface ITouchable {
+public abstract class RectMole extends AbstractMole {
 	
-	static final int TOUCH_NO_SELECTED_INDEX = -1;
-	
-	static final int TOUCH_MODE_NONE = 0;
-	static final int TOUCH_MODE_SINGLE = 1;
-	static final int TOUCH_MODE_MULTI = 2;
-	
-	static final int TOUCH_MOVE_MIN_DISTANCE = 6;
-
-	void setOnTouchGestureListener(OnTouchGestureListener listener);
-
-	interface OnTouchGestureListener{
-		void onTouchDown(PointF touchPointF, int selectedIndex);
-		void onTouchMoved(PointF touchPointF, int selectedIndex);
-		void onTouchUp(PointF touchPointF, int selectedIndex);
+	/* (non-Javadoc)
+	 * 
+	 * @param canvase 
+	 * @see cn.limc.androidcharts.mole.IMole#draw(android.graphics.Canvas) 
+	 */
+	public void draw(Canvas canvas) {
+		//Do Nothing
 	}
 }

@@ -1,8 +1,8 @@
 /*
- * MAChartTouchEventAssemble.java
+ * OnDisplayCursorListener.java
  * Android-Charts
  *
- * Created by limc on 2011/05/29.
+ * Created by limc on 2014.
  *
  * Copyright 2011 limc.cn All rights reserved.
  *
@@ -19,33 +19,33 @@
  * limitations under the License.
  */
 
+
 package cn.limc.androidcharts.event;
 
-import cn.limc.androidcharts.view.GridChart;
+import cn.limc.androidcharts.common.IDataCursor;
 
-import android.widget.ListView;
-
-/**
- * 
+/** 
+ * <p>en</p>
+ * <p>jp</p>
+ * <p>cn</p>
  *
+ * @author limc 
+ * @version v1.0 2014/06/23 16:25:51 
+ *  
  */
-public class MAChartTouchEventAssemble implements ITouchEventResponse {
+public abstract class OnDisplayCursorListener {
 
-	private ListView listview;
-
-	/**
+	private IDataCursor chart;
+	
+	/** 
+	 * <p>Constructor of OnDisplayCursorListener</p>
+	 * <p>OnDisplayCursorListener类对象的构造函数</p>
+	 * <p>OnDisplayCursorListenerのコンストラクター</p>
 	 * 
 	 */
-	public void notifyEvent(GridChart chart) {
-
+	public OnDisplayCursorListener(IDataCursor chart) {
+		this.chart = chart;
 	}
-
-	public ListView getListview() {
-		return listview;
-	}
-
-	public void setListview(ListView listview) {
-		this.listview = listview;
-	}
-
+	
+	public abstract void onCursorChanged(int displayFrom, int displayNumber);
 }

@@ -1,5 +1,5 @@
 /*
- * ISlipable.java
+ * AbstractMole.java
  * Android-Charts
  *
  * Created by limc on 2014.
@@ -20,7 +20,10 @@
  */
 
 
-package cn.limc.androidcharts.common;
+package cn.limc.androidcharts.mole;
+
+import cn.limc.androidcharts.common.IChart;
+import android.graphics.RectF;
 
 /** 
  * <p>en</p>
@@ -28,25 +31,27 @@ package cn.limc.androidcharts.common;
  * <p>cn</p>
  *
  * @author limc 
- * @version v1.0 2014/05/29 16:49:51 
+ * @version v1.0 2014/06/19 16:49:33 
  *  
  */
-public interface ISlipable {	
+public abstract class AbstractMole  extends RectF implements IMole {
+	private IChart inChart;
 	
-	static final int SLIP_DIRECTION_NONE = 0;
-	static final int SLIP_DIRECTION_TOP = 1;
-	static final int SLIP_DIRECTION_RIGHT = 2;
-	static final int SLIP_DIRECTION_BOTTOM = 3;
-	static final int SLIP_DIRECTION_LEFT = 4;
-	
-	static final int SLIP_STEP = 4;
-	
-	void moveLeft();
-	void moveRight();
-	
-	void setOnSlipGestureListener(OnSlipGestureListener listener);
-	
-	interface OnSlipGestureListener{
-		void onSlip(int direction, int displayFrom , int displayNumber);
+	public void setUp(IChart chart){
+		setInChart(chart);
+	} 
+
+	/**
+	 * @return the inChart
+	 */
+	public IChart getInChart() {
+		return inChart;
+	}
+
+	/**
+	 * @param inChart the inChart to set
+	 */
+	public void setInChart(IChart inChart) {
+		this.inChart = inChart;
 	}
 }

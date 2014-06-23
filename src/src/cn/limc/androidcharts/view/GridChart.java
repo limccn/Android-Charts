@@ -26,9 +26,9 @@ import java.util.List;
 
 import cn.limc.androidcharts.common.ICrossLines;
 import cn.limc.androidcharts.common.IFlexableGrid;
-import cn.limc.androidcharts.common.ITouchable;
-import cn.limc.androidcharts.event.ITouchEventNotify;
-import cn.limc.androidcharts.event.ITouchEventResponse;
+import cn.limc.androidcharts.event.ITouchable;
+import cn.limc.androidcharts.event.OnTouchGestureListener;
+import cn.limc.androidcharts.event.TouchGestureDetector;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -60,8 +60,7 @@ import android.view.MotionEvent;
  * @version v1.0 2011/05/30 14:19:50
  * 
  */
-public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
-		ITouchEventResponse, ITouchable, IFlexableGrid, ICrossLines {
+public class GridChart extends AbstractBaseChart implements ITouchable, IFlexableGrid, ICrossLines {
 
 	public static final int AXIS_X_POSITION_BOTTOM = 1 << 0;
 	@Deprecated
@@ -886,11 +885,9 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	 * 事件通知对象列表
 	 * </p>
 	 */
-	private List<ITouchEventResponse> notifyList;
 	
-	protected OnTouchGestureListener onTouchGestureListener;
-	
-	protected int touchMode = TOUCH_MODE_NONE;
+	protected OnTouchGestureListener onTouchGestureListener = new OnTouchGestureListener(this);
+	protected TouchGestureDetector touchGestureDetector = new TouchGestureDetector(onTouchGestureListener);
 
 	/*
 	 * (non-Javadoc)
@@ -986,25 +983,7 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		if (!isValidTouchPoint(event.getX(),event.getY())) {
 			return false;
 		}
-		// touched points, if touch point is only one
-		if (event.getPointerCount() == 1) {
-			// 获取点击坐标
-			PointF point = new PointF(event.getX(), event.getY());
-			touchPoint = point;
-			
-			// call back to listener
-			if (onTouchGestureListener != null) {
-				onTouchGestureListener.onTouchDown(point, TOUCH_NO_SELECTED_INDEX);
-			}
-			// redraw
-			super.postInvalidate();
-			
-			// do notify
-			notifyEventAll(this);
-
-		} else if (event.getPointerCount() == 2) {
-		}
-		return super.onTouchEvent(event);
+		return touchGestureDetector.onTouchEvent(event);
 	}
 	
 	protected boolean isValidTouchPoint (float x , float y) {
@@ -1103,17 +1082,17 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		canvas.drawText(content, ptStart.x, ptStart.y + fontSize, mPaintBoxLine);
 	}
 
-	protected float getDataQuadrantWidth() {
+	public float getDataQuadrantWidth() {
 		return super.getWidth() - axisYTitleQuadrantWidth - 2 * borderWidth
 				- axisWidth;
 	}
 
-	protected float getDataQuadrantHeight() {
+	public float getDataQuadrantHeight() {
 		return super.getHeight() - axisXTitleQuadrantHeight - 2 * borderWidth
 				- axisWidth;
 	}
 
-	protected float getDataQuadrantStartX() {
+	public float getDataQuadrantStartX() {
 		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
 			return borderWidth + axisYTitleQuadrantWidth + axisWidth;
 		} else {
@@ -1121,11 +1100,11 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		}
 	}
 
-	protected float getDataQuadrantPaddingStartX() {
+	public float getDataQuadrantPaddingStartX() {
 		return getDataQuadrantStartX() + dataQuadrantPaddingLeft;
 	}
 
-	protected float getDataQuadrantEndX() {
+	public float getDataQuadrantEndX() {
 		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
 			return super.getWidth() - borderWidth;
 		} else {
@@ -1134,33 +1113,33 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		}
 	}
 
-	protected float getDataQuadrantPaddingEndX() {
+	public float getDataQuadrantPaddingEndX() {
 		return getDataQuadrantEndX() - dataQuadrantPaddingRight;
 	}
 
-	protected float getDataQuadrantStartY() {
+	public float getDataQuadrantStartY() {
 		return borderWidth;
 	}
 
-	protected float getDataQuadrantPaddingStartY() {
+	public float getDataQuadrantPaddingStartY() {
 		return getDataQuadrantStartY() + dataQuadrantPaddingTop;
 	}
 
-	protected float getDataQuadrantEndY() {
+	public float getDataQuadrantEndY() {
 		return super.getHeight() - borderWidth - axisXTitleQuadrantHeight
 				- axisWidth;
 	}
 
-	protected float getDataQuadrantPaddingEndY() {
+	public float getDataQuadrantPaddingEndY() {
 		return getDataQuadrantEndY() - dataQuadrantPaddingBottom;
 	}
 
-	protected float getDataQuadrantPaddingWidth() {
+	public float getDataQuadrantPaddingWidth() {
 		return getDataQuadrantWidth() - dataQuadrantPaddingLeft
 				- dataQuadrantPaddingRight;
 	}
 
-	protected float getDataQuadrantPaddingHeight() {
+	public float getDataQuadrantPaddingHeight() {
 		return getDataQuadrantHeight() - dataQuadrantPaddingTop
 				- dataQuadrantPaddingBottom;
 	}
@@ -1711,57 +1690,6 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 			touchPoint = new PointF(touchPoint.x, touchPoint.y);
 		}
 		super.invalidate();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param event
-	 * 
-	 * @see
-	 * cn.limc.androidcharts.event.ITouchEventNotify#addNotify(ITouchEventResponse
-	 * )
-	 */
-	public void addNotify(ITouchEventResponse notify) {
-		if (null == notifyList) {
-			notifyList = new ArrayList<ITouchEventResponse>();
-		}
-		notifyList.add(notify);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param event
-	 * 
-	 * @see cn.limc.androidcharts.event.ITouchEventNotify#removeNotify(int)
-	 */
-	public void removeNotify(int index) {
-		if (null != notifyList && notifyList.size() > index) {
-			notifyList.remove(index);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param event
-	 * 
-	 * @see cn.limc.androidcharts.event.ITouchEventNotify#removeNotify()
-	 */
-	public void removeAllNotify() {
-		if (null != notifyList) {
-			notifyList.clear();
-		}
-	}
-
-	public void notifyEventAll(GridChart chart) {
-		if (null != notifyList) {
-			for (int i = 0; i < notifyList.size(); i++) {
-				ITouchEventResponse ichart = notifyList.get(i);
-				ichart.notifyEvent(chart);
-			}
-		}
 	}
 
 	/**
@@ -2466,21 +2394,6 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	}
 
 	/**
-	 * @return the notifyList
-	 */
-	public List<ITouchEventResponse> getNotifyList() {
-		return notifyList;
-	}
-
-	/**
-	 * @param notifyList
-	 *            the notifyList to set
-	 */
-	public void setNotifyList(List<ITouchEventResponse> notifyList) {
-		this.notifyList = notifyList;
-	}
-
-	/**
 	 * @return the touchPoint
 	 */
 	public PointF getTouchPoint() {
@@ -2524,13 +2437,49 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 	public void setAxisYPosition(int axisYPosition) {
 		this.axisYPosition = axisYPosition;
 	}
-	
-	
-	/**
-	 * @param listener
-	 *            the OnTouchGestureListener to set
+
+	/* (non-Javadoc)
+	 *  
+	 * @see cn.limc.androidcharts.event.ITouchable#touchDown() 
+	 */
+	public void touchDown(PointF pt) {
+		this.touchPoint = pt;
+		this.postInvalidate();
+	}
+
+	/* (non-Javadoc)
+	 *  
+	 * @see cn.limc.androidcharts.event.ITouchable#touchMoved() 
+	 */
+	public void touchMoved(PointF pt) {
+		this.touchPoint = pt;
+		this.postInvalidate();
+	}
+
+	/* (non-Javadoc)
+	 *  
+	 * @see cn.limc.androidcharts.event.ITouchable#touchUp() 
+	 */
+	public void touchUp(PointF pt) {
+		this.touchPoint = pt;
+		this.postInvalidate();
+	}
+
+	/* (non-Javadoc)
+	 * 
+	 * @param listener 
+	 * @see cn.limc.androidcharts.event.ITouchable#setOnTouchGestureListener(cn.limc.androidcharts.event.OnTouchGestureListener) 
 	 */
 	public void setOnTouchGestureListener(OnTouchGestureListener listener) {
 		this.onTouchGestureListener = listener;
+	}
+
+	/* (non-Javadoc)
+	 * 
+	 * @return 
+	 * @see cn.limc.androidcharts.event.ITouchable#getOnTouchGestureListener() 
+	 */
+	public OnTouchGestureListener getOnTouchGestureListener() {
+		return onTouchGestureListener;
 	}
 }

@@ -24,9 +24,11 @@ package cn.limc.androidcharts.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.limc.androidcharts.common.IZoomable;
 import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
+import cn.limc.androidcharts.event.IZoomable;
+import cn.limc.androidcharts.event.OnZoomGestureListener;
+import cn.limc.androidcharts.event.ZoomGestureDetector;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -111,7 +113,8 @@ public class LineChart extends GridChart implements IZoomable {
 	public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
 	private boolean autoCalcValueRange = DEFAULT_AUTO_CALC_VALUE_RANGE;
 	
-	protected OnZoomGestureListener onZoomGestureListener;
+	protected OnZoomGestureListener onZoomGestureListener = new OnZoomGestureListener(this);
+	protected ZoomGestureDetector zoomGestureDetector = new ZoomGestureDetector(this,this);
 
 	/*
 	 * (non-Javadoc)
@@ -563,8 +566,8 @@ public class LineChart extends GridChart implements IZoomable {
 		super.setLongitudeTitles(titleX);
 	}
 
-	private float olddistance = 0f;
-	private float newdistance = 0f;
+//	private float olddistance = 0f;
+//	private float newdistance = 0f;
 
 	/*
 	 * (non-Javadoc)
@@ -586,94 +589,7 @@ public class LineChart extends GridChart implements IZoomable {
 			return false;
 		}
 		
-		final float MIN_LENGTH = super.getWidth() / 40 < 5 ? 5 : super
-				.getWidth() / 50;
-
-		switch (event.getAction() & MotionEvent.ACTION_MASK) {
-		case MotionEvent.ACTION_DOWN:
-			if (event.getPointerCount() == 1) {
-				touchMode = TOUCH_MODE_SINGLE;
-				touchPoint = new PointF(event.getX(), event.getY());
-				if (onTouchGestureListener != null) {
-					onTouchGestureListener.onTouchDown(touchPoint,
-							TOUCH_NO_SELECTED_INDEX);
-				}
-				super.postInvalidate();
-				// Notifier
-				super.notifyEventAll(this);
-			}
-			break;
-		case MotionEvent.ACTION_UP:
-			touchMode = TOUCH_MODE_NONE;
-			if (event.getPointerCount() == 1) {
-				touchPoint = new PointF(event.getX(), event.getY());
-				if (onTouchGestureListener != null) {
-					onTouchGestureListener.onTouchUp(touchPoint,
-							TOUCH_NO_SELECTED_INDEX);
-				}
-				super.postInvalidate();
-				// Notifier
-				super.notifyEventAll(this);
-			}
-			break;
-		case MotionEvent.ACTION_POINTER_UP:
-			touchMode = TOUCH_MODE_NONE;
-			return super.onTouchEvent(event);
-		case MotionEvent.ACTION_POINTER_DOWN:
-			olddistance = calcDistance(event);
-			if (olddistance > MIN_LENGTH) {
-				touchMode = TOUCH_MODE_MULTI;
-			}
-			break;
-		case MotionEvent.ACTION_MOVE:
-			if (touchMode == TOUCH_MODE_MULTI) {
-				newdistance = calcDistance(event);
-				if (newdistance > MIN_LENGTH
-						&& Math.abs(newdistance - olddistance) > MIN_LENGTH) {
-
-					if (newdistance > olddistance) {
-						zoomIn();
-					} else {
-						zoomOut();
-					}
-					olddistance = newdistance;
-
-					super.postInvalidate();
-					super.notifyEventAll(this);
-
-					// Listener
-					if (onZoomGestureListener != null) {
-						if (newdistance > olddistance) {
-							onZoomGestureListener.onZoom(ZOOM_IN, 0,
-									maxPointNum);
-						} else {
-							onZoomGestureListener.onZoom(ZOOM_OUT, 0,
-									maxPointNum);
-						}
-					}
-				}
-			} else {
-				// single touch point moved
-				if (event.getPointerCount() == 1) {
-					float moveXdistance = Math.abs(event.getX() - touchPoint.x);
-					float moveYdistance = Math.abs(event.getY() - touchPoint.y);
-					if (moveXdistance > TOUCH_MOVE_MIN_DISTANCE || moveYdistance > TOUCH_MOVE_MIN_DISTANCE) {
-						touchPoint = new PointF(event.getX(), event.getY());
-						// call back to listener
-						if (onTouchGestureListener != null) {
-							onTouchGestureListener.onTouchMoved(touchPoint,
-									TOUCH_NO_SELECTED_INDEX);
-						}
-					}
-					// redraw
-					super.postInvalidate();
-					// Notifier
-					super.notifyEventAll(this);
-				}
-			}
-			break;
-		}
-		return true;
+		return zoomGestureDetector.onTouchEvent(event);
 	}
 
 	/**
@@ -728,10 +644,12 @@ public class LineChart extends GridChart implements IZoomable {
 			maxPointNum = maxPointNum - ZOOM_STEP;
 		}
 		
-		//Listener
-		if (onZoomGestureListener != null) {
-			onZoomGestureListener.onZoom(ZOOM_IN, 0, maxPointNum);
-		}
+		this.postInvalidate();
+		
+//		//Listener
+//		if (onZoomGestureListener != null) {
+//			onZoomGestureListener.onZoom(ZOOM_IN, 0, maxPointNum);
+//		}
 	}
 
 	/**
@@ -753,10 +671,12 @@ public class LineChart extends GridChart implements IZoomable {
 			maxPointNum = maxPointNum + ZOOM_STEP;
 		}
 		
-		//Listener
-		if (onZoomGestureListener != null) {
-			onZoomGestureListener.onZoom(ZOOM_OUT, 0, maxPointNum);
-		}
+		this.postInvalidate();
+		
+//		//Listener
+//		if (onZoomGestureListener != null) {
+//			onZoomGestureListener.onZoom(ZOOM_OUT, 0, maxPointNum);
+//		}
 	}
 
 	/**
@@ -835,14 +755,6 @@ public class LineChart extends GridChart implements IZoomable {
 	}
 
 	/**
-	 * @param listener the OnZoomGestureListener to set
-	 * 
-	 */
-	public void setOnZoomGestureListener(OnZoomGestureListener listener) {
-		this.onZoomGestureListener = listener;
-	}
-
-	/**
 	 * @return the lineAlignType
 	 */
 	public int getLineAlignType() {
@@ -854,5 +766,23 @@ public class LineChart extends GridChart implements IZoomable {
 	 */
 	public void setLineAlignType(int lineAlignType) {
 		this.lineAlignType = lineAlignType;
+	}
+
+	/* (non-Javadoc)
+	 * 
+	 * @param listener 
+	 * @see cn.limc.androidcharts.event.IZoomable#setOnZoomGestureListener(cn.limc.androidcharts.event.OnZoomGestureListener) 
+	 */
+	public void setOnZoomGestureListener(OnZoomGestureListener listener) {
+		this.onZoomGestureListener = listener;
+	}
+
+	/* (non-Javadoc)
+	 * 
+	 * @return 
+	 * @see cn.limc.androidcharts.event.IZoomable#getOnZoomGestureListener() 
+	 */
+	public OnZoomGestureListener getOnZoomGestureListener() {
+		return onZoomGestureListener;
 	}
 }
