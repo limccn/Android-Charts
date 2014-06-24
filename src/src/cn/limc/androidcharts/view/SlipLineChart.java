@@ -373,19 +373,19 @@ public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
 	
 	public float longitudePostOffset(){
 		if (lineAlignType == ALIGN_TYPE_CENTER) {
-			float lineLength = getDataQuadrantPaddingWidth() / displayNumber;
-			return (this.getDataQuadrantPaddingWidth() - lineLength)/ (longitudeTitles.size() - 1);
+			float lineLength = dataQuadrant.getQuadrantPaddingWidth() / displayNumber;
+			return (this.dataQuadrant.getQuadrantPaddingWidth() - lineLength)/ (longitudeTitles.size() - 1);
 	    }else{
-			return this.getDataQuadrantPaddingWidth()/ (longitudeTitles.size() - 1);
+			return this.dataQuadrant.getQuadrantPaddingWidth()/ (longitudeTitles.size() - 1);
 	    }
 	}
 	
 	public float longitudeOffset(){
 		if (lineAlignType == ALIGN_TYPE_CENTER) {
-			float lineLength = getDataQuadrantPaddingWidth() / displayNumber;
-			return getDataQuadrantPaddingStartX() + lineLength / 2;
+			float lineLength = dataQuadrant.getQuadrantPaddingWidth() / displayNumber;
+			return dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
 		}else{
-			return getDataQuadrantPaddingStartX();
+			return dataQuadrant.getQuadrantPaddingStartX();
 		}
 	}
 	
@@ -502,11 +502,11 @@ public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
 			mPaint.setAntiAlias(true);
 			// set start point’s X
 			if (lineAlignType == ALIGN_TYPE_CENTER) {
-                lineLength= (getDataQuadrantPaddingWidth() / displayNumber);
-                startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+                lineLength= (dataQuadrant.getQuadrantPaddingWidth() / displayNumber);
+                startX = dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
             }else {
-                lineLength= (getDataQuadrantPaddingWidth() / (displayNumber - 1));
-                startX = getDataQuadrantPaddingStartX();
+                lineLength= (dataQuadrant.getQuadrantPaddingWidth() / (displayNumber - 1));
+                startX = dataQuadrant.getQuadrantPaddingStartX();
             }
 			// start point
 			PointF ptFirst = null;
@@ -514,8 +514,8 @@ public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
 				float value = lineData.get(j).getValue();
 				// calculate Y
 				float valueY = (float) ((1f - (value - minValue)
-						/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
-						+ getDataQuadrantPaddingStartY();
+						/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
+						+ dataQuadrant.getQuadrantPaddingStartY();
 
 				// if is not last point connect to previous point
 				if (j > displayFrom) {

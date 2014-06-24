@@ -190,7 +190,7 @@ public class MASlipStickChart extends SlipStickChart {
 			return;
 		}
 		// distance between two points
-		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getQuadrantPaddingWidth() / displayNumber - stickSpacing;
 		// start point‘s X
 		float startX;
 
@@ -213,7 +213,7 @@ public class MASlipStickChart extends SlipStickChart {
 			mPaint.setColor(line.getLineColor());
 			mPaint.setAntiAlias(true);
 			// set start point’s X
-			startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+			startX = dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
 			// start point
 			PointF ptFirst = null;
 			for (int j = super.getDisplayFrom(); j < super.getDisplayFrom()
@@ -221,8 +221,8 @@ public class MASlipStickChart extends SlipStickChart {
 				float value = lineData.get(j).getValue();
 				// calculate Y
 				float valueY = (float) ((1f - (value - minValue)
-						/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
-						+ getDataQuadrantPaddingStartY();
+						/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
+						+ dataQuadrant.getQuadrantPaddingStartY();
 
 				// if is not last point connect to previous point
 				if (j > super.getDisplayFrom()) {

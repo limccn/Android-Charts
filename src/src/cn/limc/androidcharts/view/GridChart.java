@@ -23,10 +23,15 @@ package cn.limc.androidcharts.view;
 
 import java.util.List;
 
+import cn.limc.androidcharts.common.Axis;
+import cn.limc.androidcharts.common.CrossLines;
+import cn.limc.androidcharts.common.HorizontalAxis;
+import cn.limc.androidcharts.common.IAxis;
 import cn.limc.androidcharts.common.ICrossLines;
 import cn.limc.androidcharts.common.IFlexableGrid;
 import cn.limc.androidcharts.common.IQuadrant;
 import cn.limc.androidcharts.common.Quadrant;
+import cn.limc.androidcharts.common.VerticalAxis;
 import cn.limc.androidcharts.event.IGestureDetector;
 import cn.limc.androidcharts.event.ITouchable;
 import cn.limc.androidcharts.event.OnTouchGestureListener;
@@ -70,18 +75,6 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 	public static final int AXIS_Y_POSITION_LEFT = 1 << 2;
 	public static final int AXIS_Y_POSITION_RIGHT = 1 << 3;
 	
-	/**
-	 * <p>
-	 * default background color
-	 * </p>
-	 * <p>
-	 * 背景の色のデフォルト値
-	 * </p>
-	 * <p>
-	 * 默认背景色
-	 * </p>
-	 */
-	public static final int DEFAULT_BACKGROUND_COLOR = Color.BLACK;
 
 	/**
 	 * <p>
@@ -151,8 +144,6 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 	 * 默认轴线左边距
 	 * </p>
 	 */
-	@Deprecated
-	public static final float DEFAULT_AXIS_MARGIN_LEFT = 42f;
 	public static final float DEFAULT_AXIS_Y_TITLE_QUADRANT_WIDTH = 16f;
 
 	/**
@@ -166,230 +157,7 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 	 * 默认轴线下边距
 	 * </p>
 	 */
-	@Deprecated
-	public static final float DEFAULT_AXIS_MARGIN_BOTTOM = 16f;
 	public static final float DEFAULT_AXIS_X_TITLE_QUADRANT_HEIGHT = 16f;
-
-	/**
-	 * <p>
-	 * default margin of the axis to the top border
-	 * </p>
-	 * <p>
-	 * 轴線より上枠線の距離のデフォルト値
-	 * </p>
-	 * <p>
-	 * 默认轴线上边距
-	 * </p>
-	 */
-	@Deprecated
-	public static final float DEFAULT_AXIS_MARGIN_TOP = 5f;
-	public static final float DEFAULT_DATA_QUADRANT_PADDING_TOP = 5f;
-	public static final float DEFAULT_DATA_QUADRANT_PADDING_BOTTOM = 5f;
-
-	/**
-	 * <p>
-	 * default margin of the axis to the right border
-	 * </p>
-	 * <p>
-	 * 轴線より右枠線の距離のデフォルト値
-	 * </p>
-	 * <p>
-	 * 轴线右边距
-	 * </p>
-	 */
-	@Deprecated
-	public static final float DEFAULT_AXIS_MARGIN_RIGHT = 5f;
-	public static final float DEFAULT_DATA_QUADRANT_PADDING_LEFT = 5f;
-	public static final float DEFAULT_DATA_QUADRANT_PADDING_RIGHT = 5f;
-
-	/**
-	 * <p>
-	 * default numbers of grid‘s latitude line
-	 * </p>
-	 * <p>
-	 * 緯線の数量のデフォルト値
-	 * </p>
-	 * <p>
-	 * 网格纬线的数量
-	 * </p>
-	 */
-	public static final int DEFAULT_LATITUDE_NUM = 4;
-
-	/**
-	 * <p>
-	 * default numbers of grid‘s longitude line
-	 * </p>
-	 * <p>
-	 * 経線の数量のデフォルト値
-	 * </p>
-	 * <p>
-	 * 网格经线的数量
-	 * </p>
-	 */
-	public static final int DEFAULT_LONGITUDE_NUM = 3;
-
-	/**
-	 * <p>
-	 * Should display longitude line?
-	 * </p>
-	 * <p>
-	 * 経線を表示するか?
-	 * </p>
-	 * <p>
-	 * 默认经线是否显示
-	 * </p>
-	 */
-	public static final boolean DEFAULT_DISPLAY_LONGITUDE = Boolean.TRUE;
-
-	/**
-	 * <p>
-	 * Should display longitude as dashed line?
-	 * </p>
-	 * <p>
-	 * 経線を点線にするか?
-	 * </p>
-	 * <p>
-	 * 默认经线是否显示为虚线
-	 * </p>
-	 */
-	public static final boolean DEFAULT_DASH_LONGITUDE = Boolean.TRUE;
-
-	/**
-	 * <p>
-	 * Should display longitude line?
-	 * </p>
-	 * <p>
-	 * 緯線を表示するか?
-	 * </p>
-	 * <p>
-	 * 纬线是否显示
-	 * </p>
-	 */
-	public static final boolean DEFAULT_DISPLAY_LATITUDE = Boolean.TRUE;
-
-	/**
-	 * <p>
-	 * Should display latitude as dashed line?
-	 * </p>
-	 * <p>
-	 * 緯線を点線にするか?
-	 * </p>
-	 * <p>
-	 * 纬线是否显示为虚线
-	 * </p>
-	 */
-	public static final boolean DEFAULT_DASH_LATITUDE = Boolean.TRUE;
-
-	/**
-	 * <p>
-	 * Should display the degrees in X axis?
-	 * </p>
-	 * <p>
-	 * X軸のタイトルを表示するか?
-	 * </p>
-	 * <p>
-	 * X轴上的标题是否显示
-	 * </p>
-	 */
-	public static final boolean DEFAULT_DISPLAY_LONGITUDE_TITLE = Boolean.TRUE;
-	
-	public static final float DEFAULT_LONGITUDE_WIDTH = 1f;
-	
-
-	/**
-	 * <p>
-	 * Should display the degrees in Y axis?
-	 * </p>
-	 * <p>
-	 * Y軸のタイトルを表示するか?
-	 * </p>
-	 * <p>
-	 * 默认Y轴上的标题是否显示
-	 * </p>
-	 */
-	public static final boolean DEFAULT_DISPLAY_LATITUDE_TITLE = Boolean.TRUE;
-	
-	public static final float DEFAULT_LATITUDE_WIDTH = 1f;
-
-	/**
-	 * <p>
-	 * Should display the border?
-	 * </p>
-	 * <p>
-	 * 枠を表示するか?
-	 * </p>
-	 * <p>
-	 * 默认控件是否显示边框
-	 * </p>
-	 */
-	public static final boolean DEFAULT_DISPLAY_BORDER = Boolean.TRUE;
-
-	/**
-	 * <p>
-	 * default color of text for the longitude　degrees display
-	 * </p>
-	 * <p>
-	 * 経度のタイトルの色のデフォルト値
-	 * </p>
-	 * <p>
-	 * 默认经线刻度字体颜色
-	 * </p>
-	 */
-	public static final int DEFAULT_BORDER_COLOR = Color.RED;
-
-	public static final float DEFAULT_BORDER_WIDTH = 1f;
-
-	/**
-	 * <p>
-	 * default color of text for the longitude　degrees display
-	 * </p>
-	 * <p>
-	 * 経度のタイトルの色のデフォルト値
-	 * </p>
-	 * <p>
-	 * 经线刻度字体颜色
-	 * </p>
-	 */
-	public static final int DEFAULT_LONGITUDE_FONT_COLOR = Color.WHITE;
-
-	/**
-	 * <p>
-	 * default font size of text for the longitude　degrees display
-	 * </p>
-	 * <p>
-	 * 経度のタイトルのフォントサイズのデフォルト値
-	 * </p>
-	 * <p>
-	 * 经线刻度字体大小
-	 * </p>
-	 */
-	public static final int DEFAULT_LONGITUDE_FONT_SIZE = 12;
-
-	/**
-	 * <p>
-	 * default color of text for the latitude　degrees display
-	 * </p>
-	 * <p>
-	 * 緯度のタイトルの色のデフォルト値
-	 * </p>
-	 * <p>
-	 * 纬线刻度字体颜色
-	 * </p>
-	 */
-	public static final int DEFAULT_LATITUDE_FONT_COLOR = Color.RED;
-
-	/**
-	 * <p>
-	 * default font size of text for the latitude　degrees display
-	 * </p>
-	 * <p>
-	 * 緯度のタイトルのフォントサイズのデフォルト値
-	 * </p>
-	 * <p>
-	 * 默认纬线刻度字体大小
-	 * </p>
-	 */
-	public static final int DEFAULT_LATITUDE_FONT_SIZE = 12;
 
 	public static final int DEFAULT_CROSS_LINES_COLOR = Color.CYAN;
 	public static final int DEFAULT_CROSS_LINES_FONT_COLOR = Color.CYAN;
@@ -654,34 +422,6 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 
 	/**
 	 * <p>
-	 * Should display the border?
-	 * </p>
-	 * <p>
-	 * 枠を表示するか?
-	 * </p>
-	 * <p>
-	 * 控件是否显示边框
-	 * </p>
-	 */
-	private boolean displayBorder = DEFAULT_DISPLAY_BORDER;
-
-	/**
-	 * <p>
-	 * Color of grid‘s border line
-	 * </p>
-	 * <p>
-	 * 枠線の色
-	 * </p>
-	 * <p>
-	 * 图边框的颜色
-	 * </p>
-	 */
-	private int borderColor = DEFAULT_BORDER_COLOR;
-
-	protected float borderWidth = DEFAULT_BORDER_WIDTH;
-
-	/**
-	 * <p>
 	 * Color of text for the longitude　degrees display
 	 * </p>
 	 * <p>
@@ -851,7 +591,7 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 	protected OnTouchGestureListener onTouchGestureListener = new OnTouchGestureListener();
 	protected IGestureDetector touchGestureDetector = new TouchGestureDetector<ITouchable>(this);
 
-	protected IQuadrant dataQuadrant = new Quadrant() {
+	protected IQuadrant dataQuadrant = new Quadrant(this) {
 		public float getQuadrantWidth() {
 			return getWidth() - axisYTitleQuadrantWidth - 2 * borderWidth
 					- axisWidth;
@@ -869,24 +609,17 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 				return borderWidth;
 			}
 		}
-
-		public float getQuadrantEndX() {
-			if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-				return getWidth() - borderWidth;
-			} else {
-				return getWidth() - borderWidth - axisYTitleQuadrantWidth
-						- axisWidth;
-			}
-		}
+		
 		public float getQuadrantStartY() {
 			return borderWidth;
 		}
-		
-		public float getQuadrantEndY() {
-			return getHeight() - borderWidth - axisXTitleQuadrantHeight
-					- axisWidth;
-		}
 	};
+	
+	protected IAxis axisX = new HorizontalAxis(this,AXIS_X_POSITION_TOP ,axisXTitleQuadrantHeight);
+	
+	protected IAxis axisY = new VerticalAxis(this, AXIS_Y_POSITION_LEFT, axisYTitleQuadrantWidth);
+	
+	protected ICrossLines crossLines = new CrossLines();
 	
 	/*
 	 * (non-Javadoc)
@@ -942,13 +675,17 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-
+		
 		drawXAxis(canvas);
 		drawYAxis(canvas);
-
-		if (this.displayBorder) {
-			drawBorder(canvas);
-		}
+		
+//		((Axis)axisX).setLineWidth(5);
+//		((Axis)axisX).setPosition(AXIS_X_POSITION_BOTTOM);
+//		((Axis)axisX).drawAxis(canvas);
+//		
+//		((Axis)axisY).setLineWidth(5);
+//		((Axis)axisY).setPosition(AXIS_Y_POSITION_RIGHT);
+//		((Axis)axisY).drawAxis(canvas);
 
 		if (displayLongitude || displayLongitudeTitle) {
 			drawLongitudeLine(canvas);
@@ -1080,68 +817,6 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 		// draw text
 		canvas.drawText(content, ptStart.x, ptStart.y + fontSize, mPaintBoxLine);
 	}
-
-//	public float getDataQuadrantWidth() {
-//		return super.getWidth() - axisYTitleQuadrantWidth - 2 * borderWidth
-//				- axisWidth;
-//	}
-//
-//	public float getDataQuadrantHeight() {
-//		return super.getHeight() - axisXTitleQuadrantHeight - 2 * borderWidth
-//				- axisWidth;
-//	}
-//
-//	public float getDataQuadrantStartX() {
-//		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-//			return borderWidth + axisYTitleQuadrantWidth + axisWidth;
-//		} else {
-//			return borderWidth;
-//		}
-//	}
-//
-//	public float getDataQuadrantPaddingStartX() {
-//		return getDataQuadrantStartX() + dataQuadrantPaddingLeft;
-//	}
-//
-//	public float getDataQuadrantEndX() {
-//		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-//			return super.getWidth() - borderWidth;
-//		} else {
-//			return super.getWidth() - borderWidth - axisYTitleQuadrantWidth
-//					- axisWidth;
-//		}
-//	}
-//
-//	public float getDataQuadrantPaddingEndX() {
-//		return getDataQuadrantEndX() - dataQuadrantPaddingRight;
-//	}
-//
-//	public float getDataQuadrantStartY() {
-//		return borderWidth;
-//	}
-//
-//	public float getDataQuadrantPaddingStartY() {
-//		return getDataQuadrantStartY() + dataQuadrantPaddingTop;
-//	}
-//
-//	public float getDataQuadrantEndY() {
-//		return super.getHeight() - borderWidth - axisXTitleQuadrantHeight
-//				- axisWidth;
-//	}
-//
-//	public float getDataQuadrantPaddingEndY() {
-//		return getDataQuadrantEndY() - dataQuadrantPaddingBottom;
-//	}
-//
-//	public float getDataQuadrantPaddingWidth() {
-//		return getDataQuadrantWidth() - dataQuadrantPaddingLeft
-//				- dataQuadrantPaddingRight;
-//	}
-//
-//	public float getDataQuadrantPaddingHeight() {
-//		return getDataQuadrantHeight() - dataQuadrantPaddingTop
-//				- dataQuadrantPaddingBottom;
-//	}
 
 	/**
 	 * <p>
@@ -1317,29 +992,6 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 					touchPoint.y, mPaint);
 		}
 
-	}
-
-	/**
-	 * <p>
-	 * draw border
-	 * </p>
-	 * <p>
-	 * グラプのボーダーを書く
-	 * </p>
-	 * <p>
-	 * 绘制边框
-	 * </p>
-	 * 
-	 * @param canvas
-	 */
-	protected void drawBorder(Canvas canvas) {
-		Paint mPaint = new Paint();
-		mPaint.setColor(borderColor);
-		mPaint.setStrokeWidth(borderWidth);
-		mPaint.setStyle(Style.STROKE);
-		// draw a rectangle
-		canvas.drawRect(borderWidth / 2, borderWidth / 2, super.getWidth()
-				- borderWidth / 2, super.getHeight() - borderWidth / 2, mPaint);
 	}
 
 	/**
@@ -1557,7 +1209,7 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 
 		float offset = super.getHeight() - borderWidth
 				- axisXTitleQuadrantHeight - axisWidth
-				- dataQuadrant.getQuadrantPaddingBottom();
+				- dataQuadrant.getPaddingBottom();
 
 		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
 			float startFrom = borderWidth + axisYTitleQuadrantWidth + axisWidth;
@@ -1611,7 +1263,7 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 
 		float offset = super.getHeight() - borderWidth
 				- axisXTitleQuadrantHeight - axisWidth
-				- dataQuadrant.getQuadrantPaddingBottom();
+				- dataQuadrant.getPaddingBottom();
 
 		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
 			float startFrom = borderWidth;
@@ -1643,22 +1295,6 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 			}
 		}
 
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param event
-	 * 
-	 * @see
-	 * cn.limc.androidcharts.event.ITouchEventResponse#notifyEvent(GridChart)
-	 */
-	public void notifyEvent(GridChart chart) {
-		PointF point = chart.getTouchPoint();
-		if (null != point) {
-			touchPoint = new PointF(touchPoint.x, touchPoint.y);
-		}
-		super.invalidate();
 	}
 
 	/**
@@ -1739,23 +1375,6 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 	/**
 	 * @return the axisMarginLeft
 	 */
-	@Deprecated
-	public float getAxisMarginLeft() {
-		return axisYTitleQuadrantWidth;
-	}
-
-	/**
-	 * @param axisMarginLeft
-	 *            the axisMarginLeft to set
-	 */
-	@Deprecated
-	public void setAxisMarginLeft(float axisMarginLeft) {
-		this.axisYTitleQuadrantWidth = axisMarginLeft;
-	}
-
-	/**
-	 * @return the axisMarginLeft
-	 */
 	public float getAxisYTitleQuadrantWidth() {
 		return axisYTitleQuadrantWidth;
 	}
@@ -1766,23 +1385,6 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 	 */
 	public void setAxisYTitleQuadrantWidth(float axisYTitleQuadrantWidth) {
 		this.axisYTitleQuadrantWidth = axisYTitleQuadrantWidth;
-	}
-
-	/**
-	 * @return the axisXTitleQuadrantHeight
-	 */
-	@Deprecated
-	public float getAxisMarginBottom() {
-		return axisXTitleQuadrantHeight;
-	}
-
-	/**
-	 * @param axisXTitleQuadrantHeight
-	 *            the axisXTitleQuadrantHeight to set
-	 */
-	@Deprecated
-	public void setAxisMarginBottom(float axisXTitleQuadrantHeight) {
-		this.axisXTitleQuadrantHeight = axisXTitleQuadrantHeight;
 	}
 
 	/**
@@ -1799,148 +1401,6 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 	public void setAxisXTitleQuadrantHeight(float axisXTitleQuadrantHeight) {
 		this.axisXTitleQuadrantHeight = axisXTitleQuadrantHeight;
 	}
-
-//	/**
-//	 * @return the dataQuadrantPaddingTop
-//	 */
-//	@Deprecated
-//	public float getAxisMarginTop() {
-//		return dataQuadrantPaddingTop;
-//	}
-//
-//	/**
-//	 * @param axisMarginTop
-//	 *            the axisMarginTop to set
-//	 */
-//	@Deprecated
-//	public void setAxisMarginTop(float axisMarginTop) {
-//		this.dataQuadrantPaddingTop = axisMarginTop;
-//		this.dataQuadrantPaddingBottom = axisMarginTop;
-//	}
-//
-//	/**
-//	 * @return the dataQuadrantPaddingRight
-//	 */
-//	@Deprecated
-//	public float getAxisMarginRight() {
-//		return dataQuadrantPaddingRight;
-//	}
-//
-//	/**
-//	 * @param axisMarginRight
-//	 *            the axisMarginRight to set
-//	 */
-//	@Deprecated
-//	public void setAxisMarginRight(float axisMarginRight) {
-//		this.dataQuadrantPaddingRight = axisMarginRight;
-//		this.dataQuadrantPaddingLeft = axisMarginRight;
-//	}
-//
-//	/**
-//	 * @return the dataQuadrantPaddingTop
-//	 */
-//	public float dataQuadrant.getQuadrantPaddingTop() {
-//		return dataQuadrantPaddingTop;
-//	}
-//
-//	/**
-//	 * @param dataQuadrantPaddingTop
-//	 *            the dataQuadrantPaddingTop to set
-//	 */
-//	public void setDataQuadrantPaddingTop(float dataQuadrantPaddingTop) {
-//		this.dataQuadrantPaddingTop = dataQuadrantPaddingTop;
-//	}
-//
-//	/**
-//	 * @return the dataQuadrantPaddingLeft
-//	 */
-//	public float getDataQuadrantPaddingLeft() {
-//		return dataQuadrantPaddingLeft;
-//	}
-//
-//	/**
-//	 * @param dataQuadrantPaddingLeft
-//	 *            the dataQuadrantPaddingLeft to set
-//	 */
-//	public void setDataQuadrantPaddingLeft(float dataQuadrantPaddingLeft) {
-//		this.dataQuadrantPaddingLeft = dataQuadrantPaddingLeft;
-//	}
-//
-//	/**
-//	 * @return the dataQuadrantPaddingBottom
-//	 */
-//	public float getDataQuadrantPaddingBottom() {
-//		return dataQuadrantPaddingBottom;
-//	}
-//
-//	/**
-//	 * @param dataQuadrantPaddingBottom
-//	 *            the dataQuadrantPaddingBottom to set
-//	 */
-//	public void setDataQuadrantPaddingBottom(float dataQuadrantPaddingBottom) {
-//		this.dataQuadrantPaddingBottom = dataQuadrantPaddingBottom;
-//	}
-//
-//	/**
-//	 * @return the dataQuadrantPaddingRight
-//	 */
-//	public float getDataQuadrantPaddingRight() {
-//		return dataQuadrantPaddingRight;
-//	}
-//
-//	/**
-//	 * @param dataQuadrantPaddingRight
-//	 *            the dataQuadrantPaddingRight to set
-//	 */
-//	public void setDataQuadrantPaddingRight(float dataQuadrantPaddingRight) {
-//		this.dataQuadrantPaddingRight = dataQuadrantPaddingRight;
-//	}
-//
-//	/**
-//	 * @param padding
-//	 *            the dataQuadrantPaddingTop dataQuadrantPaddingBottom
-//	 *            dataQuadrantPaddingLeft dataQuadrantPaddingRight to set
-//	 * 
-//	 */
-//	public void setDataQuadrantPadding(float padding) {
-//		this.dataQuadrantPaddingTop = padding;
-//		this.dataQuadrantPaddingLeft = padding;
-//		this.dataQuadrantPaddingBottom = padding;
-//		this.dataQuadrantPaddingRight = padding;
-//	}
-//
-//	/**
-//	 * @param topnbottom
-//	 *            the dataQuadrantPaddingTop dataQuadrantPaddingBottom to set
-//	 * @param leftnright
-//	 *            the dataQuadrantPaddingLeft dataQuadrantPaddingRight to set
-//	 * 
-//	 */
-//	public void setDataQuadrantPadding(float topnbottom, float leftnright) {
-//		this.dataQuadrantPaddingTop = topnbottom;
-//		this.dataQuadrantPaddingLeft = leftnright;
-//		this.dataQuadrantPaddingBottom = topnbottom;
-//		this.dataQuadrantPaddingRight = leftnright;
-//	}
-//
-//	/**
-//	 * @param top
-//	 *            the dataQuadrantPaddingTop to set
-//	 * @param right
-//	 *            the dataQuadrantPaddingLeft to set
-//	 * @param bottom
-//	 *            the dataQuadrantPaddingBottom to set
-//	 * @param left
-//	 *            the dataQuadrantPaddingRight to set
-//	 * 
-//	 */
-//	public void setDataQuadrantPadding(float top, float right, float bottom,
-//			float left) {
-//		this.dataQuadrantPaddingTop = top;
-//		this.dataQuadrantPaddingLeft = right;
-//		this.dataQuadrantPaddingBottom = bottom;
-//		this.dataQuadrantPaddingRight = left;
-//	}
 
 	/**
 	 * @return the displayLongitudeTitle
@@ -2106,51 +1566,6 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 	}
 
 	/**
-	 * @return the displayBorder
-	 */
-	public boolean isDisplayBorder() {
-		return displayBorder;
-	}
-
-	/**
-	 * @param displayBorder
-	 *            the displayBorder to set
-	 */
-	public void setDisplayBorder(boolean displayBorder) {
-		this.displayBorder = displayBorder;
-	}
-
-	/**
-	 * @return the borderColor
-	 */
-	public int getBorderColor() {
-		return borderColor;
-	}
-
-	/**
-	 * @param borderColor
-	 *            the borderColor to set
-	 */
-	public void setBorderColor(int borderColor) {
-		this.borderColor = borderColor;
-	}
-
-	/**
-	 * @return the borderWidth
-	 */
-	public float getBorderWidth() {
-		return borderWidth;
-	}
-
-	/**
-	 * @param borderWidth
-	 *            the borderWidth to set
-	 */
-	public void setBorderWidth(float borderWidth) {
-		this.borderWidth = borderWidth;
-	}
-
-	/**
 	 * @return the longitudeFontColor
 	 */
 	public int getLongitudeFontColor() {
@@ -2210,35 +1625,6 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 		this.latitudeFontSize = latitudeFontSize;
 	}
 
-	/**
-	 * @return the crossLinesColor
-	 */
-	public int getCrossLinesColor() {
-		return crossLinesColor;
-	}
-
-	/**
-	 * @param crossLinesColor
-	 *            the crossLinesColor to set
-	 */
-	public void setCrossLinesColor(int crossLinesColor) {
-		this.crossLinesColor = crossLinesColor;
-	}
-
-	/**
-	 * @return the crossLinesFontColor
-	 */
-	public int getCrossLinesFontColor() {
-		return crossLinesFontColor;
-	}
-
-	/**
-	 * @param crossLinesFontColor
-	 *            the crossLinesFontColor to set
-	 */
-	public void setCrossLinesFontColor(int crossLinesFontColor) {
-		this.crossLinesFontColor = crossLinesFontColor;
-	}
 
 	/**
 	 * @return the longitudeTitles
@@ -2285,35 +1671,6 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 		this.latitudeMaxTitleLength = latitudeMaxTitleLength;
 	}
 
-	/**
-	 * @return the displayCrossXOnTouch
-	 */
-	public boolean isDisplayCrossXOnTouch() {
-		return displayCrossXOnTouch;
-	}
-
-	/**
-	 * @param displayCrossXOnTouch
-	 *            the displayCrossXOnTouch to set
-	 */
-	public void setDisplayCrossXOnTouch(boolean displayCrossXOnTouch) {
-		this.displayCrossXOnTouch = displayCrossXOnTouch;
-	}
-
-	/**
-	 * @return the displayCrossYOnTouch
-	 */
-	public boolean isDisplayCrossYOnTouch() {
-		return displayCrossYOnTouch;
-	}
-
-	/**
-	 * @param displayCrossYOnTouch
-	 *            the displayCrossYOnTouch to set
-	 */
-	public void setDisplayCrossYOnTouch(boolean displayCrossYOnTouch) {
-		this.displayCrossYOnTouch = displayCrossYOnTouch;
-	}
 
 	/**
 	 * @return the clickPostX
@@ -2450,5 +1807,153 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 	 */
 	public OnTouchGestureListener getOnTouchGestureListener() {
 		return onTouchGestureListener;
+	}
+
+	/**
+	 * @return the touchGestureDetector
+	 */
+	public IGestureDetector getTouchGestureDetector() {
+		return touchGestureDetector;
+	}
+
+	/**
+	 * @param touchGestureDetector the touchGestureDetector to set
+	 */
+	public void setTouchGestureDetector(IGestureDetector touchGestureDetector) {
+		this.touchGestureDetector = touchGestureDetector;
+	}
+
+	/**
+	 * @return the dataQuadrant
+	 */
+	public IQuadrant getDataQuadrant() {
+		return dataQuadrant;
+	}
+
+	/**
+	 * @param dataQuadrant the dataQuadrant to set
+	 */
+	public void setDataQuadrant(IQuadrant dataQuadrant) {
+		this.dataQuadrant = dataQuadrant;
+	}
+	
+	/**
+	 * @return the paddingTop
+	 */
+	public float getDataQuadrantPaddingTop() {
+		return dataQuadrant.getPaddingTop();
+	}
+
+	/**
+	 * @param paddingTop
+	 *            the paddingTop to set
+	 */
+	public void setDataQuadrantPaddingTop(float quadrantPaddingTop) {
+		dataQuadrant.setPaddingTop(quadrantPaddingTop);
+	}
+
+	/**
+	 * @return the paddingLeft
+	 */
+	public float getDataQuadrantPaddingLeft() {
+		return dataQuadrant.getPaddingLeft();
+	}
+
+	/**
+	 * @param paddingLeft
+	 *            the paddingLeft to set
+	 */
+	public void setDataQuadrantPaddingLeft(float quadrantPaddingLeft) {
+		dataQuadrant.setPaddingLeft(quadrantPaddingLeft);
+	}
+
+	/**
+	 * @return the paddingBottom
+	 */
+	public float getDataQuadrantPaddingBottom() {
+		return dataQuadrant.getPaddingBottom();
+	}
+
+	/**
+	 * @param paddingBottom
+	 *            the paddingBottom to set
+	 */
+	public void setDataQuadrantPaddingBottom(float quadrantPaddingBottom) {
+		dataQuadrant.setPaddingBottom(quadrantPaddingBottom);
+	}
+
+	/**
+	 * @return the paddingRight
+	 */
+	public float getDataQuadrantPaddingRight() {
+		return dataQuadrant.getPaddingRight();
+	}
+
+	/**
+	 * @param paddingRight
+	 *            the paddingRight to set
+	 */
+	public void setDataQuadrantPaddingRight(float quadrantPaddingRight) {
+		dataQuadrant.setPaddingRight(quadrantPaddingRight);
+	}
+	
+	/**
+	 * @return the crossLinesColor
+	 */
+	public int getCrossLinesColor() {
+		return crossLinesColor;
+	}
+
+	/**
+	 * @param crossLinesColor
+	 *            the crossLinesColor to set
+	 */
+	public void setCrossLinesColor(int crossLinesColor) {
+		this.crossLinesColor = crossLinesColor;
+	}
+
+	/**
+	 * @return the crossLinesFontColor
+	 */
+	public int getCrossLinesFontColor() {
+		return crossLinesFontColor;
+	}
+
+	/**
+	 * @param crossLinesFontColor
+	 *            the crossLinesFontColor to set
+	 */
+	public void setCrossLinesFontColor(int crossLinesFontColor) {
+		this.crossLinesFontColor = crossLinesFontColor;
+	}
+	
+	/**
+	 * @return the displayCrossXOnTouch
+	 */
+	public boolean isDisplayCrossXOnTouch() {
+		return displayCrossXOnTouch;
+	}
+
+	/**
+	 * @param displayCrossXOnTouch
+	 *            the displayCrossXOnTouch to set
+	 */
+	public void setDisplayCrossXOnTouch(boolean displayCrossXOnTouch) {
+		this.displayCrossXOnTouch = displayCrossXOnTouch;
+	}
+
+	/**
+	 * @return the displayCrossYOnTouch
+	 */
+	public boolean isDisplayCrossYOnTouch() {
+		return displayCrossYOnTouch;
+	}
+
+	/**
+	 * @param displayCrossYOnTouch
+	 *            the displayCrossYOnTouch to set
+	 */
+	public void setDisplayCrossYOnTouch(boolean displayCrossYOnTouch) {
+		this.displayCrossYOnTouch = displayCrossYOnTouch;
 	}
 }

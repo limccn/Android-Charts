@@ -159,19 +159,19 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 	
 	public float longitudePostOffset(){
 		if (gridAlignType == ALIGN_TYPE_CENTER) {
-			float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber();
-			return (this.getDataQuadrantPaddingWidth() - stickWidth)/ (longitudeTitles.size() - 1);
+			float stickWidth = dataQuadrant.getQuadrantPaddingWidth() / getDisplayNumber();
+			return (this.dataQuadrant.getQuadrantPaddingWidth() - stickWidth)/ (longitudeTitles.size() - 1);
 	    }else{
-			return this.getDataQuadrantPaddingWidth()/ (longitudeTitles.size() - 1);
+			return this.dataQuadrant.getQuadrantPaddingWidth()/ (longitudeTitles.size() - 1);
 	    }
 	}
 	
 	public float longitudeOffset(){
 		if (gridAlignType == ALIGN_TYPE_CENTER) {
-			float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber();
-			return getDataQuadrantPaddingStartX() + stickWidth / 2;
+			float stickWidth = dataQuadrant.getQuadrantPaddingWidth() / getDisplayNumber();
+			return dataQuadrant.getQuadrantPaddingStartX() + stickWidth / 2;
 		}else{
-			return getDataQuadrantPaddingStartX();
+			return dataQuadrant.getQuadrantPaddingStartX();
 		}
 	}
 	
@@ -202,12 +202,12 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 		
 		int index = calcSelectedIndex(x,y);
 		
-		float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber();
+		float stickWidth = dataQuadrant.getQuadrantPaddingWidth() / getDisplayNumber();
 		IMeasurable stick = stickData.get(index);
 		calcY = (float) ((1f - (stick.getHigh() - minValue)
 				/ (maxValue - minValue))
-				* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
-		calcX = getDataQuadrantPaddingStartX() + stickWidth * (index - getDisplayFrom()) + stickWidth / 2;
+				* (dataQuadrant.getQuadrantPaddingHeight()) + dataQuadrant.getQuadrantPaddingStartY());
+		calcX = dataQuadrant.getQuadrantPaddingStartX() + stickWidth * (index - getDisplayFrom()) + stickWidth / 2;
 		
 		return new PointF(calcX,calcY);
 	}

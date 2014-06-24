@@ -168,11 +168,11 @@ public class SlipBandAreaChart extends SlipLineChart {
 		float startX;
 		
 		if (lineAlignType == ALIGN_TYPE_CENTER) {
-            lineLength= (getDataQuadrantPaddingWidth() / displayNumber);
-            startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+            lineLength= (dataQuadrant.getQuadrantPaddingWidth() / displayNumber);
+            startX = dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
         }else {
-            lineLength= (getDataQuadrantPaddingWidth() / (displayNumber - 1));
-            startX = getDataQuadrantPaddingStartX();
+            lineLength= (dataQuadrant.getQuadrantPaddingWidth() / (displayNumber - 1));
+            startX = dataQuadrant.getQuadrantPaddingStartX();
         }
 		
 		float lastY = 0;
@@ -186,11 +186,11 @@ public class SlipBandAreaChart extends SlipLineChart {
 
 			// calculate Y
 			float valueY1 = (float) ((1f - (value1 - minValue)
-					/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
-					+ getDataQuadrantPaddingStartY();
+					/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
+					+ dataQuadrant.getQuadrantPaddingStartY();
 			float valueY2 = (float) ((1f - (value2 - minValue)
-					/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
-					+ getDataQuadrantPaddingStartY();
+					/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
+					+ dataQuadrant.getQuadrantPaddingStartY();
 
 			// 绘制线条路径
 			if (j == displayFrom) {

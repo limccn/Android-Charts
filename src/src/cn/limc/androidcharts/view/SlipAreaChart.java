@@ -166,11 +166,11 @@ public class SlipAreaChart extends SlipLineChart {
 
 			// set start point’s X
 			if (lineAlignType == ALIGN_TYPE_CENTER) {
-                lineLength= (getDataQuadrantPaddingWidth() / displayNumber);
-                startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+                lineLength= (dataQuadrant.getQuadrantPaddingWidth() / displayNumber);
+                startX = dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
             }else {
-                lineLength= (getDataQuadrantPaddingWidth() / (displayNumber - 1));
-                startX = getDataQuadrantPaddingStartX();
+                lineLength= (dataQuadrant.getQuadrantPaddingWidth() / (displayNumber - 1));
+                startX = dataQuadrant.getQuadrantPaddingStartX();
             }
 			
 			Path linePath = new Path();
@@ -178,16 +178,16 @@ public class SlipAreaChart extends SlipLineChart {
 				float value = lineData.get(j).getValue();
 				// calculate Y
 				float valueY = (float) ((1f - (value - minValue)
-						/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
-						+ getDataQuadrantPaddingStartY();
+						/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
+						+ dataQuadrant.getQuadrantPaddingStartY();
 
 				// if is not last point connect to previous point
 				if (j == displayFrom) {
-					linePath.moveTo(startX, getDataQuadrantPaddingEndY());
+					linePath.moveTo(startX, dataQuadrant.getQuadrantPaddingEndY());
 					linePath.lineTo(startX, valueY);
 				} else if (j == displayFrom + displayNumber - 1) {
 					linePath.lineTo(startX, valueY);
-					linePath.lineTo(startX, getDataQuadrantPaddingEndY());
+					linePath.lineTo(startX, dataQuadrant.getQuadrantPaddingEndY());
 				} else {
 					linePath.lineTo(startX, valueY);
 				}

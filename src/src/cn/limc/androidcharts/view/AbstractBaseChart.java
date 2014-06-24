@@ -23,7 +23,11 @@ package cn.limc.androidcharts.view;
 
 import cn.limc.androidcharts.common.IChart;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Paint.Style;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -45,6 +49,75 @@ import android.view.View;
 public abstract class AbstractBaseChart extends View implements IChart {
 
 	public static final String LOG_TAG = "AbstractBaseChart";
+	
+	/**
+	 * <p>
+	 * default background color
+	 * </p>
+	 * <p>
+	 * 背景の色のデフォルト値
+	 * </p>
+	 * <p>
+	 * 默认背景色
+	 * </p>
+	 */
+	public static final int DEFAULT_BACKGROUND_COLOR = Color.BLACK;
+	
+	/**
+	 * <p>
+	 * Should display the border?
+	 * </p>
+	 * <p>
+	 * 枠を表示するか?
+	 * </p>
+	 * <p>
+	 * 默认控件是否显示边框
+	 * </p>
+	 */
+	public static final boolean DEFAULT_DISPLAY_BORDER = Boolean.TRUE;
+
+	/**
+	 * <p>
+	 * default color of text for the longitude　degrees display
+	 * </p>
+	 * <p>
+	 * 経度のタイトルの色のデフォルト値
+	 * </p>
+	 * <p>
+	 * 默认经线刻度字体颜色
+	 * </p>
+	 */
+	public static final int DEFAULT_BORDER_COLOR = Color.RED;
+
+	public static final float DEFAULT_BORDER_WIDTH = 1f;
+	
+	/**
+	 * <p>
+	 * Should display the border?
+	 * </p>
+	 * <p>
+	 * 枠を表示するか?
+	 * </p>
+	 * <p>
+	 * 控件是否显示边框
+	 * </p>
+	 */
+	protected boolean displayBorder = DEFAULT_DISPLAY_BORDER;
+
+	/**
+	 * <p>
+	 * Color of grid‘s border line
+	 * </p>
+	 * <p>
+	 * 枠線の色
+	 * </p>
+	 * <p>
+	 * 图边框的颜色
+	 * </p>
+	 */
+	protected int borderColor = DEFAULT_BORDER_COLOR;
+
+	protected float borderWidth = DEFAULT_BORDER_WIDTH;
 
 	/*
 	 * (non-Javadoc)
@@ -83,6 +156,37 @@ public abstract class AbstractBaseChart extends View implements IChart {
 	 */
 	public AbstractBaseChart(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+	}
+	
+	@Override
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+		if (this.displayBorder) {
+			drawBorder(canvas);
+		}
+	}
+	
+	/**
+	 * <p>
+	 * draw border
+	 * </p>
+	 * <p>
+	 * グラプのボーダーを書く
+	 * </p>
+	 * <p>
+	 * 绘制边框
+	 * </p>
+	 * 
+	 * @param canvas
+	 */
+	protected void drawBorder(Canvas canvas) {
+		Paint mPaint = new Paint();
+		mPaint.setColor(borderColor);
+		mPaint.setStrokeWidth(borderWidth);
+		mPaint.setStyle(Style.STROKE);
+		// draw a rectangle
+		canvas.drawRect(borderWidth / 2, borderWidth / 2, super.getWidth()
+				- borderWidth / 2, super.getHeight() - borderWidth / 2, mPaint);
 	}
 
 	/*
@@ -182,4 +286,50 @@ public abstract class AbstractBaseChart extends View implements IChart {
 	// return 0;
 	// }
 	// }
+	
+	
+	/**
+	 * @return the displayBorder
+	 */
+	public boolean isDisplayBorder() {
+		return displayBorder;
+	}
+
+	/**
+	 * @param displayBorder
+	 *            the displayBorder to set
+	 */
+	public void setDisplayBorder(boolean displayBorder) {
+		this.displayBorder = displayBorder;
+	}
+
+	/**
+	 * @return the borderColor
+	 */
+	public int getBorderColor() {
+		return borderColor;
+	}
+
+	/**
+	 * @param borderColor
+	 *            the borderColor to set
+	 */
+	public void setBorderColor(int borderColor) {
+		this.borderColor = borderColor;
+	}
+
+	/**
+	 * @return the borderWidth
+	 */
+	public float getBorderWidth() {
+		return borderWidth;
+	}
+
+	/**
+	 * @param borderWidth
+	 *            the borderWidth to set
+	 */
+	public void setBorderWidth(float borderWidth) {
+		this.borderWidth = borderWidth;
+	}
 }

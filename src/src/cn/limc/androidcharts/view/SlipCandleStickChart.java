@@ -273,9 +273,9 @@ public class SlipCandleStickChart extends SlipStickChart {
 			return;
 		}
 
-		float stickWidth = getDataQuadrantPaddingWidth() / displayNumber
+		float stickWidth = dataQuadrant.getQuadrantPaddingWidth() / displayNumber
 				- stickSpacing;
-		float stickX = getDataQuadrantPaddingStartX();
+		float stickX = dataQuadrant.getQuadrantPaddingStartX();
 
 		Paint mPaintPositive = new Paint();
 		mPaintPositive.setColor(positiveStickFillColor);
@@ -290,16 +290,16 @@ public class SlipCandleStickChart extends SlipStickChart {
 			OHLCEntity ohlc = (OHLCEntity) stickData.get(i);
 			float openY = (float) ((1f - (ohlc.getOpen() - minValue)
 					/ (maxValue - minValue))
-					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+					* (dataQuadrant.getQuadrantPaddingHeight()) + dataQuadrant.getQuadrantPaddingStartY());
 			float highY = (float) ((1f - (ohlc.getHigh() - minValue)
 					/ (maxValue - minValue))
-					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+					* (dataQuadrant.getQuadrantPaddingHeight()) + dataQuadrant.getQuadrantPaddingStartY());
 			float lowY = (float) ((1f - (ohlc.getLow() - minValue)
 					/ (maxValue - minValue))
-					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+					* (dataQuadrant.getQuadrantPaddingHeight()) + dataQuadrant.getQuadrantPaddingStartY());
 			float closeY = (float) ((1f - (ohlc.getClose() - minValue)
 					/ (maxValue - minValue))
-					* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
+					* (dataQuadrant.getQuadrantPaddingHeight()) + dataQuadrant.getQuadrantPaddingStartY());
 
 			if (ohlc.getOpen() < ohlc.getClose()) {
 				// stick or line
@@ -337,12 +337,12 @@ public class SlipCandleStickChart extends SlipStickChart {
 		float calcX = 0;
 		float calcY = 0;
 		int index = calcSelectedIndex(x,y);
-		float stickWidth = getDataQuadrantPaddingWidth() / displayNumber;
+		float stickWidth = dataQuadrant.getQuadrantPaddingWidth() / displayNumber;
 		OHLCEntity stick = (OHLCEntity)stickData.get(index);
 		calcY = (float) ((1f - (stick.getClose() - minValue)
 				/ (maxValue - minValue))
-				* (getDataQuadrantPaddingHeight()) + getDataQuadrantPaddingStartY());
-		calcX = getDataQuadrantPaddingStartX() + stickWidth * (index - displayFrom) + stickWidth / 2;
+				* (dataQuadrant.getQuadrantPaddingHeight()) + dataQuadrant.getQuadrantPaddingStartY());
+		calcX = dataQuadrant.getQuadrantPaddingStartX() + stickWidth * (index - displayFrom) + stickWidth / 2;
 		
 		return new PointF(calcX,calcY);
 	}

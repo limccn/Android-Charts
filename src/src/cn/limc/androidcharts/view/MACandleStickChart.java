@@ -191,7 +191,7 @@ public class MACandleStickChart extends CandleStickChart {
 			return;
 		}
 		// distance between two points
-		float lineLength = getDataQuadrantPaddingWidth() / maxSticksNum - stickSpacing;
+		float lineLength = dataQuadrant.getQuadrantPaddingWidth() / maxSticksNum - stickSpacing;
 		// start point‘s X
 		float startX;
 
@@ -218,13 +218,13 @@ public class MACandleStickChart extends CandleStickChart {
 			PointF ptFirst = null;
 			if (axisYPosition == AXIS_Y_POSITION_LEFT) {
 				// set start point’s X
-				startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+				startX = dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
 				for (int j = 0; j < lineData.size(); j++) {
 					float value = lineData.get(j).getValue();
 					// calculate Y
 					float valueY = (float) ((1f - (value - minValue)
-							/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
-							+ getDataQuadrantPaddingStartY();
+							/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
+							+ dataQuadrant.getQuadrantPaddingStartY();
 
 					// if is not last point connect to previous point
 					if (j > 0) {
@@ -237,13 +237,13 @@ public class MACandleStickChart extends CandleStickChart {
 				}
 			} else {
 				// set start point’s X
-				startX = getDataQuadrantPaddingEndX() - lineLength / 2;
+				startX = dataQuadrant.getQuadrantPaddingEndX() - lineLength / 2;
 				for (int j = lineData.size() - 1; j >= 0; j--) {
 					float value = lineData.get(j).getValue();
 					// calculate Y
 					float valueY = (float) ((1f - (value - minValue)
-							/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
-							+ getDataQuadrantPaddingStartY();
+							/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
+							+ dataQuadrant.getQuadrantPaddingStartY();
 
 					// if is not last point connect to previous point
 					if (j < lineData.size() - 1) {

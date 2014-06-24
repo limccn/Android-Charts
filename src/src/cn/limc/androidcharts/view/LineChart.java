@@ -376,19 +376,19 @@ public class LineChart extends GridChart implements IZoomable {
 			PointF ptFirst = null;
 			if (axisYPosition == AXIS_Y_POSITION_LEFT) {
 	            if (lineAlignType == ALIGN_TYPE_CENTER) {
-	                lineLength= (getDataQuadrantPaddingWidth() / maxPointNum);
-	                startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+	                lineLength= (dataQuadrant.getQuadrantPaddingWidth() / maxPointNum);
+	                startX = dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
 	            }else {
-	                lineLength= (getDataQuadrantPaddingWidth() / (maxPointNum - 1));
-	                startX = getDataQuadrantPaddingStartX();
+	                lineLength= (dataQuadrant.getQuadrantPaddingWidth() / (maxPointNum - 1));
+	                startX = dataQuadrant.getQuadrantPaddingStartX();
 	            }
 				
 				for (int j = 0; j < maxPointNum; j++) {
 					float value = lineData.get(j).getValue();
 					// calculate Y
 					float valueY = (float) ((1f - (value - minValue)
-							/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
-							+ getDataQuadrantPaddingStartY();
+							/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
+							+ dataQuadrant.getQuadrantPaddingStartY();
 
 					// if is not last point connect to previous point
 					if (j > 0) {
@@ -401,19 +401,19 @@ public class LineChart extends GridChart implements IZoomable {
 				}
 			} else {
 	            if (lineAlignType == ALIGN_TYPE_CENTER) {
-	                lineLength= (getDataQuadrantPaddingWidth() / maxPointNum);
-	                startX = getDataQuadrantPaddingEndX() - lineLength / 2;
+	                lineLength= (dataQuadrant.getQuadrantPaddingWidth() / maxPointNum);
+	                startX = dataQuadrant.getQuadrantPaddingEndX() - lineLength / 2;
 	            }else {
-	                lineLength= (getDataQuadrantPaddingWidth() / (maxPointNum - 1));
-	                startX = getDataQuadrantPaddingEndX();
+	                lineLength= (dataQuadrant.getQuadrantPaddingWidth() / (maxPointNum - 1));
+	                startX = dataQuadrant.getQuadrantPaddingEndX();
 	            }
 	            
 				for (int j = maxPointNum - 1; j >= 0; j--) {
 					float value = lineData.get(j).getValue();
 					// calculate Y
 					float valueY = (float) ((1f - (value - minValue)
-							/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
-							+ getDataQuadrantPaddingStartY();
+							/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
+							+ dataQuadrant.getQuadrantPaddingStartY();
 
 					// if is not last point connect to previous point
 					if (j < maxPointNum - 1) {
@@ -481,19 +481,19 @@ public class LineChart extends GridChart implements IZoomable {
 	
 	public float longitudePostOffset(){
 		if (lineAlignType == ALIGN_TYPE_CENTER) {
-			float lineLength = getDataQuadrantPaddingWidth() / maxPointNum;
-			return (this.getDataQuadrantPaddingWidth() - lineLength)/ (longitudeTitles.size() - 1);
+			float lineLength = dataQuadrant.getQuadrantPaddingWidth() / maxPointNum;
+			return (this.dataQuadrant.getQuadrantPaddingWidth() - lineLength)/ (longitudeTitles.size() - 1);
 	    }else{
-			return this.getDataQuadrantPaddingWidth()/ (longitudeTitles.size() - 1);
+			return this.dataQuadrant.getQuadrantPaddingWidth()/ (longitudeTitles.size() - 1);
 	    }
 	}
 	
 	public float longitudeOffset(){
 		if (lineAlignType == ALIGN_TYPE_CENTER) {
-			float lineLength = getDataQuadrantPaddingWidth() / maxPointNum;
-			return getDataQuadrantPaddingStartX() + lineLength / 2;
+			float lineLength = dataQuadrant.getQuadrantPaddingWidth() / maxPointNum;
+			return dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
 		}else{
-			return getDataQuadrantPaddingStartX();
+			return dataQuadrant.getQuadrantPaddingStartX();
 		}
 	}
 

@@ -181,11 +181,11 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 			return;
 		}
 
-		float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber();
+		float stickWidth = dataQuadrant.getQuadrantPaddingWidth() / getDisplayNumber();
 
 		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
 
-			float stickX = getDataQuadrantPaddingStartX();
+			float stickX = dataQuadrant.getQuadrantPaddingStartX();
 
 			for (int i = 0; i < stickData.size(); i++) {
 				IMeasurable stick = stickData.get(i);
@@ -196,7 +196,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 				stickX = stickX + stickWidth;
 			}
 		} else {
-			float stickX = getDataQuadrantPaddingEndX() - stickWidth;
+			float stickX = dataQuadrant.getQuadrantPaddingEndX() - stickWidth;
 			for (int i = stickData.size() - 1; i >= 0; i--) {
 				IMeasurable stick = stickData.get(i);
 				StickMole mole = (StickMole)provider.getMole();

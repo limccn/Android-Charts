@@ -32,18 +32,26 @@ package cn.limc.androidcharts.common;
  *  
  */
 public interface IQuadrant {
-	 static final float DEFAULT_QUADRANT_PADDING_TOP = 5f;
-	 static final float DEFAULT_QUADRANT_PADDING_BOTTOM = 5f;
-	 static final float DEFAULT_QUADRANT_PADDING_LEFT = 5f;
-	 static final float DEFAULT_QUADRANT_PADDING_RIGHT = 5f;
+	 static final float DEFAULT_PADDING_TOP = 5f;
+	 static final float DEFAULT_PADDING_BOTTOM = 5f;
+	 static final float DEFAULT_PADDING_LEFT = 5f;
+	 static final float DEFAULT_PADDING_RIGHT = 5f;
 	
-	float getQuadrantPaddingTop();
+	float getPaddingTop();
 
-	float getQuadrantPaddingLeft();
+	float getPaddingLeft();
 
-	float getQuadrantPaddingBottom();
+	float getPaddingBottom();
 
-	float getQuadrantPaddingRight();
+	float getPaddingRight();
+	
+	void setPaddingTop(float value);
+
+	void setPaddingLeft(float value);
+
+	void setPaddingBottom(float value);
+
+	void setPaddingRight(float value);
 
 	float getQuadrantWidth();
 

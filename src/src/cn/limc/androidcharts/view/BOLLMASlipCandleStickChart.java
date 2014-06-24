@@ -201,11 +201,11 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 		mPaint.setAntiAlias(true);
 		// set start point’s X
 		if (gridAlignType == ALIGN_TYPE_CENTER) {
-            lineLength= (getDataQuadrantPaddingWidth() / displayNumber) - stickSpacing;
-            startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+            lineLength= (dataQuadrant.getQuadrantPaddingWidth() / displayNumber) - stickSpacing;
+            startX = dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
         }else {
-            lineLength= (getDataQuadrantPaddingWidth() / (displayNumber - 1)) - stickSpacing;
-            startX = getDataQuadrantPaddingStartX();
+            lineLength= (dataQuadrant.getQuadrantPaddingWidth() / (displayNumber - 1)) - stickSpacing;
+            startX = dataQuadrant.getQuadrantPaddingStartX();
         }
 		Path areaPath = new Path();
 		for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
@@ -214,11 +214,11 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 
 			// calculate Y
 			float valueY1 = (float) ((1f - (value1 - minValue)
-					/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
-					+ getDataQuadrantPaddingStartY();
+					/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
+					+ dataQuadrant.getQuadrantPaddingStartY();
 			float valueY2 = (float) ((1f - (value2 - minValue)
-					/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
-					+ getDataQuadrantPaddingStartY();
+					/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
+					+ dataQuadrant.getQuadrantPaddingStartY();
 
 			// 绘制线条路径
 			if (j == displayFrom) {
@@ -265,7 +265,7 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 			return;
 		}
 		// distance between two points
-		float lineLength = getDataQuadrantPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getQuadrantPaddingWidth() / displayNumber - stickSpacing;
 		// start point‘s X
 		float startX;
 
@@ -287,15 +287,15 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 			mPaint.setColor(line.getLineColor());
 			mPaint.setAntiAlias(true);
 			// set start point’s X
-			startX = getDataQuadrantPaddingStartX() + lineLength / 2;
+			startX = dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
 			// start point
 			PointF ptFirst = null;
 			for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
 				float value = lineData.get(j).getValue();
 				// calculate Y
 				float valueY = (float) ((1f - (value - minValue)
-						/ (maxValue - minValue)) * getDataQuadrantPaddingHeight())
-						+ getDataQuadrantPaddingStartY();
+						/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
+						+ dataQuadrant.getQuadrantPaddingStartY();
 
 				// if is not last point connect to previous point
 				if (j > displayFrom) {

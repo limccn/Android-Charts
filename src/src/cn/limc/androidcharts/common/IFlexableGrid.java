@@ -31,7 +31,7 @@ package cn.limc.androidcharts.common;
  * @version v1.0 2014/06/04 17:42:28 
  *  
  */
-public interface IFlexableGrid {
+public interface IFlexableGrid extends IGrid{
 	static final int ALIGN_TYPE_CENTER = 0;
 	static final int ALIGN_TYPE_JUSTIFY = 1;
 	

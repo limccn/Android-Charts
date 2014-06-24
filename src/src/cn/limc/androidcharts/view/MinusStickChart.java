@@ -146,12 +146,12 @@ public class MinusStickChart extends StickChart {
 			return;
 		}
 
-		float stickWidth = getDataQuadrantPaddingWidth() / maxSticksNum
+		float stickWidth = dataQuadrant.getQuadrantPaddingWidth() / maxSticksNum
 				- stickSpacing;
 
 		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
 
-			float stickX = getDataQuadrantPaddingStartX();
+			float stickX = dataQuadrant.getQuadrantPaddingStartX();
 			for (int i = 0; i < stickData.size(); i++) {
 				IMeasurable stick = stickData.get(i);
 				StickMole mole = (StickMole)provider.getMole();
@@ -161,7 +161,7 @@ public class MinusStickChart extends StickChart {
 				stickX = stickX + stickSpacing + stickWidth;
 			}
 		} else {
-			float stickX = getDataQuadrantPaddingEndX() - stickWidth;
+			float stickX = dataQuadrant.getQuadrantPaddingEndX() - stickWidth;
 			for (int i = stickData.size() - 1; i >= 0; i--) {
 				IMeasurable stick = stickData.get(i);
 				StickMole mole = (StickMole)provider.getMole();

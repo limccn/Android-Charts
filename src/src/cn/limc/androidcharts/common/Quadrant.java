@@ -22,6 +22,8 @@
 
 package cn.limc.androidcharts.common;
 
+import cn.limc.androidcharts.view.GridChart;
+
 /** 
  * <p>en</p>
  * <p>jp</p>
@@ -32,7 +34,12 @@ package cn.limc.androidcharts.common;
  *  
  */
 public abstract class Quadrant implements IQuadrant{
-	public Quadrant() {
+	
+	protected GridChart inChart;
+	
+	public Quadrant(GridChart inChart) {
+		this.inChart = inChart;
+		
 	}
 	
 	/**
@@ -46,7 +53,7 @@ public abstract class Quadrant implements IQuadrant{
 	 * 轴线上边距
 	 * </p>
 	 */
-	protected float quadrantPaddingTop = DEFAULT_QUADRANT_PADDING_TOP;
+	protected float paddingTop = DEFAULT_PADDING_TOP;
 
 	/**
 	 * <p>
@@ -59,8 +66,8 @@ public abstract class Quadrant implements IQuadrant{
 	 * 轴线右边距
 	 * </p>
 	 */
-	protected float quadrantPaddingLeft = DEFAULT_QUADRANT_PADDING_LEFT;
-	protected float quadrantPaddingBottom = DEFAULT_QUADRANT_PADDING_BOTTOM;
+	protected float paddingLeft = DEFAULT_PADDING_LEFT;
+	protected float paddingBottom = DEFAULT_PADDING_BOTTOM;
 
 	/**
 	 * <p>
@@ -73,138 +80,146 @@ public abstract class Quadrant implements IQuadrant{
 	 * 轴线右边距
 	 * </p>
 	 */
-	protected float quadrantPaddingRight = DEFAULT_QUADRANT_PADDING_RIGHT;
+	protected float paddingRight = DEFAULT_PADDING_RIGHT;
 
 	/**
-	 * @return the quadrantPaddingTop
+	 * @return the paddingTop
 	 */
-	public float getQuadrantPaddingTop() {
-		return quadrantPaddingTop;
+	public float getPaddingTop() {
+		return paddingTop;
 	}
 
 	/**
-	 * @param quadrantPaddingTop
-	 *            the quadrantPaddingTop to set
+	 * @param paddingTop
+	 *            the paddingTop to set
 	 */
-	public void setQuadrantPaddingTop(float quadrantPaddingTop) {
-		this.quadrantPaddingTop = quadrantPaddingTop;
+	public void setPaddingTop(float quadrantPaddingTop) {
+		this.paddingTop = quadrantPaddingTop;
 	}
 
 	/**
-	 * @return the quadrantPaddingLeft
+	 * @return the paddingLeft
 	 */
-	public float getQuadrantPaddingLeft() {
-		return quadrantPaddingLeft;
+	public float getPaddingLeft() {
+		return paddingLeft;
 	}
 
 	/**
-	 * @param quadrantPaddingLeft
-	 *            the quadrantPaddingLeft to set
+	 * @param paddingLeft
+	 *            the paddingLeft to set
 	 */
-	public void setQuadrantPaddingLeft(float quadrantPaddingLeft) {
-		this.quadrantPaddingLeft = quadrantPaddingLeft;
+	public void setPaddingLeft(float quadrantPaddingLeft) {
+		this.paddingLeft = quadrantPaddingLeft;
 	}
 
 	/**
-	 * @return the quadrantPaddingBottom
+	 * @return the paddingBottom
 	 */
-	public float getQuadrantPaddingBottom() {
-		return quadrantPaddingBottom;
+	public float getPaddingBottom() {
+		return paddingBottom;
 	}
 
 	/**
-	 * @param quadrantPaddingBottom
-	 *            the quadrantPaddingBottom to set
+	 * @param paddingBottom
+	 *            the paddingBottom to set
 	 */
-	public void setQuadrantPaddingBottom(float quadrantPaddingBottom) {
-		this.quadrantPaddingBottom = quadrantPaddingBottom;
+	public void setPaddingBottom(float quadrantPaddingBottom) {
+		this.paddingBottom = quadrantPaddingBottom;
 	}
 
 	/**
-	 * @return the quadrantPaddingRight
+	 * @return the paddingRight
 	 */
-	public float getQuadrantPaddingRight() {
-		return quadrantPaddingRight;
+	public float getPaddingRight() {
+		return paddingRight;
 	}
 
 	/**
-	 * @param quadrantPaddingRight
-	 *            the quadrantPaddingRight to set
+	 * @param paddingRight
+	 *            the paddingRight to set
 	 */
-	public void setQuadrantPaddingRight(float quadrantPaddingRight) {
-		this.quadrantPaddingRight = quadrantPaddingRight;
+	public void setPaddingRight(float quadrantPaddingRight) {
+		this.paddingRight = quadrantPaddingRight;
 	}
 
 	/**
 	 * @param padding
-	 *            the quadrantPaddingTop quadrantPaddingBottom
-	 *            quadrantPaddingLeft quadrantPaddingRight to set
+	 *            the paddingTop paddingBottom
+	 *            paddingLeft paddingRight to set
 	 * 
 	 */
 	public void setQuadrantPadding(float padding) {
-		this.quadrantPaddingTop = padding;
-		this.quadrantPaddingLeft = padding;
-		this.quadrantPaddingBottom = padding;
-		this.quadrantPaddingRight = padding;
+		this.paddingTop = padding;
+		this.paddingLeft = padding;
+		this.paddingBottom = padding;
+		this.paddingRight = padding;
 	}
 
 	/**
 	 * @param topnbottom
-	 *            the quadrantPaddingTop quadrantPaddingBottom to set
+	 *            the paddingTop paddingBottom to set
 	 * @param leftnright
-	 *            the quadrantPaddingLeft quadrantPaddingRight to set
+	 *            the paddingLeft paddingRight to set
 	 * 
 	 */
 	public void setQuadrantPadding(float topnbottom, float leftnright) {
-		this.quadrantPaddingTop = topnbottom;
-		this.quadrantPaddingLeft = leftnright;
-		this.quadrantPaddingBottom = topnbottom;
-		this.quadrantPaddingRight = leftnright;
+		this.paddingTop = topnbottom;
+		this.paddingLeft = leftnright;
+		this.paddingBottom = topnbottom;
+		this.paddingRight = leftnright;
 	}
 
 	/**
 	 * @param top
-	 *            the quadrantPaddingTop to set
+	 *            the paddingTop to set
 	 * @param right
-	 *            the quadrantPaddingLeft to set
+	 *            the paddingLeft to set
 	 * @param bottom
-	 *            the quadrantPaddingBottom to set
+	 *            the paddingBottom to set
 	 * @param left
-	 *            the quadrantPaddingRight to set
+	 *            the paddingRight to set
 	 * 
 	 */
 	public void setQuadrantPadding(float top, float right, float bottom,
 			float left) {
-		this.quadrantPaddingTop = top;
-		this.quadrantPaddingLeft = right;
-		this.quadrantPaddingBottom = bottom;
-		this.quadrantPaddingRight = left;
+		this.paddingTop = top;
+		this.paddingLeft = right;
+		this.paddingBottom = bottom;
+		this.paddingRight = left;
+	}
+	
+	public float getQuadrantEndX(){
+		return getQuadrantStartX() + getQuadrantWidth();
+	}
+
+	public float getQuadrantEndY(){
+		return getQuadrantStartY() + getQuadrantHeight();
 	}
 	
 	public float getQuadrantPaddingStartX() {
-		return getQuadrantStartX() + quadrantPaddingLeft;
+		return getQuadrantStartX() + paddingLeft;
 	}
 
 	public float getQuadrantPaddingEndX() {
-		return getQuadrantEndX() - quadrantPaddingRight;
+		return getQuadrantEndX() - paddingRight;
 	}
 
 	public float getQuadrantPaddingStartY() {
-		return getQuadrantStartY() + quadrantPaddingTop;
+		return getQuadrantStartY() + paddingTop;
 	}
 
 	public float getQuadrantPaddingEndY() {
-		return getQuadrantEndY() - quadrantPaddingBottom;
+		return getQuadrantEndY() - paddingBottom;
 	}
 
 	public float getQuadrantPaddingWidth() {
-		return getQuadrantWidth() - quadrantPaddingLeft
-				- quadrantPaddingRight;
+		return getQuadrantWidth() - paddingLeft
+				- paddingRight;
 	}
 
 	public float getQuadrantPaddingHeight() {
-		return getQuadrantHeight() - quadrantPaddingTop
-				- quadrantPaddingBottom;
+		return getQuadrantHeight() - paddingTop
+				- paddingBottom;
 	}
 
 }
