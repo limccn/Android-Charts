@@ -34,21 +34,16 @@ import android.view.MotionEvent;
  *  
  */
 public class OnSlipGestureListener {
-	private ISlipable chart;
 	
-	public OnSlipGestureListener(ISlipable slipable) {
-		this.chart = slipable;
-	}
-	
-	public void onMoveLeft(MotionEvent event) {
-		if (chart != null) {
-			chart.moveLeft();
+	public void onMoveLeft(ISlipable slipable,MotionEvent event) {
+		if (slipable != null) {
+			slipable.moveLeft();
 		}
 	}
 	
-	public void onMoveRight(MotionEvent event) {
-		if (chart != null) {
-			chart.moveRight();
+	public void onMoveRight(ISlipable slipable,MotionEvent event) {
+		if (slipable != null) {
+			slipable.moveRight();
 		}
 	}
 }

@@ -45,7 +45,30 @@ public interface IZoomable extends ITouchable {
 	
 	static final int ZOOM_STEP = 4;
 	
+	/**
+	 * <p>
+	 * Zoom in the graph
+	 * </p>
+	 * <p>
+	 * 拡大表示する。
+	 * </p>
+	 * <p>
+	 * 放大表示
+	 * </p>
+	 */
 	void zoomIn();
+
+	/**
+	 * <p>
+	 * Zoom out the grid
+	 * </p>
+	 * <p>
+	 * 縮小表示する。
+	 * </p>
+	 * <p>
+	 * 缩小
+	 * </p>
+	 */
 	void zoomOut();
 	
 	void setOnZoomGestureListener(OnZoomGestureListener listener);

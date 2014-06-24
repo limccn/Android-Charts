@@ -1,5 +1,5 @@
 /*
- * OnDisplayCursorListener.java
+ * IDisplayCursorListener.java
  * Android-Charts
  *
  * Created by limc on 2014.
@@ -21,7 +21,6 @@
 
 
 package cn.limc.androidcharts.event;
-
 import cn.limc.androidcharts.common.IDataCursor;
 
 /** 
@@ -33,19 +32,6 @@ import cn.limc.androidcharts.common.IDataCursor;
  * @version v1.0 2014/06/23 16:25:51 
  *  
  */
-public abstract class OnDisplayCursorListener {
-
-	private IDataCursor chart;
-	
-	/** 
-	 * <p>Constructor of OnDisplayCursorListener</p>
-	 * <p>OnDisplayCursorListener类对象的构造函数</p>
-	 * <p>OnDisplayCursorListenerのコンストラクター</p>
-	 * 
-	 */
-	public OnDisplayCursorListener(IDataCursor chart) {
-		this.chart = chart;
-	}
-	
-	public abstract void onCursorChanged(int displayFrom, int displayNumber);
+public interface IDisplayCursorListener {
+	void onCursorChanged(IDataCursor dataCursor,int displayFrom, int displayNumber);
 }

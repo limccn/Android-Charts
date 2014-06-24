@@ -24,7 +24,9 @@ package cn.limc.androidcharts.view;
 import cn.limc.androidcharts.entity.IChartData;
 import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.IStickEntity;
+import cn.limc.androidcharts.event.IGestureDetector;
 import cn.limc.androidcharts.event.IZoomable;
+import cn.limc.androidcharts.event.IDisplayCursorListener;
 import cn.limc.androidcharts.event.OnZoomGestureListener;
 import cn.limc.androidcharts.event.ZoomGestureDetector;
 import cn.limc.androidcharts.mole.IMole;
@@ -64,7 +66,8 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 				public void setPro() {
 					stickFillColor = Color.BLUE;
 					stickBorderColor = Color.WHITE;
-					stickStrokeWidth = 5;
+					stickStrokeWidth = 1;
+					stickSpacing = 1;
 				}
 			};
 		}
@@ -90,8 +93,10 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 
 	protected int stickSpacing = DEFAULT_STICK_SPACING;
 	
-	protected OnZoomGestureListener onZoomGestureListener = new OnZoomGestureListener(this);
-	protected ZoomGestureDetector zoomGestureDetector = new ZoomGestureDetector(this,this);
+	protected OnZoomGestureListener onZoomGestureListener = new OnZoomGestureListener();
+	protected IGestureDetector zoomGestureDetector = new ZoomGestureDetector<IZoomable>(this);
+	
+	protected IDisplayCursorListener onDisplayCursorListener;
 	
 	/*
 	 * (non-Javadoc)
@@ -176,8 +181,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 			return;
 		}
 
-		float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber()
-				- stickSpacing;
+		float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber();
 
 		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
 
@@ -189,7 +193,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 				mole.setUp(this,stick,stickX,stickWidth);
 				mole.draw(canvas);
 				// next x
-				stickX = stickX + stickSpacing + stickWidth;
+				stickX = stickX + stickWidth;
 			}
 		} else {
 			float stickX = getDataQuadrantPaddingEndX() - stickWidth;
@@ -199,7 +203,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 				mole.setUp(this,stick,stickX,stickWidth);
 				mole.draw(canvas);
 				// next x
-				stickX = stickX - stickSpacing - stickWidth;
+				stickX = stickX - stickWidth;
 			}
 		}
 
@@ -248,10 +252,10 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 			this.postInvalidate();
 		}
 		
-//		//Listener
-//		if (onZoomGestureListener != null) {
-//			onZoomGestureListener.onZoom(ZOOM_IN, getDisplayFrom(), getDisplayNumber());
-//		}
+		//Listener
+		if (onDisplayCursorListener != null) {
+			onDisplayCursorListener.onCursorChanged(this,getDisplayFrom(), getDisplayNumber());
+		}
 	}
 
 	/**
@@ -271,11 +275,10 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 			this.postInvalidate();
 		}
 		
-		
-//		//Listener
-//		if (onZoomGestureListener != null) {
-//			onZoomGestureListener.onZoom(ZOOM_OUT, getDisplayFrom(), getDisplayNumber());
-//		}
+		//Listener
+		if (onDisplayCursorListener != null) {
+			onDisplayCursorListener.onCursorChanged(this,getDisplayFrom(), getDisplayNumber());
+		}
 	}
 
 	/**
@@ -434,5 +437,20 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	 */
 	public void setOnZoomGestureListener(OnZoomGestureListener listener) {
 		this.onZoomGestureListener = listener;
+	}
+
+	/**
+	 * @return the onDisplayCursorListener
+	 */
+	public IDisplayCursorListener getOnDisplayCursorListener() {
+		return onDisplayCursorListener;
+	}
+
+	/**
+	 * @param onDisplayCursorListener the onDisplayCursorListener to set
+	 */
+	public void setOnDisplayCursorListener(
+			IDisplayCursorListener onDisplayCursorListener) {
+		this.onDisplayCursorListener = onDisplayCursorListener;
 	}
 }

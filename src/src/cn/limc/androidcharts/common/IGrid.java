@@ -1,5 +1,5 @@
 /*
- * OnTouchGestureListener.java
+ * IGrid.java
  * Android-Charts
  *
  * Created by limc on 2014.
@@ -20,10 +20,7 @@
  */
 
 
-package cn.limc.androidcharts.event;
-
-import android.graphics.PointF;
-import android.view.MotionEvent;
+package cn.limc.androidcharts.common;
 
 /** 
  * <p>en</p>
@@ -31,26 +28,9 @@ import android.view.MotionEvent;
  * <p>cn</p>
  *
  * @author limc 
- * @version v1.0 2014/06/23 15:52:21 
+ * @version v1.0 2014/06/24 17:18:55 
  *  
  */
-public class OnTouchGestureListener {
+public interface IGrid {
 
-	public void onTouchDown(ITouchable touchable,MotionEvent event){
-		if (touchable != null) { 
-			touchable.touchDown(new PointF(event.getX(),event.getY()));
-		}
-	}
-	
-	public void onTouchMoved(ITouchable touchable,MotionEvent event){
-		if (touchable != null) {
-			touchable.touchMoved(new PointF(event.getX(),event.getY()));
-		}
-	}
-	
-	public void onTouchUp(ITouchable touchable,MotionEvent event){
-		if (touchable != null) {
-			touchable.touchUp(new PointF(event.getX(),event.getY()));
-		}
-	}
 }

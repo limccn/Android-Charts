@@ -41,6 +41,7 @@ import android.graphics.Paint.Style;
  */
 public abstract class StickMole extends RectMole {
 
+	public static final int DEFAULT_STICK_SPACING = 1;
 	public static final int DEFAULT_STICK_STROKE_WIDTH = 0;
 	
 	/**
@@ -96,6 +97,7 @@ public abstract class StickMole extends RectMole {
 	protected int stickFillColor = DEFAULT_STICK_FILL_COLOR;
 	
 	protected int stickStrokeWidth = DEFAULT_STICK_STROKE_WIDTH;
+	protected int stickSpacing = DEFAULT_STICK_SPACING;
 	
 	private IMeasurable stickData;
 	
@@ -111,7 +113,7 @@ public abstract class StickMole extends RectMole {
 		this.setPro();
 		setStickData(data);
 		left = from;
-		right = from + width;
+		right = from + width - stickSpacing;
 	}
 	
 	/* (non-Javadoc)

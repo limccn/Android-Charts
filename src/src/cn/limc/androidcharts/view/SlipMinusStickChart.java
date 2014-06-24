@@ -89,8 +89,8 @@ public class SlipMinusStickChart extends SlipStickChart {
 	@Override
 	protected void calcDataValueRange() {
 
-		double maxValue = Integer.MIN_VALUE;
-		double minValue = Integer.MAX_VALUE;
+		double maxValue = -Double.MAX_VALUE;
+		double minValue = Double.MAX_VALUE;
 
 		IMeasurable first = this.stickData.get(0);
 		// 第一个stick为停盘的情况
@@ -102,7 +102,7 @@ public class SlipMinusStickChart extends SlipStickChart {
 		}
 
 		// 判断显示为方柱或显示为线条
-		for (int i = 0; i < this.stickData.size(); i++) {
+		for (int i = getDisplayFrom(); i < getDisplayFrom() + getDisplayNumber(); i++) {
 			IMeasurable stick = this.stickData.get(i);
 			if (stick.getLow() < minValue) {
 				minValue = stick.getLow();
@@ -117,6 +117,16 @@ public class SlipMinusStickChart extends SlipStickChart {
 		this.maxValue = maxValue;
 		this.minValue = minValue;
 	}
+	
+	@Override
+	protected void calcValueRangePaddingZero(){
+		
+	}
+	
+	@Override
+	protected void calcValueRangeFormatForAxis() {
+		
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -129,8 +139,7 @@ public class SlipMinusStickChart extends SlipStickChart {
 	 */
 	@Override
 	protected void drawSticks(Canvas canvas) {
-		float stickWidth = getDataQuadrantPaddingWidth() / displayNumber
-				- stickSpacing;
+		float stickWidth = getDataQuadrantPaddingWidth() / getDisplayNumber();
 		float stickX = getDataQuadrantPaddingStartX();
 
 		if (null != stickData) {
@@ -144,7 +153,7 @@ public class SlipMinusStickChart extends SlipStickChart {
 				mole.draw(canvas);
 
 				// next x
-				stickX = stickX + stickSpacing + stickWidth;
+				stickX = stickX + stickWidth;
 			}
 		}
 	}

@@ -45,7 +45,48 @@ import android.util.AttributeSet;
  * 
  */
 public class MinusStickChart extends StickChart {
+	@Override
+	protected void calcDataValueRange() {
 
+		double maxValue = -Double.MAX_VALUE;
+		double minValue = Double.MAX_VALUE;
+
+		IMeasurable first = this.stickData.get(0);
+		// 第一个stick为停盘的情况
+		if (first.getHigh() == 0 && first.getLow() == 0) {
+
+		} else {
+			maxValue = first.getHigh();
+			minValue = first.getLow();
+		}
+
+		// 判断显示为方柱或显示为线条
+		for (int i = 0; i < this.stickData.size(); i++) {
+			IMeasurable stick = this.stickData.get(i);
+			if (stick.getLow() < minValue) {
+				minValue = stick.getLow();
+			}
+
+			if (stick.getHigh() > maxValue) {
+				maxValue = stick.getHigh();
+			}
+
+		}
+
+		this.maxValue = maxValue;
+		this.minValue = minValue;
+	}
+	
+	@Override
+	protected void calcValueRangePaddingZero(){
+		
+	}
+	
+	@Override
+	protected void calcValueRangeFormatForAxis() {
+		
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

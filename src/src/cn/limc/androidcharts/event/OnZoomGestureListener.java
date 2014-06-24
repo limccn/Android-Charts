@@ -33,28 +33,15 @@ import android.view.MotionEvent;
  *  
  */
 public class OnZoomGestureListener {
-
-	private IZoomable chart;
-	
-	/** 
-	 * <p>Constructor of OnZoomGestureListener</p>
-	 * <p>OnZoomGestureListener类对象的构造函数</p>
-	 * <p>OnZoomGestureListenerのコンストラクター</p>
-	 * 
-	 */
-	public OnZoomGestureListener(IZoomable zoomable) {
-		this.chart = zoomable;
-	}
-	
-	public void onZoomIn(MotionEvent event){
-		if (chart != null) {
-			chart.zoomIn();
+	public void onZoomIn(IZoomable zoomable, MotionEvent event){
+		if (zoomable != null) {
+			zoomable.zoomIn();
 		}
 	}
 	
-	public void onZoomOut(MotionEvent event){
-		if (chart != null) {
-			chart.zoomOut();
+	public void onZoomOut(IZoomable zoomable, MotionEvent event){
+		if (zoomable != null) {
+			zoomable.zoomOut();
 		}
 	}
 }

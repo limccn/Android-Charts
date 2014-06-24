@@ -1,5 +1,5 @@
 /*
- * ChartRender.java
+ * IAxis.java
  * Android-Charts
  *
  * Created by limc on 2014.
@@ -20,11 +20,7 @@
  */
 
 
-package cn.limc.androidcharts.mole;
-
-import cn.limc.androidcharts.entity.IMeasurable;
-import cn.limc.androidcharts.view.GridChart;
-import cn.limc.androidcharts.view.IRender;
+package cn.limc.androidcharts.common;
 
 /** 
  * <p>en</p>
@@ -32,9 +28,9 @@ import cn.limc.androidcharts.view.IRender;
  * <p>cn</p>
  *
  * @author limc 
- * @version v1.0 2014/06/20 14:45:45 
+ * @version v1.0 2014/06/24 17:17:55 
  *  
  */
-public abstract class ChartRender<CHART extends GridChart,DATA extends IMeasurable> implements IRender<CHART,DATA>{
-	public IMoleProvider provider;
+public interface IAxis {
+	
 }

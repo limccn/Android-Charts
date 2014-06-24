@@ -23,7 +23,6 @@
 package cn.limc.androidcharts.event;
 
 import android.graphics.PointF;
-import android.view.MotionEvent;
 
 /** 
  * <p>en</p>

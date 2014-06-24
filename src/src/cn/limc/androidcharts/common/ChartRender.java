@@ -1,5 +1,5 @@
 /*
- * OnTouchGestureListener.java
+ * ChartRender.java
  * Android-Charts
  *
  * Created by limc on 2014.
@@ -20,10 +20,11 @@
  */
 
 
-package cn.limc.androidcharts.event;
+package cn.limc.androidcharts.common;
 
-import android.graphics.PointF;
-import android.view.MotionEvent;
+import cn.limc.androidcharts.entity.IMeasurable;
+import cn.limc.androidcharts.mole.IMoleProvider;
+import cn.limc.androidcharts.view.GridChart;
 
 /** 
  * <p>en</p>
@@ -31,26 +32,9 @@ import android.view.MotionEvent;
  * <p>cn</p>
  *
  * @author limc 
- * @version v1.0 2014/06/23 15:52:21 
+ * @version v1.0 2014/06/20 14:45:45 
  *  
  */
-public class OnTouchGestureListener {
-
-	public void onTouchDown(ITouchable touchable,MotionEvent event){
-		if (touchable != null) { 
-			touchable.touchDown(new PointF(event.getX(),event.getY()));
-		}
-	}
-	
-	public void onTouchMoved(ITouchable touchable,MotionEvent event){
-		if (touchable != null) {
-			touchable.touchMoved(new PointF(event.getX(),event.getY()));
-		}
-	}
-	
-	public void onTouchUp(ITouchable touchable,MotionEvent event){
-		if (touchable != null) {
-			touchable.touchUp(new PointF(event.getX(),event.getY()));
-		}
-	}
+public abstract class ChartRender<CHART extends GridChart,DATA extends IMeasurable> implements IRender<CHART,DATA>{
+	public IMoleProvider provider;
 }

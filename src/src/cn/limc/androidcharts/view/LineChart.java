@@ -26,6 +26,7 @@ import java.util.List;
 
 import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
+import cn.limc.androidcharts.event.IGestureDetector;
 import cn.limc.androidcharts.event.IZoomable;
 import cn.limc.androidcharts.event.OnZoomGestureListener;
 import cn.limc.androidcharts.event.ZoomGestureDetector;
@@ -113,8 +114,8 @@ public class LineChart extends GridChart implements IZoomable {
 	public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
 	private boolean autoCalcValueRange = DEFAULT_AUTO_CALC_VALUE_RANGE;
 	
-	protected OnZoomGestureListener onZoomGestureListener = new OnZoomGestureListener(this);
-	protected ZoomGestureDetector zoomGestureDetector = new ZoomGestureDetector(this,this);
+	protected OnZoomGestureListener onZoomGestureListener = new OnZoomGestureListener();
+	protected IGestureDetector zoomGestureDetector = new ZoomGestureDetector<IZoomable>(this);
 
 	/*
 	 * (non-Javadoc)

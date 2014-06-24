@@ -34,6 +34,7 @@ import android.view.MotionEvent;
 
 import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
+import cn.limc.androidcharts.event.IGestureDetector;
 import cn.limc.androidcharts.event.ISlipable;
 import cn.limc.androidcharts.event.IZoomable;
 import cn.limc.androidcharts.event.OnSlipGestureListener;
@@ -111,10 +112,10 @@ public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
 	
 	protected int lineAlignType = DEFAULT_LINE_ALIGN_TYPE;
 	
-	protected OnZoomGestureListener onZoomGestureListener = new OnZoomGestureListener(this);
-	protected OnSlipGestureListener onSlipGestureListener = new OnSlipGestureListener(this);
+	protected OnZoomGestureListener onZoomGestureListener = new OnZoomGestureListener();
+	protected OnSlipGestureListener onSlipGestureListener = new OnSlipGestureListener();
 	
-	protected SlipGestureDetector slipGestureDetector = new SlipGestureDetector(this,this,this);
+	protected IGestureDetector slipGestureDetector = new SlipGestureDetector<ISlipable>(this);
 
 	/*
 	 * (non-Javadoc)

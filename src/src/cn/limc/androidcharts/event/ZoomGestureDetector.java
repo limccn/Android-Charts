@@ -21,8 +21,6 @@
 
 
 package cn.limc.androidcharts.event;
-import cn.limc.androidcharts.view.GridChart;
-import android.util.FloatMath;
 import android.view.MotionEvent;
 
 
@@ -35,32 +33,26 @@ import android.view.MotionEvent;
  * @version v1.0 2014/06/20 17:33:01 
  *  
  */
-public class ZoomGestureDetector extends TouchGestureDetector{
+public class ZoomGestureDetector<T extends IZoomable> extends TouchGestureDetector<ITouchable>{
 	
-	static final int TOUCH_MODE_NONE = 0;
-	static final int TOUCH_MODE_SINGLE = 1;
-	static final int TOUCH_MODE_MULTI = 2;
+	public static final int TOUCH_MODE_NONE = 0;
+	public static final int TOUCH_MODE_SINGLE = 1;
+	public static final int TOUCH_MODE_MULTI = 2;
 	
+	public static final int MIN_DISTANCE = 5;
 	
 	protected int touchMode = TOUCH_MODE_NONE;
-	
-	protected GridChart chart;
-	
+
 	protected float olddistance;
 	protected float newdistance;
 	
 	protected OnZoomGestureListener onZoomGestureListener;
 	
-	public ZoomGestureDetector(GridChart chart, IZoomable zoomable){
+	public ZoomGestureDetector(IZoomable zoomable){
 		super(zoomable);
-		this.chart = chart;
 		if (zoomable != null) {
-			this.onZoomGestureListener = zoomable.getOnZoomGestureListener();
+			onZoomGestureListener = zoomable.getOnZoomGestureListener();
 		}
-	}
-	
-	protected float calcMinLength(){
-		return (chart.getWidth() / 40) < 5 ? 5 : (chart.getWidth() / 50);
 	}
 	
 	protected float calcDistance(MotionEvent event) {
@@ -69,14 +61,12 @@ public class ZoomGestureDetector extends TouchGestureDetector{
 		}else{
 			float x = event.getX(0) - event.getX(1);
 			float y = event.getY(0) - event.getY(1);
-			return FloatMath.sqrt(x * x + y * y);
+			return (float) Math.sqrt(x * x + y * y);
 		}
 	}
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-
-		final float MIN_LENGTH = calcMinLength();
 
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_DOWN:
@@ -92,20 +82,21 @@ public class ZoomGestureDetector extends TouchGestureDetector{
 			break;
 		case MotionEvent.ACTION_POINTER_DOWN:
 			olddistance = calcDistance(event);
-			if (olddistance > MIN_LENGTH) {
+			if (olddistance > MIN_DISTANCE) {
 				touchMode = TOUCH_MODE_MULTI;
 			}
-			break;
+			return true;
+			//break;
 		case MotionEvent.ACTION_MOVE:
 			if (touchMode == TOUCH_MODE_MULTI) {
 				newdistance = calcDistance(event);
-				if (newdistance > MIN_LENGTH
-						&& Math.abs(newdistance - olddistance) > MIN_LENGTH) {
+				if (newdistance > MIN_DISTANCE
+						&& Math.abs(newdistance - olddistance) > MIN_DISTANCE) {
 					if (onZoomGestureListener != null) {
 						if (newdistance > olddistance) {
-							onZoomGestureListener.onZoomIn(event);
+							onZoomGestureListener.onZoomIn((IZoomable)instance,event);
 						} else {
-							onZoomGestureListener.onZoomOut(event);
+							onZoomGestureListener.onZoomOut((IZoomable)instance,event);
 						}
 					}
 					olddistance = newdistance;
@@ -130,19 +121,5 @@ public class ZoomGestureDetector extends TouchGestureDetector{
 	 */
 	public void setOnZoomGestureListener(OnZoomGestureListener onZoomGestureListener) {
 		this.onZoomGestureListener = onZoomGestureListener;
-	}
-
-	/**
-	 * @return the chart
-	 */
-	public GridChart getChart() {
-		return chart;
-	}
-
-	/**
-	 * @param chart the chart to set
-	 */
-	public void setChart(GridChart chart) {
-		this.chart = chart;
 	}
 }

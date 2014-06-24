@@ -20,7 +20,7 @@
  */
 
 
-package cn.limc.androidcharts.view;
+package cn.limc.androidcharts.common;
 
 /** 
  * <p>en</p>

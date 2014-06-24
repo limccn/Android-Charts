@@ -21,11 +21,13 @@
 
 package cn.limc.androidcharts.view;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.common.ICrossLines;
 import cn.limc.androidcharts.common.IFlexableGrid;
+import cn.limc.androidcharts.common.IQuadrant;
+import cn.limc.androidcharts.common.Quadrant;
+import cn.limc.androidcharts.event.IGestureDetector;
 import cn.limc.androidcharts.event.ITouchable;
 import cn.limc.androidcharts.event.OnTouchGestureListener;
 import cn.limc.androidcharts.event.TouchGestureDetector;
@@ -531,46 +533,6 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 
 	/**
 	 * <p>
-	 * Margin of the axis to the top border
-	 * </p>
-	 * <p>
-	 * 轴線より上枠線の距離
-	 * </p>
-	 * <p>
-	 * 轴线上边距
-	 * </p>
-	 */
-	protected float dataQuadrantPaddingTop = DEFAULT_DATA_QUADRANT_PADDING_TOP;
-
-	/**
-	 * <p>
-	 * Margin of the axis to the right border
-	 * </p>
-	 * <p>
-	 * 轴線より右枠線の距離
-	 * </p>
-	 * <p>
-	 * 轴线右边距
-	 * </p>
-	 */
-	protected float dataQuadrantPaddingLeft = DEFAULT_DATA_QUADRANT_PADDING_LEFT;
-	protected float dataQuadrantPaddingBottom = DEFAULT_DATA_QUADRANT_PADDING_BOTTOM;
-
-	/**
-	 * <p>
-	 * Margin of the axis to the right border
-	 * </p>
-	 * <p>
-	 * 轴線より右枠線の距離
-	 * </p>
-	 * <p>
-	 * 轴线右边距
-	 * </p>
-	 */
-	protected float dataQuadrantPaddingRight = DEFAULT_DATA_QUADRANT_PADDING_RIGHT;
-
-	/**
-	 * <p>
 	 * Should display the degrees in X axis?
 	 * </p>
 	 * <p>
@@ -886,9 +848,46 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 	 * </p>
 	 */
 	
-	protected OnTouchGestureListener onTouchGestureListener = new OnTouchGestureListener(this);
-	protected TouchGestureDetector touchGestureDetector = new TouchGestureDetector(onTouchGestureListener);
+	protected OnTouchGestureListener onTouchGestureListener = new OnTouchGestureListener();
+	protected IGestureDetector touchGestureDetector = new TouchGestureDetector<ITouchable>(this);
 
+	protected IQuadrant dataQuadrant = new Quadrant() {
+		public float getQuadrantWidth() {
+			return getWidth() - axisYTitleQuadrantWidth - 2 * borderWidth
+					- axisWidth;
+		}
+
+		public float getQuadrantHeight() {
+			return getHeight() - axisXTitleQuadrantHeight - 2 * borderWidth
+					- axisWidth;
+		}
+
+		public float getQuadrantStartX() {
+			if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+				return borderWidth + axisYTitleQuadrantWidth + axisWidth;
+			} else {
+				return borderWidth;
+			}
+		}
+
+		public float getQuadrantEndX() {
+			if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+				return getWidth() - borderWidth;
+			} else {
+				return getWidth() - borderWidth - axisYTitleQuadrantWidth
+						- axisWidth;
+			}
+		}
+		public float getQuadrantStartY() {
+			return borderWidth;
+		}
+		
+		public float getQuadrantEndY() {
+			return getHeight() - borderWidth - axisXTitleQuadrantHeight
+					- axisWidth;
+		}
+	};
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -987,12 +986,12 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 	}
 	
 	protected boolean isValidTouchPoint (float x , float y) {
-		if (x < getDataQuadrantPaddingStartX()
-				|| x > getDataQuadrantPaddingEndX()) {
+		if (x < dataQuadrant.getQuadrantPaddingStartX()
+				|| x > dataQuadrant.getQuadrantPaddingEndX()) {
 			return false;
 		}
-		if (y < getDataQuadrantPaddingStartY()
-				|| y > getDataQuadrantPaddingEndY()) {
+		if (y < dataQuadrant.getQuadrantPaddingStartY()
+				|| y > dataQuadrant.getQuadrantPaddingEndY()) {
 			return false;
 		}
 		return true;
@@ -1082,67 +1081,67 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 		canvas.drawText(content, ptStart.x, ptStart.y + fontSize, mPaintBoxLine);
 	}
 
-	public float getDataQuadrantWidth() {
-		return super.getWidth() - axisYTitleQuadrantWidth - 2 * borderWidth
-				- axisWidth;
-	}
-
-	public float getDataQuadrantHeight() {
-		return super.getHeight() - axisXTitleQuadrantHeight - 2 * borderWidth
-				- axisWidth;
-	}
-
-	public float getDataQuadrantStartX() {
-		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-			return borderWidth + axisYTitleQuadrantWidth + axisWidth;
-		} else {
-			return borderWidth;
-		}
-	}
-
-	public float getDataQuadrantPaddingStartX() {
-		return getDataQuadrantStartX() + dataQuadrantPaddingLeft;
-	}
-
-	public float getDataQuadrantEndX() {
-		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-			return super.getWidth() - borderWidth;
-		} else {
-			return super.getWidth() - borderWidth - axisYTitleQuadrantWidth
-					- axisWidth;
-		}
-	}
-
-	public float getDataQuadrantPaddingEndX() {
-		return getDataQuadrantEndX() - dataQuadrantPaddingRight;
-	}
-
-	public float getDataQuadrantStartY() {
-		return borderWidth;
-	}
-
-	public float getDataQuadrantPaddingStartY() {
-		return getDataQuadrantStartY() + dataQuadrantPaddingTop;
-	}
-
-	public float getDataQuadrantEndY() {
-		return super.getHeight() - borderWidth - axisXTitleQuadrantHeight
-				- axisWidth;
-	}
-
-	public float getDataQuadrantPaddingEndY() {
-		return getDataQuadrantEndY() - dataQuadrantPaddingBottom;
-	}
-
-	public float getDataQuadrantPaddingWidth() {
-		return getDataQuadrantWidth() - dataQuadrantPaddingLeft
-				- dataQuadrantPaddingRight;
-	}
-
-	public float getDataQuadrantPaddingHeight() {
-		return getDataQuadrantHeight() - dataQuadrantPaddingTop
-				- dataQuadrantPaddingBottom;
-	}
+//	public float getDataQuadrantWidth() {
+//		return super.getWidth() - axisYTitleQuadrantWidth - 2 * borderWidth
+//				- axisWidth;
+//	}
+//
+//	public float getDataQuadrantHeight() {
+//		return super.getHeight() - axisXTitleQuadrantHeight - 2 * borderWidth
+//				- axisWidth;
+//	}
+//
+//	public float getDataQuadrantStartX() {
+//		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+//			return borderWidth + axisYTitleQuadrantWidth + axisWidth;
+//		} else {
+//			return borderWidth;
+//		}
+//	}
+//
+//	public float getDataQuadrantPaddingStartX() {
+//		return getDataQuadrantStartX() + dataQuadrantPaddingLeft;
+//	}
+//
+//	public float getDataQuadrantEndX() {
+//		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+//			return super.getWidth() - borderWidth;
+//		} else {
+//			return super.getWidth() - borderWidth - axisYTitleQuadrantWidth
+//					- axisWidth;
+//		}
+//	}
+//
+//	public float getDataQuadrantPaddingEndX() {
+//		return getDataQuadrantEndX() - dataQuadrantPaddingRight;
+//	}
+//
+//	public float getDataQuadrantStartY() {
+//		return borderWidth;
+//	}
+//
+//	public float getDataQuadrantPaddingStartY() {
+//		return getDataQuadrantStartY() + dataQuadrantPaddingTop;
+//	}
+//
+//	public float getDataQuadrantEndY() {
+//		return super.getHeight() - borderWidth - axisXTitleQuadrantHeight
+//				- axisWidth;
+//	}
+//
+//	public float getDataQuadrantPaddingEndY() {
+//		return getDataQuadrantEndY() - dataQuadrantPaddingBottom;
+//	}
+//
+//	public float getDataQuadrantPaddingWidth() {
+//		return getDataQuadrantWidth() - dataQuadrantPaddingLeft
+//				- dataQuadrantPaddingRight;
+//	}
+//
+//	public float getDataQuadrantPaddingHeight() {
+//		return getDataQuadrantHeight() - dataQuadrantPaddingTop
+//				- dataQuadrantPaddingBottom;
+//	}
 
 	/**
 	 * <p>
@@ -1179,8 +1178,8 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 	 */
 	public String getAxisXGraduate(Object value) {
 		float valueLength = ((Float) value).floatValue()
-				- getDataQuadrantPaddingStartX();
-		return String.valueOf(valueLength / this.getDataQuadrantPaddingWidth());
+				- dataQuadrant.getQuadrantPaddingStartX();
+		return String.valueOf(valueLength / this.dataQuadrant.getQuadrantPaddingWidth());
 	}
 
 	/**
@@ -1218,9 +1217,9 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 	 */
 	public String getAxisYGraduate(Object value) {
 		float valueLength = ((Float) value).floatValue()
-				- getDataQuadrantPaddingStartY();
+				- dataQuadrant.getQuadrantPaddingStartY();
 		return String
-				.valueOf(1f - valueLength / this.getDataQuadrantPaddingHeight());
+				.valueOf(1f - valueLength / this.dataQuadrant.getQuadrantPaddingHeight());
 	}
 
 	/**
@@ -1254,7 +1253,7 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 		Paint mPaint = new Paint();
 		mPaint.setColor(crossLinesColor);
 
-		float lineVLength = getDataQuadrantHeight() + axisWidth;
+		float lineVLength = dataQuadrant.getQuadrantHeight() + axisWidth;
 
 		// TODO calculate points to draw
 		PointF boxVS = new PointF(touchPoint.x - longitudeFontSize * 5f / 2f,
@@ -1288,7 +1287,7 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 		Paint mPaint = new Paint();
 		mPaint.setColor(crossLinesColor);
 
-		float lineHLength = getDataQuadrantWidth() + axisWidth;
+		float lineHLength = dataQuadrant.getQuadrantWidth() + axisWidth;
 
 		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
 			PointF boxHS = new PointF(borderWidth, touchPoint.y
@@ -1408,11 +1407,11 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 	}
 
 	public float longitudePostOffset(){
-		return this.getDataQuadrantPaddingWidth() / (longitudeTitles.size() - 1);
+		return this.dataQuadrant.getQuadrantPaddingWidth() / (longitudeTitles.size() - 1);
 	}
 	
 	public float longitudeOffset(){
-		return getDataQuadrantPaddingStartX();
+		return dataQuadrant.getQuadrantPaddingStartX();
 	}
 	
 	/**
@@ -1436,7 +1435,7 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 			return;
 		}
 		int counts = longitudeTitles.size();
-		float length = getDataQuadrantHeight();
+		float length = dataQuadrant.getQuadrantHeight();
 
 		Paint mPaintLine = new Paint();
 		mPaintLine.setStyle(Style.STROKE);
@@ -1537,7 +1536,7 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 			return;
 		}
 
-		float length = getDataQuadrantWidth();
+		float length = dataQuadrant.getQuadrantWidth();
 		
 		Paint mPaintLine = new Paint();
 		mPaintLine.setStyle(Style.STROKE);
@@ -1553,12 +1552,12 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 		mPaintFont.setTextSize(latitudeFontSize);
 		mPaintFont.setAntiAlias(true);
 
-		float postOffset = this.getDataQuadrantPaddingHeight()
+		float postOffset = this.dataQuadrant.getQuadrantPaddingHeight()
 				/ (latitudeTitles.size() - 1);
 
 		float offset = super.getHeight() - borderWidth
 				- axisXTitleQuadrantHeight - axisWidth
-				- dataQuadrantPaddingBottom;
+				- dataQuadrant.getQuadrantPaddingBottom();
 
 		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
 			float startFrom = borderWidth + axisYTitleQuadrantWidth + axisWidth;
@@ -1607,12 +1606,12 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 		mPaintFont.setTextSize(latitudeFontSize);
 		mPaintFont.setAntiAlias(true);
 
-		float postOffset = this.getDataQuadrantPaddingHeight()
+		float postOffset = this.dataQuadrant.getQuadrantPaddingHeight()
 				/ (latitudeTitles.size() - 1);
 
 		float offset = super.getHeight() - borderWidth
 				- axisXTitleQuadrantHeight - axisWidth
-				- dataQuadrantPaddingBottom;
+				- dataQuadrant.getQuadrantPaddingBottom();
 
 		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
 			float startFrom = borderWidth;
@@ -1644,36 +1643,6 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 			}
 		}
 
-	}
-
-	/**
-	 * <p>
-	 * Zoom in the graph
-	 * </p>
-	 * <p>
-	 * 拡大表示する。
-	 * </p>
-	 * <p>
-	 * 放大表示
-	 * </p>
-	 */
-	protected void zoomIn() {
-		//DO NOTHING
-	}
-
-	/**
-	 * <p>
-	 * Zoom out the grid
-	 * </p>
-	 * <p>
-	 * 縮小表示する。
-	 * </p>
-	 * <p>
-	 * 缩小
-	 * </p>
-	 */
-	protected void zoomOut() {
-		//DO NOTHING
 	}
 
 	/*
@@ -1831,147 +1800,147 @@ public class GridChart extends AbstractBaseChart implements ITouchable, IFlexabl
 		this.axisXTitleQuadrantHeight = axisXTitleQuadrantHeight;
 	}
 
-	/**
-	 * @return the dataQuadrantPaddingTop
-	 */
-	@Deprecated
-	public float getAxisMarginTop() {
-		return dataQuadrantPaddingTop;
-	}
-
-	/**
-	 * @param axisMarginTop
-	 *            the axisMarginTop to set
-	 */
-	@Deprecated
-	public void setAxisMarginTop(float axisMarginTop) {
-		this.dataQuadrantPaddingTop = axisMarginTop;
-		this.dataQuadrantPaddingBottom = axisMarginTop;
-	}
-
-	/**
-	 * @return the dataQuadrantPaddingRight
-	 */
-	@Deprecated
-	public float getAxisMarginRight() {
-		return dataQuadrantPaddingRight;
-	}
-
-	/**
-	 * @param axisMarginRight
-	 *            the axisMarginRight to set
-	 */
-	@Deprecated
-	public void setAxisMarginRight(float axisMarginRight) {
-		this.dataQuadrantPaddingRight = axisMarginRight;
-		this.dataQuadrantPaddingLeft = axisMarginRight;
-	}
-
-	/**
-	 * @return the dataQuadrantPaddingTop
-	 */
-	public float getDataQuadrantPaddingTop() {
-		return dataQuadrantPaddingTop;
-	}
-
-	/**
-	 * @param dataQuadrantPaddingTop
-	 *            the dataQuadrantPaddingTop to set
-	 */
-	public void setDataQuadrantPaddingTop(float dataQuadrantPaddingTop) {
-		this.dataQuadrantPaddingTop = dataQuadrantPaddingTop;
-	}
-
-	/**
-	 * @return the dataQuadrantPaddingLeft
-	 */
-	public float getDataQuadrantPaddingLeft() {
-		return dataQuadrantPaddingLeft;
-	}
-
-	/**
-	 * @param dataQuadrantPaddingLeft
-	 *            the dataQuadrantPaddingLeft to set
-	 */
-	public void setDataQuadrantPaddingLeft(float dataQuadrantPaddingLeft) {
-		this.dataQuadrantPaddingLeft = dataQuadrantPaddingLeft;
-	}
-
-	/**
-	 * @return the dataQuadrantPaddingBottom
-	 */
-	public float getDataQuadrantPaddingBottom() {
-		return dataQuadrantPaddingBottom;
-	}
-
-	/**
-	 * @param dataQuadrantPaddingBottom
-	 *            the dataQuadrantPaddingBottom to set
-	 */
-	public void setDataQuadrantPaddingBottom(float dataQuadrantPaddingBottom) {
-		this.dataQuadrantPaddingBottom = dataQuadrantPaddingBottom;
-	}
-
-	/**
-	 * @return the dataQuadrantPaddingRight
-	 */
-	public float getDataQuadrantPaddingRight() {
-		return dataQuadrantPaddingRight;
-	}
-
-	/**
-	 * @param dataQuadrantPaddingRight
-	 *            the dataQuadrantPaddingRight to set
-	 */
-	public void setDataQuadrantPaddingRight(float dataQuadrantPaddingRight) {
-		this.dataQuadrantPaddingRight = dataQuadrantPaddingRight;
-	}
-
-	/**
-	 * @param padding
-	 *            the dataQuadrantPaddingTop dataQuadrantPaddingBottom
-	 *            dataQuadrantPaddingLeft dataQuadrantPaddingRight to set
-	 * 
-	 */
-	public void setDataQuadrantPadding(float padding) {
-		this.dataQuadrantPaddingTop = padding;
-		this.dataQuadrantPaddingLeft = padding;
-		this.dataQuadrantPaddingBottom = padding;
-		this.dataQuadrantPaddingRight = padding;
-	}
-
-	/**
-	 * @param topnbottom
-	 *            the dataQuadrantPaddingTop dataQuadrantPaddingBottom to set
-	 * @param leftnright
-	 *            the dataQuadrantPaddingLeft dataQuadrantPaddingRight to set
-	 * 
-	 */
-	public void setDataQuadrantPadding(float topnbottom, float leftnright) {
-		this.dataQuadrantPaddingTop = topnbottom;
-		this.dataQuadrantPaddingLeft = leftnright;
-		this.dataQuadrantPaddingBottom = topnbottom;
-		this.dataQuadrantPaddingRight = leftnright;
-	}
-
-	/**
-	 * @param top
-	 *            the dataQuadrantPaddingTop to set
-	 * @param right
-	 *            the dataQuadrantPaddingLeft to set
-	 * @param bottom
-	 *            the dataQuadrantPaddingBottom to set
-	 * @param left
-	 *            the dataQuadrantPaddingRight to set
-	 * 
-	 */
-	public void setDataQuadrantPadding(float top, float right, float bottom,
-			float left) {
-		this.dataQuadrantPaddingTop = top;
-		this.dataQuadrantPaddingLeft = right;
-		this.dataQuadrantPaddingBottom = bottom;
-		this.dataQuadrantPaddingRight = left;
-	}
+//	/**
+//	 * @return the dataQuadrantPaddingTop
+//	 */
+//	@Deprecated
+//	public float getAxisMarginTop() {
+//		return dataQuadrantPaddingTop;
+//	}
+//
+//	/**
+//	 * @param axisMarginTop
+//	 *            the axisMarginTop to set
+//	 */
+//	@Deprecated
+//	public void setAxisMarginTop(float axisMarginTop) {
+//		this.dataQuadrantPaddingTop = axisMarginTop;
+//		this.dataQuadrantPaddingBottom = axisMarginTop;
+//	}
+//
+//	/**
+//	 * @return the dataQuadrantPaddingRight
+//	 */
+//	@Deprecated
+//	public float getAxisMarginRight() {
+//		return dataQuadrantPaddingRight;
+//	}
+//
+//	/**
+//	 * @param axisMarginRight
+//	 *            the axisMarginRight to set
+//	 */
+//	@Deprecated
+//	public void setAxisMarginRight(float axisMarginRight) {
+//		this.dataQuadrantPaddingRight = axisMarginRight;
+//		this.dataQuadrantPaddingLeft = axisMarginRight;
+//	}
+//
+//	/**
+//	 * @return the dataQuadrantPaddingTop
+//	 */
+//	public float dataQuadrant.getQuadrantPaddingTop() {
+//		return dataQuadrantPaddingTop;
+//	}
+//
+//	/**
+//	 * @param dataQuadrantPaddingTop
+//	 *            the dataQuadrantPaddingTop to set
+//	 */
+//	public void setDataQuadrantPaddingTop(float dataQuadrantPaddingTop) {
+//		this.dataQuadrantPaddingTop = dataQuadrantPaddingTop;
+//	}
+//
+//	/**
+//	 * @return the dataQuadrantPaddingLeft
+//	 */
+//	public float getDataQuadrantPaddingLeft() {
+//		return dataQuadrantPaddingLeft;
+//	}
+//
+//	/**
+//	 * @param dataQuadrantPaddingLeft
+//	 *            the dataQuadrantPaddingLeft to set
+//	 */
+//	public void setDataQuadrantPaddingLeft(float dataQuadrantPaddingLeft) {
+//		this.dataQuadrantPaddingLeft = dataQuadrantPaddingLeft;
+//	}
+//
+//	/**
+//	 * @return the dataQuadrantPaddingBottom
+//	 */
+//	public float getDataQuadrantPaddingBottom() {
+//		return dataQuadrantPaddingBottom;
+//	}
+//
+//	/**
+//	 * @param dataQuadrantPaddingBottom
+//	 *            the dataQuadrantPaddingBottom to set
+//	 */
+//	public void setDataQuadrantPaddingBottom(float dataQuadrantPaddingBottom) {
+//		this.dataQuadrantPaddingBottom = dataQuadrantPaddingBottom;
+//	}
+//
+//	/**
+//	 * @return the dataQuadrantPaddingRight
+//	 */
+//	public float getDataQuadrantPaddingRight() {
+//		return dataQuadrantPaddingRight;
+//	}
+//
+//	/**
+//	 * @param dataQuadrantPaddingRight
+//	 *            the dataQuadrantPaddingRight to set
+//	 */
+//	public void setDataQuadrantPaddingRight(float dataQuadrantPaddingRight) {
+//		this.dataQuadrantPaddingRight = dataQuadrantPaddingRight;
+//	}
+//
+//	/**
+//	 * @param padding
+//	 *            the dataQuadrantPaddingTop dataQuadrantPaddingBottom
+//	 *            dataQuadrantPaddingLeft dataQuadrantPaddingRight to set
+//	 * 
+//	 */
+//	public void setDataQuadrantPadding(float padding) {
+//		this.dataQuadrantPaddingTop = padding;
+//		this.dataQuadrantPaddingLeft = padding;
+//		this.dataQuadrantPaddingBottom = padding;
+//		this.dataQuadrantPaddingRight = padding;
+//	}
+//
+//	/**
+//	 * @param topnbottom
+//	 *            the dataQuadrantPaddingTop dataQuadrantPaddingBottom to set
+//	 * @param leftnright
+//	 *            the dataQuadrantPaddingLeft dataQuadrantPaddingRight to set
+//	 * 
+//	 */
+//	public void setDataQuadrantPadding(float topnbottom, float leftnright) {
+//		this.dataQuadrantPaddingTop = topnbottom;
+//		this.dataQuadrantPaddingLeft = leftnright;
+//		this.dataQuadrantPaddingBottom = topnbottom;
+//		this.dataQuadrantPaddingRight = leftnright;
+//	}
+//
+//	/**
+//	 * @param top
+//	 *            the dataQuadrantPaddingTop to set
+//	 * @param right
+//	 *            the dataQuadrantPaddingLeft to set
+//	 * @param bottom
+//	 *            the dataQuadrantPaddingBottom to set
+//	 * @param left
+//	 *            the dataQuadrantPaddingRight to set
+//	 * 
+//	 */
+//	public void setDataQuadrantPadding(float top, float right, float bottom,
+//			float left) {
+//		this.dataQuadrantPaddingTop = top;
+//		this.dataQuadrantPaddingLeft = right;
+//		this.dataQuadrantPaddingBottom = bottom;
+//		this.dataQuadrantPaddingRight = left;
+//	}
 
 	/**
 	 * @return the displayLongitudeTitle
