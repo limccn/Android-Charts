@@ -1275,9 +1275,9 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 		float lineVLength = getDataQuadrantHeight() + axisWidth;
 
 		// TODO calculate points to draw
-		PointF boxVS = new PointF(touchPoint.x - longitudeFontSize * 5f / 2f,
+		PointF boxVS = new PointF(touchPoint.x - longitudeFontSize * 6f / 2f,
 				borderWidth + lineVLength);
-		PointF boxVE = new PointF(touchPoint.x + longitudeFontSize * 5f / 2f,
+		PointF boxVE = new PointF(touchPoint.x + longitudeFontSize * 6f / 2f,
 				borderWidth + lineVLength + axisXTitleQuadrantHeight);
 
 		// draw text
@@ -1519,10 +1519,15 @@ public class GridChart extends AbstractBaseChart implements ITouchEventNotify,
 						super.getHeight() - axisXTitleQuadrantHeight
 								+ longitudeFontSize, mPaintFont);
 			} else {
-				canvas.drawText(longitudeTitles.get(i), offset + i * postOffset
-						- (longitudeTitles.get(i).length()) * longitudeFontSize
-						/ 2f, super.getHeight() - axisXTitleQuadrantHeight
-						+ longitudeFontSize, mPaintFont);
+//				canvas.drawText(longitudeTitles.get(i), offset + i * postOffset
+//						- (longitudeTitles.get(i).length()) * longitudeFontSize
+//						/ 2f, super.getHeight() - axisXTitleQuadrantHeight
+//						+ longitudeFontSize, mPaintFont);
+				
+				canvas.drawText(
+                        longitudeTitles.get(i),
+                        offset + i * postOffset - getTextWidth(mPaintFont, longitudeTitles.get(i)) / 2f,
+                        super.getHeight() - axisXTitleQuadrantHeight + longitudeFontSize, mPaintFont);
 			}
 		}
 	}
