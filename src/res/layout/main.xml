@@ -198,6 +198,16 @@
             android:id="@+id/piechart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
+        
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/rosechart" />
+
+        <cn.limc.androidcharts.view.RoseChart
+            android:id="@+id/rosechart"
+            android:layout_width="fill_parent"
+            android:layout_height="240dip" />
 
         <TextView
             android:layout_width="fill_parent"
@@ -206,6 +216,16 @@
 
         <cn.limc.androidcharts.view.SpiderWebChart
             android:id="@+id/spiderwebchart"
+            android:layout_width="fill_parent"
+            android:layout_height="240dip" />
+        
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/radarchart" />
+
+        <cn.limc.androidcharts.view.RadarChart
+            android:id="@+id/radarchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
         

@@ -53,6 +53,8 @@ import cn.limc.androidcharts.view.MASlipStickChart;
 import cn.limc.androidcharts.view.MAStickChart;
 import cn.limc.androidcharts.view.MinusStickChart;
 import cn.limc.androidcharts.view.PieChart;
+import cn.limc.androidcharts.view.RadarChart;
+import cn.limc.androidcharts.view.RoseChart;
 import cn.limc.androidcharts.view.SlipAreaChart;
 import cn.limc.androidcharts.view.SlipBandAreaChart;
 import cn.limc.androidcharts.view.SlipCandleStickChart;
@@ -97,7 +99,9 @@ public class AndroidChartsActivity extends Activity {
 	MASlipCandleStickChart maslipcandlestickchart;
 	BOLLMASlipCandleStickChart bollmaslipcandlestickchart;
 	PieChart piechart;
+	RoseChart rosechart;
 	SpiderWebChart spiderwebchart;
+	RadarChart radarchart;
 	MACDChart macdChart;
 
 	@Override
@@ -130,7 +134,9 @@ public class AndroidChartsActivity extends Activity {
 		initMASlipCandleStickChart();
 		initBOLLMASlipCandleStickChart();
 		initPieChart();
+		initRoseChart();
 		initSpiderWebChart();
+		initRadarChart();
 		initMACDChart();
 	}
 
@@ -1242,6 +1248,25 @@ public class AndroidChartsActivity extends Activity {
 				R.drawable.green)));
 		piechart.setData(data3);
 	}
+	
+    private void initRoseChart() {
+        this.rosechart = (RoseChart) findViewById(R.id.rosechart);
+        List<TitleValueColorEntity> data3 = new ArrayList<TitleValueColorEntity>();
+        data3.add(new TitleValueColorEntity(getResources().getString(R.string.rosechart_title1), 1,
+                getResources().getColor(R.drawable.red)));
+        data3.add(new TitleValueColorEntity(getResources().getString(R.string.rosechart_title1), 2,
+                getResources().getColor(R.drawable.orange)));
+        data3.add(new TitleValueColorEntity(getResources().getString(R.string.rosechart_title1), 3,
+                getResources().getColor(R.drawable.yellow)));
+        data3.add(new TitleValueColorEntity(getResources().getString(R.string.rosechart_title4), 4,
+                getResources().getColor(R.drawable.green)));
+        data3.add(new TitleValueColorEntity(getResources().getString(R.string.rosechart_title5), 5,
+                getResources().getColor(R.drawable.blue)));
+        data3.add(new TitleValueColorEntity(getResources().getString(R.string.rosechart_title6), 6,
+                getResources().getColor(R.drawable.pink)));
+        rosechart.setData(data3);
+    }
+
 
 	private void initSpiderWebChart() {
 		this.spiderwebchart = (SpiderWebChart) findViewById(R.id.spiderwebchart);
@@ -1277,6 +1302,41 @@ public class AndroidChartsActivity extends Activity {
 		spiderwebchart.setData(data);
 		spiderwebchart.setLatitudeNum(5);
 	}
+	
+	   private void initRadarChart() {
+	        this.radarchart = (RadarChart) findViewById(R.id.radarchart);
+
+	        List<TitleValueEntity> data1 = new ArrayList<TitleValueEntity>();
+	        data1.add(new TitleValueEntity(getResources().getString(
+	                R.string.radarchart_title1), 3));
+	        data1.add(new TitleValueEntity(getResources().getString(
+	                R.string.radarchart_title2), 4));
+	        data1.add(new TitleValueEntity(getResources().getString(
+	                R.string.radarchart_title3), 9));
+	        data1.add(new TitleValueEntity(getResources().getString(
+	                R.string.radarchart_title4), 8));
+	        data1.add(new TitleValueEntity(getResources().getString(
+	                R.string.radarchart_title5), 10));
+
+	        List<TitleValueEntity> data2 = new ArrayList<TitleValueEntity>();
+	        data2.add(new TitleValueEntity(getResources().getString(
+	                R.string.radarchart_title1), 3));
+	        data2.add(new TitleValueEntity(getResources().getString(
+	                R.string.radarchart_title2), 4));
+	        data2.add(new TitleValueEntity(getResources().getString(
+	                R.string.radarchart_title3), 5));
+	        data2.add(new TitleValueEntity(getResources().getString(
+	                R.string.radarchart_title4), 6));
+	        data2.add(new TitleValueEntity(getResources().getString(
+	                R.string.radarchart_title5), 7));
+
+	        List<List<TitleValueEntity>> data = new ArrayList<List<TitleValueEntity>>();
+	        data.add(data1);
+	        data.add(data2);
+
+	        radarchart.setData(data);
+	        radarchart.setLatitudeNum(5);
+	    }
 
 	private void initMACDChart() {
 

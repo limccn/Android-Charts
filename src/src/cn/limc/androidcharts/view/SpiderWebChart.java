@@ -56,34 +56,9 @@ import android.util.AttributeSet;
  * @version v1.0 2011/05/30 14:01:54
  * 
  */
-public class SpiderWebChart extends AbstractBaseChart {
+public class SpiderWebChart extends RoundChart {
 
-	/**
-	 * <p>
-	 * default title
-	 * </p>
-	 * <p>
-	 * タイトルのデフォルト値
-	 * </p>
-	 * <p>
-	 * 默认图表标题
-	 * </p>
-	 */
-	public static final String DEFAULT_TITLE = "Spider Web Chart";
-
-	/**
-	 * <p>
-	 * default should display longitude lines
-	 * </p>
-	 * <p>
-	 * 経線を表示する
-	 * </p>
-	 * <p>
-	 * 默认是否显示经线
-	 * </p>
-	 */
-	public static final boolean DEFAULT_DISPLAY_LONGITUDE = true;
-
+	
 	/**
 	 * <p>
 	 * default longitude numbers
@@ -96,32 +71,6 @@ public class SpiderWebChart extends AbstractBaseChart {
 	 * </p>
 	 */
 	public static final int DEFAULT_LONGITUDE_NUM = 5;
-
-	/**
-	 * <p>
-	 * default longitude length
-	 * </p>
-	 * <p>
-	 * 経線の長さのデフォルト値
-	 * </p>
-	 * <p>
-	 * 默认经线长度
-	 * </p>
-	 */
-	public static final int DEFAULT_LONGITUDE_LENGTH = 80;
-
-	/**
-	 * <p>
-	 * default color for longitude lines
-	 * </p>
-	 * <p>
-	 * 経線の色のデフォルト値
-	 * </p>
-	 * <p>
-	 * 默认经线颜色
-	 * </p>
-	 */
-	public static final int DEFAULT_LONGITUDE_COLOR = Color.BLACK;
 
 	/**
 	 * <p>
@@ -164,32 +113,6 @@ public class SpiderWebChart extends AbstractBaseChart {
 
 	/**
 	 * <p>
-	 * default position
-	 * </p>
-	 * <p>
-	 * 中心位置のデフォルト値
-	 * </p>
-	 * <p>
-	 * 默认绘图中心位置
-	 * </p>
-	 */
-	public static final Point DEFAULT_POSITION = new Point(0, 0);
-
-	/**
-	 * <p>
-	 * default color for background
-	 * </p>
-	 * <p>
-	 * 背景の色のデフォルト値
-	 * </p>
-	 * <p>
-	 * 默认蛛网背景色
-	 * </p>
-	 */
-	public static final int DEFAULT_BACKGROUND_COLOR = Color.GRAY;
-
-	/**
-	 * <p>
 	 * default color for display data
 	 * </p>
 	 * <p>
@@ -212,46 +135,7 @@ public class SpiderWebChart extends AbstractBaseChart {
 	 * 图表数据
 	 * </p>
 	 */
-	private List<List<TitleValueEntity>> data;
-
-	/**
-	 * <p>
-	 * title
-	 * </p>
-	 * <p>
-	 * タイトル
-	 * </p>
-	 * <p>
-	 * 图表标题
-	 * </p>
-	 */
-	private String title = DEFAULT_TITLE;
-
-	/**
-	 * <p>
-	 * position
-	 * </p>
-	 * <p>
-	 * 中心位置
-	 * </p>
-	 * <p>
-	 * 绘图中心位置
-	 * </p>
-	 */
-	private Point position = DEFAULT_POSITION;
-
-	/**
-	 * <p>
-	 * should display longitude lines
-	 * </p>
-	 * <p>
-	 * 経線を表示する
-	 * </p>
-	 * <p>
-	 * 是否显示经线
-	 * </p>
-	 */
-	private boolean displayLongitude = DEFAULT_DISPLAY_LONGITUDE;
+	protected List<List<TitleValueEntity>> data;
 
 	/**
 	 * <p>
@@ -264,33 +148,9 @@ public class SpiderWebChart extends AbstractBaseChart {
 	 * 经线数量
 	 * </p>
 	 */
-	private int longitudeNum = DEFAULT_LONGITUDE_NUM;
+	protected int longitudeNum = DEFAULT_LONGITUDE_NUM;
 
-	/**
-	 * <p>
-	 * color for longitude lines
-	 * </p>
-	 * <p>
-	 * 経線の色
-	 * </p>
-	 * <p>
-	 * 经线颜色
-	 * </p>
-	 */
-	private int longitudeColor = DEFAULT_LONGITUDE_COLOR;
-
-	/**
-	 * <p>
-	 * longitude length
-	 * </p>
-	 * <p>
-	 * 経線の長
-	 * </p>
-	 * <p>
-	 * 经线长度
-	 * </p>
-	 */
-	private int longitudeLength = DEFAULT_LONGITUDE_LENGTH;
+	
 
 	/**
 	 * <p>
@@ -303,7 +163,7 @@ public class SpiderWebChart extends AbstractBaseChart {
 	 * 是否显示纬线
 	 * </p>
 	 */
-	private boolean displayLatitude = DEFAULT_DISPLAY_LATITUDE;
+	protected boolean displayLatitude = DEFAULT_DISPLAY_LATITUDE;
 
 	/**
 	 * <p>
@@ -316,7 +176,7 @@ public class SpiderWebChart extends AbstractBaseChart {
 	 * 纬线数量
 	 * </p>
 	 */
-	private int latitudeNum = DEFAULT_LATITUDE_NUM;
+	protected int latitudeNum = DEFAULT_LATITUDE_NUM;
 
 	/**
 	 * <p>
@@ -329,7 +189,7 @@ public class SpiderWebChart extends AbstractBaseChart {
 	 * 纬线颜色
 	 * </p>
 	 */
-	private int latitudeColor = DEFAULT_LATITUDE_COLOR;
+	protected int latitudeColor = DEFAULT_LATITUDE_COLOR;
 
 	/**
 	 * <p>
@@ -342,7 +202,7 @@ public class SpiderWebChart extends AbstractBaseChart {
 	 * 蛛网背景色
 	 * </p>
 	 */
-	private int backgroundColor = DEFAULT_BACKGROUND_COLOR;
+	protected int backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
 	/*
 	 * (non-Javadoc)
@@ -410,7 +270,7 @@ public class SpiderWebChart extends AbstractBaseChart {
 				(int) (super.getHeight() / 2f + 0.2 * longitudeLength));
 
 		// draw this chart
-		drawSpiderWeb(canvas);
+		drawWeb(canvas);
 
 		// draw data on chart
 		drawData(canvas);
@@ -528,7 +388,7 @@ public class SpiderWebChart extends AbstractBaseChart {
 	 * @param canvas
 	 *            Canvas
 	 */
-	protected void drawSpiderWeb(Canvas canvas) {
+	protected void drawWeb(Canvas canvas) {
 		Paint mPaintWebFill = new Paint();
 		mPaintWebFill.setColor(Color.GRAY);
 		mPaintWebFill.setAntiAlias(true);
@@ -693,51 +553,6 @@ public class SpiderWebChart extends AbstractBaseChart {
 	}
 
 	/**
-	 * @return the title
-	 */
-	public String getTitle() {
-		return title;
-	}
-
-	/**
-	 * @param title
-	 *            the title to set
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	/**
-	 * @return the position
-	 */
-	public Point getPosition() {
-		return position;
-	}
-
-	/**
-	 * @param position
-	 *            the position to set
-	 */
-	public void setPosition(Point position) {
-		this.position = position;
-	}
-
-	/**
-	 * @return the displayLongitude
-	 */
-	public boolean isDisplayLongitude() {
-		return displayLongitude;
-	}
-
-	/**
-	 * @param displayLongitude
-	 *            the displayLongitude to set
-	 */
-	public void setDisplayLongitude(boolean displayLongitude) {
-		this.displayLongitude = displayLongitude;
-	}
-
-	/**
 	 * @return the longitudeNum
 	 */
 	public int getLongitudeNum() {
@@ -750,36 +565,6 @@ public class SpiderWebChart extends AbstractBaseChart {
 	 */
 	public void setLongitudeNum(int longitudeNum) {
 		this.longitudeNum = longitudeNum;
-	}
-
-	/**
-	 * @return the longitudeColor
-	 */
-	public int getLongitudeColor() {
-		return longitudeColor;
-	}
-
-	/**
-	 * @param longitudeColor
-	 *            the longitudeColor to set
-	 */
-	public void setLongitudeColor(int longitudeColor) {
-		this.longitudeColor = longitudeColor;
-	}
-
-	/**
-	 * @return the longitudeLength
-	 */
-	public int getLongitudeLength() {
-		return longitudeLength;
-	}
-
-	/**
-	 * @param longitudeLength
-	 *            the longitudeLength to set
-	 */
-	public void setLongitudeLength(int longitudeLength) {
-		this.longitudeLength = longitudeLength;
 	}
 
 	/**
@@ -825,21 +610,6 @@ public class SpiderWebChart extends AbstractBaseChart {
 	 */
 	public void setLatitudeColor(int latitudeColor) {
 		this.latitudeColor = latitudeColor;
-	}
-
-	/**
-	 * @return the backgroundColor
-	 */
-	public int getBackgroundColor() {
-		return backgroundColor;
-	}
-
-	/**
-	 * @param backgroundColor
-	 *            the backgroundColor to set
-	 */
-	public void setBackgroundColor(int backgroundColor) {
-		this.backgroundColor = backgroundColor;
 	}
 
 }

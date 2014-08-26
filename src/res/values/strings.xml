@@ -26,11 +26,24 @@
     <string name="piechart_title3">title3</string>
     <string name="piechart_title4">title4</string>
     <string name="piechart_title5">title5</string>
+    <string name="rosechart">RoseChart</string>
+    <string name="rosechart_title1">title1</string>
+    <string name="rosechart_title2">title2</string>
+    <string name="rosechart_title3">title3</string>
+    <string name="rosechart_title4">title4</string>
+    <string name="rosechart_title5">title5</string>
+    <string name="rosechart_title6">title6</string>
     <string name="spiderwebchart">SpiderWebChart</string>
     <string name="spiderwebchart_title1">title1</string>
     <string name="spiderwebchart_title2">title2</string>
     <string name="spiderwebchart_title3">title3</string>
     <string name="spiderwebchart_title4">title4</string>
     <string name="spiderwebchart_title5">title5</string>
+    <string name="radarchart">RadarChart</string>
+    <string name="radarchart_title1">title1</string>
+    <string name="radarchart_title2">title2</string>
+    <string name="radarchart_title3">title3</string>
+    <string name="radarchart_title4">title4</string>
+    <string name="radarchart_title5">title5</string>
 
 </resources>
