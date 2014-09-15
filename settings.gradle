@@ -1,0 +1,2 @@
+// The project should be splitted into 'library' and 'sample' folders.
+include ':src' //, ':sample'

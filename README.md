@@ -50,6 +50,29 @@ application on both Android and iOS platforms.
 
 3. Select the graph/chart you want to use in your application, and Enjoy it.
 
+
+### Gradle build
+
+To install the sample application to your device run the following task:
+
+```
+$ ./gradlew installDebug
+```
+
+To deploy the library to your local Maven repository run the following task:
+
+```
+$ ./gradlew install
+```
+
+Then, to use the library in your project add the following to your `build.gradle`:
+
+```groovy
+dependencies {
+    compile 'cn.limc:androidcharts:1.0.0'
+}
+```
+
 ## ScreenShot
 ![Screenshot](http://www.lidaren.com/code/androidcharts/screenshot.png)
 
