@@ -28,6 +28,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Cap;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.Paint.Style;
@@ -250,8 +251,9 @@ public class DonutChart extends RoundChart {
                         - longitudeLength + borderWidth / 2 + donutWidth / 2, position.x + longitudeLength - borderWidth / 2 - donutWidth / 2, position.y
                         + longitudeLength - borderWidth / 2 - donutWidth / 2);
                 float sweep = e.getValue() * 360f / sum;
-                    
-                canvas.drawArc(oval, offset, sweep, false, mPaintDonut);
+                
+                //some android device may have bug when use sweep instead of sweep + 1
+                canvas.drawArc(oval, offset, sweep + 1, false, mPaintDonut);
                 offset = offset + sweep;
             }
             
