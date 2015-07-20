@@ -23,6 +23,7 @@ package cn.limc.androidcharts.view;
 
 import java.util.List;
 
+import cn.limc.androidcharts.common.IFlexableGrid;
 import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
 import android.content.Context;
@@ -165,12 +166,12 @@ public class SlipAreaChart extends SlipLineChart {
 			mPaint.setAntiAlias(true);
 
 			// set start point’s X
-			if (lineAlignType == ALIGN_TYPE_CENTER) {
-                lineLength= (dataQuadrant.getQuadrantPaddingWidth() / displayNumber);
-                startX = dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
+			if (lineAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
+                lineLength= (dataQuadrant.getPaddingWidth() / displayNumber);
+                startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
             }else {
-                lineLength= (dataQuadrant.getQuadrantPaddingWidth() / (displayNumber - 1));
-                startX = dataQuadrant.getQuadrantPaddingStartX();
+                lineLength= (dataQuadrant.getPaddingWidth() / (displayNumber - 1));
+                startX = dataQuadrant.getPaddingStartX();
             }
 			
 			Path linePath = new Path();
@@ -178,16 +179,16 @@ public class SlipAreaChart extends SlipLineChart {
 				float value = lineData.get(j).getValue();
 				// calculate Y
 				float valueY = (float) ((1f - (value - minValue)
-						/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
-						+ dataQuadrant.getQuadrantPaddingStartY();
+						/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+						+ dataQuadrant.getPaddingStartY();
 
 				// if is not last point connect to previous point
 				if (j == displayFrom) {
-					linePath.moveTo(startX, dataQuadrant.getQuadrantPaddingEndY());
+					linePath.moveTo(startX, dataQuadrant.getPaddingEndY());
 					linePath.lineTo(startX, valueY);
 				} else if (j == displayFrom + displayNumber - 1) {
 					linePath.lineTo(startX, valueY);
-					linePath.lineTo(startX, dataQuadrant.getQuadrantPaddingEndY());
+					linePath.lineTo(startX, dataQuadrant.getPaddingEndY());
 				} else {
 					linePath.lineTo(startX, valueY);
 				}

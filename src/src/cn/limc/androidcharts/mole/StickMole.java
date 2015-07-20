@@ -157,9 +157,9 @@ public abstract class StickMole extends RectMole {
 		this.stickData = stickData;
 		DataGridChart chart = (DataGridChart)getInChart();
 		float highY = (float) ((1f - (stickData.getHigh() - chart.getMinValue()) / (chart.getMaxValue() - chart.getMinValue()))
-				* (chart.getDataQuadrant().getQuadrantPaddingHeight()) + chart.getDataQuadrant().getQuadrantPaddingStartY());
+				* (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant().getPaddingStartY());
 		float lowY = (float) ((1f - (stickData.getLow() - chart.getMinValue()) / (chart.getMaxValue() - chart.getMinValue()))
-				* (chart.getDataQuadrant().getQuadrantPaddingHeight()) + chart.getDataQuadrant().getQuadrantPaddingStartY());
+				* (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant().getPaddingStartY());
 		
 		top = highY;
 		bottom = lowY;

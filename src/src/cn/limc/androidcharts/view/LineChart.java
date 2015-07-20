@@ -24,6 +24,8 @@ package cn.limc.androidcharts.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.limc.androidcharts.axis.IAxis;
+import cn.limc.androidcharts.common.IFlexableGrid;
 import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
 import cn.limc.androidcharts.event.IGestureDetector;
@@ -56,7 +58,7 @@ import android.view.MotionEvent;
  * @see GridChart
  */
 public class LineChart extends GridChart implements IZoomable {
-	public static final int DEFAULT_LINE_ALIGN_TYPE = ALIGN_TYPE_JUSTIFY;
+	public static final int DEFAULT_LINE_ALIGN_TYPE = IFlexableGrid.ALIGN_TYPE_JUSTIFY;
 	/**
 	 * <p>
 	 * data to draw lines
@@ -180,7 +182,7 @@ public class LineChart extends GridChart implements IZoomable {
 			// 判断显示为方柱或显示为线条
 			for (int j = 0; j < lineData.size(); j++) {
 				DateValueEntity entity;
-				if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+				if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
 					entity = line.getLineData().get(j);
 				} else {
 					entity = line.getLineData().get(lineData.size() - 1 - j);
@@ -275,20 +277,20 @@ public class LineChart extends GridChart implements IZoomable {
 		}
 
 		// 等分轴修正
-		if (this.latitudeNum > 0 && rate > 1
+		if (simpleGrid.getLatitudeNum() > 0 && rate > 1
 				&& (long) (this.minValue) % rate != 0) {
 			// 最大值加上轴差
 			this.minValue = (long) this.minValue
 					- (long) (this.minValue) % rate;
 		}
 		// 等分轴修正
-		if (this.latitudeNum > 0
+		if (simpleGrid.getLatitudeNum() > 0
 				&& (long) (this.maxValue - this.minValue)
-						% (this.latitudeNum * rate) != 0) {
+						% (simpleGrid.getLatitudeNum() * rate) != 0) {
 			// 最大值加上轴差
 			this.maxValue = (long) this.maxValue
-					+ this.latitudeNum * rate
-					- (long) (this.maxValue - this.minValue) % (this.latitudeNum * rate);
+					+ simpleGrid.getLatitudeNum() * rate
+					- (long) (this.maxValue - this.minValue) % (simpleGrid.getLatitudeNum() * rate);
 		}
 	}
 
@@ -374,21 +376,21 @@ public class LineChart extends GridChart implements IZoomable {
 			mPaint.setAntiAlias(true);
 			// start point
 			PointF ptFirst = null;
-			if (axisYPosition == AXIS_Y_POSITION_LEFT) {
-	            if (lineAlignType == ALIGN_TYPE_CENTER) {
-	                lineLength= (dataQuadrant.getQuadrantPaddingWidth() / maxPointNum);
-	                startX = dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
+			if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+	            if (lineAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
+	                lineLength= (dataQuadrant.getPaddingWidth() / maxPointNum);
+	                startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 	            }else {
-	                lineLength= (dataQuadrant.getQuadrantPaddingWidth() / (maxPointNum - 1));
-	                startX = dataQuadrant.getQuadrantPaddingStartX();
+	                lineLength= (dataQuadrant.getPaddingWidth() / (maxPointNum - 1));
+	                startX = dataQuadrant.getPaddingStartX();
 	            }
 				
 				for (int j = 0; j < maxPointNum; j++) {
 					float value = lineData.get(j).getValue();
 					// calculate Y
 					float valueY = (float) ((1f - (value - minValue)
-							/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
-							+ dataQuadrant.getQuadrantPaddingStartY();
+							/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+							+ dataQuadrant.getPaddingStartY();
 
 					// if is not last point connect to previous point
 					if (j > 0) {
@@ -400,20 +402,20 @@ public class LineChart extends GridChart implements IZoomable {
 					startX = startX + lineLength;
 				}
 			} else {
-	            if (lineAlignType == ALIGN_TYPE_CENTER) {
-	                lineLength= (dataQuadrant.getQuadrantPaddingWidth() / maxPointNum);
-	                startX = dataQuadrant.getQuadrantPaddingEndX() - lineLength / 2;
+	            if (lineAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
+	                lineLength= (dataQuadrant.getPaddingWidth() / maxPointNum);
+	                startX = dataQuadrant.getPaddingEndX() - lineLength / 2;
 	            }else {
-	                lineLength= (dataQuadrant.getQuadrantPaddingWidth() / (maxPointNum - 1));
-	                startX = dataQuadrant.getQuadrantPaddingEndX();
+	                lineLength= (dataQuadrant.getPaddingWidth() / (maxPointNum - 1));
+	                startX = dataQuadrant.getPaddingEndX();
 	            }
 	            
 				for (int j = maxPointNum - 1; j >= 0; j--) {
 					float value = lineData.get(j).getValue();
 					// calculate Y
 					float valueY = (float) ((1f - (value - minValue)
-							/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
-							+ dataQuadrant.getQuadrantPaddingStartY();
+							/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+							+ dataQuadrant.getPaddingStartY();
 
 					// if is not last point connect to previous point
 					if (j < maxPointNum - 1) {
@@ -480,20 +482,20 @@ public class LineChart extends GridChart implements IZoomable {
 	}
 	
 	public float longitudePostOffset(){
-		if (lineAlignType == ALIGN_TYPE_CENTER) {
-			float lineLength = dataQuadrant.getQuadrantPaddingWidth() / maxPointNum;
-			return (this.dataQuadrant.getQuadrantPaddingWidth() - lineLength)/ (longitudeTitles.size() - 1);
+		if (lineAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
+			float lineLength = dataQuadrant.getPaddingWidth() / maxPointNum;
+			return (this.dataQuadrant.getPaddingWidth() - lineLength)/ (simpleGrid.getLongitudeTitles().size() - 1);
 	    }else{
-			return this.dataQuadrant.getQuadrantPaddingWidth()/ (longitudeTitles.size() - 1);
+			return this.dataQuadrant.getPaddingWidth()/ (simpleGrid.getLongitudeTitles().size() - 1);
 	    }
 	}
 	
 	public float longitudeOffset(){
-		if (lineAlignType == ALIGN_TYPE_CENTER) {
-			float lineLength = dataQuadrant.getQuadrantPaddingWidth() / maxPointNum;
-			return dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
+		if (lineAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
+			float lineLength = dataQuadrant.getPaddingWidth() / maxPointNum;
+			return dataQuadrant.getPaddingStartX() + lineLength / 2;
 		}else{
-			return dataQuadrant.getQuadrantPaddingStartX();
+			return dataQuadrant.getPaddingStartX();
 		}
 	}
 
@@ -511,29 +513,29 @@ public class LineChart extends GridChart implements IZoomable {
 	protected void initAxisY() {
 		this.calcValueRange();
 		List<String> titleY = new ArrayList<String>();
-		float average = (int) ((maxValue - minValue) / this.getLatitudeNum());
+		float average = (int) ((maxValue - minValue) / simpleGrid.getLatitudeNum());
 		;
 		// calculate degrees on Y axis
-		for (int i = 0; i < this.getLatitudeNum(); i++) {
+		for (int i = 0; i < simpleGrid.getLatitudeNum(); i++) {
 			String value = String.valueOf((int) Math.floor(minValue + i
 					* average));
-			if (value.length() < super.getLatitudeMaxTitleLength()) {
-				while (value.length() < super.getLatitudeMaxTitleLength()) {
-					value = " " + value;
-				}
-			}
+//			if (value.length() < super.getLatitudeMaxTitleLength()) {
+//				while (value.length() < super.getLatitudeMaxTitleLength()) {
+//					value = " " + value;
+//				}
+//			}
 			titleY.add(value);
 		}
 		// calculate last degrees by use max value
 		String value = String.valueOf((int) Math.floor(((int) maxValue)));
-		if (value.length() < super.getLatitudeMaxTitleLength()) {
-			while (value.length() < super.getLatitudeMaxTitleLength()) {
-				value = " " + value;
-			}
-		}
+//		if (value.length() < super.getLatitudeMaxTitleLength()) {
+//			while (value.length() < super.getLatitudeMaxTitleLength()) {
+//				value = " " + value;
+//			}
+//		}
 		titleY.add(value);
 
-		super.setLatitudeTitles(titleY);
+		simpleGrid.setLatitudeTitles(titleY);
 	}
 
 	/**
@@ -550,8 +552,8 @@ public class LineChart extends GridChart implements IZoomable {
 	protected void initAxisX() {
 		List<String> titleX = new ArrayList<String>();
 		if (null != linesData && linesData.size() > 0) {
-			float average = maxPointNum / this.getLongitudeNum();
-			for (int i = 0; i < this.getLongitudeNum(); i++) {
+			float average = maxPointNum / simpleGrid.getLongitudeNum();
+			for (int i = 0; i < simpleGrid.getLongitudeNum(); i++) {
 				int index = (int) Math.floor(i * average);
 				if (index > maxPointNum - 1) {
 					index = maxPointNum - 1;
@@ -564,7 +566,7 @@ public class LineChart extends GridChart implements IZoomable {
 					linesData.get(0).getLineData().get(maxPointNum - 1)
 							.getDate()).substring(4));
 		}
-		super.setLongitudeTitles(titleX);
+		simpleGrid.setLongitudeTitles(titleX);
 	}
 
 //	private float olddistance = 0f;

@@ -171,9 +171,9 @@ public class MACDChart extends SlipStickChart {
 		Paint mPaintStick = new Paint();
 		mPaintStick.setAntiAlias(true);
 
-		float stickWidth = dataQuadrant.getQuadrantPaddingWidth() / displayNumber
+		float stickWidth = dataQuadrant.getPaddingWidth() / displayNumber
 				- stickSpacing;
-		float stickX = dataQuadrant.getQuadrantPaddingStartX();
+		float stickX = dataQuadrant.getPaddingStartX();
 
 		// 判断显示为方柱或显示为线条
 		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
@@ -190,18 +190,18 @@ public class MACDChart extends SlipStickChart {
 				mPaintStick.setColor(positiveStickColor);
 				highY = (float) ((1 - (stick.getMacd() - minValue)
 						/ (maxValue - minValue))
-						* (dataQuadrant.getQuadrantPaddingHeight()) + dataQuadrant.getQuadrantPaddingStartY());
+						* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
 				lowY = (float) ((1 - (0 - minValue) / (maxValue - minValue))
-						* (dataQuadrant.getQuadrantPaddingHeight()) + dataQuadrant.getQuadrantPaddingStartY());
+						* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
 
 			} else {
 				mPaintStick.setColor(negativeStickColor);
 				highY = (float) ((1 - (0 - minValue) / (maxValue - minValue))
-						* (dataQuadrant.getQuadrantPaddingHeight()) + dataQuadrant.getQuadrantPaddingStartY());
+						* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
 
 				lowY = (float) ((1 - (stick.getMacd() - minValue)
 						/ (maxValue - minValue))
-						* (dataQuadrant.getQuadrantPaddingHeight()) + dataQuadrant.getQuadrantPaddingStartY());
+						* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
 
 			}
 
@@ -233,17 +233,17 @@ public class MACDChart extends SlipStickChart {
 		mPaintStick.setColor(diffLineColor);
 
 		// distance between two points
-		float lineLength = dataQuadrant.getQuadrantPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / displayNumber - stickSpacing;
 		// start point‘s X
-		float startX = dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
+		float startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 		// start point
 		PointF ptFirst = null;
 		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
 			MACDEntity entity = (MACDEntity) stickData.get(i);
 			// calculate Y
 			float valueY = (float) ((1f - (entity.getDiff() - minValue)
-					/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
-					+ dataQuadrant.getQuadrantPaddingStartY();
+					/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+					+ dataQuadrant.getPaddingStartY();
 
 			// if is not last point connect to previous point
 			if (i > displayFrom) {
@@ -262,17 +262,17 @@ public class MACDChart extends SlipStickChart {
 		mPaintStick.setAntiAlias(true);
 		mPaintStick.setColor(deaLineColor);
 		// distance between two points
-		float lineLength = dataQuadrant.getQuadrantPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / displayNumber - stickSpacing;
 		// set start point’s X
-		float startX = dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
+		float startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 		// start point
 		PointF ptFirst = null;
 		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
 			MACDEntity entity = (MACDEntity) stickData.get(i);
 			// calculate Y
 			float valueY = (float) ((1f - (entity.getDea() - minValue)
-					/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
-					+ dataQuadrant.getQuadrantPaddingStartY();
+					/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+					+ dataQuadrant.getPaddingStartY();
 
 			// if is not last point connect to previous point
 			if (i > displayFrom) {
@@ -291,17 +291,17 @@ public class MACDChart extends SlipStickChart {
 		mPaintStick.setColor(macdLineColor);
 
 		// distance between two points
-		float lineLength = dataQuadrant.getQuadrantPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / displayNumber - stickSpacing;
 		// set start point’s X
-		float startX = dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
+		float startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 		// start point
 		PointF ptFirst = null;
 		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
 			MACDEntity entity = (MACDEntity) stickData.get(i);
 			// calculate Y
 			float valueY = (float) ((1f - (entity.getMacd() - minValue)
-					/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
-					+ dataQuadrant.getQuadrantPaddingStartY();
+					/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+					+ dataQuadrant.getPaddingStartY();
 
 			// if is not last point connect to previous point
 			if (i > displayFrom) {

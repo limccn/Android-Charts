@@ -144,9 +144,9 @@ public class SlipStickChart extends StickChart implements ISlipable {
 			return;
 		}
 
-		float stickWidth = dataQuadrant.getQuadrantPaddingWidth() / getDisplayNumber()
+		float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber()
 				- stickSpacing;
-		float stickX = dataQuadrant.getQuadrantPaddingStartX();
+		float stickX = dataQuadrant.getPaddingStartX();
 
 		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
 			IMeasurable stick = stickData.get(i);

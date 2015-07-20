@@ -24,11 +24,11 @@ package cn.limc.androidcharts;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.limc.androidcharts.axis.Axis;
 import cn.limc.androidcharts.common.IDataCursor;
 import cn.limc.androidcharts.entity.ColoredStickEntity;
 import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.IChartData;
-import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.IStickEntity;
 import cn.limc.androidcharts.entity.LineEntity;
 import cn.limc.androidcharts.entity.ListChartData;
@@ -121,16 +121,16 @@ public class AndroidChartsActivity extends Activity {
 		initSlipLineChart();
 		initSlipAreaChart();
 		initSlipBandChart();
-		initStickChart();
+//		initStickChart();
 		initSlipStickChart();
 		initColoredSlipStickChart();
-		initMAStickChart();
+//		initMAStickChart();
 		initMASlipStickChart();
 		initMinusStickChart();
 		initSlipMinusStickChart();
-		initCandleStickChart();
+//		initCandleStickChart();
 		initSlipCandleStickChart();
-		initMACandleStickChart();
+//		initMACandleStickChart();
 		initMASlipCandleStickChart();
 		initBOLLMASlipCandleStickChart();
 		initPieChart();
@@ -166,12 +166,12 @@ public class AndroidChartsActivity extends Activity {
 		gridchart.setDataQuadrantPaddingBottom(5);
 		gridchart.setDataQuadrantPaddingLeft(5);
 		gridchart.setDataQuadrantPaddingRight(5);
-		gridchart.setAxisYTitleQuadrantWidth(50);
-		gridchart.setAxisXTitleQuadrantHeight(20);
-		gridchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		gridchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
-		gridchart.setLatitudeTitles(ytitle);
-		gridchart.setLongitudeTitles(xtitle);
+//		gridchart.setAxisYTitleQuadrantWidth(50);
+//		gridchart.setAxisXTitleQuadrantHeight(20);
+		gridchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
+		gridchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+		gridchart.getSimpleGrid().setLatitudeTitles(ytitle);
+		gridchart.getSimpleGrid().setLongitudeTitles(xtitle);
 		gridchart.setLongitudeFontSize(14);
 		gridchart.setLatitudeFontSize(14);
 		gridchart.setLongitudeFontColor(Color.WHITE);
@@ -185,7 +185,7 @@ public class AndroidChartsActivity extends Activity {
 		gridchart.setCrossLinesColor(Color.BLUE);
 		gridchart.setCrossLinesFontColor(Color.GREEN);
 		gridchart.setBorderWidth(1);
-		gridchart.setAxisWidth(1);
+		//gridchart.setAxisWidth(1);
 	}
 
 	private void initLineChart() {
@@ -213,31 +213,31 @@ public class AndroidChartsActivity extends Activity {
 		MA25.setLineData(initMA(25));
 		lines.add(MA25);
 
-		linechart.setAxisXColor(Color.LTGRAY);
-		linechart.setAxisYColor(Color.LTGRAY);
+		//linechart.setAxisXColor(Color.LTGRAY);
+		//linechart.setAxisYColor(Color.LTGRAY);
 		linechart.setBorderColor(Color.LTGRAY);
-		linechart.setLongitudeFontSize(14);
-		linechart.setLongitudeFontColor(Color.WHITE);
-		linechart.setLatitudeColor(Color.GRAY);
-		linechart.setLatitudeFontColor(Color.WHITE);
-		linechart.setLongitudeColor(Color.GRAY);
+		//linechart.setLongitudeFontSize(14);
+		//linechart.setLongitudeFontColor(Color.WHITE);
+		//linechart.setLatitudeColor(Color.GRAY);
+		//linechart.setLatitudeFontColor(Color.WHITE);
+		//linechart.setLongitudeColor(Color.GRAY);
 		linechart.setMaxValue(280);
 		linechart.setMinValue(240);
 		linechart.setMaxPointNum(36);
-		linechart.setDisplayLongitudeTitle(true);
-		linechart.setDisplayLatitudeTitle(true);
-		linechart.setDisplayLatitude(true);
-		linechart.setDisplayLongitude(true);
-		linechart.setLatitudeNum(5);
-		linechart.setLongitudeNum(6);
+		//linechart.setDisplayLongitudeTitle(true);
+		//linechart.setDisplayLatitudeTitle(true);
+		//linechart.setDisplayLatitude(true);
+		//linechart.setDisplayLongitude(true);
+		//linechart.setLatitudeNum(5);
+		//linechart.setLongitudeNum(6);
 		linechart.setDataQuadrantPaddingTop(5);
 		linechart.setDataQuadrantPaddingBottom(5);
 		linechart.setDataQuadrantPaddingLeft(5);
 		linechart.setDataQuadrantPaddingRight(5);
-		linechart.setAxisYTitleQuadrantWidth(50);
-		linechart.setAxisXTitleQuadrantHeight(20);
-		linechart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		linechart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+		//linechart.setAxisYTitleQuadrantWidth(50);
+		//linechart.setAxisXTitleQuadrantHeight(20);
+		//linechart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		//linechart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart1增加均线
 		linechart.setLinesData(lines);
@@ -261,32 +261,32 @@ public class AndroidChartsActivity extends Activity {
 		MA10.setLineData(dv2);
 		lines.add(MA10);
 
-		sliplinechart.setAxisXColor(Color.LTGRAY);
-		sliplinechart.setAxisYColor(Color.LTGRAY);
+		//sliplinechart.setAxisXColor(Color.LTGRAY);
+		//sliplinechart.setAxisYColor(Color.LTGRAY);
 		sliplinechart.setBorderColor(Color.LTGRAY);
-		sliplinechart.setLongitudeFontSize(14);
-		sliplinechart.setLongitudeFontColor(Color.WHITE);
-		sliplinechart.setLatitudeColor(Color.GRAY);
-		sliplinechart.setLatitudeFontColor(Color.WHITE);
-		sliplinechart.setLongitudeColor(Color.GRAY);
+		//sliplinechart.setLongitudeFontSize(14);
+		//sliplinechart.setLongitudeFontColor(Color.WHITE);
+		//sliplinechart.setLatitudeColor(Color.GRAY);
+		//sliplinechart.setLatitudeFontColor(Color.WHITE);
+		//sliplinechart.setLongitudeColor(Color.GRAY);
 		sliplinechart.setMaxValue(1300);
 		sliplinechart.setMinValue(700);
 		sliplinechart.setDisplayFrom(10);
 		sliplinechart.setDisplayNumber(30);
 		sliplinechart.setMinDisplayNumber(5);
 		sliplinechart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
-		sliplinechart.setDisplayLongitudeTitle(true);
-		sliplinechart.setDisplayLatitudeTitle(true);
-		sliplinechart.setDisplayLatitude(true);
-		sliplinechart.setDisplayLongitude(true);
+		//sliplinechart.setDisplayLongitudeTitle(true);
+		//sliplinechart.setDisplayLatitudeTitle(true);
+		//sliplinechart.setDisplayLatitude(true);
+		//sliplinechart.setDisplayLongitude(true);
 		sliplinechart.setDataQuadrantPaddingTop(5);
 		sliplinechart.setDataQuadrantPaddingBottom(5);
 		sliplinechart.setDataQuadrantPaddingLeft(5);
 		sliplinechart.setDataQuadrantPaddingRight(5);
-		sliplinechart.setAxisYTitleQuadrantWidth(50);
-		sliplinechart.setAxisXTitleQuadrantHeight(20);
-		sliplinechart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		sliplinechart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+		//sliplinechart.setAxisYTitleQuadrantWidth(50);
+		//sliplinechart.setAxisXTitleQuadrantHeight(20);
+//		sliplinechart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+//		sliplinechart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		sliplinechart.setLinesData(lines);
 	}
@@ -309,32 +309,32 @@ public class AndroidChartsActivity extends Activity {
 		MA10.setLineData(dv2);
 		lines.add(MA10);
 
-		slipareachart.setAxisXColor(Color.LTGRAY);
-		slipareachart.setAxisYColor(Color.LTGRAY);
+		//slipareachart.setAxisXColor(Color.LTGRAY);
+		//slipareachart.setAxisYColor(Color.LTGRAY);
 		slipareachart.setBorderColor(Color.LTGRAY);
-		slipareachart.setLongitudeFontSize(14);
-		slipareachart.setLongitudeFontColor(Color.WHITE);
-		slipareachart.setLatitudeColor(Color.GRAY);
-		slipareachart.setLatitudeFontColor(Color.WHITE);
-		slipareachart.setLongitudeColor(Color.GRAY);
+		//slipareachart.setLongitudeFontSize(14);
+		//slipareachart.setLongitudeFontColor(Color.WHITE);
+		//slipareachart.setLatitudeColor(Color.GRAY);
+		//slipareachart.setLatitudeFontColor(Color.WHITE);
+		//slipareachart.setLongitudeColor(Color.GRAY);
 		slipareachart.setMaxValue(1300);
 		slipareachart.setMinValue(700);
 		slipareachart.setDisplayFrom(10);
 		slipareachart.setDisplayNumber(30);
 		slipareachart.setMinDisplayNumber(5);
 		slipareachart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
-		slipareachart.setDisplayLongitudeTitle(true);
-		slipareachart.setDisplayLatitudeTitle(true);
-		slipareachart.setDisplayLatitude(true);
-		slipareachart.setDisplayLongitude(true);
+		//slipareachart.setDisplayLongitudeTitle(true);
+		//slipareachart.setDisplayLatitudeTitle(true);
+		//slipareachart.setDisplayLatitude(true);
+		//slipareachart.setDisplayLongitude(true);
 		slipareachart.setDataQuadrantPaddingTop(5);
 		slipareachart.setDataQuadrantPaddingBottom(5);
 		slipareachart.setDataQuadrantPaddingLeft(5);
 		slipareachart.setDataQuadrantPaddingRight(5);
-		slipareachart.setAxisYTitleQuadrantWidth(50);
-		slipareachart.setAxisXTitleQuadrantHeight(20);
-		slipareachart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		slipareachart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+		//slipareachart.setAxisYTitleQuadrantWidth(50);
+		//slipareachart.setAxisXTitleQuadrantHeight(20);
+		//slipareachart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		//slipareachart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		slipareachart.setLinesData(lines);
 	}
@@ -357,32 +357,32 @@ public class AndroidChartsActivity extends Activity {
 		MA10.setLineData(dv2);
 		lines.add(MA10);
 
-		slipbandchart.setAxisXColor(Color.LTGRAY);
-		slipbandchart.setAxisYColor(Color.LTGRAY);
+		//slipbandchart.setAxisXColor(Color.LTGRAY);
+		//slipbandchart.setAxisYColor(Color.LTGRAY);
 		slipbandchart.setBorderColor(Color.LTGRAY);
-		slipbandchart.setLongitudeFontSize(14);
-		slipbandchart.setLongitudeFontColor(Color.WHITE);
-		slipbandchart.setLatitudeColor(Color.GRAY);
-		slipbandchart.setLatitudeFontColor(Color.WHITE);
-		slipbandchart.setLongitudeColor(Color.GRAY);
+		//slipbandchart.setLongitudeFontSize(14);
+		//slipbandchart.setLongitudeFontColor(Color.WHITE);
+		//slipbandchart.setLatitudeColor(Color.GRAY);
+		//slipbandchart.setLatitudeFontColor(Color.WHITE);
+		//slipbandchart.setLongitudeColor(Color.GRAY);
 		slipbandchart.setMaxValue(1300);
 		slipbandchart.setMinValue(700);
 		slipbandchart.setDisplayFrom(10);
 		slipbandchart.setDisplayNumber(30);
 		slipbandchart.setMinDisplayNumber(5);
 		slipbandchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
-		slipbandchart.setDisplayLongitudeTitle(true);
-		slipbandchart.setDisplayLatitudeTitle(true);
-		slipbandchart.setDisplayLatitude(true);
-		slipbandchart.setDisplayLongitude(true);
+		//slipbandchart.setDisplayLongitudeTitle(true);
+		//slipbandchart.setDisplayLatitudeTitle(true);
+		//slipbandchart.setDisplayLatitude(true);
+		//slipbandchart.setDisplayLongitude(true);
 		slipbandchart.setDataQuadrantPaddingTop(5);
 		slipbandchart.setDataQuadrantPaddingBottom(5);
 		slipbandchart.setDataQuadrantPaddingLeft(5);
 		slipbandchart.setDataQuadrantPaddingRight(5);
-		slipbandchart.setAxisYTitleQuadrantWidth(50);
-		slipbandchart.setAxisXTitleQuadrantHeight(20);
-		slipbandchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		slipbandchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+		//slipbandchart.setAxisYTitleQuadrantWidth(50);
+		//slipbandchart.setAxisXTitleQuadrantHeight(20);
+		//slipbandchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+		//slipbandchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		slipbandchart.setLinesData(lines);
 	}
@@ -390,37 +390,37 @@ public class AndroidChartsActivity extends Activity {
 	private void initStickChart() {
 		this.stickchart = (StickChart) findViewById(R.id.stickchart);
 
-		stickchart.setAxisXColor(Color.LTGRAY);
-		stickchart.setAxisYColor(Color.LTGRAY);
-		stickchart.setLatitudeColor(Color.GRAY);
-		stickchart.setLongitudeColor(Color.GRAY);
+//		stickchart.setAxisXColor(Color.LTGRAY);
+//		stickchart.setAxisYColor(Color.LTGRAY);
+//		stickchart.setLatitudeColor(Color.GRAY);
+//		stickchart.setLongitudeColor(Color.GRAY);
 		stickchart.setBorderColor(Color.LTGRAY);
-		stickchart.setLongitudeFontColor(Color.WHITE);
-		stickchart.setLatitudeFontColor(Color.WHITE);
+//		stickchart.setLongitudeFontColor(Color.WHITE);
+//		stickchart.setLatitudeFontColor(Color.WHITE);
 		stickchart.setDataQuadrantPaddingTop(6);
 		stickchart.setDataQuadrantPaddingBottom(1);
 		stickchart.setDataQuadrantPaddingLeft(1);
 		stickchart.setDataQuadrantPaddingRight(1);
-		stickchart.setAxisYTitleQuadrantWidth(50);
-		stickchart.setAxisXTitleQuadrantHeight(20);
-		stickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		stickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+//		stickchart.setAxisYTitleQuadrantWidth(50);s
+//		stickchart.setAxisXTitleQuadrantHeight(20);
+//		stickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+//		stickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
 		// 最大显示足数
-		stickchart.setMaxSticksNum(52);
+//		stickchart.setMaxSticksNum(52);
 		// 最大纬线数
-		stickchart.setLatitudeNum(2);
+//		stickchart.setLatitudeNum(2);
 		// 最大经线数
-		stickchart.setLongitudeNum(3);
+//		stickchart.setLongitudeNum(3);
 		// 最大价格
 		stickchart.setMaxValue(10000);
 		// 最小价格
 		stickchart.setMinValue(100);
 
-		stickchart.setDisplayLongitudeTitle(true);
-		stickchart.setDisplayLatitudeTitle(true);
-		stickchart.setDisplayLatitude(true);
-		stickchart.setDisplayLongitude(true);
+//		stickchart.setDisplayLongitudeTitle(true);
+//		stickchart.setDisplayLatitudeTitle(true);
+//		stickchart.setDisplayLatitude(true);
+//		stickchart.setDisplayLongitude(true);
 		stickchart.setBackgroundColor(Color.BLACK);
 
 		stickchart.setDataMultiple(100);
@@ -436,26 +436,26 @@ public class AndroidChartsActivity extends Activity {
 	private void initSlipStickChart() {
 		this.slipstickchart = (SlipStickChart) findViewById(R.id.slipstickchart);
 
-		slipstickchart.setAxisXColor(Color.LTGRAY);
-		slipstickchart.setAxisYColor(Color.LTGRAY);
-		slipstickchart.setLatitudeColor(Color.GRAY);
-		slipstickchart.setLongitudeColor(Color.GRAY);
+//		slipstickchart.setAxisXColor(Color.LTGRAY);
+//		slipstickchart.setAxisYColor(Color.LTGRAY);
+//		slipstickchart.setLatitudeColor(Color.GRAY);
+//		slipstickchart.setLongitudeColor(Color.GRAY);
 		slipstickchart.setBorderColor(Color.LTGRAY);
-		slipstickchart.setLongitudeFontColor(Color.WHITE);
-		slipstickchart.setLatitudeFontColor(Color.WHITE);
+//		slipstickchart.setLongitudeFontColor(Color.WHITE);
+//		slipstickchart.setLatitudeFontColor(Color.WHITE);
 		slipstickchart.setDataQuadrantPaddingTop(6);
 		slipstickchart.setDataQuadrantPaddingBottom(1);
 		slipstickchart.setDataQuadrantPaddingLeft(1);
 		slipstickchart.setDataQuadrantPaddingRight(1);
-		slipstickchart.setAxisYTitleQuadrantWidth(50);
-		slipstickchart.setAxisXTitleQuadrantHeight(20);
-		slipstickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		slipstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+//		slipstickchart.setAxisYTitleQuadrantWidth(50);
+//		slipstickchart.setAxisXTitleQuadrantHeight(20);
+//		slipstickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+//		slipstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
 
-		// 最大纬线数
-		slipstickchart.setLatitudeNum(2);
-		// 最大经线数
-		slipstickchart.setLongitudeNum(3);
+//		// 最大纬线数
+//		slipstickchart.setLatitudeNum(2);
+//		// 最大经线数
+//		slipstickchart.setLongitudeNum(3);
 		// 最大价格
 		slipstickchart.setMaxValue(600000);
 		// 最小价格
@@ -469,10 +469,10 @@ public class AndroidChartsActivity extends Activity {
 
 		slipstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 
-		slipstickchart.setDisplayLongitudeTitle(true);
-		slipstickchart.setDisplayLatitudeTitle(true);
-		slipstickchart.setDisplayLatitude(true);
-		slipstickchart.setDisplayLongitude(true);
+//		slipstickchart.setDisplayLongitudeTitle(true);
+//		slipstickchart.setDisplayLatitudeTitle(true);
+//		slipstickchart.setDisplayLatitude(true);
+//		slipstickchart.setDisplayLongitude(true);
 		slipstickchart.setBackgroundColor(Color.BLACK);
 
 		slipstickchart.setDataMultiple(100);
@@ -488,18 +488,18 @@ public class AndroidChartsActivity extends Activity {
 	private void initColoredSlipStickChart() {
 		this.coloredslipstickchart = (ColoredSlipStickChart) findViewById(R.id.coloredslipstickchart);
 
-		coloredslipstickchart.setAxisXColor(Color.LTGRAY);
-		coloredslipstickchart.setAxisYColor(Color.LTGRAY);
-		coloredslipstickchart.setLatitudeColor(Color.GRAY);
-		coloredslipstickchart.setLongitudeColor(Color.GRAY);
+//		coloredslipstickchart.setAxisXColor(Color.LTGRAY);
+//		coloredslipstickchart.setAxisYColor(Color.LTGRAY);
+//		coloredslipstickchart.setLatitudeColor(Color.GRAY);
+//		coloredslipstickchart.setLongitudeColor(Color.GRAY);
 		coloredslipstickchart.setBorderColor(Color.LTGRAY);
-		coloredslipstickchart.setLongitudeFontColor(Color.WHITE);
-		coloredslipstickchart.setLatitudeFontColor(Color.WHITE);
+//		coloredslipstickchart.setLongitudeFontColor(Color.WHITE);
+//		coloredslipstickchart.setLatitudeFontColor(Color.WHITE);
 
-		// 最大纬线数
-		coloredslipstickchart.setLatitudeNum(2);
-		// 最大经线数
-		coloredslipstickchart.setLongitudeNum(3);
+//		// 最大纬线数
+//		coloredslipstickchart.setLatitudeNum(2);
+//		// 最大经线数
+//		coloredslipstickchart.setLongitudeNum(3);
 		// 最大价格
 		coloredslipstickchart.setMaxValue(600000);
 		// 最小价格
@@ -513,21 +513,21 @@ public class AndroidChartsActivity extends Activity {
 
 		coloredslipstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 
-		coloredslipstickchart.setDisplayLongitudeTitle(true);
-		coloredslipstickchart.setDisplayLatitudeTitle(true);
-		coloredslipstickchart.setDisplayLatitude(true);
-		coloredslipstickchart.setDisplayLongitude(true);
+//		coloredslipstickchart.setDisplayLongitudeTitle(true);
+//		coloredslipstickchart.setDisplayLatitudeTitle(true);
+//		coloredslipstickchart.setDisplayLatitude(true);
+//		coloredslipstickchart.setDisplayLongitude(true);
 		coloredslipstickchart.setBackgroundColor(Color.BLACK);
 
 		coloredslipstickchart.setDataQuadrantPaddingTop(5);
 		coloredslipstickchart.setDataQuadrantPaddingBottom(5);
 		coloredslipstickchart.setDataQuadrantPaddingLeft(5);
 		coloredslipstickchart.setDataQuadrantPaddingRight(5);
-		coloredslipstickchart.setAxisYTitleQuadrantWidth(50);
-		coloredslipstickchart.setAxisXTitleQuadrantHeight(20);
+//		coloredslipstickchart.setAxisYTitleQuadrantWidth(50);
+//		coloredslipstickchart.setAxisXTitleQuadrantHeight(20);
 		coloredslipstickchart
-				.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		coloredslipstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+				.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
+		coloredslipstickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 		
 		// 为chart1增加均线
 		coloredslipstickchart
@@ -590,10 +590,10 @@ public class AndroidChartsActivity extends Activity {
 		mastickchart.setDataQuadrantPaddingBottom(5);
 		mastickchart.setDataQuadrantPaddingLeft(5);
 		mastickchart.setDataQuadrantPaddingRight(5);
-		mastickchart.setAxisYTitleQuadrantWidth(50);
-		mastickchart.setAxisXTitleQuadrantHeight(20);
-		mastickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		mastickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+//		mastickchart.setAxisYTitleQuadrantWidth(50);
+//		mastickchart.setAxisXTitleQuadrantHeight(20);
+		mastickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
+		mastickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart1增加均线
 		mastickchart.setLinesData(vlines);
@@ -664,10 +664,10 @@ public class AndroidChartsActivity extends Activity {
 		maslipstickchart.setDataQuadrantPaddingBottom(5);
 		maslipstickchart.setDataQuadrantPaddingLeft(5);
 		maslipstickchart.setDataQuadrantPaddingRight(5);
-		maslipstickchart.setAxisYTitleQuadrantWidth(50);
-		maslipstickchart.setAxisXTitleQuadrantHeight(20);
-		maslipstickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		maslipstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+//		maslipstickchart.setAxisYTitleQuadrantWidth(50);
+//		maslipstickchart.setAxisXTitleQuadrantHeight(20);
+		maslipstickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
+		maslipstickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart1增加均线
 		maslipstickchart.setLineData(vlines);
@@ -711,8 +711,8 @@ public class AndroidChartsActivity extends Activity {
 		minusstickchart.setLongitudeNum(2);
 		minusstickchart.setDisplayLongitudeTitle(true);
 		minusstickchart.setDisplayLatitudeTitle(true);
-		minusstickchart.setDisplayCrossXOnTouch(false);
-		minusstickchart.setDisplayCrossYOnTouch(false);
+		//minusstickchart.setDisplayCrossXOnTouch(false);
+		//minusstickchart.setDisplayCrossYOnTouch(false);
 		minusstickchart.setDisplayLatitude(true);
 		minusstickchart.setDisplayLongitude(true);
 
@@ -720,10 +720,10 @@ public class AndroidChartsActivity extends Activity {
 		minusstickchart.setDataQuadrantPaddingBottom(5);
 		minusstickchart.setDataQuadrantPaddingLeft(5);
 		minusstickchart.setDataQuadrantPaddingRight(5);
-		minusstickchart.setAxisYTitleQuadrantWidth(50);
-		minusstickchart.setAxisXTitleQuadrantHeight(20);
-		minusstickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		minusstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+//		minusstickchart.setAxisYTitleQuadrantWidth(50);
+//		minusstickchart.setAxisXTitleQuadrantHeight(20);
+		minusstickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
+		minusstickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
 	}
 
@@ -792,8 +792,8 @@ public class AndroidChartsActivity extends Activity {
 		slipminusstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 		slipminusstickchart.setDisplayLongitudeTitle(true);
 		slipminusstickchart.setDisplayLatitudeTitle(true);
-		slipminusstickchart.setDisplayCrossXOnTouch(false);
-		slipminusstickchart.setDisplayCrossYOnTouch(false);
+		//slipminusstickchart.setDisplayCrossXOnTouch(false);
+		//slipminusstickchart.setDisplayCrossYOnTouch(false);
 		slipminusstickchart.setDisplayLatitude(true);
 		slipminusstickchart.setDisplayLongitude(true);
 		slipminusstickchart.setStickSpacing(10);
@@ -802,10 +802,10 @@ public class AndroidChartsActivity extends Activity {
 		slipminusstickchart.setDataQuadrantPaddingBottom(5);
 		slipminusstickchart.setDataQuadrantPaddingLeft(5);
 		slipminusstickchart.setDataQuadrantPaddingRight(5);
-		slipminusstickchart.setAxisYTitleQuadrantWidth(50);
-		slipminusstickchart.setAxisXTitleQuadrantHeight(20);
-		slipminusstickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		slipminusstickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+//		slipminusstickchart.setAxisYTitleQuadrantWidth(50);
+//		slipminusstickchart.setAxisXTitleQuadrantHeight(20);
+		slipminusstickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
+		slipminusstickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
 		IChartData<IStickEntity> datas = new ListChartData<IStickEntity>(data);
 		slipminusstickchart.setStickData(datas);
@@ -842,10 +842,10 @@ public class AndroidChartsActivity extends Activity {
 		candlestickchart.setDataQuadrantPaddingBottom(5);
 		candlestickchart.setDataQuadrantPaddingLeft(5);
 		candlestickchart.setDataQuadrantPaddingRight(5);
-		candlestickchart.setAxisYTitleQuadrantWidth(50);
-		candlestickchart.setAxisXTitleQuadrantHeight(20);
-		candlestickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		candlestickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+//		candlestickchart.setAxisYTitleQuadrantWidth(50);
+//		candlestickchart.setAxisXTitleQuadrantHeight(20);
+		candlestickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
+		candlestickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart2增加均线
 		candlestickchart.setStickData(new ListChartData<IStickEntity>(ohlc));
@@ -888,10 +888,10 @@ public class AndroidChartsActivity extends Activity {
 		slipcandlestickchart.setDataQuadrantPaddingBottom(5);
 		slipcandlestickchart.setDataQuadrantPaddingLeft(5);
 		slipcandlestickchart.setDataQuadrantPaddingRight(5);
-		slipcandlestickchart.setAxisYTitleQuadrantWidth(50);
-		slipcandlestickchart.setAxisXTitleQuadrantHeight(20);
-		slipcandlestickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		slipcandlestickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+//		slipcandlestickchart.setAxisYTitleQuadrantWidth(50);
+//		slipcandlestickchart.setAxisXTitleQuadrantHeight(20);
+		slipcandlestickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
+		slipcandlestickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart2增加均线
 		slipcandlestickchart
@@ -952,10 +952,10 @@ public class AndroidChartsActivity extends Activity {
 		macandlestickchart.setDataQuadrantPaddingBottom(5);
 		macandlestickchart.setDataQuadrantPaddingLeft(5);
 		macandlestickchart.setDataQuadrantPaddingRight(5);
-		macandlestickchart.setAxisYTitleQuadrantWidth(50);
-		macandlestickchart.setAxisXTitleQuadrantHeight(20);
-		macandlestickchart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		macandlestickchart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+//		macandlestickchart.setAxisYTitleQuadrantWidth(50);
+//		macandlestickchart.setAxisXTitleQuadrantHeight(20);
+		macandlestickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
+		macandlestickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart2增加均线
 		macandlestickchart.setLinesData(lines);
@@ -1025,12 +1025,12 @@ public class AndroidChartsActivity extends Activity {
 		maslipcandlestickchart.setDataQuadrantPaddingBottom(5);
 		maslipcandlestickchart.setDataQuadrantPaddingLeft(5);
 		maslipcandlestickchart.setDataQuadrantPaddingRight(5);
-		maslipcandlestickchart.setAxisYTitleQuadrantWidth(50);
-		maslipcandlestickchart.setAxisXTitleQuadrantHeight(20);
+//		maslipcandlestickchart.setAxisYTitleQuadrantWidth(50);
+//		maslipcandlestickchart.setAxisXTitleQuadrantHeight(20);
 		maslipcandlestickchart
-				.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+				.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
 		maslipcandlestickchart
-				.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+				.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart2增加均线
 		maslipcandlestickchart.setLinesData(lines);
@@ -1163,12 +1163,12 @@ public class AndroidChartsActivity extends Activity {
 		bollmaslipcandlestickchart.setDataQuadrantPaddingBottom(5);
 		bollmaslipcandlestickchart.setDataQuadrantPaddingLeft(5);
 		bollmaslipcandlestickchart.setDataQuadrantPaddingRight(5);
-		bollmaslipcandlestickchart.setAxisYTitleQuadrantWidth(50);
-		bollmaslipcandlestickchart.setAxisXTitleQuadrantHeight(20);
+//		bollmaslipcandlestickchart.setAxisYTitleQuadrantWidth(50);
+//		bollmaslipcandlestickchart.setAxisXTitleQuadrantHeight(20);
 		bollmaslipcandlestickchart
-				.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
+				.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
 		bollmaslipcandlestickchart
-				.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+				.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
 		// 为chart2增加均线
 		bollmaslipcandlestickchart.setLinesData(lines);
@@ -1343,8 +1343,8 @@ public class AndroidChartsActivity extends Activity {
 		macdChart = (MACDChart) findViewById(R.id.macdchart);
 		macdChart.setMaxValue(300000);
 		macdChart.setMinValue(-300000);
-		macdChart.setDisplayCrossXOnTouch(true);
-		macdChart.setDisplayCrossYOnTouch(true);
+		//macdChart.setDisplayCrossXOnTouch(true);
+		//macdChart.setDisplayCrossYOnTouch(true);
 		macdChart.setLatitudeNum(4);
 		macdChart.setLongitudeNum(3);
 		macdChart.setDisplayFrom(0);
@@ -1368,10 +1368,10 @@ public class AndroidChartsActivity extends Activity {
 		macdChart.setDataQuadrantPaddingBottom(5);
 		macdChart.setDataQuadrantPaddingLeft(5);
 		macdChart.setDataQuadrantPaddingRight(5);
-		macdChart.setAxisYTitleQuadrantWidth(50);
-		macdChart.setAxisXTitleQuadrantHeight(20);
-		macdChart.setAxisXPosition(GridChart.AXIS_X_POSITION_BOTTOM);
-		macdChart.setAxisYPosition(GridChart.AXIS_Y_POSITION_RIGHT);
+//		macdChart.setAxisYTitleQuadrantWidth(50);
+//		macdChart.setAxisXTitleQuadrantHeight(20);
+		macdChart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
+		macdChart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
 		// 设置stickData
 		macdChart.setStickData(new ListChartData<IStickEntity>(macd));

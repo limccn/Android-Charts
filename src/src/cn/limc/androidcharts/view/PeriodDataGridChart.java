@@ -25,6 +25,8 @@ package cn.limc.androidcharts.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.limc.androidcharts.common.ICrossLines;
+import cn.limc.androidcharts.common.IFlexableGrid;
 import cn.limc.androidcharts.entity.IMeasurable;
 
 import android.content.Context;
@@ -45,11 +47,11 @@ import android.view.MotionEvent;
 public abstract class PeriodDataGridChart extends DataGridChart {
 	
 
-	public static final int DEFAULT_ALIGN_TYPE = ALIGN_TYPE_CENTER;
-	public static final int DEFAULT_BIND_CROSS_LINES_TO_STICK = BIND_TO_TYPE_BOTH;
+	public static final int DEFAULT_ALIGN_TYPE = IFlexableGrid.ALIGN_TYPE_CENTER;
+
 	
 	protected int gridAlignType = DEFAULT_ALIGN_TYPE;
-	protected int bindCrossLinesToStick = DEFAULT_BIND_CROSS_LINES_TO_STICK;
+
 
 	/** 
 	 * <p>Constructor of PeriodDataGridChart</p>
@@ -104,8 +106,8 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 	protected void initAxisX() {
 		List<String> titleX = new ArrayList<String>();
 		if (null != stickData && stickData.size() > 0) {
-			float average = getDisplayNumber() / this.getLongitudeNum();
-			for (int i = 0; i < this.getLongitudeNum(); i++) {
+			float average = getDisplayNumber() / simpleGrid.getLongitudeNum();
+			for (int i = 0; i < simpleGrid.getLongitudeNum(); i++) {
 				int index = (int) Math.floor(i * average);
 				if (index > getDisplayNumber() - 1) {
 					index = getDisplayNumber() - 1;
@@ -114,7 +116,7 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 			}
 			titleX.add(formatAxisXDegree(stickData.get(getDisplayNumber() - 1).getDate()));
 		}
-		super.setLongitudeTitles(titleX);
+		simpleGrid.setLongitudeTitles(titleX);
 	}
 
 	/**
@@ -131,47 +133,47 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 	protected void initAxisY() {
 		this.calcValueRange();
 		List<String> titleY = new ArrayList<String>();
-		double average = (maxValue - minValue) / this.getLatitudeNum();
+		double average = (maxValue - minValue) / simpleGrid.getLatitudeNum();
 		;
 		// calculate degrees on Y axis
-		for (int i = 0; i < this.getLatitudeNum(); i++) {
+		for (int i = 0; i < simpleGrid.getLatitudeNum(); i++) {
 			String value = formatAxisYDegree(minValue + i * average);
-			if (value.length() < super.getLatitudeMaxTitleLength()) {
-				while (value.length() < super.getLatitudeMaxTitleLength()) {
-					value = " " + value;
-				}
-			}
+//			if (value.length() < super.getLatitudeMaxTitleLength()) {
+//				while (value.length() < super.getLatitudeMaxTitleLength()) {
+//					value = " " + value;
+//				}
+//			}
 			titleY.add(value);
 		}
 		// calculate last degrees by use max value
 		String value = formatAxisYDegree(maxValue);
-		if (value.length() < super.getLatitudeMaxTitleLength()) {
-			while (value.length() < super.getLatitudeMaxTitleLength()) {
-				value = " " + value;
-			}
-		}
+//		if (value.length() < super.getLatitudeMaxTitleLength()) {
+//			while (value.length() < super.getLatitudeMaxTitleLength()) {
+//				value = " " + value;
+//			}
+//		}
 		titleY.add(value);
 
-		super.setLatitudeTitles(titleY);
+		simpleGrid.setLatitudeTitles(titleY);
 	}
 	
 
 	
 	public float longitudePostOffset(){
-		if (gridAlignType == ALIGN_TYPE_CENTER) {
-			float stickWidth = dataQuadrant.getQuadrantPaddingWidth() / getDisplayNumber();
-			return (this.dataQuadrant.getQuadrantPaddingWidth() - stickWidth)/ (longitudeTitles.size() - 1);
+		if (gridAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
+			float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+			return (this.dataQuadrant.getPaddingWidth() - stickWidth)/ (simpleGrid.getLongitudeTitles().size() - 1);
 	    }else{
-			return this.dataQuadrant.getQuadrantPaddingWidth()/ (longitudeTitles.size() - 1);
+			return this.dataQuadrant.getPaddingWidth()/ (simpleGrid.getLongitudeTitles().size() - 1);
 	    }
 	}
 	
 	public float longitudeOffset(){
-		if (gridAlignType == ALIGN_TYPE_CENTER) {
-			float stickWidth = dataQuadrant.getQuadrantPaddingWidth() / getDisplayNumber();
-			return dataQuadrant.getQuadrantPaddingStartX() + stickWidth / 2;
+		if (gridAlignType ==IFlexableGrid.ALIGN_TYPE_CENTER) {
+			float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+			return dataQuadrant.getPaddingStartX() + stickWidth / 2;
 		}else{
-			return dataQuadrant.getQuadrantPaddingStartX();
+			return dataQuadrant.getPaddingStartX();
 		}
 	}
 	
@@ -180,15 +182,15 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 		if (!isValidTouchPoint(x,y)) {
 			return new PointF(0,0);
 		}
-		if (bindCrossLinesToStick == BIND_TO_TYPE_NONE) {
+		if (crossLines.getBindCrossLinesToStick() == ICrossLines.BIND_TO_TYPE_NONE) {
 			return new PointF(x, y);
-		} else if (bindCrossLinesToStick == BIND_TO_TYPE_BOTH) {
+		} else if (crossLines.getBindCrossLinesToStick() == ICrossLines.BIND_TO_TYPE_BOTH) {
 			PointF bindPointF = calcBindPoint(x, y);
 			return bindPointF;
-		} else if (bindCrossLinesToStick == BIND_TO_TYPE_HIRIZIONAL) {
+		} else if (crossLines.getBindCrossLinesToStick() == ICrossLines.BIND_TO_TYPE_HIRIZIONAL) {
 			PointF bindPointF = calcBindPoint(x, y);
 			return new PointF(bindPointF.x, y);
-		} else if (bindCrossLinesToStick == BIND_TO_TYPE_VERTICAL) {
+		} else if (crossLines.getBindCrossLinesToStick() == ICrossLines.BIND_TO_TYPE_VERTICAL) {
 			PointF bindPointF = calcBindPoint(x, y);
 			return new PointF(x, bindPointF.y);
 		} else {
@@ -202,12 +204,12 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 		
 		int index = calcSelectedIndex(x,y);
 		
-		float stickWidth = dataQuadrant.getQuadrantPaddingWidth() / getDisplayNumber();
+		float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
 		IMeasurable stick = stickData.get(index);
 		calcY = (float) ((1f - (stick.getHigh() - minValue)
 				/ (maxValue - minValue))
-				* (dataQuadrant.getQuadrantPaddingHeight()) + dataQuadrant.getQuadrantPaddingStartY());
-		calcX = dataQuadrant.getQuadrantPaddingStartX() + stickWidth * (index - getDisplayFrom()) + stickWidth / 2;
+				* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
+		calcX = dataQuadrant.getPaddingStartX() + stickWidth * (index - getDisplayFrom()) + stickWidth / 2;
 		
 		return new PointF(calcX,calcY);
 	}

@@ -148,7 +148,7 @@ public abstract class Quadrant implements IQuadrant{
 	 *            paddingLeft paddingRight to set
 	 * 
 	 */
-	public void setQuadrantPadding(float padding) {
+	public void setPadding(float padding) {
 		this.paddingTop = padding;
 		this.paddingLeft = padding;
 		this.paddingBottom = padding;
@@ -162,7 +162,7 @@ public abstract class Quadrant implements IQuadrant{
 	 *            the paddingLeft paddingRight to set
 	 * 
 	 */
-	public void setQuadrantPadding(float topnbottom, float leftnright) {
+	public void setPadding(float topnbottom, float leftnright) {
 		this.paddingTop = topnbottom;
 		this.paddingLeft = leftnright;
 		this.paddingBottom = topnbottom;
@@ -180,7 +180,7 @@ public abstract class Quadrant implements IQuadrant{
 	 *            the paddingRight to set
 	 * 
 	 */
-	public void setQuadrantPadding(float top, float right, float bottom,
+	public void setPadding(float top, float right, float bottom,
 			float left) {
 		this.paddingTop = top;
 		this.paddingLeft = right;
@@ -188,38 +188,37 @@ public abstract class Quadrant implements IQuadrant{
 		this.paddingRight = left;
 	}
 	
-	public float getQuadrantEndX(){
-		return getQuadrantStartX() + getQuadrantWidth();
+	public float getEndX(){
+		return getStartX() + getWidth();
 	}
 
-	public float getQuadrantEndY(){
-		return getQuadrantStartY() + getQuadrantHeight();
+	public float getEndY(){
+		return getStartY() + getHeight();
 	}
 	
-	public float getQuadrantPaddingStartX() {
-		return getQuadrantStartX() + paddingLeft;
+	public float getPaddingStartX() {
+		return getStartX() + paddingLeft;
 	}
 
-	public float getQuadrantPaddingEndX() {
-		return getQuadrantEndX() - paddingRight;
+	public float getPaddingEndX() {
+		return getEndX() - paddingRight;
 	}
 
-	public float getQuadrantPaddingStartY() {
-		return getQuadrantStartY() + paddingTop;
+	public float getPaddingStartY() {
+		return getStartY() + paddingTop;
 	}
 
-	public float getQuadrantPaddingEndY() {
-		return getQuadrantEndY() - paddingBottom;
+	public float getPaddingEndY() {
+		return getEndY() - paddingBottom;
 	}
 
-	public float getQuadrantPaddingWidth() {
-		return getQuadrantWidth() - paddingLeft
+	public float getPaddingWidth() {
+		return getWidth() - paddingLeft
 				- paddingRight;
 	}
 
-	public float getQuadrantPaddingHeight() {
-		return getQuadrantHeight() - paddingTop
+	public float getPaddingHeight() {
+		return getHeight() - paddingTop
 				- paddingBottom;
 	}
-
 }

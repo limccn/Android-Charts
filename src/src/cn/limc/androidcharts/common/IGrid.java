@@ -23,6 +23,8 @@
 package cn.limc.androidcharts.common;
 
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.PathEffect;
 
 /** 
  * <p>en</p>
@@ -180,7 +182,7 @@ public interface IGrid {
 	 * 纬线刻度字体颜色
 	 * </p>
 	 */
-	public static final int DEFAULT_LATITUDE_FONT_COLOR = Color.RED;
+	public static final int DEFAULT_LATITUDE_FONT_COLOR = Color.LTGRAY;
 
 	/**
 	 * <p>
@@ -194,4 +196,57 @@ public interface IGrid {
 	 * </p>
 	 */
 	public static final int DEFAULT_LATITUDE_FONT_SIZE = 12;
+	
+	   /**
+     * <p>
+     * default color of grid‘s longitude line
+     * </p>
+     * <p>
+     * 経線の色のデフォルト値
+     * </p>
+     * <p>
+     * 默认网格经线的显示颜色
+     * </p>
+     */
+    public static final int DEFAULT_LONGITUDE_COLOR = Color.LTGRAY;
+
+    /**
+     * <p>
+     * default color of grid‘s latitude line
+     * </p>
+     * <p>
+     * 緯線の色のデフォルト値
+     * </p>
+     * <p>
+     * 默认网格纬线的显示颜色
+     * </p>
+     */
+    public static final int DEFAULT_LAITUDE_COLOR = Color.LTGRAY;
+    
+    /**
+     * <p>
+     * default dashed line type
+     * </p>
+     * <p>
+     * 点線タイプのデフォルト値
+     * </p>
+     * <p>
+     * 默认虚线效果
+     * </p>
+     */
+    public static final PathEffect DEFAULT_DASH_EFFECT = new DashPathEffect(
+            new float[] { 6, 3, 6, 3 }, 1);
+    
+    /**
+     * <p>
+     * default titles' max length for display of Y axis
+     * </p>
+     * <p>
+     * Y軸の表示用タイトルの最大文字長さのデフォルト値
+     * </p>
+     * <p>
+     * 默认Y轴标题最大文字长度
+     * </p>
+     */
+    public static final int DEFAULT_LATITUDE_MAX_TITLE_LENGTH = 5;
 }

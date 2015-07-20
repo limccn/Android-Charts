@@ -18,6 +18,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package cn.limc.androidcharts.view;
 
 import android.content.Context;
@@ -92,6 +93,20 @@ public class RoundChart extends AbstractBaseChart {
      * </p>
      */
     public static final int DEFAULT_CIRCLE_BORDER_COLOR = Color.WHITE;
+    
+    
+    /**
+     * <p>
+     * default color for circle's border
+     * </p>
+     * <p>
+     * 円弧の色のデフォルト値
+     * </p>
+     * <p>
+     * 默认圆弧的颜色
+     * </p>
+     */
+    public static final int DEFAULT_CIRCLE_BORDER_WIDTH = 4;
 
     /**
      * <p>
@@ -170,6 +185,8 @@ public class RoundChart extends AbstractBaseChart {
      * </p>
      */
     protected int circleBorderColor = DEFAULT_CIRCLE_BORDER_COLOR;
+    
+    protected int circleBorderWidth = DEFAULT_CIRCLE_BORDER_WIDTH;
 
     /**
      * <p>
@@ -300,6 +317,20 @@ public class RoundChart extends AbstractBaseChart {
      */
     public void setDisplayLongitude(boolean displayRadius) {
         this.displayLongitude = displayRadius;
+    }
+
+    /**
+     * @return the circleBorderWidth
+     */
+    public int getCircleBorderWidth() {
+        return circleBorderWidth;
+    }
+
+    /**
+     * @param circleBorderWidth the circleBorderWidth to set
+     */
+    public void setCircleBorderWidth(int circleBorderWidth) {
+        this.circleBorderWidth = circleBorderWidth;
     }
 
 }

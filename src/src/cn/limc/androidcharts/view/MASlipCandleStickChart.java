@@ -191,7 +191,7 @@ public class MASlipCandleStickChart extends SlipCandleStickChart {
 			return;
 		}
 		// distance between two points
-		float lineLength = dataQuadrant.getQuadrantPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / displayNumber - stickSpacing;
 		// start point‘s X
 		float startX;
 
@@ -214,7 +214,7 @@ public class MASlipCandleStickChart extends SlipCandleStickChart {
 			mPaint.setColor(line.getLineColor());
 			mPaint.setAntiAlias(true);
 			// set start point’s X
-			startX = dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
+			startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 			// start point
 			PointF ptFirst = null;
 			for (int j = super.getDisplayFrom(); j < super.getDisplayFrom()
@@ -222,8 +222,8 @@ public class MASlipCandleStickChart extends SlipCandleStickChart {
 				float value = lineData.get(j).getValue();
 				// calculate Y
 				float valueY = (float) ((1f - (value - minValue)
-						/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
-						+ dataQuadrant.getQuadrantPaddingStartY();
+						/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+						+ dataQuadrant.getPaddingStartY();
 
 				// if is not last point connect to previous point
 				if (j > super.getDisplayFrom()) {

@@ -20,8 +20,10 @@
  */
 
 
-package cn.limc.androidcharts.common;
+package cn.limc.androidcharts.axis;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import cn.limc.androidcharts.view.GridChart;
 
 /** 
@@ -34,8 +36,22 @@ import cn.limc.androidcharts.view.GridChart;
  *  
  */
 public class VerticalAxis extends Axis {
-
-	protected float width;
+    
+    /**
+     * <p>
+     * default margin of the axis to the left border
+     * </p>
+     * <p>
+     * 轴線より左枠線の距離のデフォルト値
+     * </p>
+     * <p>
+     * 默认轴线左边距
+     * </p>
+     */
+    public static final float DEFAULT_WIDTH = 50f;
+    
+	protected float width = DEFAULT_WIDTH;
+	
 	/** 
 	 * <p>Constructor of VerticalAxis</p>
 	 * <p>VerticalAxis类对象的构造函数</p>
@@ -43,16 +59,15 @@ public class VerticalAxis extends Axis {
 	 *
 	 * @param position 
 	 */
-	public VerticalAxis(GridChart inChart, int position , float width) {
+	public VerticalAxis(GridChart inChart, int position) {
 		super(inChart,position);
-		this.width = width;
 	}
 	/* (non-Javadoc)
 	 * 
 	 * @return 
 	 * @see cn.limc.androidcharts.common.IQuadrant#getQuadrantWidth() 
 	 */
-	public float getQuadrantWidth() {
+	public float getWidth() {
 		return width;
 	}
 	/* (non-Javadoc)
@@ -60,7 +75,38 @@ public class VerticalAxis extends Axis {
 	 * @return 
 	 * @see cn.limc.androidcharts.common.IQuadrant#getQuadrantHeight() 
 	 */
-	public float getQuadrantHeight() {
+	public float getHeight() {
 		return inChart.getHeight() - 2 * inChart.getBorderWidth();
 	}
+	
+	 /**
+     * <p>
+     * draw Y Axis
+     * </p>
+     * <p>
+     * Y軸を書く
+     * </p>
+     * <p>
+     * 绘制Y轴
+     * </p>
+     * 
+     * @param canvas
+     */
+    public void draw(Canvas canvas) {
+        float length = inChart.getHeight() - inChart.getAxisX().getHeight()
+                - inChart.getBorderWidth();
+        float postX;
+        if (position == AXIS_Y_POSITION_LEFT) {
+            postX = inChart.getBorderWidth() + width + lineWidth / 2;
+        } else {
+            postX = inChart.getWidth() - inChart.getBorderWidth() - width
+                    - lineWidth / 2;
+        }
+
+        Paint mPaint = new Paint();
+        mPaint.setColor(lineColor);
+        mPaint.setStrokeWidth(lineWidth);
+
+        canvas.drawLine(postX, inChart.getBorderWidth(), postX, length, mPaint);
+    }
 }

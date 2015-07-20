@@ -23,6 +23,8 @@ package cn.limc.androidcharts.view;
 
 import java.util.List;
 
+import cn.limc.androidcharts.axis.Axis;
+import cn.limc.androidcharts.axis.IAxis;
 import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
 
@@ -130,7 +132,7 @@ public class MAStickChart extends StickChart {
 			// 判断显示为方柱或显示为线条
 			for (int j = 0; j < this.maxSticksNum; j++) {
 				DateValueEntity entity;
-				if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+				if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
 					entity = line.getLineData().get(j);
 				} else {
 					entity = line.getLineData().get(lineData.size() - 1 - j);
@@ -187,7 +189,7 @@ public class MAStickChart extends StickChart {
 			return;
 		}
 		// distance between two points
-		float lineLength = dataQuadrant.getQuadrantPaddingWidth() / maxSticksNum - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / maxSticksNum - stickSpacing;
 		// start point‘s X
 		float startX;
 
@@ -212,16 +214,16 @@ public class MAStickChart extends StickChart {
 			// start point
 			PointF ptFirst = null;
 
-			if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+			if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
 				// set start point’s X
-				startX = dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
+				startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 
 				for (int j = 0; j < lineData.size(); j++) {
 					float value = lineData.get(j).getValue();
 					// calculate Y
 					float valueY = (float) ((1f - (value - minValue)
-							/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
-							+ dataQuadrant.getQuadrantPaddingStartY();
+							/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+							+ dataQuadrant.getPaddingStartY();
 
 					// if is not last point connect to previous point
 					if (j > 0) {
@@ -234,13 +236,13 @@ public class MAStickChart extends StickChart {
 				}
 			} else {
 				// set start point’s X
-				startX = dataQuadrant.getQuadrantPaddingEndX() - lineLength / 2;
+				startX = dataQuadrant.getPaddingEndX() - lineLength / 2;
 				for (int j = lineData.size() - 1; j >= 0; j--) {
 					float value = lineData.get(j).getValue();
 					// calculate Y
 					float valueY = (float) ((1f - (value - minValue)
-							/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
-							+ dataQuadrant.getQuadrantPaddingStartY();
+							/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+							+ dataQuadrant.getPaddingStartY();
 
 					// if is not last point connect to previous point
 					if (j < lineData.size() - 1) {

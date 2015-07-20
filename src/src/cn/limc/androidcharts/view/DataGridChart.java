@@ -169,7 +169,7 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 
 	protected void calcValueRangeFormatForAxis() {
 		// 修正最大值和最小值
-		long rate = (long) (this.maxValue - this.minValue) / (this.latitudeNum);
+		long rate = (long) (this.maxValue - this.minValue) / (simpleGrid.getLatitudeNum());
 		String strRate = String.valueOf(rate);
 		float first = Integer.parseInt(String.valueOf(strRate.charAt(0))) + 1.0f;
 		if (first > 0 && strRate.length() > 1) {
@@ -182,13 +182,13 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 			rate = 1;
 		}
 		// 等分轴修正
-		if (this.latitudeNum > 0
+		if (simpleGrid.getLatitudeNum() > 0
 				&& (long) (this.maxValue - this.minValue)
-						% (this.latitudeNum * rate) != 0) {
+						% (simpleGrid.getLatitudeNum() * rate) != 0) {
 			// 最大值加上轴差
 			this.maxValue = (long) this.maxValue
-					+ (this.latitudeNum * rate)
-					- ((long) (this.maxValue - this.minValue) % (this.latitudeNum * rate));
+					+ (simpleGrid.getLatitudeNum() * rate)
+					- ((long) (this.maxValue - this.minValue) % (simpleGrid.getLatitudeNum() * rate));
 		}
 	}
 

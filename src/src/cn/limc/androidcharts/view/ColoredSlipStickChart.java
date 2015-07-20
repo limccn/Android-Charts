@@ -122,9 +122,9 @@ public class ColoredSlipStickChart extends SlipStickChart {
 			return;
 		}
 
-		float stickWidth = dataQuadrant.getQuadrantPaddingWidth() / displayNumber
+		float stickWidth = dataQuadrant.getPaddingWidth() / displayNumber
 				- stickSpacing;
-		float stickX = dataQuadrant.getQuadrantPaddingStartX();
+		float stickX = dataQuadrant.getPaddingStartX();
 
 		Paint mPaintStick = new Paint();
 		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
@@ -132,10 +132,10 @@ public class ColoredSlipStickChart extends SlipStickChart {
 
 			float highY = (float) ((1f - (entity.getHigh() - minValue)
 					/ (maxValue - minValue))
-					* (dataQuadrant.getQuadrantPaddingHeight()) + dataQuadrant.getQuadrantPaddingStartY());
+					* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
 			float lowY = (float) ((1f - (entity.getLow() - minValue)
 					/ (maxValue - minValue))
-					* (dataQuadrant.getQuadrantPaddingHeight()) + dataQuadrant.getQuadrantPaddingStartY());
+					* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
 
 			mPaintStick.setColor(entity.getColor());
 			// stick or line?

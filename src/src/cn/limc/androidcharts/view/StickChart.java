@@ -21,6 +21,7 @@
 
 package cn.limc.androidcharts.view;
 
+import cn.limc.androidcharts.axis.IAxis;
 import cn.limc.androidcharts.entity.IChartData;
 import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.IStickEntity;
@@ -181,11 +182,11 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 			return;
 		}
 
-		float stickWidth = dataQuadrant.getQuadrantPaddingWidth() / getDisplayNumber();
+		float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
 
-		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
 
-			float stickX = dataQuadrant.getQuadrantPaddingStartX();
+			float stickX = dataQuadrant.getPaddingStartX();
 
 			for (int i = 0; i < stickData.size(); i++) {
 				IMeasurable stick = stickData.get(i);
@@ -196,7 +197,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 				stickX = stickX + stickWidth;
 			}
 		} else {
-			float stickX = dataQuadrant.getQuadrantPaddingEndX() - stickWidth;
+			float stickX = dataQuadrant.getPaddingEndX() - stickWidth;
 			for (int i = stickData.size() - 1; i >= 0; i--) {
 				IMeasurable stick = stickData.get(i);
 				StickMole mole = (StickMole)provider.getMole();
@@ -327,27 +328,13 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 		this.stickSpacing = stickSpacing;
 	}
 
-	/**
-	 * @return the bindCrossLinesToStick
-	 */
-	public int getBindCrossLinesToStick() {
-		return bindCrossLinesToStick;
-	}
-
-	/**
-	 * @param bindCrossLinesToStick the bindCrossLinesToStick to set
-	 */
-	public void setBindCrossLinesToStick(int bindCrossLinesToStick) {
-		this.bindCrossLinesToStick = bindCrossLinesToStick;
-	}
-
 	/* (non-Javadoc)
 	 * 
 	 * @return 
 	 * @see cn.limc.androidcharts.common.IDataCursor#displayFrom() 
 	 */
 	public int getDisplayFrom() {
-		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
 			return 0;
 		}else{
 			return stickData.size() - maxSticksNum;
@@ -369,7 +356,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	 * @see cn.limc.androidcharts.common.IDataCursor#displayTo() 
 	 */
 	public int getDisplayTo() {
-		if (axisYPosition == AXIS_Y_POSITION_LEFT) {
+		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
 			return maxSticksNum;
 		}else{
 			return stickData.size() - 1;

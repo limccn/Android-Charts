@@ -23,6 +23,7 @@ package cn.limc.androidcharts.view;
 
 import java.util.List;
 
+import cn.limc.androidcharts.common.IFlexableGrid;
 import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
 import android.content.Context;
@@ -167,12 +168,12 @@ public class SlipBandAreaChart extends SlipLineChart {
 		// set start point’s X
 		float startX;
 		
-		if (lineAlignType == ALIGN_TYPE_CENTER) {
-            lineLength= (dataQuadrant.getQuadrantPaddingWidth() / displayNumber);
-            startX = dataQuadrant.getQuadrantPaddingStartX() + lineLength / 2;
+		if (lineAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
+            lineLength= (dataQuadrant.getPaddingWidth() / displayNumber);
+            startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
         }else {
-            lineLength= (dataQuadrant.getQuadrantPaddingWidth() / (displayNumber - 1));
-            startX = dataQuadrant.getQuadrantPaddingStartX();
+            lineLength= (dataQuadrant.getPaddingWidth() / (displayNumber - 1));
+            startX = dataQuadrant.getPaddingStartX();
         }
 		
 		float lastY = 0;
@@ -186,11 +187,11 @@ public class SlipBandAreaChart extends SlipLineChart {
 
 			// calculate Y
 			float valueY1 = (float) ((1f - (value1 - minValue)
-					/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
-					+ dataQuadrant.getQuadrantPaddingStartY();
+					/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+					+ dataQuadrant.getPaddingStartY();
 			float valueY2 = (float) ((1f - (value2 - minValue)
-					/ (maxValue - minValue)) * dataQuadrant.getQuadrantPaddingHeight())
-					+ dataQuadrant.getQuadrantPaddingStartY();
+					/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+					+ dataQuadrant.getPaddingStartY();
 
 			// 绘制线条路径
 			if (j == displayFrom) {

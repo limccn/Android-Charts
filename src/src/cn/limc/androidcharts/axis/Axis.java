@@ -20,8 +20,9 @@
  */
 
 
-package cn.limc.androidcharts.common;
+package cn.limc.androidcharts.axis;
 
+import cn.limc.androidcharts.common.Quadrant;
 import cn.limc.androidcharts.view.GridChart;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -37,9 +38,11 @@ import android.graphics.Paint;
  *  
  */
 public abstract class Axis extends Quadrant implements IAxis {
-	public static final int DEFAULT_LINE_COLOR = Color.RED;
+        
+	public static final int DEFAULT_LINE_COLOR = Color.LTGRAY;
 	public static final float DEFAULT_LINE_WIDTH = 1f;
 	public static final int DEFAULT_POSITION = AXIS_X_POSITION_BOTTOM;
+	
 	protected int lineColor = DEFAULT_LINE_COLOR;
 	protected float lineWidth = DEFAULT_LINE_WIDTH;
 	protected int position = DEFAULT_POSITION;
@@ -66,20 +69,20 @@ public abstract class Axis extends Quadrant implements IAxis {
 		mPaint.setStrokeWidth(lineWidth);
 		if (position == AXIS_X_POSITION_BOTTOM) {
 			postY = lineWidth / 2;
-			postX = getQuadrantStartX();
-			canvas.drawLine(postX,postY, postX + getQuadrantWidth(),postY , mPaint);
+			postX = getStartX();
+			canvas.drawLine(postX,postY, postX + getWidth(),postY , mPaint);
 		} else if (position == AXIS_X_POSITION_TOP) {
-			postY = getQuadrantHeight() - lineWidth / 2;
-			postX = getQuadrantStartX();
-			canvas.drawLine(postX,postY, postX + getQuadrantWidth(),postY , mPaint);
+			postY = getHeight() - lineWidth / 2;
+			postX = getStartX();
+			canvas.drawLine(postX,postY, postX + getWidth(),postY , mPaint);
 		} else if (position == AXIS_Y_POSITION_LEFT) {
-			postX = getQuadrantWidth() - lineWidth / 2;
-			postY = getQuadrantStartX();
-			canvas.drawLine(postX,postY, postX,postY + getQuadrantHeight() , mPaint);
+			postX = getWidth() - lineWidth / 2;
+			postY = getStartX();
+			canvas.drawLine(postX,postY, postX,postY + getHeight() , mPaint);
 		} else {
 			postX = lineWidth / 2;
-			postY = getQuadrantStartY();
-			canvas.drawLine(postX,postY, postX,postY + getQuadrantHeight() , mPaint);
+			postY = getStartY();
+			canvas.drawLine(postX,postY, postX,postY + getHeight() , mPaint);
 		}
 	}
 
@@ -130,7 +133,7 @@ public abstract class Axis extends Quadrant implements IAxis {
 	 * @return 
 	 * @see cn.limc.androidcharts.common.IQuadrant#getQuadrantStartX() 
 	 */
-	public float getQuadrantStartX() {
+	public float getStartX() {
 		if (position == AXIS_X_POSITION_BOTTOM) {
 			return 2*inChart.getBorderWidth();
 		} else if (position == AXIS_X_POSITION_TOP) {
@@ -138,7 +141,7 @@ public abstract class Axis extends Quadrant implements IAxis {
 		} else if (position == AXIS_Y_POSITION_LEFT) {
 			return 2*inChart.getBorderWidth();
 		} else {
-			return inChart.getDataQuadrant().getQuadrantEndX();
+			return inChart.getDataQuadrant().getEndX();
 		}
 	}
 
@@ -147,9 +150,9 @@ public abstract class Axis extends Quadrant implements IAxis {
 	 * @return 
 	 * @see cn.limc.androidcharts.common.IQuadrant#getQuadrantStartY() 
 	 */
-	public float getQuadrantStartY() {
+	public float getStartY() {
 		if (position == AXIS_X_POSITION_BOTTOM) {
-			return inChart.getDataQuadrant().getQuadrantEndY();
+			return inChart.getDataQuadrant().getEndY();
 		} else if (position == AXIS_X_POSITION_TOP) {
 			return 2*inChart.getBorderWidth();
 		} else if (position == AXIS_Y_POSITION_LEFT) {

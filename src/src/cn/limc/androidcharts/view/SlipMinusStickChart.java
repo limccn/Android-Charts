@@ -139,8 +139,8 @@ public class SlipMinusStickChart extends SlipStickChart {
 	 */
 	@Override
 	protected void drawSticks(Canvas canvas) {
-		float stickWidth = dataQuadrant.getQuadrantPaddingWidth() / getDisplayNumber();
-		float stickX = dataQuadrant.getQuadrantPaddingStartX();
+		float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+		float stickX = dataQuadrant.getPaddingStartX();
 
 		if (null != stickData) {
 			// display as stick or line
