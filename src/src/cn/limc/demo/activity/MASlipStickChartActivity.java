@@ -63,25 +63,25 @@ public class MASlipStickChartActivity extends BaseActivity {
         List<LineEntity<DateValueEntity>> vlines = new ArrayList<LineEntity<DateValueEntity>>();
 
         // 计算5日均线
-        LineEntity<DateValueEntity> VMA5 = new LineEntity<DateValueEntity>();
-        VMA5.setTitle("MA5");
-        VMA5.setLineColor(Color.WHITE);
-        VMA5.setLineData(initVMA(5));
-        vlines.add(VMA5);
+        LineEntity<DateValueEntity> vma5 = new LineEntity<DateValueEntity>();
+        vma5.setTitle("MA5");
+        vma5.setLineColor(Color.WHITE);
+        vma5.setLineData(initVMA(5));
+        vlines.add(vma5);
 
         // 计算10日均线
-        LineEntity<DateValueEntity> VMA10 = new LineEntity<DateValueEntity>();
-        VMA10.setTitle("MA10");
-        VMA10.setLineColor(Color.RED);
-        VMA10.setLineData(initVMA(10));
-        vlines.add(VMA10);
+        LineEntity<DateValueEntity> vma10 = new LineEntity<DateValueEntity>();
+        vma10.setTitle("MA10");
+        vma10.setLineColor(Color.RED);
+        vma10.setLineData(initVMA(10));
+        vlines.add(vma10);
 
         // 计算25日均线
-        LineEntity<DateValueEntity> VMA25 = new LineEntity<DateValueEntity>();
-        VMA25.setTitle("MA25");
-        VMA25.setLineColor(Color.GREEN);
-        VMA25.setLineData(initVMA(25));
-        vlines.add(VMA25);
+        LineEntity<DateValueEntity> vma25 = new LineEntity<DateValueEntity>();
+        vma25.setTitle("MA25");
+        vma25.setLineColor(Color.GREEN);
+        vma25.setLineData(initVMA(25));
+        vlines.add(vma25);
 
         maslipstickchart.setAxisXColor(Color.LTGRAY);
         maslipstickchart.setAxisYColor(Color.LTGRAY);

@@ -121,7 +121,7 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 			LineEntity<DateValueEntity> line = this.bandData.get(i);
 			if (line != null && line.getLineData().size() > 0) {
 				// 判断显示为方柱或显示为线条
-				for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+				for (int j = dataCursor.getDisplayFrom(); j < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); j++) {
 					DateValueEntity lineData = line.getLineData().get(j);
 					if (lineData.getValue() < minValue) {
 						minValue = lineData.getValue();
@@ -202,14 +202,14 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 		mPaint.setAntiAlias(true);
 		// set start point’s X
 		if (gridAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
-            lineLength= (dataQuadrant.getPaddingWidth() / displayNumber) - stickSpacing;
+            lineLength= (dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber()) - stickSpacing;
             startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
         }else {
-            lineLength= (dataQuadrant.getPaddingWidth() / (displayNumber - 1)) - stickSpacing;
+            lineLength= (dataQuadrant.getPaddingWidth() / (dataCursor.getDisplayNumber() - 1)) - stickSpacing;
             startX = dataQuadrant.getPaddingStartX();
         }
 		Path areaPath = new Path();
-		for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+		for (int j = dataCursor.getDisplayFrom(); j < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); j++) {
 			float value1 = line1Data.get(j).getValue();
 			float value2 = line2Data.get(j).getValue();
 
@@ -222,7 +222,7 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 					+ dataQuadrant.getPaddingStartY();
 
 			// 绘制线条路径
-			if (j == displayFrom) {
+			if (j == dataCursor.getDisplayFrom()) {
 				areaPath.moveTo(startX, valueY1);
 				areaPath.lineTo(startX, valueY2);
 				areaPath.moveTo(startX, valueY1);
@@ -266,7 +266,7 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 			return;
 		}
 		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - stickSpacing;
 		// start point‘s X
 		float startX;
 
@@ -291,7 +291,7 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 			startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 			// start point
 			PointF ptFirst = null;
-			for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+			for (int j = dataCursor.getDisplayFrom(); j < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); j++) {
 				float value = lineData.get(j).getValue();
 				// calculate Y
 				float valueY = (float) ((1f - (value - minValue)
@@ -299,7 +299,7 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 						+ dataQuadrant.getPaddingStartY();
 
 				// if is not last point connect to previous point
-				if (j > displayFrom) {
+				if (j > dataCursor.getDisplayFrom()) {
 					canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
 							mPaint);
 				}

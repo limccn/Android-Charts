@@ -273,7 +273,7 @@ public class SlipCandleStickChart extends SlipStickChart {
 			return;
 		}
 
-		float stickWidth = dataQuadrant.getPaddingWidth() / displayNumber
+		float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber()
 				- stickSpacing;
 		float stickX = dataQuadrant.getPaddingStartX();
 
@@ -286,7 +286,7 @@ public class SlipCandleStickChart extends SlipStickChart {
 		Paint mPaintCross = new Paint();
 		mPaintCross.setColor(crossStarColor);
 
-		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+		for (int i = dataCursor.getDisplayFrom(); i < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); i++) {
 			OHLCEntity ohlc = (OHLCEntity) stickData.get(i);
 			float openY = (float) ((1f - (ohlc.getOpen() - minValue)
 					/ (maxValue - minValue))
@@ -337,12 +337,12 @@ public class SlipCandleStickChart extends SlipStickChart {
 		float calcX = 0;
 		float calcY = 0;
 		int index = calcSelectedIndex(x,y);
-		float stickWidth = dataQuadrant.getPaddingWidth() / displayNumber;
+		float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber();
 		OHLCEntity stick = (OHLCEntity)stickData.get(index);
 		calcY = (float) ((1f - (stick.getClose() - minValue)
 				/ (maxValue - minValue))
 				* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
-		calcX = dataQuadrant.getPaddingStartX() + stickWidth * (index - displayFrom) + stickWidth / 2;
+		calcX = dataQuadrant.getPaddingStartX() + stickWidth * (index - dataCursor.getDisplayFrom()) + stickWidth / 2;
 		
 		return new PointF(calcX,calcY);
 	}

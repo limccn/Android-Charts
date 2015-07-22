@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import cn.limc.androidcharts.common.IDataCursor;
+import cn.limc.androidcharts.common.SimpleDataCursor;
 import cn.limc.androidcharts.entity.IChartData;
 import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.IStickEntity;
@@ -45,7 +46,7 @@ import android.util.AttributeSet;
  * @version v1.0 2014/06/18 15:38:33 
  *  
  */
-public abstract class DataGridChart extends GridChart implements IDataCursor {
+public abstract class DataGridChart extends GridChart {
 	
 	public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
 	
@@ -59,6 +60,8 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 	protected String axisYDecimalFormat = DEFAULT_AXIS_Y_DECIMAL_FORMAT;
 	protected String axisXDateTargetFormat = DEFAULT_AXIS_X_DATE_TARGET_FORMAT;
 	protected String axisXDateSourceFormat = DEFAULT_AXIS_X_DATE_SOURCE_FORMAT;
+	
+	protected IDataCursor dataCursor = new SimpleDataCursor(this);
 	
 	/**
 	 * <p>
@@ -92,7 +95,7 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 	protected void calcDataValueRange() {
 		double maxValue = Double.MIN_VALUE;
 		double minValue = Double.MAX_VALUE;
-		IMeasurable first = this.stickData.get(getDisplayFrom());
+		IMeasurable first = this.stickData.get(dataCursor.getDisplayFrom());
 		// 第一个stick为停盘的情况
 		if (first.getHigh() == 0 && first.getLow() == 0) {
 
@@ -101,7 +104,7 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 			minValue = first.getLow();
 		}
 
-		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
+		for (int i = dataCursor.getDisplayFrom(); i < dataCursor.getDisplayTo(); i++) {
 			IMeasurable stick;
 			stick = this.stickData.get(i);
 			
@@ -272,10 +275,10 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 	@Override
 	public String getAxisXGraduate(Object value) {
 		float graduate = Float.valueOf(super.getAxisXGraduate(value));
-		int index = (int) Math.floor(graduate * getDisplayNumber());
+		int index = (int) Math.floor(graduate * dataCursor.getDisplayNumber());
 
-		if (index >= getDisplayNumber()) {
-			index = getDisplayNumber() - 1;
+		if (index >= dataCursor.getDisplayNumber()) {
+			index = dataCursor.getDisplayNumber() - 1;
 		} else if (index < 0) {
 			index = 0;
 		}
@@ -344,15 +347,15 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 			return 0;
 		}
 		float graduate = Float.valueOf(super.getAxisXGraduate(x));
-		int index = (int) Math.floor(graduate * getDisplayNumber());
+		int index = (int) Math.floor(graduate * dataCursor.getDisplayNumber());
 
-		if (index >= getDisplayNumber()) {
-			index = getDisplayNumber() - 1;
+		if (index >= dataCursor.getDisplayNumber()) {
+			index = dataCursor.getDisplayNumber() - 1;
 		} else if (index < 0) {
 			index = 0;
 		}
 		
-		return getDisplayFrom() + index;
+		return dataCursor.getDisplayFrom() + index;
 	}	
 	
 	/**
@@ -455,4 +458,32 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 	public void setAutoCalcValueRange(boolean autoCalcValueRange) {
 		this.autoCalcValueRange = autoCalcValueRange;
 	}
+
+    /**
+     * @return the dataCursor
+     */
+    public IDataCursor getDataCursor() {
+        return dataCursor;
+    }
+
+    /**
+     * @param dataCursor the dataCursor to set
+     */
+    public void setDataCursor(IDataCursor dataCursor) {
+        this.dataCursor = dataCursor;
+    }
+
+    /**
+     * @return the stickData
+     */
+    public IChartData<IStickEntity> getStickData() {
+        return stickData;
+    }
+
+    /**
+     * @param stickData the stickData to set
+     */
+    public void setStickData(IChartData<IStickEntity> stickData) {
+        this.stickData = stickData;
+    }
 }

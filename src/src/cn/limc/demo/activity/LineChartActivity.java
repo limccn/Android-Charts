@@ -57,25 +57,25 @@ public class LineChartActivity extends BaseActivity {
         List<LineEntity<DateValueEntity>> lines = new ArrayList<LineEntity<DateValueEntity>>();
 
         // 计算5日均线
-        LineEntity<DateValueEntity> MA5 = new LineEntity<DateValueEntity>();
-        MA5.setTitle("MA5");
-        MA5.setLineColor(Color.WHITE);
-        MA5.setLineData(initMA(5));
-        lines.add(MA5);
+        LineEntity<DateValueEntity> ma5 = new LineEntity<DateValueEntity>();
+        ma5.setTitle("MA5");
+        ma5.setLineColor(Color.WHITE);
+        ma5.setLineData(initMA(5));
+        lines.add(ma5);
 
         // 计算10日均线
-        LineEntity<DateValueEntity> MA10 = new LineEntity<DateValueEntity>();
-        MA10.setTitle("MA10");
-        MA10.setLineColor(Color.RED);
-        MA10.setLineData(initMA(10));
-        lines.add(MA10);
+        LineEntity<DateValueEntity> ma10 = new LineEntity<DateValueEntity>();
+        ma10.setTitle("MA10");
+        ma10.setLineColor(Color.RED);
+        ma10.setLineData(initMA(10));
+        lines.add(ma10);
 
         // 计算25日均线
-        LineEntity<DateValueEntity> MA25 = new LineEntity<DateValueEntity>();
-        MA25.setTitle("MA25");
-        MA25.setLineColor(Color.GREEN);
-        MA25.setLineData(initMA(25));
-        lines.add(MA25);
+        LineEntity<DateValueEntity> ma25 = new LineEntity<DateValueEntity>();
+        ma25.setTitle("MA25");
+        ma25.setLineColor(Color.GREEN);
+        ma25.setLineData(initMA(25));
+        lines.add(ma25);
 
         linechart.setAxisXColor(Color.LTGRAY);
         linechart.setAxisYColor(Color.LTGRAY);

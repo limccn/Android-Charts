@@ -22,7 +22,6 @@
 
 package cn.limc.androidcharts.common;
 
-import android.R.color;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;

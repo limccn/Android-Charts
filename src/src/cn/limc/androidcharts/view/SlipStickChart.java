@@ -21,6 +21,7 @@
 
 package cn.limc.androidcharts.view;
 
+import cn.limc.androidcharts.common.SectionDataCursor;
 import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.event.IGestureDetector;
 import cn.limc.androidcharts.event.ISlipable;
@@ -51,14 +52,8 @@ import android.view.MotionEvent;
  */
 public class SlipStickChart extends StickChart implements ISlipable {
 
-	public static final int DEFAULT_DISPLAY_FROM = 0;
-	public static final int DEFAULT_DISPLAY_NUMBER = 50;
-	public static final int DEFAULT_MIN_DISPLAY_NUMBER = 20;
 	public static final int DEFAULT_ZOOM_BASE_LINE = ZOOM_BASE_LINE_CENTER;
 
-	protected int displayFrom = DEFAULT_DISPLAY_FROM;
-	protected int displayNumber = DEFAULT_DISPLAY_NUMBER;
-	protected int minDisplayNumber = DEFAULT_MIN_DISPLAY_NUMBER;
 	protected int zoomBaseLine = DEFAULT_ZOOM_BASE_LINE;
 	
 	protected OnSlipGestureListener onSlipGestureListener = new OnSlipGestureListener();
@@ -79,6 +74,7 @@ public class SlipStickChart extends StickChart implements ISlipable {
 	 */
 	public SlipStickChart(Context context) {
 		super(context);
+	    this.dataCursor = new SectionDataCursor(this);
 	}
 
 	/**
@@ -207,7 +203,7 @@ public class SlipStickChart extends StickChart implements ISlipable {
 
 		//Listener
 		if (onDisplayCursorListener != null) {
-			onDisplayCursorListener.onCursorChanged(this,getDisplayFrom(), getDisplayNumber());
+			onDisplayCursorListener.onCursorChanged(this.dataCursor,getDisplayFrom(), getDisplayNumber());
 		}
 	}
 
@@ -235,7 +231,7 @@ public class SlipStickChart extends StickChart implements ISlipable {
 
 		//Listener
 		if (onDisplayCursorListener != null) {
-			onDisplayCursorListener.onCursorChanged(this,getDisplayFrom(), getDisplayNumber());
+			onDisplayCursorListener.onCursorChanged(this.dataCursor,getDisplayFrom(), getDisplayNumber());
 		}
 	}
 	
@@ -272,7 +268,7 @@ public class SlipStickChart extends StickChart implements ISlipable {
 
 			//Listener
 			if (onDisplayCursorListener != null) {
-				onDisplayCursorListener.onCursorChanged(this,getDisplayFrom(), getDisplayNumber());
+				onDisplayCursorListener.onCursorChanged(this.dataCursor,getDisplayFrom(), getDisplayNumber());
 			}
 		}
 	}
@@ -318,100 +314,9 @@ public class SlipStickChart extends StickChart implements ISlipable {
 			
 			//Listener
 			if (onDisplayCursorListener != null) {
-				onDisplayCursorListener.onCursorChanged(this,getDisplayFrom(), getDisplayNumber());
+				onDisplayCursorListener.onCursorChanged(this.dataCursor,getDisplayFrom(), getDisplayNumber());
 			}
 		}
-	}
-
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.view.StickChart#getDisplayFrom()
-	 */
-	@Override
-	public int getDisplayFrom() {
-		return displayFrom;
-	}
-
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param displayFrom 
-	 * @see cn.limc.androidcharts.view.StickChart#setDisplayFrom(int)
-	 */
-	@Override
-	public void setDisplayFrom(int displayFrom) {
-		this.displayFrom = displayFrom;
-	}
-
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.view.StickChart#getDisplayTo()
-	 */
-	@Override
-	public int getDisplayTo() {
-		return displayFrom + displayNumber;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param displayTo 
-	 * @see cn.limc.androidcharts.view.StickChart#setDisplayTo(int)
-	 */
-	@Override
-	public void setDisplayTo(int displayTo) {
-		// TODO
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.view.StickChart#getDisplayNumber()
-	 */
-	@Override
-	public int getDisplayNumber() {
-		return displayNumber;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param displayNumber 
-	 * @see cn.limc.androidcharts.view.StickChart#setDisplayNumber(int)
-	 */
-	@Override
-	public void setDisplayNumber(int displayNumber) {
-		this.displayNumber = displayNumber;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.view.StickChart#getMinDisplayNumber()
-	 */
-	@Override
-	public int getMinDisplayNumber() {
-		return minDisplayNumber;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param minDisplayNumber 
-	 * @see cn.limc.androidcharts.view.StickChart#setMinDisplayNumber(int)
-	 */
-	@Override
-	public void setMinDisplayNumber(int minDisplayNumber) {
-		this.minDisplayNumber = minDisplayNumber;
 	}
 
 	

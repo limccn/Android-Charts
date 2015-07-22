@@ -77,21 +77,6 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	public static final int DEFAULT_STICK_SPACING = 1;
 	
 
-	/**
-	 * <p>
-	 * max number of sticks
-	 * </p>
-	 * <p>
-	 * スティックの最大表示数
-	 * </p>
-	 * <p>
-	 * 柱条的最大表示数
-	 * </p>
-	 */
-	protected int maxSticksNum;
-	
-	protected int minDisplayNum = MINI_DISPLAY_NUM;
-
 	protected int stickSpacing = DEFAULT_STICK_SPACING;
 	
 	protected OnZoomGestureListener onZoomGestureListener = new OnZoomGestureListener();
@@ -255,7 +240,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 		
 		//Listener
 		if (onDisplayCursorListener != null) {
-			onDisplayCursorListener.onCursorChanged(this,getDisplayFrom(), getDisplayNumber());
+			onDisplayCursorListener.onCursorChanged(this.dataCursor,getDisplayFrom(), getDisplayNumber());
 		}
 	}
 
@@ -278,7 +263,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 		
 		//Listener
 		if (onDisplayCursorListener != null) {
-			onDisplayCursorListener.onCursorChanged(this,getDisplayFrom(), getDisplayNumber());
+			onDisplayCursorListener.onCursorChanged(this.dataCursor,getDisplayFrom(), getDisplayNumber());
 		}
 	}
 
@@ -302,7 +287,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	 */
 	@Deprecated
 	public int getMaxSticksNum() {
-		return maxSticksNum;
+		return dataCursor.getDisplayNumber();
 	}
 
 	/**
@@ -311,7 +296,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	 */
 	@Deprecated
 	public void setMaxSticksNum(int maxSticksNum) {
-		this.maxSticksNum = maxSticksNum;
+		this.dataCursor.setDisplayNumber(maxSticksNum);
 	}
 
 	/**
@@ -334,11 +319,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	 * @see cn.limc.androidcharts.common.IDataCursor#displayFrom() 
 	 */
 	public int getDisplayFrom() {
-		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
-			return 0;
-		}else{
-			return stickData.size() - maxSticksNum;
-		}
+		return this.dataCursor.getDisplayFrom();
 	}
 
 	/* (non-Javadoc)
@@ -347,7 +328,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	 * @see cn.limc.androidcharts.common.IDataCursor#displayNumber() 
 	 */
 	public int getDisplayNumber() {
-		return maxSticksNum;
+		return this.dataCursor.getDisplayNumber();
 	}
 
 	/* (non-Javadoc)
@@ -356,11 +337,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	 * @see cn.limc.androidcharts.common.IDataCursor#displayTo() 
 	 */
 	public int getDisplayTo() {
-		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
-			return maxSticksNum;
-		}else{
-			return stickData.size() - 1;
-		}
+	    return this.dataCursor.getDisplayTo();
 	}
 
 	/* (non-Javadoc)
@@ -369,7 +346,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayFrom(int) 
 	 */
 	public void setDisplayFrom(int displayFrom) {
-		//TODO
+		this.dataCursor.setDisplayFrom(displayFrom);
 	}
 
 	/* (non-Javadoc)
@@ -378,16 +355,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayNumber(int) 
 	 */
 	public void setDisplayNumber(int displayNumber) {
-		maxSticksNum = displayNumber;
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @param displayTo 
-	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayTo(int) 
-	 */
-	public void setDisplayTo(int displayTo) {
-		//TODO
+		this.dataCursor.setDisplayNumber(displayNumber);
 	}
 
 	/* (non-Javadoc)
@@ -396,7 +364,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	 * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber() 
 	 */
 	public int getMinDisplayNumber() {
-		return minDisplayNum;
+		return this.dataCursor.getMinDisplayNumber();
 	}
 
 	/* (non-Javadoc)
@@ -405,7 +373,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	 * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber(int) 
 	 */
 	public void setMinDisplayNumber(int minDisplayNumber) {
-		this.minDisplayNum = minDisplayNumber;
+		this.dataCursor.setMinDisplayNumber(minDisplayNumber);
 	}
 	
 	/* (non-Javadoc)

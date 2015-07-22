@@ -104,6 +104,7 @@ public class SlipBandAreaChart extends SlipLineChart {
 	public SlipBandAreaChart(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
+		lineAlignType = IFlexableGrid.ALIGN_TYPE_CENTER;
 	}
 
 	/*

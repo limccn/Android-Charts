@@ -130,7 +130,7 @@ public class MASlipStickChart extends SlipStickChart {
 			LineEntity<DateValueEntity> line = this.linesData.get(i);
 			if (line != null && line.getLineData().size() > 0) {
 				// 判断显示为方柱或显示为线条
-				for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+				for (int j = dataCursor.getDisplayFrom(); j < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); j++) {
 					DateValueEntity lineData = line.getLineData().get(j);
 					if (lineData.getValue() < minValue) {
 						minValue = lineData.getValue();
@@ -190,7 +190,7 @@ public class MASlipStickChart extends SlipStickChart {
 			return;
 		}
 		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - stickSpacing;
 		// start point‘s X
 		float startX;
 

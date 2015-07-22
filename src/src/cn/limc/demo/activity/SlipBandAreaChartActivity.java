@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.R.layout;
-import cn.limc.androidcharts.R.menu;
 import cn.limc.androidcharts.axis.Axis;
 import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
@@ -34,7 +32,6 @@ import cn.limc.androidcharts.event.IZoomable;
 import cn.limc.androidcharts.view.SlipBandAreaChart;
 import cn.limc.demo.common.BaseActivity;
 import android.os.Bundle;
-import android.app.Activity;
 import android.graphics.Color;
 import android.view.Menu;
 
@@ -62,18 +59,18 @@ public class SlipBandAreaChartActivity extends BaseActivity {
         List<LineEntity<DateValueEntity>> lines = new ArrayList<LineEntity<DateValueEntity>>();
 
         // 计算5日均线
-        LineEntity<DateValueEntity> MA5 = new LineEntity<DateValueEntity>();
-        MA5.setTitle("HIGH");
-        MA5.setLineColor(Color.WHITE);
-        MA5.setLineData(dv1);
-        lines.add(MA5);
+        LineEntity<DateValueEntity> high = new LineEntity<DateValueEntity>();
+        high.setTitle("HIGH");
+        high.setLineColor(Color.WHITE);
+        high.setLineData(dv1);
+        lines.add(high);
 
         // 计算10日均线
-        LineEntity<DateValueEntity> MA10 = new LineEntity<DateValueEntity>();
-        MA10.setTitle("LOW");
-        MA10.setLineColor(Color.RED);
-        MA10.setLineData(dv2);
-        lines.add(MA10);
+        LineEntity<DateValueEntity> low = new LineEntity<DateValueEntity>();
+        low.setTitle("LOW");
+        low.setLineColor(Color.RED);
+        low.setLineData(dv2);
+        lines.add(low);
 
         slipbandchart.setAxisXColor(Color.LTGRAY);
         slipbandchart.setAxisYColor(Color.LTGRAY);

@@ -58,19 +58,17 @@ public class SlipAreaChartActivity extends BaseActivity {
         this.slipareachart = (SlipAreaChart) findViewById(R.id.slipareachart);
         List<LineEntity<DateValueEntity>> lines = new ArrayList<LineEntity<DateValueEntity>>();
 
-        // 计算5日均线
-        LineEntity<DateValueEntity> MA5 = new LineEntity<DateValueEntity>();
-        MA5.setTitle("HIGH");
-        MA5.setLineColor(Color.WHITE);
-        MA5.setLineData(dv1);
-        lines.add(MA5);
+        LineEntity<DateValueEntity> high = new LineEntity<DateValueEntity>();
+        high.setTitle("HIGH");
+        high.setLineColor(Color.WHITE);
+        high.setLineData(dv1);
+        lines.add(high);
 
-        // 计算10日均线
-        LineEntity<DateValueEntity> MA10 = new LineEntity<DateValueEntity>();
-        MA10.setTitle("LOW");
-        MA10.setLineColor(Color.RED);
-        MA10.setLineData(dv2);
-        lines.add(MA10);
+        LineEntity<DateValueEntity> low = new LineEntity<DateValueEntity>();
+        low.setTitle("LOW");
+        low.setLineColor(Color.RED);
+        low.setLineData(dv2);
+        lines.add(low);
 
         slipareachart.setAxisXColor(Color.LTGRAY);
         slipareachart.setAxisYColor(Color.LTGRAY);

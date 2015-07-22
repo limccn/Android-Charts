@@ -23,7 +23,6 @@ package cn.limc.androidcharts.view;
 
 import java.util.List;
 
-import cn.limc.androidcharts.axis.Axis;
 import cn.limc.androidcharts.axis.IAxis;
 import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
@@ -130,7 +129,7 @@ public class MAStickChart extends StickChart {
 			}
 
 			// 判断显示为方柱或显示为线条
-			for (int j = 0; j < this.maxSticksNum; j++) {
+			for (int j = 0; j < dataCursor.getDisplayNumber(); j++) {
 				DateValueEntity entity;
 				if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
 					entity = line.getLineData().get(j);
@@ -189,7 +188,7 @@ public class MAStickChart extends StickChart {
 			return;
 		}
 		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / maxSticksNum - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - stickSpacing;
 		// start point‘s X
 		float startX;
 

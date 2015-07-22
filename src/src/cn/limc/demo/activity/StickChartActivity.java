@@ -71,10 +71,11 @@ public class StickChartActivity extends BaseActivity {
 
         // 最大显示足数
         // stickchart.setMaxSticksNum(52);
-        // 最大纬线数
-        // stickchart.setLatitudeNum(2);
-        // 最大经线数
-        // stickchart.setLongitudeNum(3);
+         stickchart.setDisplayNumber(52);
+         //最大纬线数
+         stickchart.setLatitudeNum(2);
+         //最大经线数
+         stickchart.setLongitudeNum(3);
         // 最大价格
         stickchart.setMaxValue(10000);
         // 最小价格

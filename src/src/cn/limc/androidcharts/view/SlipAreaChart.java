@@ -67,6 +67,7 @@ public class SlipAreaChart extends SlipLineChart {
 	public SlipAreaChart(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		// TODO Auto-generated constructor stub
+		
 	}
 
 	/**
@@ -104,6 +105,7 @@ public class SlipAreaChart extends SlipLineChart {
 	public SlipAreaChart(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
+		lineAlignType = IFlexableGrid.ALIGN_TYPE_CENTER;
 	}
 
 	/*

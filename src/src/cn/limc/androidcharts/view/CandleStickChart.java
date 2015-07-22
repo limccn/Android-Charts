@@ -244,7 +244,7 @@ public class CandleStickChart extends StickChart {
 			maxValue = first.getHigh();
 			minValue = first.getLow();
 		}
-		for (int i = 0; i < this.maxSticksNum; i++) {
+		for (int i = 0; i < dataCursor.getDisplayNumber(); i++) {
 			OHLCEntity stick;
 			if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
 				stick = (OHLCEntity) this.stickData.get(i);
@@ -326,7 +326,7 @@ public class CandleStickChart extends StickChart {
 		Paint mPaintCross = new Paint();
 		mPaintCross.setColor(crossStarColor);
 
-		float stickWidth = dataQuadrant.getPaddingWidth() / maxSticksNum
+		float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber()
 				- stickSpacing;
 
 		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
@@ -431,7 +431,7 @@ public class CandleStickChart extends StickChart {
 		
 		int index = calcSelectedIndex(x,y);
 		
-		float stickWidth = dataQuadrant.getPaddingWidth() / maxSticksNum;
+		float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber();
 		OHLCEntity stick = (OHLCEntity)stickData.get(index);
 		calcY = (float) ((1f - (stick.getClose() - minValue)
 				/ (maxValue - minValue))
@@ -439,7 +439,7 @@ public class CandleStickChart extends StickChart {
 		if (axisY.getPosition() == Axis.AXIS_Y_POSITION_LEFT) {
 			calcX = dataQuadrant.getPaddingStartX() + stickWidth * index + stickWidth / 2;
 		}else{
-			if(stickData.size() - index <= maxSticksNum){
+			if(stickData.size() - index <= dataCursor.getDisplayNumber()){
 				calcX = dataQuadrant.getPaddingEndX() - stickWidth * (stickData.size() - index) + stickWidth /2 ;
 			}else{
 				calcX = x;

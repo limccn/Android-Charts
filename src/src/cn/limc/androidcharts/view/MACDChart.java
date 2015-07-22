@@ -132,11 +132,11 @@ public class MACDChart extends SlipStickChart {
 		double maxValue = Double.MIN_VALUE;
 		double minValue = Double.MAX_VALUE;
 
-		IMeasurable first = stickData.get(displayFrom);
+		IMeasurable first = stickData.get(dataCursor.getDisplayFrom());
 		maxValue = Math.max(first.getHigh(), maxValue);
 		minValue = Math.min(first.getLow(), minValue);
 		// 判断显示为方柱或显示为线条
-		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+		for (int i = dataCursor.getDisplayFrom(); i < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); i++) {
 			IMeasurable macd = stickData.get(i);
 			maxValue = Math.max(macd.getHigh(), maxValue);
 			minValue = Math.min(macd.getLow(), minValue);
@@ -171,12 +171,12 @@ public class MACDChart extends SlipStickChart {
 		Paint mPaintStick = new Paint();
 		mPaintStick.setAntiAlias(true);
 
-		float stickWidth = dataQuadrant.getPaddingWidth() / displayNumber
+		float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber()
 				- stickSpacing;
 		float stickX = dataQuadrant.getPaddingStartX();
 
 		// 判断显示为方柱或显示为线条
-		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+		for (int i = dataCursor.getDisplayFrom(); i < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); i++) {
 			MACDEntity stick = (MACDEntity) stickData.get(i);
 
 			float highY;
@@ -233,12 +233,12 @@ public class MACDChart extends SlipStickChart {
 		mPaintStick.setColor(diffLineColor);
 
 		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - stickSpacing;
 		// start point‘s X
 		float startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 		// start point
 		PointF ptFirst = null;
-		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+		for (int i = dataCursor.getDisplayFrom(); i < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); i++) {
 			MACDEntity entity = (MACDEntity) stickData.get(i);
 			// calculate Y
 			float valueY = (float) ((1f - (entity.getDiff() - minValue)
@@ -246,7 +246,7 @@ public class MACDChart extends SlipStickChart {
 					+ dataQuadrant.getPaddingStartY();
 
 			// if is not last point connect to previous point
-			if (i > displayFrom) {
+			if (i > dataCursor.getDisplayFrom()) {
 				canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
 						mPaintStick);
 			}
@@ -262,12 +262,12 @@ public class MACDChart extends SlipStickChart {
 		mPaintStick.setAntiAlias(true);
 		mPaintStick.setColor(deaLineColor);
 		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - stickSpacing;
 		// set start point’s X
 		float startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 		// start point
 		PointF ptFirst = null;
-		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+		for (int i = dataCursor.getDisplayFrom(); i < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); i++) {
 			MACDEntity entity = (MACDEntity) stickData.get(i);
 			// calculate Y
 			float valueY = (float) ((1f - (entity.getDea() - minValue)
@@ -275,7 +275,7 @@ public class MACDChart extends SlipStickChart {
 					+ dataQuadrant.getPaddingStartY();
 
 			// if is not last point connect to previous point
-			if (i > displayFrom) {
+			if (i > dataCursor.getDisplayFrom()) {
 				canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
 						mPaintStick);
 			}
@@ -291,12 +291,12 @@ public class MACDChart extends SlipStickChart {
 		mPaintStick.setColor(macdLineColor);
 
 		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - stickSpacing;
 		// set start point’s X
 		float startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 		// start point
 		PointF ptFirst = null;
-		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+		for (int i = dataCursor.getDisplayFrom(); i < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); i++) {
 			MACDEntity entity = (MACDEntity) stickData.get(i);
 			// calculate Y
 			float valueY = (float) ((1f - (entity.getMacd() - minValue)
@@ -304,7 +304,7 @@ public class MACDChart extends SlipStickChart {
 					+ dataQuadrant.getPaddingStartY();
 
 			// if is not last point connect to previous point
-			if (i > displayFrom) {
+			if (i > dataCursor.getDisplayFrom()) {
 				canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
 						mPaintStick);
 			}

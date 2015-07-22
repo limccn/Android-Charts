@@ -147,7 +147,7 @@ public class MinusStickChart extends StickChart {
 			return;
 		}
 
-		float stickWidth = dataQuadrant.getPaddingWidth() / maxSticksNum
+		float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber()
 				- stickSpacing;
 
 		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {

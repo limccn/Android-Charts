@@ -106,15 +106,15 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 	protected void initAxisX() {
 		List<String> titleX = new ArrayList<String>();
 		if (null != stickData && stickData.size() > 0) {
-			float average = getDisplayNumber() / simpleGrid.getLongitudeNum();
+			float average = dataCursor.getDisplayNumber() / simpleGrid.getLongitudeNum();
 			for (int i = 0; i < simpleGrid.getLongitudeNum(); i++) {
 				int index = (int) Math.floor(i * average);
-				if (index > getDisplayNumber() - 1) {
-					index = getDisplayNumber() - 1;
+				if (index > dataCursor.getDisplayNumber() - 1) {
+					index = dataCursor.getDisplayNumber() - 1;
 				}
 				titleX.add(formatAxisXDegree(stickData.get(index).getDate()));
 			}
-			titleX.add(formatAxisXDegree(stickData.get(getDisplayNumber() - 1).getDate()));
+			titleX.add(formatAxisXDegree(stickData.get(dataCursor.getDisplayNumber() - 1).getDate()));
 		}
 		simpleGrid.setLongitudeTitles(titleX);
 	}
@@ -161,7 +161,7 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 	
 	public float longitudePostOffset(){
 		if (gridAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
-			float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+			float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber();
 			return (this.dataQuadrant.getPaddingWidth() - stickWidth)/ (simpleGrid.getLongitudeTitles().size() - 1);
 	    }else{
 			return this.dataQuadrant.getPaddingWidth()/ (simpleGrid.getLongitudeTitles().size() - 1);
@@ -170,7 +170,7 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 	
 	public float longitudeOffset(){
 		if (gridAlignType ==IFlexableGrid.ALIGN_TYPE_CENTER) {
-			float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+			float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber();
 			return dataQuadrant.getPaddingStartX() + stickWidth / 2;
 		}else{
 			return dataQuadrant.getPaddingStartX();
@@ -204,12 +204,12 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 		
 		int index = calcSelectedIndex(x,y);
 		
-		float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+		float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber();
 		IMeasurable stick = stickData.get(index);
 		calcY = (float) ((1f - (stick.getHigh() - minValue)
 				/ (maxValue - minValue))
 				* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
-		calcX = dataQuadrant.getPaddingStartX() + stickWidth * (index - getDisplayFrom()) + stickWidth / 2;
+		calcX = dataQuadrant.getPaddingStartX() + stickWidth * (index - dataCursor.getDisplayFrom()) + stickWidth / 2;
 		
 		return new PointF(calcX,calcY);
 	}

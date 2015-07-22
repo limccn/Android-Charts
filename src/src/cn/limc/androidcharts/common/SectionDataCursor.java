@@ -22,6 +22,8 @@
 
 package cn.limc.androidcharts.common;
 
+import cn.limc.androidcharts.view.DataGridChart;
+
 /** 
  * <p>en</p>
  * <p>jp</p>
@@ -33,8 +35,10 @@ package cn.limc.androidcharts.common;
  */
 public class SectionDataCursor implements IDataCursor {
 	
+    protected DataGridChart inChart;
+    
 	public static final int DISPLAY_FROM = 0;
-	public static final int DISPLAY_NUMBER = 20;	
+	public static final int DISPLAY_NUMBER = 50;	
 
 	private int displayFrom = DISPLAY_FROM;
 	private int displayNumber = DISPLAY_NUMBER;
@@ -46,83 +50,88 @@ public class SectionDataCursor implements IDataCursor {
 	 * <p>SectionDataCursorのコンストラクター</p>
 	 * 
 	 */
-	public SectionDataCursor() {
-		// TODO Auto-generated constructor stub
+	public SectionDataCursor(DataGridChart inChart) {
+	    this.inChart = inChart;
 	}
 
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.view.IDataCursor#displayFrom() 
-	 */
-	public int getDisplayFrom() {
-		return displayFrom;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @return 
+     * @see cn.limc.androidcharts.view.StickChart#getDisplayFrom()
+     */
+    @Override
+    public int getDisplayFrom() {
+        return displayFrom;
+    }
 
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.view.IDataCursor#displayNumber() 
-	 */
-	public int getDisplayNumber() {
-		return displayNumber;
-	}
 
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.view.IDataCursor#displayTo() 
-	 */
-	public int getDisplayTo() {
-		return displayFrom + displayNumber;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @param displayFrom 
+     * @see cn.limc.androidcharts.view.StickChart#setDisplayFrom(int)
+     */
+    @Override
+    public void setDisplayFrom(int displayFrom) {
+        this.displayFrom = displayFrom;
+    }
 
-	/* (non-Javadoc)
-	 * 
-	 * @param displayFrom 
-	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayFrom(int) 
-	 */
-	public void setDisplayFrom(int displayFrom) {
-		// TODO Auto-generated method stub
-		this.displayFrom = displayFrom;
-	}
 
-	/* (non-Javadoc)
-	 * 
-	 * @param displayNumber 
-	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayNumber(int) 
-	 */
-	public void setDisplayNumber(int displayNumber) {
-		// TODO Auto-generated method stub
-		this.displayNumber = displayNumber;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @return 
+     * @see cn.limc.androidcharts.view.StickChart#getDisplayTo()
+     */
+    @Override
+    public int getDisplayTo() {
+        return displayFrom + displayNumber;
+    }
 
-//	/* (non-Javadoc)
-//	 * 
-//	 * @param displayTo 
-//	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayTo(int) 
-//	 */
-//	public void setDisplayTo(int displayTo) {
-//		// TODO Auto-generated method stub
-//		
-//	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @return 
+     * @see cn.limc.androidcharts.view.StickChart#getDisplayNumber()
+     */
+    @Override
+    public int getDisplayNumber() {
+        return displayNumber;
+    }
 
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber() 
-	 */
-	public int getMinDisplayNumber() {
-		return minDisplayNumber;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @param displayNumber 
+     * @see cn.limc.androidcharts.view.StickChart#setDisplayNumber(int)
+     */
+    @Override
+    public void setDisplayNumber(int displayNumber) {
+        this.displayNumber = displayNumber;
+    }
 
-	/* (non-Javadoc)
-	 * 
-	 * @param minDisplayNumber 
-	 * @see cn.limc.androidcharts.common.IDataCursor#setMinDisplayNumber(int) 
-	 */
-	public void setMinDisplayNumber(int minDisplayNumber) {
-		this.minDisplayNumber = minDisplayNumber;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @return 
+     * @see cn.limc.androidcharts.view.StickChart#getMinDisplayNumber()
+     */
+    @Override
+    public int getMinDisplayNumber() {
+        return minDisplayNumber;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @param minDisplayNumber 
+     * @see cn.limc.androidcharts.view.StickChart#setMinDisplayNumber(int)
+     */
+    @Override
+    public void setMinDisplayNumber(int minDisplayNumber) {
+        this.minDisplayNumber = minDisplayNumber;
+    }
+
 
 }

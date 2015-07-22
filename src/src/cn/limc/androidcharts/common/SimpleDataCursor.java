@@ -22,6 +22,9 @@
 
 package cn.limc.androidcharts.common;
 
+import cn.limc.androidcharts.axis.IAxis;
+import cn.limc.androidcharts.view.DataGridChart;
+
 /** 
  * <p>en</p>
  * <p>jp</p>
@@ -32,6 +35,8 @@ package cn.limc.androidcharts.common;
  *  
  */
 public class SimpleDataCursor implements IDataCursor {
+    
+    protected DataGridChart inChart;
 
 	private int maxDisplayNum;
 	private int minDisplayNumber = MINI_DISPLAY_NUM;
@@ -42,8 +47,8 @@ public class SimpleDataCursor implements IDataCursor {
 	 * <p>SimpleDataCursorのコンストラクター</p>
 	 * 
 	 */
-	public SimpleDataCursor() {
-		// TODO Auto-generated constructor stub
+	public SimpleDataCursor(DataGridChart inChart) {
+	    this.inChart = inChart;
 	}
 
 	/* (non-Javadoc)
@@ -52,7 +57,11 @@ public class SimpleDataCursor implements IDataCursor {
 	 * @see cn.limc.androidcharts.view.IDataCursor#displayFrom() 
 	 */
 	public int getDisplayFrom() {
-		return 0;
+	     if (inChart.getAxisY().getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+	            return 0;
+	     }else{
+	            return inChart.getStickData().size() - maxDisplayNum;
+	     }
 	}
 
 	/* (non-Javadoc)
@@ -70,7 +79,11 @@ public class SimpleDataCursor implements IDataCursor {
 	 * @see cn.limc.androidcharts.view.IDataCursor#displayTo() 
 	 */
 	public int getDisplayTo() {
-		return maxDisplayNum;
+	    if (inChart.getAxisY().getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+            return maxDisplayNum;
+        }else{
+            return inChart.getStickData().size() - 1;
+        }
 	}
 
 	/* (non-Javadoc)
@@ -78,6 +91,7 @@ public class SimpleDataCursor implements IDataCursor {
 	 * @param displayFrom 
 	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayFrom(int) 
 	 */
+	@Deprecated
 	public void setDisplayFrom(int displayFrom) {
 		// TODO Auto-generated method stub
 		
@@ -90,17 +104,7 @@ public class SimpleDataCursor implements IDataCursor {
 	 */
 	public void setDisplayNumber(int displayNumber) {
 		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @param displayTo 
-	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayTo(int) 
-	 */
-	public void setDisplayTo(int displayTo) {
-		// TODO Auto-generated method stub
-		
+		this.maxDisplayNum = displayNumber;
 	}
 
 	/* (non-Javadoc)
