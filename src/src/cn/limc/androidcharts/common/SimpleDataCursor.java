@@ -23,6 +23,7 @@
 package cn.limc.androidcharts.common;
 
 import cn.limc.androidcharts.axis.IAxis;
+import cn.limc.androidcharts.event.IZoomable;
 import cn.limc.androidcharts.view.DataGridChart;
 
 /** 
@@ -34,7 +35,7 @@ import cn.limc.androidcharts.view.DataGridChart;
  * @version v1.0 2014/06/18 16:00:16 
  *  
  */
-public class SimpleDataCursor implements IDataCursor {
+public class SimpleDataCursor implements IDataCursor,IZoomable {
     
     protected DataGridChart inChart;
 
@@ -124,5 +125,27 @@ public class SimpleDataCursor implements IDataCursor {
 	public void setMinDisplayNumber(int minDisplayNumber) {
 		this.minDisplayNumber = minDisplayNumber;
 	}
+
+    /* (non-Javadoc)
+     * @see cn.limc.androidcharts.event.IZoomable#zoomIn()
+     */
+    @Override
+    public void zoomIn() {
+        // TODO Auto-generated method stub
+        if (getDisplayNumber() > getMinDisplayNumber()) {
+            setDisplayNumber(getDisplayNumber() - ZOOM_STEP);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see cn.limc.androidcharts.event.IZoomable#zoomOut()
+     */
+    @Override
+    public void zoomOut() {
+        // TODO Auto-generated method stub
+        if (getDisplayNumber() < inChart.getStickData().size() - 1 - ZOOM_STEP) {
+            setDisplayNumber(getDisplayNumber() + ZOOM_STEP);
+        }
+    }
 
 }

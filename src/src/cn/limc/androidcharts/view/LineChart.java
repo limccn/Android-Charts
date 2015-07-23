@@ -28,10 +28,11 @@ import cn.limc.androidcharts.axis.IAxis;
 import cn.limc.androidcharts.common.IFlexableGrid;
 import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
-import cn.limc.androidcharts.event.IGestureDetector;
+import cn.limc.androidcharts.event.GestureDetector;
 import cn.limc.androidcharts.event.IZoomable;
-import cn.limc.androidcharts.event.OnZoomGestureListener;
+import cn.limc.androidcharts.event.ZoomGestureDetector.OnZoomGestureListener;
 import cn.limc.androidcharts.event.ZoomGestureDetector;
+import cn.limc.androidcharts.view.StickChart.OnZoomListener;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -116,8 +117,8 @@ public class LineChart extends GridChart implements IZoomable {
 	public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
 	private boolean autoCalcValueRange = DEFAULT_AUTO_CALC_VALUE_RANGE;
 	
-	protected OnZoomGestureListener onZoomGestureListener = new OnZoomGestureListener();
-	protected IGestureDetector zoomGestureDetector = new ZoomGestureDetector<IZoomable>(this);
+    protected OnZoomGestureListener onZoomListener = new OnZoomListener(){};
+    protected GestureDetector zoomGestureDetector = new ZoomGestureDetector(this, onZoomListener);
 
 	/*
 	 * (non-Javadoc)
@@ -771,21 +772,32 @@ public class LineChart extends GridChart implements IZoomable {
 		this.lineAlignType = lineAlignType;
 	}
 
-	/* (non-Javadoc)
-	 * 
-	 * @param listener 
-	 * @see cn.limc.androidcharts.event.IZoomable#setOnZoomGestureListener(cn.limc.androidcharts.event.OnZoomGestureListener) 
-	 */
-	public void setOnZoomGestureListener(OnZoomGestureListener listener) {
-		this.onZoomGestureListener = listener;
-	}
+	
+	public abstract class OnZoomListener implements OnZoomGestureListener{
 
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.event.IZoomable#getOnZoomGestureListener() 
-	 */
-	public OnZoomGestureListener getOnZoomGestureListener() {
-		return onZoomGestureListener;
-	}
+        /* (non-Javadoc)
+         * @see cn.limc.androidcharts.event.ZoomGestureDetector.OnZoomGestureListener#onZoomIn(android.view.MotionEvent)
+         */
+        @Override
+        public void onZoomIn(MotionEvent event) {
+//            IZoomable dataCursor = (IZoomable) LineChart.this.getDataCursor();
+//            if (dataCursor != null) {
+//                dataCursor.zoomOut();
+//            }
+            LineChart.this.postInvalidate();
+        }
+
+        /* (non-Javadoc)
+         * @see cn.limc.androidcharts.event.ZoomGestureDetector.OnZoomGestureListener#onZoomOut(android.view.MotionEvent)
+         */
+        @Override
+        public void onZoomOut(MotionEvent event) {
+           
+//            IZoomable dataCursor = (IZoomable) LineChart.this.getDataCursor();
+//            if (dataCursor != null) {
+//                dataCursor.zoomOut();
+//            }
+            LineChart.this.postInvalidate();
+        }   
+    }
 }

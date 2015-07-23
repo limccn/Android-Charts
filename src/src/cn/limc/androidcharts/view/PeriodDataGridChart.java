@@ -22,9 +22,6 @@
 
 package cn.limc.androidcharts.view;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cn.limc.androidcharts.common.ICrossLines;
 import cn.limc.androidcharts.common.IFlexableGrid;
 import cn.limc.androidcharts.entity.IMeasurable;
@@ -104,19 +101,7 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 	 * </p>
 	 */
 	protected void initAxisX() {
-		List<String> titleX = new ArrayList<String>();
-		if (null != stickData && stickData.size() > 0) {
-			float average = dataCursor.getDisplayNumber() / simpleGrid.getLongitudeNum();
-			for (int i = 0; i < simpleGrid.getLongitudeNum(); i++) {
-				int index = (int) Math.floor(i * average);
-				if (index > dataCursor.getDisplayNumber() - 1) {
-					index = dataCursor.getDisplayNumber() - 1;
-				}
-				titleX.add(formatAxisXDegree(stickData.get(index).getDate()));
-			}
-			titleX.add(formatAxisXDegree(stickData.get(dataCursor.getDisplayNumber() - 1).getDate()));
-		}
-		simpleGrid.setLongitudeTitles(titleX);
+        simpleGrid.setLongitudeTitles(axisXDegree.getDegrees());
 	}
 
 	/**
@@ -131,30 +116,10 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 	 * </p>
 	 */
 	protected void initAxisY() {
-		this.calcValueRange();
-		List<String> titleY = new ArrayList<String>();
-		double average = (maxValue - minValue) / simpleGrid.getLatitudeNum();
-		;
-		// calculate degrees on Y axis
-		for (int i = 0; i < simpleGrid.getLatitudeNum(); i++) {
-			String value = formatAxisYDegree(minValue + i * average);
-//			if (value.length() < super.getLatitudeMaxTitleLength()) {
-//				while (value.length() < super.getLatitudeMaxTitleLength()) {
-//					value = " " + value;
-//				}
-//			}
-			titleY.add(value);
-		}
-		// calculate last degrees by use max value
-		String value = formatAxisYDegree(maxValue);
-//		if (value.length() < super.getLatitudeMaxTitleLength()) {
-//			while (value.length() < super.getLatitudeMaxTitleLength()) {
-//				value = " " + value;
-//			}
-//		}
-		titleY.add(value);
-
-		simpleGrid.setLatitudeTitles(titleY);
+		if (dataRange.isAutoCalcValueRange()) {
+		    dataRange.calcValueRange();
+        }
+		simpleGrid.setLatitudeTitles(axisYDegree.getDegrees());
 	}
 	
 
@@ -206,8 +171,8 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 		
 		float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber();
 		IMeasurable stick = stickData.get(index);
-		calcY = (float) ((1f - (stick.getHigh() - minValue)
-				/ (maxValue - minValue))
+		calcY = (float) ((1f - (stick.getHigh() - dataRange.getMinValue())
+				/ dataRange.getValueRange())
 				* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
 		calcX = dataQuadrant.getPaddingStartX() + stickWidth * (index - dataCursor.getDisplayFrom()) + stickWidth / 2;
 		

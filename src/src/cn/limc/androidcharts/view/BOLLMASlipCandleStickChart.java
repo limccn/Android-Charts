@@ -110,33 +110,33 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	protected void calcDataValueRange() {
-		super.calcDataValueRange();
-
-		double maxValue = this.maxValue;
-		double minValue = this.minValue;
-		// 逐条输出MA线
-		for (int i = 0; i < this.bandData.size(); i++) {
-			LineEntity<DateValueEntity> line = this.bandData.get(i);
-			if (line != null && line.getLineData().size() > 0) {
-				// 判断显示为方柱或显示为线条
-				for (int j = dataCursor.getDisplayFrom(); j < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); j++) {
-					DateValueEntity lineData = line.getLineData().get(j);
-					if (lineData.getValue() < minValue) {
-						minValue = lineData.getValue();
-					}
-
-					if (lineData.getValue() > maxValue) {
-						maxValue = lineData.getValue();
-					}
-
-				}
-			}
-		}
-		this.maxValue = maxValue;
-		this.minValue = minValue;
-	}
+//	@Override
+//	protected void calcDataValueRange() {
+//		super.calcDataValueRange();
+//
+//		double maxValue = this.maxValue;
+//		double minValue = this.minValue;
+//		// 逐条输出MA线
+//		for (int i = 0; i < this.bandData.size(); i++) {
+//			LineEntity<DateValueEntity> line = this.bandData.get(i);
+//			if (line != null && line.getLineData().size() > 0) {
+//				// 判断显示为方柱或显示为线条
+//				for (int j = dataCursor.getDisplayFrom(); j < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); j++) {
+//					DateValueEntity lineData = line.getLineData().get(j);
+//					if (lineData.getValue() < minValue) {
+//						minValue = lineData.getValue();
+//					}
+//
+//					if (lineData.getValue() > maxValue) {
+//						maxValue = lineData.getValue();
+//					}
+//
+//				}
+//			}
+//		}
+//		this.maxValue = maxValue;
+//		this.minValue = minValue;
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -214,12 +214,12 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 			float value2 = line2Data.get(j).getValue();
 
 			// calculate Y
-			float valueY1 = (float) ((1f - (value1 - minValue)
-					/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
-					+ dataQuadrant.getPaddingStartY();
-			float valueY2 = (float) ((1f - (value2 - minValue)
-					/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
-					+ dataQuadrant.getPaddingStartY();
+			float valueY1 = (float) ((1f - (value1 - dataRange.getMinValue())
+                    / (dataRange.getValueRange())) * dataQuadrant.getPaddingHeight())
+                    + dataQuadrant.getPaddingStartY();
+			float valueY2 = (float) ((1f - (value2 - dataRange.getMinValue())
+                    / (dataRange.getValueRange())) * dataQuadrant.getPaddingHeight())
+                    + dataQuadrant.getPaddingStartY();
 
 			// 绘制线条路径
 			if (j == dataCursor.getDisplayFrom()) {
@@ -294,8 +294,8 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 			for (int j = dataCursor.getDisplayFrom(); j < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); j++) {
 				float value = lineData.get(j).getValue();
 				// calculate Y
-				float valueY = (float) ((1f - (value - minValue)
-						/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+				float valueY = (float) ((1f - (value - dataRange.getMinValue())
+						/ (dataRange.getValueRange())) * dataQuadrant.getPaddingHeight())
 						+ dataQuadrant.getPaddingStartY();
 
 				// if is not last point connect to previous point

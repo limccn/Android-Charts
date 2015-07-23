@@ -95,9 +95,9 @@ public class SlipStickChartActivity extends BaseActivity {
         slipstickchart.setBackgroundColor(Color.BLACK);
 
         slipstickchart.setDataMultiple(100);
-        slipstickchart.setAxisYDecimalFormat("#,##0.00");
-        slipstickchart.setAxisXDateTargetFormat("yyyy/MM/dd");
-        slipstickchart.setAxisXDateSourceFormat("yyyyMMdd");
+//        slipstickchart.setAxisYDecimalFormat("#,##0.00");
+//        slipstickchart.setAxisXDateTargetFormat("yyyy/MM/dd");
+//        slipstickchart.setAxisXDateSourceFormat("yyyyMMdd");
 
         IChartData<IStickEntity> vol = new ListChartData<IStickEntity>(this.vol);
         // 为chart1增加均线

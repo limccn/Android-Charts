@@ -40,7 +40,6 @@ import cn.limc.androidcharts.entity.TitleValueEntity;
 import cn.limc.androidcharts.event.ITouchable;
 import cn.limc.androidcharts.event.IZoomable;
 import cn.limc.androidcharts.event.IDisplayCursorListener;
-import cn.limc.androidcharts.event.OnTouchGestureListener;
 import cn.limc.androidcharts.view.BOLLMASlipCandleStickChart;
 import cn.limc.androidcharts.view.CandleStickChart;
 import cn.limc.androidcharts.view.ColoredSlipStickChart;
@@ -1047,46 +1046,6 @@ public class AndroidChartsActivity extends Activity {
 				bollmaslipcandlestickchart.postInvalidate();
 			}
 		});
-
-		maslipcandlestickchart.setOnTouchGestureListener(new OnTouchGestureListener(){
-
-			/* (non-Javadoc)
-			 * 
-			 * @param touchable
-			 * @param event 
-			 * @see cn.limc.androidcharts.event.OnTouchGestureListener#onTouchDown(cn.limc.androidcharts.event.ITouchable, android.view.MotionEvent) 
-			 */
-			@Override
-			public void onTouchDown(ITouchable touchable, MotionEvent event) {
-				super.onTouchDown(touchable, event);
-				bollmaslipcandlestickchart.touchDown(new PointF(event.getX(),event.getY()));
-			}
-
-			/* (non-Javadoc)
-			 * 
-			 * @param touchable
-			 * @param event 
-			 * @see cn.limc.androidcharts.event.OnTouchGestureListener#onTouchMoved(cn.limc.androidcharts.event.ITouchable, android.view.MotionEvent) 
-			 */
-			@Override
-			public void onTouchMoved(ITouchable touchable, MotionEvent event) {
-				super.onTouchMoved(touchable, event);
-				bollmaslipcandlestickchart.touchMoved(new PointF(event.getX(),event.getY()));
-			}
-
-			/* (non-Javadoc)
-			 * 
-			 * @param touchable
-			 * @param event 
-			 * @see cn.limc.androidcharts.event.OnTouchGestureListener#onTouchUp(cn.limc.androidcharts.event.ITouchable, android.view.MotionEvent) 
-			 */
-			@Override
-			public void onTouchUp(ITouchable touchable, MotionEvent event) {
-				super.onTouchUp(touchable, event);
-				bollmaslipcandlestickchart.touchUp(new PointF(event.getX(),event.getY()));
-			}
-			
-		});
 	}
 
 	private void initBOLLMASlipCandleStickChart() {
@@ -1186,46 +1145,6 @@ public class AndroidChartsActivity extends Activity {
 				maslipcandlestickchart.postInvalidate();
 			}
 		});
-
-		bollmaslipcandlestickchart.setOnTouchGestureListener(new OnTouchGestureListener(){
-
-			/* (non-Javadoc)
-			 * 
-			 * @param touchable
-			 * @param event 
-			 * @see cn.limc.androidcharts.event.OnTouchGestureListener#onTouchDown(cn.limc.androidcharts.event.ITouchable, android.view.MotionEvent) 
-			 */
-			@Override
-			public void onTouchDown(ITouchable touchable, MotionEvent event) {
-				super.onTouchDown(touchable, event);
-				maslipcandlestickchart.touchDown(new PointF(event.getX(),event.getY()));
-			}
-
-			/* (non-Javadoc)
-			 * 
-			 * @param touchable
-			 * @param event 
-			 * @see cn.limc.androidcharts.event.OnTouchGestureListener#onTouchMoved(cn.limc.androidcharts.event.ITouchable, android.view.MotionEvent) 
-			 */
-			@Override
-			public void onTouchMoved(ITouchable touchable, MotionEvent event) {
-				super.onTouchMoved(touchable, event);
-				maslipcandlestickchart.touchMoved(new PointF(event.getX(),event.getY()));
-			}
-
-			/* (non-Javadoc)
-			 * 
-			 * @param touchable
-			 * @param event 
-			 * @see cn.limc.androidcharts.event.OnTouchGestureListener#onTouchUp(cn.limc.androidcharts.event.ITouchable, android.view.MotionEvent) 
-			 */
-			@Override
-			public void onTouchUp(ITouchable touchable, MotionEvent event) {
-				super.onTouchUp(touchable, event);
-				maslipcandlestickchart.touchUp(new PointF(event.getX(),event.getY()));
-			}
-		});
-
 	}
 
 	private void initPieChart() {

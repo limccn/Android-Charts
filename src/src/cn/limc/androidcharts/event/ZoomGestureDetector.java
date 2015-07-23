@@ -21,6 +21,8 @@
 
 
 package cn.limc.androidcharts.event;
+import cn.limc.androidcharts.view.GridChart;
+import android.R.integer;
 import android.view.MotionEvent;
 
 
@@ -33,8 +35,9 @@ import android.view.MotionEvent;
  * @version v1.0 2014/06/20 17:33:01 
  *  
  */
-public class ZoomGestureDetector<T extends IZoomable> extends TouchGestureDetector<ITouchable>{
+public class ZoomGestureDetector extends GestureDetector{
 	
+    
 	public static final int TOUCH_MODE_NONE = 0;
 	public static final int TOUCH_MODE_SINGLE = 1;
 	public static final int TOUCH_MODE_MULTI = 2;
@@ -45,27 +48,12 @@ public class ZoomGestureDetector<T extends IZoomable> extends TouchGestureDetect
 
 	protected float olddistance;
 	protected float newdistance;
+
 	
-	protected OnZoomGestureListener onZoomGestureListener;
-	
-	public ZoomGestureDetector(IZoomable zoomable){
-		super(zoomable);
-		if (zoomable != null) {
-			onZoomGestureListener = zoomable.getOnZoomGestureListener();
-		}
+	public ZoomGestureDetector(GridChart inChart, OnZoomGestureListener listener){
+	    super(inChart,listener);
 	}
 	
-	protected float calcDistance(MotionEvent event) {
-		if(event.getPointerCount() <= 1) {
-			return 0f;
-		}else{
-			float x = event.getX(0) - event.getX(1);
-			float y = event.getY(0) - event.getY(1);
-			return (float) Math.sqrt(x * x + y * y);
-		}
-	}
-	
-	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
@@ -92,11 +80,11 @@ public class ZoomGestureDetector<T extends IZoomable> extends TouchGestureDetect
 				newdistance = calcDistance(event);
 				if (newdistance > MIN_DISTANCE
 						&& Math.abs(newdistance - olddistance) > MIN_DISTANCE) {
-					if (onZoomGestureListener != null) {
+					if (onGestureListener != null) {
 						if (newdistance > olddistance) {
-							onZoomGestureListener.onZoomIn((IZoomable)instance,event);
+							((OnZoomGestureListener)onGestureListener).onZoomIn(event);
 						} else {
-							onZoomGestureListener.onZoomOut((IZoomable)instance,event);
+						    ((OnZoomGestureListener)onGestureListener).onZoomOut(event);
 						}
 					}
 					olddistance = newdistance;
@@ -106,20 +94,25 @@ public class ZoomGestureDetector<T extends IZoomable> extends TouchGestureDetect
 			}
 			break;
 		}
-		return super.onTouchEvent(event);
+		return true;
 	}
 
 	/**
 	 * @return the onZoomGestureListener
 	 */
 	public OnZoomGestureListener getOnZoomGestureListener() {
-		return onZoomGestureListener;
+		return (OnZoomGestureListener)onGestureListener;
 	}
 
 	/**
 	 * @param onZoomGestureListener the onZoomGestureListener to set
 	 */
 	public void setOnZoomGestureListener(OnZoomGestureListener onZoomGestureListener) {
-		this.onZoomGestureListener = onZoomGestureListener;
+		this.onGestureListener = onZoomGestureListener;
+	}
+	
+	public interface OnZoomGestureListener extends GestureDetector.OnGestureListener{ 
+	    void onZoomIn(MotionEvent event);
+	    void onZoomOut(MotionEvent event);
 	}
 }

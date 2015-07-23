@@ -30,18 +30,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
-/** 
- * <p>en</p>
- * <p>jp</p>
- * <p>cn</p>
- *
- * @author limc 
- * @version v1.0 2014/06/19 16:39:05 
- *  
- */
-public abstract class StickMole extends RectMole {
+public class StickMole extends RectMole {
 
-	public static final int DEFAULT_STICK_SPACING = 1;
+	public static final int DEFAULT_STICK_SPACING = 2;
 	public static final int DEFAULT_STICK_STROKE_WIDTH = 0;
 	
 	/**
@@ -55,7 +46,7 @@ public abstract class StickMole extends RectMole {
 	 * 默认表示柱条的边框颜色
 	 * </p>
 	 */
-	public static final int DEFAULT_STICK_BORDER_COLOR = Color.YELLOW;
+	public static final int DEFAULT_STICK_BORDER_COLOR = Color.WHITE;
 
 	/**
 	 * <p>
@@ -68,7 +59,7 @@ public abstract class StickMole extends RectMole {
 	 * 默认表示柱条的填充颜色
 	 * </p>
 	 */
-	public static final int DEFAULT_STICK_FILL_COLOR = Color.WHITE;
+	public static final int DEFAULT_STICK_FILL_COLOR = Color.BLUE;
 
 	/**
 	 * <p>
@@ -110,10 +101,9 @@ public abstract class StickMole extends RectMole {
 	 */
 	public void setUp(IChart chart ,IMeasurable data, float from , float width) {
 		super.setUp(chart);
-		this.setPro();
 		setStickData(data);
-		left = from;
-		right = from + width - stickSpacing;
+		left = from + stickSpacing / 2;
+		right = from + width - stickSpacing /2;
 	}
 	
 	/* (non-Javadoc)
@@ -156,14 +146,68 @@ public abstract class StickMole extends RectMole {
 	public void setStickData(IMeasurable stickData) {
 		this.stickData = stickData;
 		DataGridChart chart = (DataGridChart)getInChart();
-		float highY = (float) ((1f - (stickData.getHigh() - chart.getMinValue()) / (chart.getMaxValue() - chart.getMinValue()))
+		float highY = (float) ((1f - (stickData.getHigh() - chart.getDataRange().getMinValue()) / (chart.getDataRange().getValueRange()))
 				* (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant().getPaddingStartY());
-		float lowY = (float) ((1f - (stickData.getLow() - chart.getMinValue()) / (chart.getMaxValue() - chart.getMinValue()))
+		float lowY = (float) ((1f - (stickData.getLow() - chart.getDataRange().getMinValue()) / (chart.getDataRange().getValueRange()))
 				* (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant().getPaddingStartY());
 		
 		top = highY;
 		bottom = lowY;
 	}
-	
-	public abstract void setPro();
+
+    /**
+     * @return the stickBorderColor
+     */
+    public int getStickBorderColor() {
+        return stickBorderColor;
+    }
+
+    /**
+     * @param stickBorderColor the stickBorderColor to set
+     */
+    public void setStickBorderColor(int stickBorderColor) {
+        this.stickBorderColor = stickBorderColor;
+    }
+
+    /**
+     * @return the stickFillColor
+     */
+    public int getStickFillColor() {
+        return stickFillColor;
+    }
+
+    /**
+     * @param stickFillColor the stickFillColor to set
+     */
+    public void setStickFillColor(int stickFillColor) {
+        this.stickFillColor = stickFillColor;
+    }
+
+    /**
+     * @return the stickStrokeWidth
+     */
+    public int getStickStrokeWidth() {
+        return stickStrokeWidth;
+    }
+
+    /**
+     * @param stickStrokeWidth the stickStrokeWidth to set
+     */
+    public void setStickStrokeWidth(int stickStrokeWidth) {
+        this.stickStrokeWidth = stickStrokeWidth;
+    }
+
+    /**
+     * @return the stickSpacing
+     */
+    public int getStickSpacing() {
+        return stickSpacing;
+    }
+
+    /**
+     * @param stickSpacing the stickSpacing to set
+     */
+    public void setStickSpacing(int stickSpacing) {
+        this.stickSpacing = stickSpacing;
+    }
 }

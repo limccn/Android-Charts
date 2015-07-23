@@ -22,15 +22,15 @@
 
 package cn.limc.androidcharts.view;
 
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import cn.limc.androidcharts.common.IDataCursor;
 import cn.limc.androidcharts.common.SimpleDataCursor;
+import cn.limc.androidcharts.degree.DateTimeDegree;
+import cn.limc.androidcharts.degree.DecimalDegree;
+import cn.limc.androidcharts.degree.IDegree;
+import cn.limc.androidcharts.degree.IHasValueRange;
+import cn.limc.androidcharts.degree.StickValueRangeCalc;
+import cn.limc.androidcharts.degree.ValueRangeCalc;
 import cn.limc.androidcharts.entity.IChartData;
-import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.IStickEntity;
 
 import android.content.Context;
@@ -48,164 +48,23 @@ import android.util.AttributeSet;
  */
 public abstract class DataGridChart extends GridChart {
 	
-	public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
+//	public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
+//	
+//	public static final int DEFAULT_DATA_MULTIPLE = 1;
+//	public static final String DEFAULT_AXIS_Y_DECIMAL_FORMAT = "#,##0";
+//	public static final String DEFAULT_AXIS_X_DATE_TARGET_FORMAT = "yyyy/MM/dd";
+//	public static final String DEFAULT_AXIS_X_DATE_SOURCE_FORMAT = "yyyyMMdd";
+//	
+//	protected int dataMultiple =  DEFAULT_DATA_MULTIPLE;
 	
-	public static final int DEFAULT_DATA_MULTIPLE = 1;
-	public static final String DEFAULT_AXIS_Y_DECIMAL_FORMAT = "#,##0";
-	public static final String DEFAULT_AXIS_X_DATE_TARGET_FORMAT = "yyyy/MM/dd";
-	public static final String DEFAULT_AXIS_X_DATE_SOURCE_FORMAT = "yyyyMMdd";
-	
-	protected int dataMultiple =  DEFAULT_DATA_MULTIPLE;
-	
-	protected String axisYDecimalFormat = DEFAULT_AXIS_Y_DECIMAL_FORMAT;
-	protected String axisXDateTargetFormat = DEFAULT_AXIS_X_DATE_TARGET_FORMAT;
-	protected String axisXDateSourceFormat = DEFAULT_AXIS_X_DATE_SOURCE_FORMAT;
+//	protected String axisYDecimalFormat = DEFAULT_AXIS_Y_DECIMAL_FORMAT;
+//	protected String axisXDateTargetFormat = DEFAULT_AXIS_X_DATE_TARGET_FORMAT;
+//	protected String axisXDateSourceFormat = DEFAULT_AXIS_X_DATE_SOURCE_FORMAT;
 	
 	protected IDataCursor dataCursor = new SimpleDataCursor(this);
-	
-	/**
-	 * <p>
-	 * max value of Y axis
-	 * </p>
-	 * <p>
-	 * Y軸の最大値
-	 * </p>
-	 * <p>
-	 * Y的最大表示值
-	 * </p>
-	 */
-	protected double maxValue;
-
-	/**
-	 * <p>
-	 * min value of Y axis
-	 * </p>
-	 * <p>
-	 * Y軸の最小値
-	 * </p>
-	 * <p>
-	 * Y的最小表示值
-	 * </p>
-	 */
-	protected double minValue;
-
-	protected boolean autoCalcValueRange = DEFAULT_AUTO_CALC_VALUE_RANGE;
-	
-	
-	protected void calcDataValueRange() {
-		double maxValue = Double.MIN_VALUE;
-		double minValue = Double.MAX_VALUE;
-		IMeasurable first = this.stickData.get(dataCursor.getDisplayFrom());
-		// 第一个stick为停盘的情况
-		if (first.getHigh() == 0 && first.getLow() == 0) {
-
-		} else {
-			maxValue = first.getHigh();
-			minValue = first.getLow();
-		}
-
-		for (int i = dataCursor.getDisplayFrom(); i < dataCursor.getDisplayTo(); i++) {
-			IMeasurable stick;
-			stick = this.stickData.get(i);
-			
-			if (stick.getLow() < minValue) {
-				minValue = stick.getLow();
-			}
-
-			if (stick.getHigh() > maxValue) {
-				maxValue = stick.getHigh();
-			}
-
-		}
-
-		this.maxValue = maxValue;
-		this.minValue = minValue;
-	}
-
-	protected void calcValueRangePaddingZero() {
-		double maxValue = this.maxValue;
-		double minValue = this.minValue;
-
-		if ((long) maxValue > (long) minValue) {
-			if ((maxValue - minValue) < 10 && minValue > 1) {
-				this.maxValue = (long) (maxValue + 1);
-				this.minValue = (long) (minValue - 1);
-			} else {
-				this.maxValue = (long) (maxValue + (maxValue - minValue) * 0.1);
-				this.minValue = (long) (minValue - (maxValue - minValue) * 0.1);
-				if (this.minValue < 0) {
-					this.minValue = 0;
-				}
-			}
-		} else if ((long) maxValue == (long) minValue) {
-			if (maxValue <= 10 && maxValue > 1) {
-				this.maxValue = maxValue + 1;
-				this.minValue = minValue - 1;
-			} else if (maxValue <= 100 && maxValue > 10) {
-				this.maxValue = maxValue + 10;
-				this.minValue = minValue - 10;
-			} else if (maxValue <= 1000 && maxValue > 100) {
-				this.maxValue = maxValue + 100;
-				this.minValue = minValue - 100;
-			} else if (maxValue <= 10000 && maxValue > 1000) {
-				this.maxValue = maxValue + 1000;
-				this.minValue = minValue - 1000;
-			} else if (maxValue <= 100000 && maxValue > 10000) {
-				this.maxValue = maxValue + 10000;
-				this.minValue = minValue - 10000;
-			} else if (maxValue <= 1000000 && maxValue > 100000) {
-				this.maxValue = maxValue + 100000;
-				this.minValue = minValue - 100000;
-			} else if (maxValue <= 10000000 && maxValue > 1000000) {
-				this.maxValue = maxValue + 1000000;
-				this.minValue = minValue - 1000000;
-			} else if (maxValue <= 100000000 && maxValue > 10000000) {
-				this.maxValue = maxValue + 10000000;
-				this.minValue = minValue - 10000000;
-			}
-		} else {
-			this.maxValue = 0;
-			this.minValue = 0;
-		}
-
-	}
-
-	protected void calcValueRangeFormatForAxis() {
-		// 修正最大值和最小值
-		long rate = (long) (this.maxValue - this.minValue) / (simpleGrid.getLatitudeNum());
-		String strRate = String.valueOf(rate);
-		float first = Integer.parseInt(String.valueOf(strRate.charAt(0))) + 1.0f;
-		if (first > 0 && strRate.length() > 1) {
-			float second = Integer.parseInt(String.valueOf(strRate.charAt(1)));
-			if (second < 5) {
-				first = first - 0.5f;
-			}
-			rate = (long) (first * Math.pow(10, strRate.length() - 1));
-		} else {
-			rate = 1;
-		}
-		// 等分轴修正
-		if (simpleGrid.getLatitudeNum() > 0
-				&& (long) (this.maxValue - this.minValue)
-						% (simpleGrid.getLatitudeNum() * rate) != 0) {
-			// 最大值加上轴差
-			this.maxValue = (long) this.maxValue
-					+ (simpleGrid.getLatitudeNum() * rate)
-					- ((long) (this.maxValue - this.minValue) % (simpleGrid.getLatitudeNum() * rate));
-		}
-	}
-
-	protected void calcValueRange() {
-		if (this.stickData != null && this.stickData.size() > 0) {
-			this.calcDataValueRange();
-			this.calcValueRangePaddingZero();
-		} else {
-			this.maxValue = 0;
-			this.minValue = 0;
-		}
-		this.calcValueRangeFormatForAxis();
-	}
-	
+	protected IDegree axisYDegree = new DecimalDegree(this);
+	protected IDegree axisXDegree = new DateTimeDegree(this);
+    protected IHasValueRange dataRange = new StickValueRangeCalc(this);
 	
 	/**
 	 * <p>
@@ -231,7 +90,7 @@ public abstract class DataGridChart extends GridChart {
 	 */
 	public DataGridChart(Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	/** 
@@ -283,7 +142,7 @@ public abstract class DataGridChart extends GridChart {
 			index = 0;
 		}
 
-		return formatAxisXDegree(stickData.get(index).getDate());
+		return axisXDegree.valueForDegree(stickData.get(index).getDate());
 	}
 
 	/*
@@ -296,22 +155,22 @@ public abstract class DataGridChart extends GridChart {
 	@Override
 	public String getAxisYGraduate(Object value) {
 		float graduate = Float.valueOf(super.getAxisYGraduate(value));
-		return formatAxisYDegree(graduate * (maxValue - minValue) + minValue);
+		return axisYDegree.valueForDegree(graduate * dataRange.getValueRange() + dataRange.getMinValue());
 	}
 	
 	
-	public String formatAxisYDegree(double value) {
-		return new DecimalFormat(axisYDecimalFormat).format(Math.floor(value)/dataMultiple);
-	}
-	
-	public String formatAxisXDegree(int date) {
-		try {
-			Date dt = new SimpleDateFormat(axisXDateSourceFormat).parse(String.valueOf(date));
-			return new SimpleDateFormat(axisXDateTargetFormat).format(dt);
-		} catch (ParseException e) {
-			return "";
-		}
-	}
+//	public String formatAxisYDegree(double value) {
+//		return new DecimalFormat(axisYDecimalFormat).format(Math.floor(value)/dataMultiple);
+//	}
+//	
+//	public String formatAxisXDegree(int date) {
+//		try {
+//			Date dt = new SimpleDateFormat(axisXDateSourceFormat).parse(String.valueOf(date));
+//			return new SimpleDateFormat(axisXDateTargetFormat).format(dt);
+//		} catch (ParseException e) {
+//			return "";
+//		}
+//	}
 	
 	/**
 	 * <p>
@@ -362,63 +221,69 @@ public abstract class DataGridChart extends GridChart {
 	 * @return the dataMultiple
 	 */
 	public int getDataMultiple() {
-		return dataMultiple;
+		return dataRange.getDataMultiple();
 	}
 
 	/**
 	 * @param dataMultiple the dataMultiple to set
 	 */
 	public void setDataMultiple(int dataMultiple) {
-		this.dataMultiple = dataMultiple;
+		((ValueRangeCalc)this.dataRange).setDataMultiple(dataMultiple);
 	}
 
 	/**
 	 * @return the axisYDecimalFormat
 	 */
+	@Deprecated
 	public String getAxisYDecimalFormat() {
-		return axisYDecimalFormat;
+		return ((DecimalDegree)axisYDegree).getTargetFormat();
 	}
 
 	/**
 	 * @param axisYDecimalFormat the axisYDecimalFormat to set
 	 */
+	@Deprecated
 	public void setAxisYDecimalFormat(String axisYDecimalFormat) {
-		this.axisYDecimalFormat = axisYDecimalFormat;
+	    ((DecimalDegree)axisYDegree).setTargetFormat(axisYDecimalFormat);
 	}
 
 	/**
 	 * @return the axisXDateTargetFormat
 	 */
+	@Deprecated
 	public String getAxisXDateTargetFormat() {
-		return axisXDateTargetFormat;
+	    return ((DateTimeDegree)axisXDegree).getTargetFormat();
 	}
 
 	/**
 	 * @param axisXDateTargetFormat the axisXDateTargetFormat to set
 	 */
+	@Deprecated
 	public void setAxisXDateTargetFormat(String axisXDateTargetFormat) {
-		this.axisXDateTargetFormat = axisXDateTargetFormat;
+	    ((DateTimeDegree)axisXDegree).setTargetFormat(axisXDateTargetFormat);
 	}
 
 	/**
 	 * @return the axisXDateSourceFormat
 	 */
+	@Deprecated
 	public String getAxisXDateSourceFormat() {
-		return axisXDateSourceFormat;
+	    return ((DateTimeDegree)axisXDegree).getSourceFormat();
 	}
 
 	/**
 	 * @param axisXDateSourceFormat the axisXDateSourceFormat to set
 	 */
+	@Deprecated
 	public void setAxisXDateSourceFormat(String axisXDateSourceFormat) {
-		this.axisXDateSourceFormat = axisXDateSourceFormat;
+	    ((DateTimeDegree)axisXDegree).setSourceFormat(axisXDateSourceFormat);
 	}
 	
 	/**
 	 * @return the maxValue
 	 */
 	public double getMaxValue() {
-		return maxValue;
+		return dataRange.getMaxValue();
 	}
 
 	/**
@@ -426,14 +291,14 @@ public abstract class DataGridChart extends GridChart {
 	 *            the maxValue to set
 	 */
 	public void setMaxValue(double maxValue) {
-		this.maxValue = maxValue;
+	    ((ValueRangeCalc)this.dataRange).setMaxValue(maxValue);
 	}
 
 	/**
 	 * @return the minValue
 	 */
 	public double getMinValue() {
-		return minValue;
+		return dataRange.getMinValue();
 	}
 
 	/**
@@ -441,14 +306,14 @@ public abstract class DataGridChart extends GridChart {
 	 *            the minValue to set
 	 */
 	public void setMinValue(double minValue) {
-		this.minValue = minValue;
+	    ((ValueRangeCalc)this.dataRange).setMinValue(minValue);
 	}
 
 	/**
 	 * @return the autoCalcValueRange
 	 */
 	public boolean isAutoCalcValueRange() {
-		return autoCalcValueRange;
+		return this.dataRange.isAutoCalcValueRange();
 	}
 
 	/**
@@ -456,7 +321,7 @@ public abstract class DataGridChart extends GridChart {
 	 *            the autoCalcValueRange to set
 	 */
 	public void setAutoCalcValueRange(boolean autoCalcValueRange) {
-		this.autoCalcValueRange = autoCalcValueRange;
+	    ((ValueRangeCalc)this.dataRange).setAutoCalcValueRange(autoCalcValueRange);
 	}
 
     /**
@@ -485,5 +350,47 @@ public abstract class DataGridChart extends GridChart {
      */
     public void setStickData(IChartData<IStickEntity> stickData) {
         this.stickData = stickData;
+    }
+
+    /**
+     * @return the dataRange
+     */
+    public IHasValueRange getDataRange() {
+        return dataRange;
+    }
+
+    /**
+     * @param dataRange the dataRange to set
+     */
+    public void setDataRange(IHasValueRange dataRange) {
+        this.dataRange = dataRange;
+    }
+
+    /**
+     * @return the axisYDegree
+     */
+    public IDegree getAxisYDegree() {
+        return axisYDegree;
+    }
+
+    /**
+     * @param axisYDegree the axisYDegree to set
+     */
+    public void setAxisYDegree(IDegree axisYDegree) {
+        this.axisYDegree = axisYDegree;
+    }
+
+    /**
+     * @return the axisXDegree
+     */
+    public IDegree getAxisXDegree() {
+        return axisXDegree;
+    }
+
+    /**
+     * @param axisXDegree the axisXDegree to set
+     */
+    public void setAxisXDegree(IDegree axisXDegree) {
+        this.axisXDegree = axisXDegree;
     }
 }

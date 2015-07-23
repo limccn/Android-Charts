@@ -22,6 +22,7 @@
 
 package cn.limc.androidcharts.common;
 
+import cn.limc.androidcharts.event.ISlipable;
 import cn.limc.androidcharts.view.DataGridChart;
 
 /** 
@@ -33,9 +34,13 @@ import cn.limc.androidcharts.view.DataGridChart;
  * @version v1.0 2014/06/18 16:58:21 
  *  
  */
-public class SectionDataCursor implements IDataCursor {
+public class SectionDataCursor implements IDataCursor,ISlipable{
 	
     protected DataGridChart inChart;
+    
+    public static final int DEFAULT_ZOOM_BASE_LINE = ZOOM_BASE_LINE_CENTER;
+
+    protected int zoomBaseLine = DEFAULT_ZOOM_BASE_LINE;
     
 	public static final int DISPLAY_FROM = 0;
 	public static final int DISPLAY_NUMBER = 50;	
@@ -133,5 +138,123 @@ public class SectionDataCursor implements IDataCursor {
         this.minDisplayNumber = minDisplayNumber;
     }
 
+    /* (non-Javadoc)
+     * @see cn.limc.androidcharts.event.IZoomable#zoomIn()
+     */
+    @Override
+    public void zoomIn() {
+        if (getDisplayNumber() > getMinDisplayNumber()) {
+            // 区分缩放方向
+            if (zoomBaseLine == ZOOM_BASE_LINE_CENTER) {
+                setDisplayNumber(getDisplayNumber() - ZOOM_STEP);
+                setDisplayFrom(getDisplayFrom() + ZOOM_STEP / 2);
+            } else if (zoomBaseLine == ZOOM_BASE_LINE_LEFT) {
+                setDisplayNumber(getDisplayNumber() - ZOOM_STEP);
+            } else if (zoomBaseLine == ZOOM_BASE_LINE_RIGHT) {
+                setDisplayNumber(getDisplayNumber() - ZOOM_STEP);
+                setDisplayFrom(getDisplayFrom() + ZOOM_STEP);
+            }
+
+            // 处理displayNumber越界
+            if (getDisplayNumber() < getMinDisplayNumber()) {
+                setDisplayNumber(getMinDisplayNumber());
+            }
+
+            // 处理displayFrom越界
+            if (getDisplayTo() >= inChart.getStickData().size()) {
+                setDisplayFrom(inChart.getStickData().size() - getDisplayNumber());
+            }
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see cn.limc.androidcharts.event.IZoomable#zoomOut()
+     */
+    @Override
+    public void zoomOut() {
+        if (getDisplayNumber() < inChart.getStickData().size() - 1) {
+            if (getDisplayNumber() + ZOOM_STEP > inChart.getStickData().size() - 1) {
+                setDisplayNumber(inChart.getStickData().size() - 1);
+                setDisplayFrom(0);
+            } else {
+                // 区分缩放方向
+                if (zoomBaseLine == ZOOM_BASE_LINE_CENTER) {
+                    setDisplayNumber(getDisplayNumber() + ZOOM_STEP);
+                    if (getDisplayFrom() > 1) {
+                        setDisplayFrom(getDisplayFrom() - ZOOM_STEP / 2);
+                    } else {
+                        setDisplayFrom(0);
+                    }
+                } else if (zoomBaseLine == ZOOM_BASE_LINE_LEFT) {
+                    setDisplayNumber(getDisplayNumber() + ZOOM_STEP);
+                } else if (zoomBaseLine == ZOOM_BASE_LINE_RIGHT) {
+                    setDisplayNumber(getDisplayNumber() + ZOOM_STEP);
+                    if (getDisplayFrom() > ZOOM_STEP) {
+                        setDisplayFrom(getDisplayFrom() - ZOOM_STEP);
+                    } else {
+                        setDisplayFrom(0);
+                    }
+                }
+            }
+
+            if (getDisplayTo() >= inChart.getStickData().size()) {
+                setDisplayNumber(inChart.getStickData().size() - getDisplayFrom());
+            }
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see cn.limc.androidcharts.event.ISlipable#moveLeft()
+     */
+    @Override
+    public void moveLeft() {
+        int dataSize = inChart.getStickData().size();
+
+        if (getDisplayFrom() <= SLIP_STEP) {
+            setDisplayFrom(0);
+        } else if (getDisplayFrom() > SLIP_STEP) {
+            setDisplayFrom(getDisplayFrom() - SLIP_STEP);
+        } else {
+
+        }
+
+        // 处理displayFrom越界
+        if (getDisplayTo() >= dataSize) {
+            setDisplayFrom(dataSize - getDisplayNumber());
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see cn.limc.androidcharts.event.ISlipable#moveRight()
+     */
+    @Override
+    public void moveRight() {
+        int dataSize = inChart.getStickData().size();
+        if (getDisplayTo() < dataSize - SLIP_STEP) {
+            setDisplayFrom(getDisplayFrom() + SLIP_STEP);
+        } else {
+            setDisplayFrom(dataSize - getDisplayNumber());
+        }
+
+        // 处理displayFrom越界
+        if (getDisplayTo() >= dataSize) {
+            setDisplayFrom(dataSize - getDisplayNumber());
+        }
+    }
+    
+    /**
+     * @return the zoomBaseLine
+     */
+    public int getZoomBaseLine() {
+        return zoomBaseLine;
+    }
+
+    /**
+     * @param zoomBaseLine
+     *            the zoomBaseLine to set
+     */
+    public void setZoomBaseLine(int zoomBaseLine) {
+        this.zoomBaseLine = zoomBaseLine;
+    }
 
 }

@@ -21,7 +21,11 @@
 
 package cn.limc.androidcharts.view;
 
+import cn.limc.androidcharts.axis.IAxis;
 import cn.limc.androidcharts.entity.ColoredStickEntity;
+import cn.limc.androidcharts.entity.IMeasurable;
+import cn.limc.androidcharts.mole.ColoredStickMole;
+import cn.limc.androidcharts.mole.StickMole;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -44,12 +48,6 @@ import android.util.AttributeSet;
  * 
  */
 public class ColoredSlipStickChart extends SlipStickChart {
-
-	public static final int DEFAULT_COLORED_STICK_STYLE_WITH_BORDER = 0;
-	public static final int DEFAULT_COLORED_STICK_STYLE_NO_BORDER = 1;
-	public static final int DEFAULT_COLORED_STICK_STYLE = DEFAULT_COLORED_STICK_STYLE_NO_BORDER;
-
-	private int coloredStickStyle = DEFAULT_COLORED_STICK_STYLE_NO_BORDER;
 
 	/**
 	 * <p>
@@ -113,56 +111,65 @@ public class ColoredSlipStickChart extends SlipStickChart {
 		super.onDraw(canvas);
 	}
 
-	@Override
-	protected void drawSticks(Canvas canvas) {
-		if (null == stickData) {
-			return;
-		}
-		if (stickData.size() == 0) {
-			return;
-		}
+//	@Override
+//	protected void drawSticks(Canvas canvas) {
+//		if (null == stickData) {
+//			return;
+//		}
+//		if (stickData.size() == 0) {
+//			return;
+//		}
+//
+//		float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber()
+//				- stickSpacing;
+//		float stickX = dataQuadrant.getPaddingStartX();
+//
+//		Paint mPaintStick = new Paint();
+//		for (int i = dataCursor.getDisplayFrom(); i < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); i++) {
+//			ColoredStickEntity entity = (ColoredStickEntity) stickData.get(i);
+//
+//			float highY = (float) ((1f - (entity.getHigh() - minValue)
+//					/ (maxValue - minValue))
+//					* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
+//			float lowY = (float) ((1f - (entity.getLow() - minValue)
+//					/ (maxValue - minValue))
+//					* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
+//
+//			mPaintStick.setColor(entity.getColor());
+//			// stick or line?
+//			if (stickWidth >= 2f) {
+//				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
+//						mPaintStick);
+//			} else {
+//				canvas.drawLine(stickX, highY, stickX, lowY, mPaintStick);
+//			}
+//
+//			// next x
+//			stickX = stickX + stickSpacing + stickWidth;
+//		}
+//	}
+	
+	   @Override
+	    protected void drawSticks(Canvas canvas) {
+	        if (null == stickData) {
+	            return;
+	        }
+	        if (stickData.size() == 0) {
+	            return;
+	        }
 
-		float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber()
-				- stickSpacing;
-		float stickX = dataQuadrant.getPaddingStartX();
+	        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+	        float stickX = dataQuadrant.getPaddingStartX();
 
-		Paint mPaintStick = new Paint();
-		for (int i = dataCursor.getDisplayFrom(); i < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); i++) {
-			ColoredStickEntity entity = (ColoredStickEntity) stickData.get(i);
+	        for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
+	            IMeasurable stick = stickData.get(i);
+	            
+	            ColoredStickMole mole = new ColoredStickMole();
+	            mole.setUp(this,stick,stickX,stickWidth);
+	            mole.draw(canvas);
 
-			float highY = (float) ((1f - (entity.getHigh() - minValue)
-					/ (maxValue - minValue))
-					* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
-			float lowY = (float) ((1f - (entity.getLow() - minValue)
-					/ (maxValue - minValue))
-					* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
-
-			mPaintStick.setColor(entity.getColor());
-			// stick or line?
-			if (stickWidth >= 2f) {
-				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
-						mPaintStick);
-			} else {
-				canvas.drawLine(stickX, highY, stickX, lowY, mPaintStick);
-			}
-
-			// next x
-			stickX = stickX + stickSpacing + stickWidth;
-		}
-	}
-
-	/**
-	 * @return the coloredStickStyle
-	 */
-	public int getColoredStickStyle() {
-		return coloredStickStyle;
-	}
-
-	/**
-	 * @param coloredStickStyle
-	 *            the coloredStickStyle to set
-	 */
-	public void setColoredStickStyle(int coloredStickStyle) {
-		this.coloredStickStyle = coloredStickStyle;
-	}
+	            // next x
+	            stickX = stickX  + stickWidth;
+	        }
+	    }
 }

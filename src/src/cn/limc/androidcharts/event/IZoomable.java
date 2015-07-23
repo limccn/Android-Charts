@@ -33,7 +33,7 @@ package cn.limc.androidcharts.event;
  * @version v1.0 2014/05/29 16:49:01 
  *  
  */
-public interface IZoomable extends ITouchable {
+public interface IZoomable{
 	
 	static final int ZOOM_BASE_LINE_CENTER = 0;
 	static final int ZOOM_BASE_LINE_LEFT = 1;
@@ -70,7 +70,4 @@ public interface IZoomable extends ITouchable {
 	 * </p>
 	 */
 	void zoomOut();
-	
-	void setOnZoomGestureListener(OnZoomGestureListener listener);
-	OnZoomGestureListener getOnZoomGestureListener();
 }

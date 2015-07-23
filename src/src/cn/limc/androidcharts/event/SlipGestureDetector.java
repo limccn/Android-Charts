@@ -21,6 +21,7 @@
 
 package cn.limc.androidcharts.event;
 
+import cn.limc.androidcharts.view.GridChart;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 
@@ -39,19 +40,38 @@ import android.view.MotionEvent;
  * @version v1.0 2014/06/23 16:48:07
  * 
  */
-public class SlipGestureDetector<T extends ISlipable> extends ZoomGestureDetector<IZoomable> {
+public class SlipGestureDetector extends GestureDetector{
+    
+    
+    public static final int TOUCH_MODE_NONE = 0;
+    public static final int TOUCH_MODE_SINGLE = 1;
+    public static final int TOUCH_MODE_MULTI = 2;
+    
+    public static final int MIN_DISTANCE = 5;
+    
+    protected int touchMode = TOUCH_MODE_NONE;
+    
+    protected float olddistance;
+    protected float newdistance;
+    
 	protected PointF startPointA;
 	protected PointF startPointB;
 	
-	private OnSlipGestureListener onSlipGestureListener;
+	OnSlipGestureListener onSlipGestureListener;
 
-	public SlipGestureDetector(ISlipable slipable){
-		super(slipable);
-		if (slipable != null) {
-			this.onSlipGestureListener = slipable.getOnSlipGestureListener();
-		}
+	public SlipGestureDetector(GridChart inChart,OnSlipGestureListener listener){
+	    super(inChart, listener);
 	}
 
+    protected float calcDistance(MotionEvent event) {
+        if(event.getPointerCount() <= 1) {
+            return 0f;
+        }else{
+            float x = event.getX(0) - event.getX(1);
+            float y = event.getY(0) - event.getY(1);
+            return (float) Math.sqrt(x * x + y * y);
+        }
+    }
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -90,26 +110,26 @@ public class SlipGestureDetector<T extends ISlipable> extends ZoomGestureDetecto
 				if (newdistance > MIN_DISTANCE) {
 					if (startPointA.x >= event.getX(0)
 							&& startPointB.x >= event.getX(1)) {
-						if (onSlipGestureListener != null) {
-							onSlipGestureListener.onMoveRight((ISlipable)instance,event);
+						if (onGestureListener != null) {
+						    ((OnSlipGestureListener)onGestureListener).onMoveRight(event);
 						}
 					} else if (startPointA.x <= event.getX(0)
 							&& startPointB.x <= event.getX(1)) {
-						if (onSlipGestureListener != null) {
-							onSlipGestureListener.onMoveLeft((ISlipable)instance,event);
+						if (onGestureListener != null) {
+						    ((OnSlipGestureListener)onGestureListener).onMoveLeft(event);
 						}
 					} else {
-						if (Math.abs(newdistance - olddistance) > MIN_DISTANCE) {
-							if (onZoomGestureListener != null) {
-								if (newdistance > olddistance) {
-									onZoomGestureListener.onZoomIn((IZoomable)instance,event);
-								} else {
-									onZoomGestureListener.onZoomOut((IZoomable)instance,event);
-								}
-							}
-							// reset distance
-							olddistance = newdistance;
-						}
+//						if (Math.abs(newdistance - olddistance) > MIN_DISTANCE) {
+//							if (onZoomGestureListener != null) {
+//								if (newdistance > olddistance) {
+//									onZoomGestureListener.onZoomIn((IZoomable)instance,event);
+//								} else {
+//									onZoomGestureListener.onZoomOut((IZoomable)instance,event);
+//								}
+//							}
+//							// reset distance
+//							olddistance = newdistance;
+//						}
 					}
 					startPointA = new PointF(event.getX(0), event.getY(0));
 					startPointB = new PointF(event.getX(1), event.getY(1));
@@ -119,7 +139,25 @@ public class SlipGestureDetector<T extends ISlipable> extends ZoomGestureDetecto
 			}
 			break;
 		}
-		return super.onTouchEvent(event);
+		return true;
 	}
 
+    /**
+     * @return the onSlipGestureListener
+     */
+    public OnSlipGestureListener getOnSlipGestureListener() {
+        return onSlipGestureListener;
+    }
+
+    /**
+     * @param onSlipGestureListener the onSlipGestureListener to set
+     */
+    public void setOnSlipGestureListener(OnSlipGestureListener onSlipGestureListener) {
+        this.onSlipGestureListener = onSlipGestureListener;
+    }
+    
+    public interface OnSlipGestureListener extends GestureDetector.OnGestureListener {
+        public void onMoveLeft(MotionEvent event) ;
+        public void onMoveRight(MotionEvent event) ;
+    }
 }

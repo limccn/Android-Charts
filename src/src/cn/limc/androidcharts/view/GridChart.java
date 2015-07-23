@@ -30,9 +30,8 @@ import cn.limc.androidcharts.common.CrossLines;
 import cn.limc.androidcharts.common.DataQuadrant;
 import cn.limc.androidcharts.common.IQuadrant;
 import cn.limc.androidcharts.common.SimpleGrid;
-import cn.limc.androidcharts.event.IGestureDetector;
-import cn.limc.androidcharts.event.ITouchable;
-import cn.limc.androidcharts.event.OnTouchGestureListener;
+import cn.limc.androidcharts.event.GestureDetector;
+import cn.limc.androidcharts.event.TouchGestureDetector.OnTouchGestureListener;
 import cn.limc.androidcharts.event.TouchGestureDetector;
 
 import android.content.Context;
@@ -60,7 +59,7 @@ import android.view.MotionEvent;
  * @version v1.0 2011/05/30 14:19:50
  * 
  */
-public class GridChart extends AbstractBaseChart implements ITouchable {
+public class GridChart extends AbstractBaseChart  {
 	/**
 	 * <p>
 	 * Touched point inside of grid
@@ -86,8 +85,9 @@ public class GridChart extends AbstractBaseChart implements ITouchable {
 	 * </p>
 	 */
 	
-	protected OnTouchGestureListener onTouchGestureListener = new OnTouchGestureListener();
-	protected IGestureDetector touchGestureDetector = new TouchGestureDetector<ITouchable>(this);
+	protected OnTouchGestureListener onTouchListener = new OnTouchListener() {};
+	protected GestureDetector touchGestureDetector = new TouchGestureDetector(this,onTouchListener);
+	
 	protected IQuadrant dataQuadrant = new DataQuadrant(this);
 	protected HorizontalAxis axisX = new HorizontalAxis(this,Axis.AXIS_X_POSITION_BOTTOM);
 	protected VerticalAxis axisY = new VerticalAxis(this, Axis.AXIS_Y_POSITION_LEFT);
@@ -477,66 +477,7 @@ public class GridChart extends AbstractBaseChart implements ITouchable {
 	 */
 	public void setAxisYPosition(int axisYPosition) {
 		this.axisY.setPosition(axisYPosition);
-	}
-
-	/* (non-Javadoc)
-	 *  
-	 * @see cn.limc.androidcharts.event.ITouchable#touchDown() 
-	 */
-	public void touchDown(PointF pt) {
-		this.touchPoint = pt;
-		this.postInvalidate();
-	}
-
-	/* (non-Javadoc)
-	 *  
-	 * @see cn.limc.androidcharts.event.ITouchable#touchMoved() 
-	 */
-	public void touchMoved(PointF pt) {
-		this.touchPoint = pt;
-		this.postInvalidate();
-	}
-
-	/* (non-Javadoc)
-	 *  
-	 * @see cn.limc.androidcharts.event.ITouchable#touchUp() 
-	 */
-	public void touchUp(PointF pt) {
-		this.touchPoint = pt;
-		this.postInvalidate();
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @param listener 
-	 * @see cn.limc.androidcharts.event.ITouchable#setOnTouchGestureListener(cn.limc.androidcharts.event.OnTouchGestureListener) 
-	 */
-	public void setOnTouchGestureListener(OnTouchGestureListener listener) {
-		this.onTouchGestureListener = listener;
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.event.ITouchable#getOnTouchGestureListener() 
-	 */
-	public OnTouchGestureListener getOnTouchGestureListener() {
-		return onTouchGestureListener;
-	}
-
-	/**
-	 * @return the touchGestureDetector
-	 */
-	public IGestureDetector getTouchGestureDetector() {
-		return touchGestureDetector;
-	}
-
-	/**
-	 * @param touchGestureDetector the touchGestureDetector to set
-	 */
-	public void setTouchGestureDetector(IGestureDetector touchGestureDetector) {
-		this.touchGestureDetector = touchGestureDetector;
-	}
+	}	
 
 	/**
 	 * @return the dataQuadrant
@@ -979,5 +920,53 @@ public class GridChart extends AbstractBaseChart implements ITouchable {
      */
     public void setLatitudeColor(int latitudeColor) {
         this.simpleGrid.setLatitudeColor(latitudeColor);
+    }
+
+    /**
+     * @return the touchGestureDetector
+     */
+    public GestureDetector getTouchGestureDetector() {
+        return touchGestureDetector;
+    }
+
+    /**
+     * @param touchGestureDetector the touchGestureDetector to set
+     */
+    public void setTouchGestureDetector(GestureDetector touchGestureDetector) {
+        this.touchGestureDetector = touchGestureDetector;
+    }
+    
+    public abstract class OnTouchListener implements OnTouchGestureListener{
+
+        /* (non-Javadoc)
+         * @see cn.limc.androidcharts.event.TouchGestureDetector.OnTouchGestureListener#onTouchDown(android.view.MotionEvent)
+         */
+        @Override
+        public void onTouchDown(MotionEvent event , PointF pt) {
+            GridChart.this.touchPoint = pt;
+            GridChart.this.postInvalidate();
+            
+        }
+
+        /* (non-Javadoc)
+         * @see cn.limc.androidcharts.event.TouchGestureDetector.OnTouchGestureListener#onTouchMoved(android.view.MotionEvent)
+         */
+        @Override
+        public void onTouchMoved(MotionEvent event , PointF pt) {
+            // TODO Auto-generated method stub
+            GridChart.this.touchPoint = pt;
+            GridChart.this.postInvalidate();
+        }
+
+        /* (non-Javadoc)
+         * @see cn.limc.androidcharts.event.TouchGestureDetector.OnTouchGestureListener#onTouchUp(android.view.MotionEvent)
+         */
+        @Override
+        public void onTouchUp(MotionEvent event , PointF pt) {
+            // TODO Auto-generated method stub
+            GridChart.this.touchPoint = pt;
+            GridChart.this.postInvalidate();
+        }
+        
     }
 }

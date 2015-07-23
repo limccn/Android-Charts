@@ -25,6 +25,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 
+import cn.limc.androidcharts.degree.MinusStickValueRangeCalc;
 import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.mole.StickMole;
 
@@ -44,6 +45,7 @@ import cn.limc.androidcharts.mole.StickMole;
  * 
  */
 public class SlipMinusStickChart extends SlipStickChart {
+    
 
 	/*
 	 * (non-Javadoc)
@@ -54,6 +56,7 @@ public class SlipMinusStickChart extends SlipStickChart {
 	 */
 	public SlipMinusStickChart(Context context) {
 		super(context);
+		dataRange = new MinusStickValueRangeCalc(this);
 	}
 
 	/*
@@ -86,48 +89,6 @@ public class SlipMinusStickChart extends SlipStickChart {
 		super(context, attrs);
 	}
 
-	@Override
-	protected void calcDataValueRange() {
-
-		double maxValue = -Double.MAX_VALUE;
-		double minValue = Double.MAX_VALUE;
-
-		IMeasurable first = this.stickData.get(0);
-		// 第一个stick为停盘的情况
-		if (first.getHigh() == 0 && first.getLow() == 0) {
-
-		} else {
-			maxValue = first.getHigh();
-			minValue = first.getLow();
-		}
-
-		// 判断显示为方柱或显示为线条
-		for (int i = getDisplayFrom(); i < getDisplayFrom() + getDisplayNumber(); i++) {
-			IMeasurable stick = this.stickData.get(i);
-			if (stick.getLow() < minValue) {
-				minValue = stick.getLow();
-			}
-
-			if (stick.getHigh() > maxValue) {
-				maxValue = stick.getHigh();
-			}
-
-		}
-
-		this.maxValue = maxValue;
-		this.minValue = minValue;
-	}
-	
-	@Override
-	protected void calcValueRangePaddingZero(){
-		
-	}
-	
-	@Override
-	protected void calcValueRangeFormatForAxis() {
-		
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -148,7 +109,7 @@ public class SlipMinusStickChart extends SlipStickChart {
 					+ super.getDisplayNumber(); i++) {
 				IMeasurable stick = stickData.get(i);
 
-				StickMole mole = (StickMole)provider.getMole();
+				StickMole mole = new StickMole();
 				mole.setUp(this,stick,stickX,stickWidth);
 				mole.draw(canvas);
 

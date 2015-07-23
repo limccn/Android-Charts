@@ -35,12 +35,11 @@ import android.view.MotionEvent;
 import cn.limc.androidcharts.common.IFlexableGrid;
 import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
-import cn.limc.androidcharts.event.IGestureDetector;
+import cn.limc.androidcharts.event.GestureDetector;
 import cn.limc.androidcharts.event.ISlipable;
 import cn.limc.androidcharts.event.IZoomable;
-import cn.limc.androidcharts.event.OnSlipGestureListener;
-import cn.limc.androidcharts.event.OnZoomGestureListener;
 import cn.limc.androidcharts.event.SlipGestureDetector;
+import cn.limc.androidcharts.event.ZoomGestureDetector;
 
 
 /**
@@ -113,10 +112,13 @@ public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
 	
 	protected int lineAlignType = DEFAULT_LINE_ALIGN_TYPE;
 	
-	protected OnZoomGestureListener onZoomGestureListener = new OnZoomGestureListener();
-	protected OnSlipGestureListener onSlipGestureListener = new OnSlipGestureListener();
-	
-	protected IGestureDetector slipGestureDetector = new SlipGestureDetector<ISlipable>(this);
+//	protected OnZoomGestureListener onZoomGestureListener = new OnZoomGestureListener();
+//	protected OnSlipGestureListener onSlipGestureListener = new OnSlipGestureListener();
+//	
+//	protected GestureDetector zoomGestureDetector = new ZoomGestureDetector(this,onZoomGestureListener);
+//	protected GestureDetector slipGestureDetector = new SlipGestureDetector(this,onSlipGestureListener);
+
+    
 
 	/*
 	 * (non-Javadoc)
@@ -548,7 +550,9 @@ public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
 			return false;
 		}
 		
-		return slipGestureDetector.onTouchEvent(event);
+		return true;
+		
+//		return slipGestureDetector.onTouchEvent(event);
 	}
 
 	/**
@@ -845,41 +849,5 @@ public class SlipLineChart extends GridChart implements IZoomable,ISlipable {
 		this.lineAlignType = lineAlignType;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param listener 
-	 * @see cn.limc.androidcharts.event.IZoomable#setOnZoomGestureListener(cn.limc.androidcharts.event.OnZoomGestureListener)
-	 */
-	public void setOnZoomGestureListener(OnZoomGestureListener listener) {
-		this.onZoomGestureListener = listener;
-	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param listener 
-	 * @see cn.limc.androidcharts.event.ISlipable#setOnSlipGestureListener(cn.limc.androidcharts.event.OnSlipGestureListener)
-	 */
-	public void setOnSlipGestureListener(OnSlipGestureListener listener) {
-		this.onSlipGestureListener = listener;
-	}
-	
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.event.ISlipable#getOnSlipGestureListener() 
-	 */
-	public OnSlipGestureListener getOnSlipGestureListener() {
-		return onSlipGestureListener;
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.event.IZoomable#getOnZoomGestureListener() 
-	 */
-	public OnZoomGestureListener getOnZoomGestureListener() {
-		return onZoomGestureListener;
-	}
 }

@@ -106,47 +106,47 @@ public class MAStickChart extends StickChart {
 		super(context, attrs);
 	}
 
-	@Override
-	protected void calcDataValueRange() {
-		super.calcDataValueRange();
-
-		double maxValue = this.maxValue;
-		double minValue = this.minValue;
-		// 逐条输出MA线
-		for (int i = 0; i < this.linesData.size(); i++) {
-
-			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
-					.get(i);
-			if (line == null) {
-				continue;
-			}
-			if (line.isDisplay() == false) {
-				continue;
-			}
-			List<DateValueEntity> lineData = line.getLineData();
-			if (lineData == null) {
-				continue;
-			}
-
-			// 判断显示为方柱或显示为线条
-			for (int j = 0; j < dataCursor.getDisplayNumber(); j++) {
-				DateValueEntity entity;
-				if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
-					entity = line.getLineData().get(j);
-				} else {
-					entity = line.getLineData().get(lineData.size() - 1 - j);
-				}
-				if (entity.getValue() < minValue) {
-					minValue = entity.getValue();
-				}
-				if (entity.getValue() > maxValue) {
-					maxValue = entity.getValue();
-				}
-			}
-		}
-		this.maxValue = maxValue;
-		this.minValue = minValue;
-	}
+//	@Override
+//	protected void calcDataValueRange() {
+//		super.calcDataValueRange();
+//
+//		double maxValue = this.maxValue;
+//		double minValue = this.minValue;
+//		// 逐条输出MA线
+//		for (int i = 0; i < this.linesData.size(); i++) {
+//
+//			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
+//					.get(i);
+//			if (line == null) {
+//				continue;
+//			}
+//			if (line.isDisplay() == false) {
+//				continue;
+//			}
+//			List<DateValueEntity> lineData = line.getLineData();
+//			if (lineData == null) {
+//				continue;
+//			}
+//
+//			// 判断显示为方柱或显示为线条
+//			for (int j = 0; j < dataCursor.getDisplayNumber(); j++) {
+//				DateValueEntity entity;
+//				if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+//					entity = line.getLineData().get(j);
+//				} else {
+//					entity = line.getLineData().get(lineData.size() - 1 - j);
+//				}
+//				if (entity.getValue() < minValue) {
+//					minValue = entity.getValue();
+//				}
+//				if (entity.getValue() > maxValue) {
+//					maxValue = entity.getValue();
+//				}
+//			}
+//		}
+//		this.maxValue = maxValue;
+//		this.minValue = minValue;
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -220,8 +220,8 @@ public class MAStickChart extends StickChart {
 				for (int j = 0; j < lineData.size(); j++) {
 					float value = lineData.get(j).getValue();
 					// calculate Y
-					float valueY = (float) ((1f - (value - minValue)
-							/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+					float valueY = (float) ((1f - (value - dataRange.getMinValue())
+							/ (dataRange.getValueRange())) * dataQuadrant.getPaddingHeight())
 							+ dataQuadrant.getPaddingStartY();
 
 					// if is not last point connect to previous point
@@ -239,8 +239,8 @@ public class MAStickChart extends StickChart {
 				for (int j = lineData.size() - 1; j >= 0; j--) {
 					float value = lineData.get(j).getValue();
 					// calculate Y
-					float valueY = (float) ((1f - (value - minValue)
-							/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+					float valueY = (float) ((1f - (value - dataRange.getMinValue())
+							/ (dataRange.getValueRange())) * dataQuadrant.getPaddingHeight())
 							+ dataQuadrant.getPaddingStartY();
 
 					// if is not last point connect to previous point

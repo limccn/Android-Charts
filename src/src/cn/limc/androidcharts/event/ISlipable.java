@@ -31,7 +31,7 @@ package cn.limc.androidcharts.event;
  * @version v1.0 2014/05/29 16:49:51 
  *  
  */
-public interface ISlipable extends IZoomable {	
+public interface ISlipable extends IZoomable{	
 	
 	static final int SLIP_DIRECTION_NONE = 0;
 	static final int SLIP_DIRECTION_TOP = 1;
@@ -43,7 +43,4 @@ public interface ISlipable extends IZoomable {
 	
 	void moveLeft();
 	void moveRight();
-	
-	void setOnSlipGestureListener(OnSlipGestureListener listener);
-	OnSlipGestureListener getOnSlipGestureListener();
 }

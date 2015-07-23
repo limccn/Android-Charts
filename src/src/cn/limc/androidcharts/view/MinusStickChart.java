@@ -22,6 +22,7 @@
 package cn.limc.androidcharts.view;
 
 import cn.limc.androidcharts.axis.IAxis;
+import cn.limc.androidcharts.degree.MinusStickValueRangeCalc;
 import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.mole.StickMole;
 
@@ -46,47 +47,7 @@ import android.util.AttributeSet;
  * 
  */
 public class MinusStickChart extends StickChart {
-	@Override
-	protected void calcDataValueRange() {
-
-		double maxValue = -Double.MAX_VALUE;
-		double minValue = Double.MAX_VALUE;
-
-		IMeasurable first = this.stickData.get(0);
-		// 第一个stick为停盘的情况
-		if (first.getHigh() == 0 && first.getLow() == 0) {
-
-		} else {
-			maxValue = first.getHigh();
-			minValue = first.getLow();
-		}
-
-		// 判断显示为方柱或显示为线条
-		for (int i = 0; i < this.stickData.size(); i++) {
-			IMeasurable stick = this.stickData.get(i);
-			if (stick.getLow() < minValue) {
-				minValue = stick.getLow();
-			}
-
-			if (stick.getHigh() > maxValue) {
-				maxValue = stick.getHigh();
-			}
-
-		}
-
-		this.maxValue = maxValue;
-		this.minValue = minValue;
-	}
 	
-	@Override
-	protected void calcValueRangePaddingZero(){
-		
-	}
-	
-	@Override
-	protected void calcValueRangeFormatForAxis() {
-		
-	}
 	
 	/*
 	 * (non-Javadoc)
@@ -97,6 +58,7 @@ public class MinusStickChart extends StickChart {
 	 */
 	public MinusStickChart(Context context) {
 		super(context);
+		this.dataRange = new MinusStickValueRangeCalc(this);
 	}
 
 	/*
@@ -147,29 +109,28 @@ public class MinusStickChart extends StickChart {
 			return;
 		}
 
-		float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber()
-				- stickSpacing;
+		float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber();
 
 		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
 
 			float stickX = dataQuadrant.getPaddingStartX();
 			for (int i = 0; i < stickData.size(); i++) {
 				IMeasurable stick = stickData.get(i);
-				StickMole mole = (StickMole)provider.getMole();
+				StickMole mole = new StickMole();
 				mole.setUp(this,stick,stickX,stickWidth);
 				mole.draw(canvas);
 				// next x
-				stickX = stickX + stickSpacing + stickWidth;
+				stickX = stickX + stickWidth;
 			}
 		} else {
 			float stickX = dataQuadrant.getPaddingEndX() - stickWidth;
 			for (int i = stickData.size() - 1; i >= 0; i--) {
 				IMeasurable stick = stickData.get(i);
-				StickMole mole = (StickMole)provider.getMole();
+				StickMole mole = new StickMole();
 				mole.setUp(this,stick,stickX,stickWidth);
 				mole.draw(canvas);
 				// next x
-				stickX = stickX - stickSpacing - stickWidth;
+				stickX = stickX - stickWidth;
 			}
 		}
 	}
