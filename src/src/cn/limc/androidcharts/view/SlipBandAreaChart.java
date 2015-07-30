@@ -25,11 +25,15 @@ import java.util.List;
 
 import cn.limc.androidcharts.common.IFlexableGrid;
 import cn.limc.androidcharts.entity.DateValueEntity;
+import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.LineEntity;
+import cn.limc.androidcharts.mole.AreaMole;
+import cn.limc.androidcharts.mole.LineMole;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Paint.Style;
 import android.util.AttributeSet;
 
 /**
@@ -104,7 +108,7 @@ public class SlipBandAreaChart extends SlipLineChart {
 	public SlipBandAreaChart(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
-		lineAlignType = IFlexableGrid.ALIGN_TYPE_CENTER;
+//		lineAlignType = IFlexableGrid.ALIGN_TYPE_CENTER;
 	}
 
 	/*
@@ -123,95 +127,140 @@ public class SlipBandAreaChart extends SlipLineChart {
 		// draw lines
 		drawAreas(canvas);
 	}
-
-	/**
-	 * <p>
-	 * draw lines
-	 * </p>
-	 * <p>
-	 * ラインを書く
-	 * </p>
-	 * <p>
-	 * 绘制线条
-	 * </p>
-	 * 
-	 * @param canvas
-	 */
+	
 	protected void drawAreas(Canvas canvas) {
-		if (null == linesData) {
-			return;
-		}
-		if (linesData.size() < 2) {
-			return;
-		}
-		LineEntity<DateValueEntity> line1 = (LineEntity<DateValueEntity>) linesData
-				.get(0);
-		LineEntity<DateValueEntity> line2 = (LineEntity<DateValueEntity>) linesData
-				.get(1);
-		List<DateValueEntity> line1Data = line1.getLineData();
-		List<DateValueEntity> line2Data = line2.getLineData();
-
-		if (line1.isDisplay() == false || line2.isDisplay() == false) {
-			return;
-		}
-		if (line1Data == null || line2Data == null) {
-			return;
-		}
-
-		Paint mPaint = new Paint();
-		mPaint.setColor(line1.getLineColor());
-		mPaint.setAlpha(70);
-		mPaint.setAntiAlias(true);
-
-		// distance between two points
-		float lineLength;
-		// start point‘s X
-		// set start point’s X
-		float startX;
-		
-		if (lineAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
-            lineLength= (dataQuadrant.getPaddingWidth() / displayNumber);
-            startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
-        }else {
-            lineLength= (dataQuadrant.getPaddingWidth() / (displayNumber - 1));
-            startX = dataQuadrant.getPaddingStartX();
+        if (null == chartData) {
+            return;
         }
-		
-		float lastY = 0;
-		float lastX = 0;
+        if (chartData.size() < 2 ) {
+            return;
+        }
 
-		Path areaPath = new Path();
+        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+        for(int i=1; i< chartData.size() ; i++){
+            LineEntity table1 = (LineEntity)chartData.getChartTable(i-1);
+            LineEntity table2 = (LineEntity)chartData.getChartTable(i);
+            
+            if (null == table1 || null == table2) {
+                continue;
+            }
+            if(table1.size() == 0 || table2.size() == 0){
+                continue;
+            }
+            
+            Paint mPaint = new Paint();
+            mPaint.setStyle(Style.FILL);
+            mPaint.setColor(table1.getLineColor());
+            mPaint.setAntiAlias(true);
+            
+            float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
+            for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
 
-		for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
-			float value1 = line1Data.get(j).getValue();
-			float value2 = line2Data.get(j).getValue();
+                IMeasurable pointLow = (IMeasurable)table1.get(j-1);
+                IMeasurable nextpointLow = (IMeasurable)table1.get(j);
+                
+                IMeasurable pointHigh = (IMeasurable)table2.get(j-1);
+                IMeasurable nextpointHigh = (IMeasurable)table2.get(j);
+                
+                AreaMole areaMole = new AreaMole();
+                areaMole.setUp(this,pointHigh.getHigh(),pointLow.getHigh(),nextpointHigh.getHigh(),nextpointLow.getHigh(),stickX,stickWidth);
+                areaMole.setAreaPaint(mPaint);
+                areaMole.draw(canvas);
 
-			// calculate Y
-			float valueY1 = (float) ((1f - (value1 - minValue)
-					/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
-					+ dataQuadrant.getPaddingStartY();
-			float valueY2 = (float) ((1f - (value2 - minValue)
-					/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
-					+ dataQuadrant.getPaddingStartY();
+                // next x
+                stickX = stickX + stickWidth;
+            }
+        }
+    }
 
-			// 绘制线条路径
-			if (j == displayFrom) {
-				areaPath.moveTo(startX, valueY1);
-				areaPath.lineTo(startX, valueY2);
-				areaPath.moveTo(startX, valueY1);
-			} else {
-				areaPath.lineTo(startX, valueY1);
-				areaPath.lineTo(startX, valueY2);
-				areaPath.lineTo(lastX, lastY);
-				areaPath.close();
-				areaPath.moveTo(startX, valueY1);
-			}
-
-			lastX = startX;
-			lastY = valueY2;
-			startX = startX + lineLength;
-		}
-		areaPath.close();
-		canvas.drawPath(areaPath, mPaint);
-	}
+//	/**
+//	 * <p>
+//	 * draw lines
+//	 * </p>
+//	 * <p>
+//	 * ラインを書く
+//	 * </p>
+//	 * <p>
+//	 * 绘制线条
+//	 * </p>
+//	 * 
+//	 * @param canvas
+//	 */
+//	protected void drawAreas(Canvas canvas) {
+//		if (null == linesData) {
+//			return;
+//		}
+//		if (linesData.size() < 2) {
+//			return;
+//		}
+//		LineEntity<DateValueEntity> line1 = (LineEntity<DateValueEntity>) linesData
+//				.get(0);
+//		LineEntity<DateValueEntity> line2 = (LineEntity<DateValueEntity>) linesData
+//				.get(1);
+//		List<DateValueEntity> line1Data = line1.getLineData();
+//		List<DateValueEntity> line2Data = line2.getLineData();
+//
+//		if (line1.isDisplay() == false || line2.isDisplay() == false) {
+//			return;
+//		}
+//		if (line1Data == null || line2Data == null) {
+//			return;
+//		}
+//
+//		Paint mPaint = new Paint();
+//		mPaint.setColor(line1.getLineColor());
+//		mPaint.setAlpha(70);
+//		mPaint.setAntiAlias(true);
+//
+//		// distance between two points
+//		float lineLength;
+//		// start point‘s X
+//		// set start point’s X
+//		float startX;
+//		
+//		if (lineAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
+//            lineLength= (dataQuadrant.getPaddingWidth() / displayNumber);
+//            startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
+//        }else {
+//            lineLength= (dataQuadrant.getPaddingWidth() / (displayNumber - 1));
+//            startX = dataQuadrant.getPaddingStartX();
+//        }
+//		
+//		float lastY = 0;
+//		float lastX = 0;
+//
+//		Path areaPath = new Path();
+//
+//		for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+//			float value1 = line1Data.get(j).getValue();
+//			float value2 = line2Data.get(j).getValue();
+//
+//			// calculate Y
+//			float valueY1 = (float) ((1f - (value1 - minValue)
+//					/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+//					+ dataQuadrant.getPaddingStartY();
+//			float valueY2 = (float) ((1f - (value2 - minValue)
+//					/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+//					+ dataQuadrant.getPaddingStartY();
+//
+//			// 绘制线条路径
+//			if (j == displayFrom) {
+//				areaPath.moveTo(startX, valueY1);
+//				areaPath.lineTo(startX, valueY2);
+//				areaPath.moveTo(startX, valueY1);
+//			} else {
+//				areaPath.lineTo(startX, valueY1);
+//				areaPath.lineTo(startX, valueY2);
+//				areaPath.lineTo(lastX, lastY);
+//				areaPath.close();
+//				areaPath.moveTo(startX, valueY1);
+//			}
+//
+//			lastX = startX;
+//			lastY = valueY2;
+//			startX = startX + lineLength;
+//		}
+//		areaPath.close();
+//		canvas.drawPath(areaPath, mPaint);
+//	}
 }

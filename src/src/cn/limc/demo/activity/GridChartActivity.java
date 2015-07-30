@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.axis.Axis;
+import cn.limc.androidcharts.component.Axis;
 import cn.limc.androidcharts.view.GridChart;
 import android.os.Bundle;
 import android.app.Activity;

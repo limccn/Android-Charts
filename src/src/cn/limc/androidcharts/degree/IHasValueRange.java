@@ -27,15 +27,12 @@ public interface IHasValueRange {
     public static final int DEFAULT_DATA_MULTIPLE = 1;
     public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
     
-    void calcDataValueRange();
-    void calcValueRangePaddingZero();
-    void calcValueRangeFormatForAxis();
-    void calcValueRange();
-    
     int getDataMultiple();
     double getMaxValue();
     double getMinValue();
     double getValueRange();
     boolean isAutoCalcValueRange();
+    
+    void calcValueRange();
     
 }

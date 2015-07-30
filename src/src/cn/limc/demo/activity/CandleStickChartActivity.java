@@ -22,9 +22,9 @@
 package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.axis.Axis;
-import cn.limc.androidcharts.entity.IStickEntity;
-import cn.limc.androidcharts.entity.ListChartData;
+import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.entity.ChartDataSet;
+import cn.limc.androidcharts.entity.ChartDataTable;
 import cn.limc.androidcharts.view.CandleStickChart;
 import cn.limc.demo.common.BaseActivity;
 import android.os.Bundle;
@@ -88,6 +88,6 @@ public class CandleStickChartActivity extends BaseActivity {
         candlestickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
         // 为chart2增加均线
-        candlestickchart.setStickData(new ListChartData<IStickEntity>(ohlc));
+        candlestickchart.setChartData(new ChartDataSet(new ChartDataTable(ohlc)));
     }
 }

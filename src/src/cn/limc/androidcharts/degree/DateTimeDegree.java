@@ -15,7 +15,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import cn.limc.androidcharts.view.DataGridChart;
+import cn.limc.androidcharts.entity.ChartDataTable;
+import cn.limc.androidcharts.entity.IHasDate;
+import cn.limc.androidcharts.view.GridChart;
 
 /**
  * DateTimeDegree
@@ -38,7 +40,7 @@ public class DateTimeDegree extends Degree {
     /**
      * @param inChart
      */
-    public DateTimeDegree(DataGridChart inChart) {
+    public DateTimeDegree(GridChart inChart) {
         super(inChart);
         
         sourceFormat = DEFAULT_SOURCE_FORMAT;
@@ -51,16 +53,20 @@ public class DateTimeDegree extends Degree {
     @Override
     public List<String> getDegrees() {
         List<String> titleX = new ArrayList<String>();
-        if (null != inChart.getStickData() && inChart.getStickData().size() > 0) {
+        ChartDataTable table = inChart.getChartData().getChartTable();
+        if (null != table && table.size() > 0) {
             float average = inChart.getDataCursor().getDisplayNumber() / inChart.getSimpleGrid().getLongitudeNum();
             for (int i = 0; i < inChart.getSimpleGrid().getLongitudeNum(); i++) {
                 int index = (int) Math.floor(i * average);
                 if (index > inChart.getDataCursor().getDisplayNumber() - 1) {
                     index = inChart.getDataCursor().getDisplayNumber() - 1;
                 }
-                titleX.add(this.valueForDegree(inChart.getStickData().get(index).getDate()));
+                
+                IHasDate rowDate= (IHasDate)table.get(index);
+                titleX.add(this.valueForDegree(rowDate.getDate()));
             }
-            titleX.add(this.valueForDegree(inChart.getStickData().get(inChart.getDataCursor().getDisplayNumber() - 1).getDate()));
+            IHasDate rowDate= (IHasDate)table.get(inChart.getDataCursor().getDisplayNumber() - 1);
+            titleX.add(this.valueForDegree(rowDate.getDate()));
         }
         return titleX;
     }

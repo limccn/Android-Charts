@@ -22,10 +22,9 @@
 package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.axis.Axis;
-import cn.limc.androidcharts.entity.IChartData;
-import cn.limc.androidcharts.entity.IStickEntity;
-import cn.limc.androidcharts.entity.ListChartData;
+import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.entity.ChartDataSet;
+import cn.limc.androidcharts.entity.ChartDataTable;
 import cn.limc.androidcharts.event.IZoomable;
 import cn.limc.androidcharts.view.SlipStickChart;
 import cn.limc.demo.common.BaseActivity;
@@ -99,9 +98,8 @@ public class SlipStickChartActivity extends BaseActivity {
 //        slipstickchart.setAxisXDateTargetFormat("yyyy/MM/dd");
 //        slipstickchart.setAxisXDateSourceFormat("yyyyMMdd");
 
-        IChartData<IStickEntity> vol = new ListChartData<IStickEntity>(this.vol);
         // 为chart1增加均线
-        slipstickchart.setStickData(vol);
+        slipstickchart.setChartData(new ChartDataSet(new ChartDataTable(vol)));
     }
 
 }

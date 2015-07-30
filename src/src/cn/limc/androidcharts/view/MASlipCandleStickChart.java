@@ -23,8 +23,13 @@ package cn.limc.androidcharts.view;
 
 import java.util.List;
 
+import cn.limc.androidcharts.entity.ChartDataSet;
+import cn.limc.androidcharts.entity.ChartDataTable;
 import cn.limc.androidcharts.entity.DateValueEntity;
+import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.LineEntity;
+import cn.limc.androidcharts.mole.LineMole;
+import cn.limc.androidcharts.mole.StickMole;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -60,7 +65,7 @@ public class MASlipCandleStickChart extends SlipCandleStickChart {
 	 * 绘制线条用的数据
 	 * </p>
 	 */
-	private List<LineEntity<DateValueEntity>> linesData;
+	private ChartDataSet linesData;
 
 	/**
 	 * <p>
@@ -148,6 +153,51 @@ public class MASlipCandleStickChart extends SlipCandleStickChart {
 //		this.minValue = minValue;
 //	}
 
+	
+	   @Override
+	    protected void onDraw(Canvas canvas) {
+	        super.onDraw(canvas);
+	        drawLines(canvas);
+	    }
+	    
+	     protected void drawLines(Canvas canvas) {
+	            if (null == linesData) {
+	                return;
+	            }
+	            if (linesData.size() == 0) {
+	                return;
+	            }
+
+	            float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+	           
+	            for(int i=0; i< linesData.size() ; i++){
+	                LineEntity table = (LineEntity)linesData.getChartTable(i);
+	                if (null == table) {
+	                    continue;
+	                }
+	                if(table.size() == 0){
+	                    continue;
+	                }
+	                
+	                Paint mPaint = new Paint();
+	                mPaint.setColor(table.getLineColor());
+	                mPaint.setAntiAlias(true);
+	                float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
+	                for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
+	                    IMeasurable point = (IMeasurable)table.get(j-1);
+	                    IMeasurable nextpoint = (IMeasurable)table.get(j);
+	                    
+	                    LineMole lineMole = new LineMole();
+	                    lineMole.setUp(this,point.getHigh(),nextpoint.getHigh(),stickX,stickWidth);
+	                    lineMole.setLinePaint(mPaint);
+	                    lineMole.draw(canvas);
+
+	                    // next x
+	                    stickX = stickX + stickWidth;
+	                }
+	            }
+	        }
+	     
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -158,89 +208,12 @@ public class MASlipCandleStickChart extends SlipCandleStickChart {
 	 * 
 	 * @see android.view.View#onDraw(android.graphics.Canvas)
 	 */
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-
-		// draw lines
-		if (null != this.linesData) {
-			if (0 != this.linesData.size()) {
-				drawLines(canvas);
-			}
-		}
-	}
-
-	/**
-	 * <p>
-	 * draw lines
-	 * </p>
-	 * <p>
-	 * ラインを書く
-	 * </p>
-	 * <p>
-	 * 绘制线条
-	 * </p>
-	 * 
-	 * @param canvas
-	 */
-	protected void drawLines(Canvas canvas) {
-		if (null == stickData) {
-			return;
-		}
-		if (stickData.size() <= 0) {
-			return;
-		}
-		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - stickSpacing;
-		// start point‘s X
-		float startX;
-
-		// draw MA lines
-		for (int i = 0; i < linesData.size(); i++) {
-			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
-					.get(i);
-			if (line == null) {
-				continue;
-			}
-			if (line.isDisplay() == false) {
-				continue;
-			}
-			List<DateValueEntity> lineData = line.getLineData();
-			if (lineData == null) {
-				continue;
-			}
-
-			Paint mPaint = new Paint();
-			mPaint.setColor(line.getLineColor());
-			mPaint.setAntiAlias(true);
-			// set start point’s X
-			startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
-			// start point
-			PointF ptFirst = null;
-			for (int j = super.getDisplayFrom(); j < super.getDisplayFrom()
-					+ super.getDisplayNumber(); j++) {
-				float value = lineData.get(j).getValue();
-				// calculate Y
-				float valueY = (float) ((1f - (value - dataRange.getMinValue())
-                        / (dataRange.getValueRange())) * dataQuadrant.getPaddingHeight())
-                        + dataQuadrant.getPaddingStartY();
-
-				// if is not last point connect to previous point
-				if (j > super.getDisplayFrom()) {
-					canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
-							mPaint);
-				}
-				// reset
-				ptFirst = new PointF(startX, valueY);
-				startX = startX + stickSpacing + lineLength;
-			}
-		}
-	}
+	
 
 	/**
 	 * @return the linesData
 	 */
-	public List<LineEntity<DateValueEntity>> getLinesData() {
+	public ChartDataSet getLinesData() {
 		return linesData;
 	}
 
@@ -248,7 +221,7 @@ public class MASlipCandleStickChart extends SlipCandleStickChart {
 	 * @param linesData
 	 *            the linesData to set
 	 */
-	public void setLinesData(List<LineEntity<DateValueEntity>> linesData) {
+	public void setLinesData(ChartDataSet linesData) {
 		this.linesData = linesData;
 	}
 

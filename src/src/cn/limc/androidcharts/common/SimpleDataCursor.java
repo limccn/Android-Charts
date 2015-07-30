@@ -22,9 +22,9 @@
 
 package cn.limc.androidcharts.common;
 
-import cn.limc.androidcharts.axis.IAxis;
+import cn.limc.androidcharts.component.IAxis;
 import cn.limc.androidcharts.event.IZoomable;
-import cn.limc.androidcharts.view.DataGridChart;
+import cn.limc.androidcharts.view.GridChart;
 
 /** 
  * <p>en</p>
@@ -36,10 +36,11 @@ import cn.limc.androidcharts.view.DataGridChart;
  *  
  */
 public class SimpleDataCursor implements IDataCursor,IZoomable {
+    public static int MAX_DISPLAY_NUM = 30;
     
-    protected DataGridChart inChart;
+    protected GridChart inChart;
 
-	private int maxDisplayNum;
+	private int maxDisplayNum = MAX_DISPLAY_NUM; 
 	private int minDisplayNumber = MINI_DISPLAY_NUM;
 	
 	/** 
@@ -48,7 +49,7 @@ public class SimpleDataCursor implements IDataCursor,IZoomable {
 	 * <p>SimpleDataCursorのコンストラクター</p>
 	 * 
 	 */
-	public SimpleDataCursor(DataGridChart inChart) {
+	public SimpleDataCursor(GridChart inChart) {
 	    this.inChart = inChart;
 	}
 
@@ -61,7 +62,7 @@ public class SimpleDataCursor implements IDataCursor,IZoomable {
 	     if (inChart.getAxisY().getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
 	            return 0;
 	     }else{
-	            return inChart.getStickData().size() - maxDisplayNum;
+	            return inChart.getChartData().getChartTable().size() - maxDisplayNum;
 	     }
 	}
 
@@ -83,7 +84,7 @@ public class SimpleDataCursor implements IDataCursor,IZoomable {
 	    if (inChart.getAxisY().getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
             return maxDisplayNum;
         }else{
-            return inChart.getStickData().size() - 1;
+            return inChart.getChartData().getChartTable().size() - 1;
         }
 	}
 
@@ -143,7 +144,7 @@ public class SimpleDataCursor implements IDataCursor,IZoomable {
     @Override
     public void zoomOut() {
         // TODO Auto-generated method stub
-        if (getDisplayNumber() < inChart.getStickData().size() - 1 - ZOOM_STEP) {
+        if (getDisplayNumber() < inChart.getChartData().getChartTable().size() - 1 - ZOOM_STEP) {
             setDisplayNumber(getDisplayNumber() + ZOOM_STEP);
         }
     }

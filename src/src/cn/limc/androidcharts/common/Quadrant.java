@@ -22,6 +22,8 @@
 
 package cn.limc.androidcharts.common;
 
+import android.graphics.PointF;
+import android.graphics.RectF;
 import cn.limc.androidcharts.view.GridChart;
 
 /** 
@@ -34,6 +36,7 @@ import cn.limc.androidcharts.view.GridChart;
  *  
  */
 public abstract class Quadrant implements IQuadrant{
+    protected RectF frame;
 	
 	protected GridChart inChart;
 	
@@ -221,4 +224,67 @@ public abstract class Quadrant implements IQuadrant{
 		return getHeight() - paddingTop
 				- paddingBottom;
 	}
+
+    /**
+     * @return the frame
+     */
+    public RectF getFrame() {
+        return frame;
+    }
+
+    /**
+     * @param frame the frame to set
+     */
+    public void setFrame(RectF frame) {
+        this.frame = frame;
+    }
+
+    /**
+     * @return the orgin
+     */
+    public PointF getOrigin() {
+        return new PointF(frame.left,frame.top);
+    }
+
+    /**
+     * @return the center
+     */
+    public PointF getCenter() {
+        return new PointF(frame.centerX(), frame.centerY());
+    }
+
+    
+    /* (non-Javadoc)
+     * @see cn.limc.androidcharts.common.IQuadrant#getWidth()
+     */
+    @Override
+    public float getWidth() {
+        return frame.left - frame.right;
+    }
+
+    /* (non-Javadoc)
+     * @see cn.limc.androidcharts.common.IQuadrant#getHeight()
+     */
+    @Override
+    public float getHeight() {
+        return frame.top - frame.bottom;
+    }
+
+    /* (non-Javadoc)
+     * @see cn.limc.androidcharts.common.IQuadrant#getStartX()
+     */
+    @Override
+    public float getStartX() {
+        // TODO Auto-generated method stub
+        return getOrigin().x;
+    }
+
+    /* (non-Javadoc)
+     * @see cn.limc.androidcharts.common.IQuadrant#getStartY()
+     */
+    @Override
+    public float getStartY() {
+        // TODO Auto-generated method stub
+        return getOrigin().y;
+    }
 }

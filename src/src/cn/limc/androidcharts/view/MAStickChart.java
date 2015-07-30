@@ -21,16 +21,15 @@
 
 package cn.limc.androidcharts.view;
 
-import java.util.List;
 
-import cn.limc.androidcharts.axis.IAxis;
-import cn.limc.androidcharts.entity.DateValueEntity;
+import cn.limc.androidcharts.entity.ChartDataSet;
+import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.LineEntity;
+import cn.limc.androidcharts.mole.LineMole;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.util.AttributeSet;
 
 /**
@@ -63,7 +62,7 @@ public class MAStickChart extends StickChart {
 	 * 绘制线条用的数据
 	 * </p>
 	 */
-	private List<LineEntity<DateValueEntity>> linesData;
+	private ChartDataSet linesData;
 
 	/*
 	 * (non-Javadoc)
@@ -161,105 +160,139 @@ public class MAStickChart extends StickChart {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-
-		// draw lines
-		if (null != this.linesData) {
-			if (0 != this.linesData.size()) {
-				drawLines(canvas);
-			}
-		}
+		drawLines(canvas);
 	}
+	
+	 protected void drawLines(Canvas canvas) {
+	        if (null == linesData) {
+	            return;
+	        }
+	        if (linesData.size() == 0) {
+	            return;
+	        }
 
-	/**
-	 * <p>
-	 * draw lines
-	 * </p>
-	 * <p>
-	 * ラインを書く
-	 * </p>
-	 * <p>
-	 * 绘制线条
-	 * </p>
-	 * 
-	 * @param canvas
-	 */
-	protected void drawLines(Canvas canvas) {
-		if (null == this.linesData) {
-			return;
-		}
-		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - stickSpacing;
-		// start point‘s X
-		float startX;
+	        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
 
-		// draw MA lines
-		for (int i = 0; i < linesData.size(); i++) {
-			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
-					.get(i);
-			if (line == null) {
-				continue;
-			}
-			if (line.isDisplay() == false) {
-				continue;
-			}
-			List<DateValueEntity> lineData = line.getLineData();
-			if (lineData == null) {
-				continue;
-			}
-			Paint mPaint = new Paint();
-			mPaint.setColor(line.getLineColor());
-			mPaint.setAntiAlias(true);
+	        for(int i=0; i< linesData.size() ; i++){
+	            LineEntity table = (LineEntity)linesData.getChartTable(i);
+	            if (null == table) {
+	                continue;
+	            }
+	            if(table.size() == 0){
+	                continue;
+	            }
+	            
+	            Paint mPaint = new Paint();
+	            mPaint.setColor(table.getLineColor());
+	            mPaint.setAntiAlias(true);
+	            
+	            float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
+	            for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
+	                IMeasurable point = (IMeasurable)table.get(j-1);
+	                IMeasurable nextpoint = (IMeasurable)table.get(j);
+	                
+	                LineMole lineMole = new LineMole();
+	                lineMole.setUp(this,point.getHigh(),nextpoint.getHigh(),stickX,stickWidth);
+	                lineMole.setLinePaint(mPaint);
+	                lineMole.draw(canvas);
 
-			// start point
-			PointF ptFirst = null;
+	                // next x
+	                stickX = stickX + stickWidth;
+	            }
+	        }
+	    }
 
-			if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
-				// set start point’s X
-				startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 
-				for (int j = 0; j < lineData.size(); j++) {
-					float value = lineData.get(j).getValue();
-					// calculate Y
-					float valueY = (float) ((1f - (value - dataRange.getMinValue())
-							/ (dataRange.getValueRange())) * dataQuadrant.getPaddingHeight())
-							+ dataQuadrant.getPaddingStartY();
-
-					// if is not last point connect to previous point
-					if (j > 0) {
-						canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
-								mPaint);
-					}
-					// reset
-					ptFirst = new PointF(startX, valueY);
-					startX = startX + stickSpacing + lineLength;
-				}
-			} else {
-				// set start point’s X
-				startX = dataQuadrant.getPaddingEndX() - lineLength / 2;
-				for (int j = lineData.size() - 1; j >= 0; j--) {
-					float value = lineData.get(j).getValue();
-					// calculate Y
-					float valueY = (float) ((1f - (value - dataRange.getMinValue())
-							/ (dataRange.getValueRange())) * dataQuadrant.getPaddingHeight())
-							+ dataQuadrant.getPaddingStartY();
-
-					// if is not last point connect to previous point
-					if (j < lineData.size() - 1) {
-						canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
-								mPaint);
-					}
-					// reset
-					ptFirst = new PointF(startX, valueY);
-					startX = startX - stickSpacing - lineLength;
-				}
-			}
-		}
-	}
+//	/**
+//	 * <p>
+//	 * draw lines
+//	 * </p>
+//	 * <p>
+//	 * ラインを書く
+//	 * </p>
+//	 * <p>
+//	 * 绘制线条
+//	 * </p>
+//	 * 
+//	 * @param canvas
+//	 */
+//	protected void drawLines(Canvas canvas) {
+//		if (null == this.linesData) {
+//			return;
+//		}
+//		// distance between two points
+//		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - stickSpacing;
+//		// start point‘s X
+//		float startX;
+//
+//		// draw MA lines
+//		for (int i = 0; i < linesData.size(); i++) {
+//			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
+//					.get(i);
+//			if (line == null) {
+//				continue;
+//			}
+//			if (line.isDisplay() == false) {
+//				continue;
+//			}
+//			List<DateValueEntity> lineData = line.getLineData();
+//			if (lineData == null) {
+//				continue;
+//			}
+//			Paint mPaint = new Paint();
+//			mPaint.setColor(line.getLineColor());
+//			mPaint.setAntiAlias(true);
+//
+//			// start point
+//			PointF ptFirst = null;
+//
+//			if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+//				// set start point’s X
+//				startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
+//
+//				for (int j = 0; j < lineData.size(); j++) {
+//					float value = lineData.get(j).getValue();
+//					// calculate Y
+//					float valueY = (float) ((1f - (value - dataRange.getMinValue())
+//							/ (dataRange.getValueRange())) * dataQuadrant.getPaddingHeight())
+//							+ dataQuadrant.getPaddingStartY();
+//
+//					// if is not last point connect to previous point
+//					if (j > 0) {
+//						canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+//								mPaint);
+//					}
+//					// reset
+//					ptFirst = new PointF(startX, valueY);
+//					startX = startX + stickSpacing + lineLength;
+//				}
+//			} else {
+//				// set start point’s X
+//				startX = dataQuadrant.getPaddingEndX() - lineLength / 2;
+//				for (int j = lineData.size() - 1; j >= 0; j--) {
+//					float value = lineData.get(j).getValue();
+//					// calculate Y
+//					float valueY = (float) ((1f - (value - dataRange.getMinValue())
+//							/ (dataRange.getValueRange())) * dataQuadrant.getPaddingHeight())
+//							+ dataQuadrant.getPaddingStartY();
+//
+//					// if is not last point connect to previous point
+//					if (j < lineData.size() - 1) {
+//						canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+//								mPaint);
+//					}
+//					// reset
+//					ptFirst = new PointF(startX, valueY);
+//					startX = startX - stickSpacing - lineLength;
+//				}
+//			}
+//		}
+//	}
 
 	/**
 	 * @return the lineData
 	 */
-	public List<LineEntity<DateValueEntity>> getLinesData() {
+	public ChartDataSet getLinesData() {
 		return linesData;
 	}
 
@@ -267,7 +300,7 @@ public class MAStickChart extends StickChart {
 	 * @param linesData
 	 *            the linesData to set
 	 */
-	public void setLinesData(List<LineEntity<DateValueEntity>> linesData) {
+	public void setLinesData(ChartDataSet linesData) {
 		this.linesData = linesData;
 	}
 }

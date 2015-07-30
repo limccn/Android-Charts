@@ -36,10 +36,9 @@ package cn.limc.androidcharts.entity;
  * @version v1.0 2014/01/21 15:29:26
  * 
  */
-public class DateValueEntity implements IHasDate {
-
-	private int date;
-	private float value;
+public class DateValueEntity implements ChartDataRow,IMeasurable,IHasDate,IHasValue {    
+	private Object date;
+	private double value;
 
 	/**
 	 * <p>
@@ -55,7 +54,7 @@ public class DateValueEntity implements IHasDate {
 	 * @param date
 	 * @param value
 	 */
-	public DateValueEntity(float value, int date) {
+	public DateValueEntity(double value, Object date) {
 		super();
 		this.value = value;
 		this.date = date;
@@ -64,7 +63,7 @@ public class DateValueEntity implements IHasDate {
 	/**
 	 * @return the date
 	 */
-	public int getDate() {
+	public Object getDate() {
 		return date;
 	}
 
@@ -72,14 +71,14 @@ public class DateValueEntity implements IHasDate {
 	 * @param date
 	 *            the date to set
 	 */
-	public void setDate(int date) {
-		this.date = date;
+	public void setDate(Object date) {
+		this.date = (Integer)date;
 	}
 
 	/**
 	 * @return the value
 	 */
-	public float getValue() {
+	public Object getValue() {
 		return value;
 	}
 
@@ -87,7 +86,24 @@ public class DateValueEntity implements IHasDate {
 	 * @param value
 	 *            the value to set
 	 */
-	public void setValue(float value) {
-		this.value = value;
+	public void setValue(Object value) {
+		this.value = (Double)value;
 	}
+
+    /* (non-Javadoc)
+     * @see cn.limc.androidcharts.entity.IMeasurable#getHigh()
+     */
+    @Override
+    public double getHigh() {
+        return value;
+    }
+
+    /* (non-Javadoc)
+     * @see cn.limc.androidcharts.entity.IMeasurable#getLow()
+     */
+    @Override
+    public double getLow() {
+        return value;
+    }
+
 }

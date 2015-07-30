@@ -25,11 +25,14 @@ import java.util.List;
 
 import cn.limc.androidcharts.common.IFlexableGrid;
 import cn.limc.androidcharts.entity.DateValueEntity;
+import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.LineEntity;
+import cn.limc.androidcharts.mole.AreaMole;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Paint.Style;
 import android.util.AttributeSet;
 
 /**
@@ -105,7 +108,7 @@ public class SlipAreaChart extends SlipLineChart {
 	public SlipAreaChart(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
-		lineAlignType = IFlexableGrid.ALIGN_TYPE_CENTER;
+//		lineAlignType = IFlexableGrid.ALIGN_TYPE_CENTER;
 	}
 
 	/*
@@ -125,79 +128,119 @@ public class SlipAreaChart extends SlipLineChart {
 		drawAreas(canvas);
 	}
 
-	/**
-	 * <p>
-	 * draw lines
-	 * </p>
-	 * <p>
-	 * ラインを書く
-	 * </p>
-	 * <p>
-	 * 绘制线条
-	 * </p>
-	 * 
-	 * @param canvas
-	 */
 	protected void drawAreas(Canvas canvas) {
-		if (null == linesData) {
-			return;
-		}
-		// distance between two points
-		float lineLength;
-		// start point‘s X
-		float startX;
+        if (null == chartData) {
+            return;
+        }
+        if (chartData.size() == 0 ) {
+            return;
+        }
 
-		// draw lines
-		for (int i = 0; i < linesData.size(); i++) {
-			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
-					.get(i);
-			if (line == null) {
-				continue;
-			}
-			if (line.isDisplay() == false) {
-				continue;
-			}
-			List<DateValueEntity> lineData = line.getLineData();
-			if (lineData == null) {
-				continue;
-			}
-
-			Paint mPaint = new Paint();
-			mPaint.setColor(line.getLineColor());
-			mPaint.setAlpha(70);
-			mPaint.setAntiAlias(true);
-
-			// set start point’s X
-			if (lineAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
-                lineLength= (dataQuadrant.getPaddingWidth() / displayNumber);
-                startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
-            }else {
-                lineLength= (dataQuadrant.getPaddingWidth() / (displayNumber - 1));
-                startX = dataQuadrant.getPaddingStartX();
+        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+        for(int i=0; i< chartData.size() ; i++){
+            LineEntity table = (LineEntity)chartData.getChartTable(i);
+            
+            if (null == table) {
+                continue;
             }
-			
-			Path linePath = new Path();
-			for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
-				float value = lineData.get(j).getValue();
-				// calculate Y
-				float valueY = (float) ((1f - (value - minValue)
-						/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
-						+ dataQuadrant.getPaddingStartY();
+            if(table.size() == 0){
+                continue;
+            }
+            
+            Paint mPaint = new Paint();
+            mPaint.setStyle(Style.FILL_AND_STROKE);
+            mPaint.setColor(table.getLineColor());
+            mPaint.setAntiAlias(true);
+            
+            float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
+            for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
 
-				// if is not last point connect to previous point
-				if (j == displayFrom) {
-					linePath.moveTo(startX, dataQuadrant.getPaddingEndY());
-					linePath.lineTo(startX, valueY);
-				} else if (j == displayFrom + displayNumber - 1) {
-					linePath.lineTo(startX, valueY);
-					linePath.lineTo(startX, dataQuadrant.getPaddingEndY());
-				} else {
-					linePath.lineTo(startX, valueY);
-				}
-				startX = startX + lineLength;
-			}
-			linePath.close();
-			canvas.drawPath(linePath, mPaint);
-		}
-	}
+                IMeasurable point = (IMeasurable)table.get(j-1);
+                IMeasurable nextpoint = (IMeasurable)table.get(j);
+                
+                AreaMole areaMole = new AreaMole();
+                areaMole.setUp(this,point.getHigh(),getMinValue(),nextpoint.getHigh(),getMinValue(),stickX,stickWidth);
+                areaMole.setAreaPaint(mPaint);
+                areaMole.draw(canvas);
+
+                // next x
+                stickX = stickX + stickWidth;
+            }
+        }
+    }
+//	/**
+//	 * <p>
+//	 * draw lines
+//	 * </p>
+//	 * <p>
+//	 * ラインを書く
+//	 * </p>
+//	 * <p>
+//	 * 绘制线条
+//	 * </p>
+//	 * 
+//	 * @param canvas
+//	 */
+//	protected void drawAreas(Canvas canvas) {
+//		if (null == linesData) {
+//			return;
+//		}
+//		// distance between two points
+//		float lineLength;
+//		// start point‘s X
+//		float startX;
+//
+//		// draw lines
+//		for (int i = 0; i < linesData.size(); i++) {
+//			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
+//					.get(i);
+//			if (line == null) {
+//				continue;
+//			}
+//			if (line.isDisplay() == false) {
+//				continue;
+//			}
+//			List<DateValueEntity> lineData = line.getLineData();
+//			if (lineData == null) {
+//				continue;
+//			}
+//
+//			Paint mPaint = new Paint();
+//			mPaint.setColor(line.getLineColor());
+//			mPaint.setAlpha(70);
+//			mPaint.setAntiAlias(true);
+//
+//			// set start point’s X
+//			if (lineAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
+//                lineLength= (dataQuadrant.getPaddingWidth() / displayNumber);
+//                startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
+//            }else {
+//                lineLength= (dataQuadrant.getPaddingWidth() / (displayNumber - 1));
+//                startX = dataQuadrant.getPaddingStartX();
+//            }
+//			
+//			Path linePath = new Path();
+//			for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+//				float value = lineData.get(j).getValue();
+//				// calculate Y
+//				float valueY = (float) ((1f - (value - minValue)
+//						/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+//						+ dataQuadrant.getPaddingStartY();
+//
+//				// if is not last point connect to previous point
+//				if (j == displayFrom) {
+//					linePath.moveTo(startX, dataQuadrant.getPaddingEndY());
+//					linePath.lineTo(startX, valueY);
+//				} else if (j == displayFrom + displayNumber - 1) {
+//					linePath.lineTo(startX, valueY);
+//					linePath.lineTo(startX, dataQuadrant.getPaddingEndY());
+//				} else {
+//					linePath.lineTo(startX, valueY);
+//				}
+//				startX = startX + lineLength;
+//			}
+//			linePath.close();
+//			canvas.drawPath(linePath, mPaint);
+//		}
+//	}
 }

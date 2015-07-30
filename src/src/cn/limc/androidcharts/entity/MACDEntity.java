@@ -21,6 +21,7 @@
 
 package cn.limc.androidcharts.entity;
 
+
 /**
  * <p>
  * en
@@ -36,8 +37,7 @@ package cn.limc.androidcharts.entity;
  * @version v1.0 2014/03/17 17:16:56
  * 
  */
-public class MACDEntity implements IStickEntity {
-
+public class MACDEntity implements ChartDataRow, IMeasurable, IHasDate {
 	private double dea;
 	private double diff;
 	private double macd;
@@ -131,7 +131,7 @@ public class MACDEntity implements IStickEntity {
 	/**
 	 * @return the date
 	 */
-	public int getDate() {
+	public Object getDate() {
 		return date;
 	}
 
@@ -139,8 +139,8 @@ public class MACDEntity implements IStickEntity {
 	 * @param date
 	 *            the date to set
 	 */
-	public void setDate(int date) {
-		this.date = date;
+	public void setDate(Object date) {
+		this.date = (Integer)date;
 	}
 
 	/*

@@ -21,9 +21,6 @@
 
 package cn.limc.androidcharts.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * <p>
  * Entity data which is use for display a single line in LineChart
@@ -38,20 +35,8 @@ import java.util.List;
  * @author limc
  * @version v1.0 2011/05/29 12:24:49
  */
-public class LineEntity<T> {
+public class LineEntity extends ChartDataTable {
 
-	/**
-	 * <p>
-	 * Data for draw this line
-	 * </p>
-	 * <p>
-	 * ラインを表示用データ
-	 * </p>
-	 * <p>
-	 * 线表示数据
-	 * </p>
-	 */
-	private List<T> lineData;
 
 	/**
 	 * <p>
@@ -150,36 +135,10 @@ public class LineEntity<T> {
 	 *            线的颜色
 	 *            </p>
 	 */
-	public LineEntity(List<T> lineData, String title, int lineColor) {
+	public LineEntity(String title, int lineColor) {
 		super();
-		this.lineData = lineData;
 		this.title = title;
 		this.lineColor = lineColor;
-	}
-
-	/**
-	 * @param value
-	 */
-	public void put(T value) {
-		if (null == lineData) {
-			lineData = new ArrayList<T>();
-		}
-		lineData.add(value);
-	}
-
-	/**
-	 * @return the lineData
-	 */
-	public List<T> getLineData() {
-		return lineData;
-	}
-
-	/**
-	 * @param lineData
-	 *            the lineData to set
-	 */
-	public void setLineData(List<T> lineData) {
-		this.lineData = lineData;
 	}
 
 	/**
@@ -226,4 +185,5 @@ public class LineEntity<T> {
 	public void setDisplay(boolean display) {
 		this.display = display;
 	}
+
 }

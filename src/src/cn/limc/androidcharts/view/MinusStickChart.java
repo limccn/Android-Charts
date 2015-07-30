@@ -21,8 +21,8 @@
 
 package cn.limc.androidcharts.view;
 
-import cn.limc.androidcharts.axis.IAxis;
 import cn.limc.androidcharts.degree.MinusStickValueRangeCalc;
+import cn.limc.androidcharts.entity.ChartDataTable;
 import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.mole.StickMole;
 
@@ -75,6 +75,7 @@ public class MinusStickChart extends StickChart {
 	 */
 	public MinusStickChart(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		this.dataRange = new MinusStickValueRangeCalc(this);
 	}
 
 	/*
@@ -89,6 +90,7 @@ public class MinusStickChart extends StickChart {
 	 */
 	public MinusStickChart(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		this.dataRange = new MinusStickValueRangeCalc(this);
 	}
 
 	/*
@@ -100,38 +102,36 @@ public class MinusStickChart extends StickChart {
 	 * 
 	 * @see cn.limc.androidcharts.view.StickChart#drawSticks(Canvas)
 	 */
-	@Override
-	protected void drawSticks(Canvas canvas) {
-		if (null == stickData) {
-			return;
-		}
-		if (stickData.size() <= 0) {
-			return;
-		}
-
-		float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber();
-
-		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
-
-			float stickX = dataQuadrant.getPaddingStartX();
-			for (int i = 0; i < stickData.size(); i++) {
-				IMeasurable stick = stickData.get(i);
-				StickMole mole = new StickMole();
-				mole.setUp(this,stick,stickX,stickWidth);
-				mole.draw(canvas);
-				// next x
-				stickX = stickX + stickWidth;
-			}
-		} else {
-			float stickX = dataQuadrant.getPaddingEndX() - stickWidth;
-			for (int i = stickData.size() - 1; i >= 0; i--) {
-				IMeasurable stick = stickData.get(i);
-				StickMole mole = new StickMole();
-				mole.setUp(this,stick,stickX,stickWidth);
-				mole.draw(canvas);
-				// next x
-				stickX = stickX - stickWidth;
-			}
-		}
-	}
+//	@Override
+//	protected void drawSticks(Canvas canvas) {
+//        if (null == chartData) {
+//            return;
+//        }
+//        if (chartData.size() == 0) {
+//            return;
+//        }
+//
+//        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+//        float stickX = dataQuadrant.getPaddingStartX();
+//
+//        for(int i=0; i< chartData.size() ; i++){
+//            ChartDataTable table = chartData.getChartTable(i);
+//            if (null == table) {
+//                continue;
+//            }
+//            if(table.size() == 0){
+//                continue;
+//            }
+//            for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
+//                IMeasurable stick = (IMeasurable)table.get(j);
+//                
+//                StickMole mole = new  StickMole();
+//                mole.setUp(this,stick,stickX,stickWidth);
+//                mole.draw(canvas);
+//
+//                // next x
+//                stickX = stickX + stickWidth;
+//            }
+//        }
+//    }
 }

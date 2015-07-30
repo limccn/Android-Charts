@@ -11,7 +11,7 @@ package cn.limc.androidcharts.mole;
 import cn.limc.androidcharts.common.IChart;
 import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.OHLCEntity;
-import cn.limc.androidcharts.view.DataGridChart;
+import cn.limc.androidcharts.view.GridChart;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -31,7 +31,7 @@ import android.graphics.Paint.Style;
  * 2015-7-22 limc create v1.0 <br>
  *
  */
-public class CandleStickMole extends RectMole {
+public class CandleStickMole extends AbstractMole implements RectMole {
     
 
     public static final int DEFAULT_STICK_SPACING = 1;
@@ -177,18 +177,24 @@ public class CandleStickMole extends RectMole {
     private float lowY;
     private float closeY;
     
-    /** 
-     * <p>Constructor of StickMole</p>
-     * <p>StickMole类对象的构造函数</p>
-     * <p>StickMoleのコンストラクター</p>
-     *
-     * @param inRect 
+    /* (non-Javadoc)
+     * @see cn.limc.androidcharts.mole.RectMole#setUp(cn.limc.androidcharts.common.IChart, float, float)
+     */
+    @Override
+    public void setUp(IChart chart, float from, float width) {
+        super.setUp(chart);
+        left = from + stickSpacing / 2;
+        right = from + width - stickSpacing /2;
+        
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see cn.limc.androidcharts.mole.RectMole#setUp(cn.limc.androidcharts.common.IChart, cn.limc.androidcharts.entity.IMeasurable, float, float)
      */
     public void setUp(IChart chart ,IMeasurable data, float from , float width) {
-        super.setUp(chart);
+        this.setUp(chart,from,width);
         setStickData(data);
-        left = from;
-        right = from + width - stickSpacing;
     }
     
     /* (non-Javadoc)
@@ -252,7 +258,7 @@ public class CandleStickMole extends RectMole {
      */
     public void setStickData(IMeasurable stickData) {
         this.stickData = (OHLCEntity)stickData;
-        DataGridChart chart = (DataGridChart)getInChart();
+        GridChart chart = (GridChart)getInChart();
         float openY = (float) ((1f - (this.stickData.getOpen() - chart.getDataRange().getMinValue()) / (chart.getDataRange().getValueRange()))
                 * (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant().getPaddingStartY());
         float highY = (float) ((1f - (this.stickData.getHigh() - chart.getDataRange().getMinValue()) / (chart.getDataRange().getValueRange()))

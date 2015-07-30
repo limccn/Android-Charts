@@ -12,7 +12,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.limc.androidcharts.view.DataGridChart;
+import cn.limc.androidcharts.view.GridChart;
 
 /**
  * DecimalDegree
@@ -36,7 +36,7 @@ public class DecimalDegree extends Degree {
     /**
      * @param inChart
      */
-    public DecimalDegree(DataGridChart inChart) {
+    public DecimalDegree(GridChart inChart) {
         super(inChart);
         sourceFormat = DEFAULT_SOURCE_FORMAT;
         targetFormat = DEFAULT_TARGET_FORMAT;

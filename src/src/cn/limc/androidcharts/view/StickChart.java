@@ -21,9 +21,8 @@
 
 package cn.limc.androidcharts.view;
 
-import cn.limc.androidcharts.entity.IChartData;
+import cn.limc.androidcharts.entity.ChartDataTable;
 import cn.limc.androidcharts.entity.IMeasurable;
-import cn.limc.androidcharts.entity.IStickEntity;
 import cn.limc.androidcharts.event.GestureDetector;
 import cn.limc.androidcharts.event.IDisplayCursorListener;
 import cn.limc.androidcharts.event.IZoomable;
@@ -54,17 +53,10 @@ import android.view.MotionEvent;
  * @version v1.0 2011/05/30 14:58:59
  * 
  */
-public class StickChart extends PeriodDataGridChart{		
+public class StickChart extends GridChart{		
 		
-	public static final int DEFAULT_STICK_SPACING = 1;
-	
-
-	protected int stickSpacing = DEFAULT_STICK_SPACING;
 //	
-	protected OnZoomGestureListener onZoomListener = new OnZoomListener(){};
-	protected GestureDetector zoomGestureDetector = new ZoomGestureDetector(this, onZoomListener);
 	
-	protected IDisplayCursorListener onDisplayCursorListener;
 	
 	/*
 	 * (non-Javadoc)
@@ -177,242 +169,34 @@ public class StickChart extends PeriodDataGridChart{
 //	}
 	
     protected void drawSticks(Canvas canvas) {
-        if (null == stickData) {
+        if (null == chartData) {
             return;
         }
-        if (stickData.size() == 0) {
+        if (chartData.size() == 0) {
             return;
         }
 
         float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
         float stickX = dataQuadrant.getPaddingStartX();
 
-        for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
-            IMeasurable stick = stickData.get(i);
-            
-            StickMole mole = new  StickMole();
-            mole.setUp(this,stick,stickX,stickWidth);
-            mole.draw(canvas);
+        for(int i=0; i< chartData.size() ; i++){
+            ChartDataTable table = chartData.getChartTable(i);
+            if (null == table) {
+                continue;
+            }
+            if(table.size() == 0){
+                continue;
+            }
+            for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
+                IMeasurable stick = (IMeasurable)table.get(j);
+                
+                StickMole mole = new  StickMole();
+                mole.setUp(this,stick,stickX,stickWidth);
+                mole.draw(canvas);
 
-            // next x
-            stickX = stickX + stickWidth;
+                // next x
+                stickX = stickX + stickWidth;
+            }
         }
     }
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * <p>Called when chart is touched<p> <p>チャートをタッチしたら、メソッドを呼ぶ<p>
-	 * <p>图表点击时调用<p>
-	 * 
-	 * @param event
-	 * 
-	 * @see android.view.View#onTouchEvent(MotionEvent)
-	 */
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-        if (!isValidTouchPoint(event.getX(),event.getY())) {
-            return false;
-        }
-	    
-		if (null == stickData || stickData.size() == 0) {
-			return false;
-		}
-		
-		return touchGestureDetector.onTouchEvent(event) && zoomGestureDetector.onTouchEvent(event);
-	}
-
-	/**
-	 * <p>
-	 * Zoom in the graph
-	 * </p>
-	 * <p>
-	 * 拡大表示する。
-	 * </p>
-	 * <p>
-	 * 放大表示
-	 * </p>
-	 */
-	public void zoomIn() {		
-		this.postInvalidate();
-		
-		//Listener
-		if (onDisplayCursorListener != null) {
-			onDisplayCursorListener.onCursorChanged(this.dataCursor,getDisplayFrom(), getDisplayNumber());
-		}
-	}
-
-	/**
-	 * <p>
-	 * Zoom out the grid
-	 * </p>
-	 * <p>
-	 * 縮小表示する。
-	 * </p>
-	 * <p>
-	 * 缩小
-	 * </p>
-	 */
-	public void zoomOut() {		
-		
-	    this.postInvalidate();
-		//Listener
-		if (onDisplayCursorListener != null) {
-			onDisplayCursorListener.onCursorChanged(this.dataCursor,getDisplayFrom(), getDisplayNumber());
-		}
-	}
-
-	/**
-	 * @return the stickData
-	 */
-	public IChartData<IStickEntity> getStickData() {
-		return stickData;
-	}
-
-	/**
-	 * @param stickData
-	 *            the stickData to set
-	 */
-	public void setStickData(IChartData<IStickEntity> stickData) {
-		this.stickData = stickData;
-	}
-
-	/**
-	 * @return the maxSticksNum
-	 */
-	@Deprecated
-	public int getMaxSticksNum() {
-		return dataCursor.getDisplayNumber();
-	}
-
-	/**
-	 * @param maxSticksNum
-	 *            the maxSticksNum to set
-	 */
-	@Deprecated
-	public void setMaxSticksNum(int maxSticksNum) {
-		this.dataCursor.setDisplayNumber(maxSticksNum);
-	}
-
-	/**
-	 * @return the stickSpacing
-	 */
-	@Deprecated
-	public int getStickSpacing() {
-		return stickSpacing;
-	}
-
-	/**
-	 * @param stickSpacing the stickSpacing to set
-	 */
-	@Deprecated
-	public void setStickSpacing(int stickSpacing) {
-		this.stickSpacing = stickSpacing;
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.common.IDataCursor#displayFrom() 
-	 */
-	public int getDisplayFrom() {
-		return this.dataCursor.getDisplayFrom();
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.common.IDataCursor#displayNumber() 
-	 */
-	public int getDisplayNumber() {
-		return this.dataCursor.getDisplayNumber();
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.common.IDataCursor#displayTo() 
-	 */
-	public int getDisplayTo() {
-	    return this.dataCursor.getDisplayTo();
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @param displayFrom 
-	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayFrom(int) 
-	 */
-	public void setDisplayFrom(int displayFrom) {
-		this.dataCursor.setDisplayFrom(displayFrom);
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @param displayNumber 
-	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayNumber(int) 
-	 */
-	public void setDisplayNumber(int displayNumber) {
-		this.dataCursor.setDisplayNumber(displayNumber);
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber() 
-	 */
-	public int getMinDisplayNumber() {
-		return this.dataCursor.getMinDisplayNumber();
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @param minDisplayNumber 
-	 * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber(int) 
-	 */
-	public void setMinDisplayNumber(int minDisplayNumber) {
-		this.dataCursor.setMinDisplayNumber(minDisplayNumber);
-	}
-
-	/**
-	 * @return the onDisplayCursorListener
-	 */
-	public IDisplayCursorListener getOnDisplayCursorListener() {
-		return onDisplayCursorListener;
-	}
-
-	/**
-	 * @param onDisplayCursorListener the onDisplayCursorListener to set
-	 */
-	public void setOnDisplayCursorListener(
-			IDisplayCursorListener onDisplayCursorListener) {
-		this.onDisplayCursorListener = onDisplayCursorListener;
-	}
-	
-	public abstract class OnZoomListener implements OnZoomGestureListener{
-
-        /* (non-Javadoc)
-         * @see cn.limc.androidcharts.event.ZoomGestureDetector.OnZoomGestureListener#onZoomIn(android.view.MotionEvent)
-         */
-        @Override
-        public void onZoomIn(MotionEvent event) {
-            IZoomable dataCursor = (IZoomable) StickChart.this.getDataCursor();
-            if (dataCursor != null) {
-                dataCursor.zoomIn();
-            }
-            StickChart.this.postInvalidate();
-        }
-
-        /* (non-Javadoc)
-         * @see cn.limc.androidcharts.event.ZoomGestureDetector.OnZoomGestureListener#onZoomOut(android.view.MotionEvent)
-         */
-        @Override
-        public void onZoomOut(MotionEvent event) {
-           
-            IZoomable dataCursor = (IZoomable) StickChart.this.getDataCursor();
-            if (dataCursor != null) {
-                dataCursor.zoomOut();
-            }
-            StickChart.this.postInvalidate();
-        }   
-	}
 }

@@ -21,7 +21,8 @@
 
 
 package cn.limc.androidcharts.mole;
-import android.graphics.Canvas;
+
+import cn.limc.androidcharts.common.IChart;
 
 /** 
  * <p>en</p>
@@ -30,16 +31,9 @@ import android.graphics.Canvas;
  *
  * @author limc 
  * @version v1.0 2014/06/19 16:30:02 
+ * @param <T>
  *  
  */
-public abstract class RectMole extends AbstractMole {
-	
-	/* (non-Javadoc)
-	 * 
-	 * @param canvase 
-	 * @see cn.limc.androidcharts.mole.IMole#draw(android.graphics.Canvas) 
-	 */
-	public void draw(Canvas canvas) {
-		//Do Nothing
-	}
+public interface RectMole {
+     void setUp(IChart chart ,float from , float width);
 }

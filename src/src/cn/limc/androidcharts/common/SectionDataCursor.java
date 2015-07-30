@@ -23,7 +23,7 @@
 package cn.limc.androidcharts.common;
 
 import cn.limc.androidcharts.event.ISlipable;
-import cn.limc.androidcharts.view.DataGridChart;
+import cn.limc.androidcharts.view.GridChart;
 
 /** 
  * <p>en</p>
@@ -36,7 +36,7 @@ import cn.limc.androidcharts.view.DataGridChart;
  */
 public class SectionDataCursor implements IDataCursor,ISlipable{
 	
-    protected DataGridChart inChart;
+    protected GridChart inChart;
     
     public static final int DEFAULT_ZOOM_BASE_LINE = ZOOM_BASE_LINE_CENTER;
 
@@ -55,7 +55,7 @@ public class SectionDataCursor implements IDataCursor,ISlipable{
 	 * <p>SectionDataCursorのコンストラクター</p>
 	 * 
 	 */
-	public SectionDataCursor(DataGridChart inChart) {
+	public SectionDataCursor(GridChart inChart) {
 	    this.inChart = inChart;
 	}
 
@@ -160,9 +160,10 @@ public class SectionDataCursor implements IDataCursor,ISlipable{
                 setDisplayNumber(getMinDisplayNumber());
             }
 
+            int dataSize = inChart.getChartData().getChartTable().size();
             // 处理displayFrom越界
-            if (getDisplayTo() >= inChart.getStickData().size()) {
-                setDisplayFrom(inChart.getStickData().size() - getDisplayNumber());
+            if (getDisplayTo() >= dataSize) {
+                setDisplayFrom(dataSize - getDisplayNumber());
             }
         }
     }
@@ -172,9 +173,10 @@ public class SectionDataCursor implements IDataCursor,ISlipable{
      */
     @Override
     public void zoomOut() {
-        if (getDisplayNumber() < inChart.getStickData().size() - 1) {
-            if (getDisplayNumber() + ZOOM_STEP > inChart.getStickData().size() - 1) {
-                setDisplayNumber(inChart.getStickData().size() - 1);
+        int dataSize = inChart.getChartData().getChartTable().size();
+        if (getDisplayNumber() < dataSize - 1) {
+            if (getDisplayNumber() + ZOOM_STEP > dataSize - 1) {
+                setDisplayNumber(dataSize - 1);
                 setDisplayFrom(0);
             } else {
                 // 区分缩放方向
@@ -196,9 +198,8 @@ public class SectionDataCursor implements IDataCursor,ISlipable{
                     }
                 }
             }
-
-            if (getDisplayTo() >= inChart.getStickData().size()) {
-                setDisplayNumber(inChart.getStickData().size() - getDisplayFrom());
+            if (getDisplayTo() >= dataSize) {
+                setDisplayNumber(dataSize - getDisplayFrom());
             }
         }
     }
@@ -208,7 +209,7 @@ public class SectionDataCursor implements IDataCursor,ISlipable{
      */
     @Override
     public void moveLeft() {
-        int dataSize = inChart.getStickData().size();
+        int dataSize = inChart.getChartData().getChartTable().size();
 
         if (getDisplayFrom() <= SLIP_STEP) {
             setDisplayFrom(0);
@@ -229,7 +230,7 @@ public class SectionDataCursor implements IDataCursor,ISlipable{
      */
     @Override
     public void moveRight() {
-        int dataSize = inChart.getStickData().size();
+        int dataSize = inChart.getChartData().getChartTable().size();
         if (getDisplayTo() < dataSize - SLIP_STEP) {
             setDisplayFrom(getDisplayFrom() + SLIP_STEP);
         } else {
@@ -241,6 +242,7 @@ public class SectionDataCursor implements IDataCursor,ISlipable{
             setDisplayFrom(dataSize - getDisplayNumber());
         }
     }
+    
     
     /**
      * @return the zoomBaseLine

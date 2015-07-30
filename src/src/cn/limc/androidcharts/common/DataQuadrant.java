@@ -21,7 +21,7 @@
 
 package cn.limc.androidcharts.common;
 
-import cn.limc.androidcharts.axis.IAxis;
+import cn.limc.androidcharts.component.IAxis;
 import cn.limc.androidcharts.view.GridChart;
 
 /**

@@ -21,16 +21,16 @@
 
 package cn.limc.androidcharts.view;
 
-import java.util.List;
 
-import cn.limc.androidcharts.common.IFlexableGrid;
-import cn.limc.androidcharts.entity.DateValueEntity;
+import cn.limc.androidcharts.entity.ChartDataSet;
+import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.LineEntity;
+import cn.limc.androidcharts.mole.AreaMole;
+import cn.limc.androidcharts.mole.LineMole;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PointF;
+import android.graphics.Paint.Style;
 import android.util.AttributeSet;
 
 /**
@@ -50,7 +50,7 @@ import android.util.AttributeSet;
  */
 public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 
-	private List<LineEntity<DateValueEntity>> bandData;
+	private ChartDataSet bandData;
 
 	/**
 	 * <p>
@@ -151,169 +151,257 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		// draw lines
-		if (null != bandData && bandData.size() >= 2) {
-			drawAreas(canvas);
-			drawBandBorder(canvas);
-		}
+//		// draw lines
+//		if (null != bandData && bandData.size() >= 2) {
+//			drawAreas(canvas);
+//			drawBandBorder(canvas);
+//		}
+		
+		
+
+		drawAreas(canvas);
+		drawBandBorder(canvas);
 	}
-
-	/**
-	 * <p>
-	 * draw lines
-	 * </p>
-	 * <p>
-	 * ラインを書く
-	 * </p>
-	 * <p>
-	 * 绘制线条
-	 * </p>
-	 * 
-	 * @param canvas
-	 */
-	protected void drawAreas(Canvas canvas) {
-		if (null == bandData) {
-			return;
-		}
-		// distance between two points
-		float lineLength;
-		// start point‘s X
-		float startX;
-		float lastY = 0;
-		float lastX = 0;
-
-		LineEntity<DateValueEntity> line1 = (LineEntity<DateValueEntity>) bandData
-				.get(0);
-		LineEntity<DateValueEntity> line2 = (LineEntity<DateValueEntity>) bandData
-				.get(1);
-		List<DateValueEntity> line1Data = line1.getLineData();
-		List<DateValueEntity> line2Data = line2.getLineData();
-
-		if (line1.isDisplay() == false || line2.isDisplay() == false) {
-			return;
-		}
-		if (line1Data == null || line2Data == null) {
-			return;
-		}
-
-		Paint mPaint = new Paint();
-		mPaint.setColor(line1.getLineColor());
-		mPaint.setAlpha(70);
-		mPaint.setAntiAlias(true);
-		// set start point’s X
-		if (gridAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
-            lineLength= (dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber()) - stickSpacing;
-            startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
-        }else {
-            lineLength= (dataQuadrant.getPaddingWidth() / (dataCursor.getDisplayNumber() - 1)) - stickSpacing;
-            startX = dataQuadrant.getPaddingStartX();
+	
+    protected void drawBandBorder(Canvas canvas) {
+        if (null == bandData) {
+            return;
         }
-		Path areaPath = new Path();
-		for (int j = dataCursor.getDisplayFrom(); j < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); j++) {
-			float value1 = line1Data.get(j).getValue();
-			float value2 = line2Data.get(j).getValue();
+        if (bandData.size() == 0) {
+            return;
+        }
 
-			// calculate Y
-			float valueY1 = (float) ((1f - (value1 - dataRange.getMinValue())
-                    / (dataRange.getValueRange())) * dataQuadrant.getPaddingHeight())
-                    + dataQuadrant.getPaddingStartY();
-			float valueY2 = (float) ((1f - (value2 - dataRange.getMinValue())
-                    / (dataRange.getValueRange())) * dataQuadrant.getPaddingHeight())
-                    + dataQuadrant.getPaddingStartY();
+        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
 
-			// 绘制线条路径
-			if (j == dataCursor.getDisplayFrom()) {
-				areaPath.moveTo(startX, valueY1);
-				areaPath.lineTo(startX, valueY2);
-				areaPath.moveTo(startX, valueY1);
-			} else {
-				areaPath.lineTo(startX, valueY1);
-				areaPath.lineTo(startX, valueY2);
-				areaPath.lineTo(lastX, lastY);
+        for(int i=0; i< bandData.size() ; i++){
+            LineEntity table = (LineEntity)bandData.getChartTable(i);
+            if (null == table) {
+                continue;
+            }
+            if(table.size() == 0){
+                continue;
+            }
+            
+            Paint mPaint = new Paint();
+            mPaint.setColor(table.getLineColor());
+            mPaint.setAntiAlias(true);
+            
+            float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
+            for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
+                IMeasurable point = (IMeasurable)table.get(j-1);
+                IMeasurable nextpoint = (IMeasurable)table.get(j);
+                
+                LineMole lineMole = new LineMole();
+                lineMole.setUp(this,point.getHigh(),nextpoint.getHigh(),stickX,stickWidth);
+                lineMole.setLinePaint(mPaint);
+                lineMole.draw(canvas);
 
-				areaPath.close();
-				areaPath.moveTo(startX, valueY1);
-			}
+                // next x
+                stickX = stickX + stickWidth;
+            }
+        }
+    }
+	   protected void drawAreas(Canvas canvas) {
+	        if (null == bandData) {
+	            return;
+	        }
+	        if (bandData.size() < 2 ) {
+	            return;
+	        }
 
-			lastX = startX;
-			lastY = valueY2;
-			startX = startX + stickSpacing + lineLength;
-		}
-		areaPath.close();
-		canvas.drawPath(areaPath, mPaint);
-	}
+	        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+	        for(int i=1; i< bandData.size() ; i++){
+	            LineEntity table1 = (LineEntity)bandData.getChartTable(i-1);
+	            LineEntity table2 = (LineEntity)bandData.getChartTable(i);
+	            
+	            if (null == table1 || null == table2) {
+	                continue;
+	            }
+	            if(table1.size() == 0 || table2.size() == 0){
+	                continue;
+	            }
+	            
+	            Paint mPaint = new Paint();
+	            mPaint.setStyle(Style.FILL);
+	            mPaint.setColor(table1.getLineColor());
+	            mPaint.setAntiAlias(true);
+	            
+	            float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
+	            for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
 
-	/**
-	 * <p>
-	 * draw lines
-	 * </p>
-	 * <p>
-	 * ラインを書く
-	 * </p>
-	 * <p>
-	 * 绘制线条
-	 * </p>
-	 * 
-	 * @param canvas
-	 */
-	protected void drawBandBorder(Canvas canvas) {
+	                IMeasurable pointLow = (IMeasurable)table1.get(j-1);
+	                IMeasurable nextpointLow = (IMeasurable)table1.get(j);
+	                
+	                IMeasurable pointHigh = (IMeasurable)table2.get(j-1);
+	                IMeasurable nextpointHigh = (IMeasurable)table2.get(j);
+	                
+	                AreaMole areaMole = new AreaMole();
+	                areaMole.setUp(this,pointHigh.getHigh(),pointLow.getHigh(),nextpointHigh.getHigh(),nextpointLow.getHigh(),stickX,stickWidth);
+	                areaMole.setAreaPaint(mPaint);
+	                areaMole.draw(canvas);
 
-		if (null == this.bandData) {
-			return;
-		}
+	                // next x
+	                stickX = stickX + stickWidth;
+	            }
+	        }
+	    }
 
-		if (bandData.size() <= 0) {
-			return;
-		}
-		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - stickSpacing;
-		// start point‘s X
-		float startX;
-
-		// draw lines
-		for (int i = 0; i < bandData.size(); i++) {
-			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) bandData
-					.get(i);
-			if (line == null) {
-				continue;
-			}
-			if (line.isDisplay() == false) {
-				continue;
-			}
-			List<DateValueEntity> lineData = line.getLineData();
-			if (lineData == null) {
-				continue;
-			}
-			Paint mPaint = new Paint();
-			mPaint.setColor(line.getLineColor());
-			mPaint.setAntiAlias(true);
-			// set start point’s X
-			startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
-			// start point
-			PointF ptFirst = null;
-			for (int j = dataCursor.getDisplayFrom(); j < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); j++) {
-				float value = lineData.get(j).getValue();
-				// calculate Y
-				float valueY = (float) ((1f - (value - dataRange.getMinValue())
-						/ (dataRange.getValueRange())) * dataQuadrant.getPaddingHeight())
-						+ dataQuadrant.getPaddingStartY();
-
-				// if is not last point connect to previous point
-				if (j > dataCursor.getDisplayFrom()) {
-					canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
-							mPaint);
-				}
-				// reset
-				ptFirst = new PointF(startX, valueY);
-				startX = startX + stickSpacing + lineLength;
-			}
-		}
-	}
+//	/**
+//	 * <p>
+//	 * draw lines
+//	 * </p>
+//	 * <p>
+//	 * ラインを書く
+//	 * </p>
+//	 * <p>
+//	 * 绘制线条
+//	 * </p>
+//	 * 
+//	 * @param canvas
+//	 */
+//	protected void drawAreas(Canvas canvas) {
+//		if (null == bandData) {
+//			return;
+//		}
+//		// distance between two points
+//		float lineLength;
+//		// start point‘s X
+//		float startX;
+//		float lastY = 0;
+//		float lastX = 0;
+//
+//		LineEntity<DateValueEntity> line1 = (LineEntity<DateValueEntity>) bandData
+//				.get(0);
+//		LineEntity<DateValueEntity> line2 = (LineEntity<DateValueEntity>) bandData
+//				.get(1);
+//		List<DateValueEntity> line1Data = line1.getLineData();
+//		List<DateValueEntity> line2Data = line2.getLineData();
+//
+//		if (line1.isDisplay() == false || line2.isDisplay() == false) {
+//			return;
+//		}
+//		if (line1Data == null || line2Data == null) {
+//			return;
+//		}
+//
+//		Paint mPaint = new Paint();
+//		mPaint.setColor(line1.getLineColor());
+//		mPaint.setAlpha(70);
+//		mPaint.setAntiAlias(true);
+//		// set start point’s X
+//		if (gridAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
+//            lineLength= (dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber()) - stickSpacing;
+//            startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
+//        }else {
+//            lineLength= (dataQuadrant.getPaddingWidth() / (dataCursor.getDisplayNumber() - 1)) - stickSpacing;
+//            startX = dataQuadrant.getPaddingStartX();
+//        }
+//		Path areaPath = new Path();
+//		for (int j = dataCursor.getDisplayFrom(); j < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); j++) {
+//			float value1 = (Float)line1Data.get(j).getValue();
+//			float value2 = (Float)line2Data.get(j).getValue();
+//
+//			// calculate Y
+//			float valueY1 = (float) ((1f - (value1 - dataRange.getMinValue())
+//                    / (dataRange.getValueRange())) * dataQuadrant.getPaddingHeight())
+//                    + dataQuadrant.getPaddingStartY();
+//			float valueY2 = (float) ((1f - (value2 - dataRange.getMinValue())
+//                    / (dataRange.getValueRange())) * dataQuadrant.getPaddingHeight())
+//                    + dataQuadrant.getPaddingStartY();
+//
+//			// 绘制线条路径
+//			if (j == dataCursor.getDisplayFrom()) {
+//				areaPath.moveTo(startX, valueY1);
+//				areaPath.lineTo(startX, valueY2);
+//				areaPath.moveTo(startX, valueY1);
+//			} else {
+//				areaPath.lineTo(startX, valueY1);
+//				areaPath.lineTo(startX, valueY2);
+//				areaPath.lineTo(lastX, lastY);
+//
+//				areaPath.close();
+//				areaPath.moveTo(startX, valueY1);
+//			}
+//
+//			lastX = startX;
+//			lastY = valueY2;
+//			startX = startX + stickSpacing + lineLength;
+//		}
+//		areaPath.close();
+//		canvas.drawPath(areaPath, mPaint);
+//	}
+//
+//	/**
+//	 * <p>
+//	 * draw lines
+//	 * </p>
+//	 * <p>
+//	 * ラインを書く
+//	 * </p>
+//	 * <p>
+//	 * 绘制线条
+//	 * </p>
+//	 * 
+//	 * @param canvas
+//	 */
+//	protected void drawBandBorder(Canvas canvas) {
+//
+//		if (null == this.bandData) {
+//			return;
+//		}
+//
+//		if (bandData.size() <= 0) {
+//			return;
+//		}
+//		// distance between two points
+//		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - stickSpacing;
+//		// start point‘s X
+//		float startX;
+//
+//		// draw lines
+//		for (int i = 0; i < bandData.size(); i++) {
+//			LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) bandData
+//					.get(i);
+//			if (line == null) {
+//				continue;
+//			}
+//			if (line.isDisplay() == false) {
+//				continue;
+//			}
+//			List<DateValueEntity> lineData = line.getLineData();
+//			if (lineData == null) {
+//				continue;
+//			}
+//			Paint mPaint = new Paint();
+//			mPaint.setColor(line.getLineColor());
+//			mPaint.setAntiAlias(true);
+//			// set start point’s X
+//			startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
+//			// start point
+//			PointF ptFirst = null;
+//			for (int j = dataCursor.getDisplayFrom(); j < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); j++) {
+//				float value = (Float)lineData.get(j).getValue();
+//				// calculate Y
+//				float valueY = (float) ((1f - (value - dataRange.getMinValue())
+//						/ (dataRange.getValueRange())) * dataQuadrant.getPaddingHeight())
+//						+ dataQuadrant.getPaddingStartY();
+//
+//				// if is not last point connect to previous point
+//				if (j > dataCursor.getDisplayFrom()) {
+//					canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+//							mPaint);
+//				}
+//				// reset
+//				ptFirst = new PointF(startX, valueY);
+//				startX = startX + stickSpacing + lineLength;
+//			}
+//		}
+//	}
 
 	/**
 	 * @return the bandData
 	 */
-	public List<LineEntity<DateValueEntity>> getBandData() {
+	public ChartDataSet getBandData() {
 		return bandData;
 	}
 
@@ -321,7 +409,7 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 	 * @param bandData
 	 *            the bandData to set
 	 */
-	public void setBandData(List<LineEntity<DateValueEntity>> bandData) {
+	public void setBandData(ChartDataSet bandData) {
 		this.bandData = bandData;
 	}
 

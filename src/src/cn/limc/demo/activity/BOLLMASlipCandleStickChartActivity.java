@@ -25,11 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.axis.Axis;
+import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.entity.ChartDataSet;
+import cn.limc.androidcharts.entity.ChartDataTable;
 import cn.limc.androidcharts.entity.DateValueEntity;
-import cn.limc.androidcharts.entity.IStickEntity;
 import cn.limc.androidcharts.entity.LineEntity;
-import cn.limc.androidcharts.entity.ListChartData;
 import cn.limc.androidcharts.event.IZoomable;
 import cn.limc.androidcharts.view.BOLLMASlipCandleStickChart;
 import cn.limc.demo.common.BaseActivity;
@@ -58,40 +58,40 @@ public class BOLLMASlipCandleStickChartActivity extends BaseActivity {
     
     private void initBOLLMASlipCandleStickChart() {
         this.bollmaslipcandlestickchart = (BOLLMASlipCandleStickChart) findViewById(R.id.bollmaslipcandlestickchart);
-        List<LineEntity<DateValueEntity>> lines = new ArrayList<LineEntity<DateValueEntity>>();
+        ChartDataSet lines = new ChartDataSet();
 
         // 计算5日均线
-        LineEntity<DateValueEntity> ma5 = new LineEntity<DateValueEntity>();
+        LineEntity ma5 = new LineEntity();
         ma5.setTitle("MA5");
         ma5.setLineColor(Color.WHITE);
-        ma5.setLineData(initMA(5));
+        ma5.setTableData(initMA(5));
         lines.add(ma5);
 
         // 计算10日均线
-        LineEntity<DateValueEntity> ma10 = new LineEntity<DateValueEntity>();
+        LineEntity ma10 = new LineEntity();
         ma10.setTitle("MA10");
         ma10.setLineColor(Color.RED);
-        ma10.setLineData(initMA(10));
+        ma10.setTableData(initMA(10));
         lines.add(ma10);
 
         // 计算25日均线
-        LineEntity<DateValueEntity> ma25 = new LineEntity<DateValueEntity>();
+        LineEntity ma25 = new LineEntity();
         ma25.setTitle("MA25");
         ma25.setLineColor(Color.GREEN);
-        ma25.setLineData(initMA(25));
+        ma25.setTableData(initMA(25));
         lines.add(ma25);
 
-        List<LineEntity<DateValueEntity>> band = new ArrayList<LineEntity<DateValueEntity>>();
-        LineEntity<DateValueEntity> lower = new LineEntity<DateValueEntity>();
+        ChartDataSet band = new ChartDataSet();
+        LineEntity lower = new LineEntity();
         lower.setTitle("LOWER");
         lower.setLineColor(Color.YELLOW);
-        lower.setLineData(dv1);
+        lower.setTableData(dv1);
         band.add(lower);
 
-        LineEntity<DateValueEntity> upper = new LineEntity<DateValueEntity>();
+        LineEntity upper = new LineEntity();
         upper.setTitle("UPPER");
         upper.setLineColor(Color.CYAN);
-        upper.setLineData(dv2);
+        upper.setTableData(dv2);
         band.add(upper);
 
         bollmaslipcandlestickchart.setAxisXColor(Color.LTGRAY);
@@ -143,7 +143,7 @@ public class BOLLMASlipCandleStickChartActivity extends BaseActivity {
 
         // 为chart2增加均线
         bollmaslipcandlestickchart
-                .setStickData(new ListChartData<IStickEntity>(ohlc));
+                .setChartData(new ChartDataSet(new ChartDataTable(ohlc)));
     }
 
 }

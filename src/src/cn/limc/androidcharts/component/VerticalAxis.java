@@ -1,5 +1,5 @@
 /*
- * HorizontalAxis.java
+ * VerticalAxis.java
  * Android-Charts
  *
  * Created by limc on 2014.
@@ -20,7 +20,7 @@
  */
 
 
-package cn.limc.androidcharts.axis;
+package cn.limc.androidcharts.component;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -32,81 +32,81 @@ import cn.limc.androidcharts.view.GridChart;
  * <p>cn</p>
  *
  * @author limc 
- * @version v1.0 2014/06/24 19:58:57 
+ * @version v1.0 2014/06/24 19:43:01 
  *  
  */
-public class HorizontalAxis extends Axis {
+public class VerticalAxis extends Axis {
+    
     /**
      * <p>
-     * default margin of the axis to the bottom border
+     * default margin of the axis to the left border
      * </p>
      * <p>
-     * 轴線より下枠線の距離のデフォルト値
+     * 轴線より左枠線の距離のデフォルト値
      * </p>
      * <p>
-     * 默认轴线下边距
+     * 默认轴线左边距
      * </p>
      */
-    public static final float DEFAULT_HEIGHT = 16f;
-
-	protected float height = DEFAULT_HEIGHT;
+    public static final float DEFAULT_WIDTH = 50f;
+    
+	protected float width = DEFAULT_WIDTH;
+	
 	/** 
-	 * <p>Constructor of HorizontalAxis</p>
-	 * <p>HorizontalAxis类对象的构造函数</p>
-	 * <p>HorizontalAxisのコンストラクター</p>
+	 * <p>Constructor of VerticalAxis</p>
+	 * <p>VerticalAxis类对象的构造函数</p>
+	 * <p>VerticalAxisのコンストラクター</p>
 	 *
-	 * @param inChart
 	 * @param position 
 	 */
-	public HorizontalAxis(GridChart inChart, int position) {
-		super(inChart, position);
+	public VerticalAxis(GridChart inChart, int position) {
+		super(inChart,position);
 	}
-
 	/* (non-Javadoc)
 	 * 
 	 * @return 
-	 * @see cn.limc.androidcharts.common.IQuadrant#getWidth() 
+	 * @see cn.limc.androidcharts.common.IQuadrant#getQuadrantWidth() 
 	 */
 	public float getWidth() {
-		return inChart.getWidth() - 2 * inChart.getBorderWidth();
+		return width;
 	}
-
 	/* (non-Javadoc)
 	 * 
 	 * @return 
-	 * @see cn.limc.androidcharts.common.IQuadrant#getHeight() 
+	 * @see cn.limc.androidcharts.common.IQuadrant#getQuadrantHeight() 
 	 */
 	public float getHeight() {
-		return height;
+		return inChart.getHeight() - 2 * inChart.getBorderWidth();
 	}
 	
-	   /**
+	 /**
      * <p>
-     * draw X Axis
+     * draw Y Axis
      * </p>
      * <p>
-     * X軸を書く
+     * Y軸を書く
      * </p>
      * <p>
-     * 绘制X轴
+     * 绘制Y轴
      * </p>
      * 
      * @param canvas
      */
-    public void draw(Canvas canvas) {  
-        float length = inChart.getWidth();
-        float postY;
-        if (position == AXIS_X_POSITION_BOTTOM) {
-            postY = inChart.getHeight() - height - inChart.getBorderWidth()
-                    - lineWidth / 2;
+    public void draw(Canvas canvas) {
+        float length = inChart.getHeight() - inChart.getAxisX().getHeight()
+                - inChart.getBorderWidth();
+        float postX;
+        if (position == AXIS_Y_POSITION_LEFT) {
+            postX = inChart.getBorderWidth() + width + lineWidth / 2;
         } else {
-            postY = inChart.getHeight() - inChart.getBorderWidth() - lineWidth / 2;
+            postX = inChart.getWidth() - inChart.getBorderWidth() - width
+                    - lineWidth / 2;
         }
 
         Paint mPaint = new Paint();
         mPaint.setColor(lineColor);
         mPaint.setStrokeWidth(lineWidth);
 
-        canvas.drawLine(inChart.getBorderWidth(), postY, length, postY, mPaint);
+        canvas.drawLine(postX, inChart.getBorderWidth(), postX, length, mPaint);
     }
 }

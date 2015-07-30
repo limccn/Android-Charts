@@ -35,7 +35,7 @@ import android.graphics.RectF;
  *  
  */
 public abstract class AbstractMole  extends RectF implements IMole {
-	private IChart inChart;
+	protected IChart inChart;
 	
 	public void setUp(IChart chart){
 		setInChart(chart);

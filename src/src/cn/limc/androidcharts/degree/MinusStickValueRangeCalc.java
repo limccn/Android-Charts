@@ -8,8 +8,7 @@
 //
 package cn.limc.androidcharts.degree;
 
-import cn.limc.androidcharts.entity.IMeasurable;
-import cn.limc.androidcharts.view.DataGridChart;
+import cn.limc.androidcharts.view.GridChart;
 
 /**
  * MinusStickValueRangeCalc
@@ -30,83 +29,20 @@ public class MinusStickValueRangeCalc extends StickValueRangeCalc {
     /**
      * @param inChart
      */
-    public MinusStickValueRangeCalc(DataGridChart inChart) {
+    public MinusStickValueRangeCalc(GridChart inChart) {
         super(inChart);
         // TODO Auto-generated constructor stub
     }
-
-//    @Override
-//    public void calcDataValueRange() {
-//
-//        double maxValue = -Double.MAX_VALUE;
-//        double minValue = Double.MAX_VALUE;
-//
-//        IMeasurable first = inChart.getStickData().get(0);
-//        // 第一个stick为停盘的情况
-//        if (first.getHigh() == 0 && first.getLow() == 0) {
-//
-//        } else {
-//            maxValue = first.getHigh();
-//            minValue = first.getLow();
-//        }
-//
-//        // 判断显示为方柱或显示为线条
-//        for (int i = 0; i < inChart.getStickData().size(); i++) {
-//            IMeasurable stick = inChart.getStickData().get(i);
-//            if (stick.getLow() < minValue) {
-//                minValue = stick.getLow();
-//            }
-//
-//            if (stick.getHigh() > maxValue) {
-//                maxValue = stick.getHigh();
-//            }
-//
-//        }
-//
-//        this.maxValue = maxValue;
-//        this.minValue = minValue;
-//    }
     
-    
-    @Override
-    public void calcDataValueRange() {
-
-        double maxValue = -Double.MAX_VALUE;
-        double minValue = Double.MAX_VALUE;
-
-        IMeasurable first = inChart.getStickData().get(0);
-        // 第一个stick为停盘的情况
-        if (first.getHigh() == 0 && first.getLow() == 0) {
-
-        } else {
-            maxValue = first.getHigh();
-            minValue = first.getLow();
-        }
-
-        // 判断显示为方柱或显示为线条
-        for (int i = inChart.getDataCursor().getDisplayFrom(); i < inChart.getDataCursor().getDisplayTo(); i++) {
-            IMeasurable stick = inChart.getStickData().get(i);
-            if (stick.getLow() < minValue) {
-                minValue = stick.getLow();
-            }
-
-            if (stick.getHigh() > maxValue) {
-                maxValue = stick.getHigh();
-            }
-
-        }
-
-        this.maxValue = maxValue;
-        this.minValue = minValue;
+    public boolean shouldPaddingZero(){
+        return false;
     }
     
-    @Override
-    public void calcValueRangePaddingZero(){
-        
+    public boolean shouldOptimizeForAxis(){
+        return false;
     }
     
-    @Override
-    public void calcValueRangeFormatForAxis() {
-        
+    public boolean miniValueAlwaysZero(){
+        return false;
     }
 }

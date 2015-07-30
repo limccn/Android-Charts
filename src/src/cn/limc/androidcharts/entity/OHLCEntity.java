@@ -36,7 +36,7 @@ package cn.limc.androidcharts.entity;
  * @author limc
  * @version v1.0 2011/05/29 12:19:06
  */
-public class OHLCEntity implements IStickEntity {
+public class OHLCEntity extends StickEntity  {
 
 	/**
 	 * <p>
@@ -259,7 +259,7 @@ public class OHLCEntity implements IStickEntity {
 	/**
 	 * @return the date
 	 */
-	public int getDate() {
+	public Object getDate() {
 		return date;
 	}
 

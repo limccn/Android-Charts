@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.axis.Axis;
+import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.entity.ChartDataSet;
 import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
 import cn.limc.androidcharts.view.LineChart;
@@ -54,27 +55,27 @@ public class LineChartActivity extends BaseActivity {
 
     private void initLineChart() {
         this.linechart = (LineChart) findViewById(R.id.linechart);
-        List<LineEntity<DateValueEntity>> lines = new ArrayList<LineEntity<DateValueEntity>>();
+        ChartDataSet lines = new ChartDataSet();
 
         // 计算5日均线
-        LineEntity<DateValueEntity> ma5 = new LineEntity<DateValueEntity>();
+        LineEntity ma5 = new LineEntity();
         ma5.setTitle("MA5");
         ma5.setLineColor(Color.WHITE);
-        ma5.setLineData(initMA(5));
+        ma5.setTableData(initMA(5));
         lines.add(ma5);
 
         // 计算10日均线
-        LineEntity<DateValueEntity> ma10 = new LineEntity<DateValueEntity>();
+        LineEntity ma10 = new LineEntity();
         ma10.setTitle("MA10");
         ma10.setLineColor(Color.RED);
-        ma10.setLineData(initMA(10));
+        ma10.setTableData(initMA(10));
         lines.add(ma10);
 
         // 计算25日均线
-        LineEntity<DateValueEntity> ma25 = new LineEntity<DateValueEntity>();
+        LineEntity ma25 = new LineEntity();
         ma25.setTitle("MA25");
         ma25.setLineColor(Color.GREEN);
-        ma25.setLineData(initMA(25));
+        ma25.setTableData(initMA(25));
         lines.add(ma25);
 
         linechart.setAxisXColor(Color.LTGRAY);
@@ -87,7 +88,7 @@ public class LineChartActivity extends BaseActivity {
         linechart.setLongitudeColor(Color.GRAY);
         linechart.setMaxValue(280);
         linechart.setMinValue(240);
-        linechart.setMaxPointNum(36);
+        //linechart.setMaxPointNum(36);
         linechart.setDisplayLongitudeTitle(true);
         linechart.setDisplayLatitudeTitle(true);
         linechart.setDisplayLatitude(true);
@@ -104,6 +105,6 @@ public class LineChartActivity extends BaseActivity {
         linechart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
         // 为chart1增加均线
-        linechart.setLinesData(lines);
+        linechart.setChartData(lines);
     }
 }

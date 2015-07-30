@@ -41,12 +41,12 @@ public interface IHasDate {
 	/**
 	 * @return the date
 	 */
-	int getDate();
+	Object getDate();
 
 	/**
 	 * @param date
 	 *            the date to set
 	 */
-	void setDate(int date);
+	void setDate(Object date);
 
 }

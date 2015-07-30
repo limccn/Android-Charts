@@ -25,9 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.axis.Axis;
-import cn.limc.androidcharts.entity.IStickEntity;
-import cn.limc.androidcharts.entity.ListChartData;
+import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.entity.ChartDataRow;
+import cn.limc.androidcharts.entity.ChartDataSet;
+import cn.limc.androidcharts.entity.ChartDataTable;
 import cn.limc.androidcharts.entity.StickEntity;
 import cn.limc.androidcharts.view.MinusStickChart;
 import cn.limc.demo.common.BaseActivity;
@@ -56,7 +57,7 @@ public class MinusStickChartActivity extends BaseActivity {
     private void initMinusStickChart() {
         this.minusstickchart = (MinusStickChart) findViewById(R.id.minusstickchart);
 
-        List<IStickEntity> data = new ArrayList<IStickEntity>();
+        List<ChartDataRow> data = new ArrayList<ChartDataRow>();
         data.add(new StickEntity(50000, 0, 20110603));
         data.add(new StickEntity(42000, 0, 20110703));
         data.add(new StickEntity(32000, 0, 20110803));
@@ -70,7 +71,7 @@ public class MinusStickChartActivity extends BaseActivity {
         data.add(new StickEntity(24000, 0, 20120303));
         data.add(new StickEntity(36000, 0, 20120303));
         data.add(new StickEntity(46000, 0, 20120303));
-        minusstickchart.setStickData(new ListChartData<IStickEntity>(data));
+        minusstickchart.setChartData(new ChartDataSet(new ChartDataTable(data)));
 
         //minusstickchart.setMaxSticksNum(data.size());
         minusstickchart.setDisplayNumber(data.size());

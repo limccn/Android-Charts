@@ -23,15 +23,36 @@ package cn.limc.androidcharts.view;
 
 import java.util.List;
 
-import cn.limc.androidcharts.axis.Axis;
-import cn.limc.androidcharts.axis.HorizontalAxis;
-import cn.limc.androidcharts.axis.VerticalAxis;
 import cn.limc.androidcharts.common.CrossLines;
 import cn.limc.androidcharts.common.DataQuadrant;
+import cn.limc.androidcharts.common.ICrossLines;
+import cn.limc.androidcharts.common.IDataCursor;
+import cn.limc.androidcharts.common.IFlexableGrid;
 import cn.limc.androidcharts.common.IQuadrant;
+import cn.limc.androidcharts.common.SectionDataCursor;
+import cn.limc.androidcharts.common.SimpleDataCursor;
 import cn.limc.androidcharts.common.SimpleGrid;
+import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.HorizontalAxis;
+import cn.limc.androidcharts.component.VerticalAxis;
+import cn.limc.androidcharts.degree.DateTimeDegree;
+import cn.limc.androidcharts.degree.DecimalDegree;
+import cn.limc.androidcharts.degree.IDegree;
+import cn.limc.androidcharts.degree.IHasValueRange;
+import cn.limc.androidcharts.degree.StickValueRangeCalc;
+import cn.limc.androidcharts.degree.ValueRangeCalc;
+import cn.limc.androidcharts.entity.ChartDataSet;
+import cn.limc.androidcharts.entity.IHasDate;
+import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.event.GestureDetector;
+import cn.limc.androidcharts.event.IDisplayCursorListener;
+import cn.limc.androidcharts.event.ISlipable;
+import cn.limc.androidcharts.event.IZoomable;
+import cn.limc.androidcharts.event.SlipGestureDetector;
+import cn.limc.androidcharts.event.ZoomGestureDetector;
+import cn.limc.androidcharts.event.SlipGestureDetector.OnSlipGestureListener;
 import cn.limc.androidcharts.event.TouchGestureDetector.OnTouchGestureListener;
+import cn.limc.androidcharts.event.ZoomGestureDetector.OnZoomGestureListener;
 import cn.limc.androidcharts.event.TouchGestureDetector;
 
 import android.content.Context;
@@ -60,6 +81,8 @@ import android.view.MotionEvent;
  * 
  */
 public class GridChart extends AbstractBaseChart  {
+    
+    
 	/**
 	 * <p>
 	 * Touched point inside of grid
@@ -87,12 +110,44 @@ public class GridChart extends AbstractBaseChart  {
 	
 	protected OnTouchGestureListener onTouchListener = new OnTouchListener() {};
 	protected GestureDetector touchGestureDetector = new TouchGestureDetector(this,onTouchListener);
+	protected OnZoomGestureListener onZoomListener = new OnZoomListener(){};
+	protected GestureDetector zoomGestureDetector = new ZoomGestureDetector(this, onZoomListener);
+    protected OnSlipGestureListener onSlipListener = new OnSlipListener();
+    protected GestureDetector slipGestureDetector = new SlipGestureDetector(this,onSlipListener);
 	
 	protected IQuadrant dataQuadrant = new DataQuadrant(this);
 	protected HorizontalAxis axisX = new HorizontalAxis(this,Axis.AXIS_X_POSITION_BOTTOM);
 	protected VerticalAxis axisY = new VerticalAxis(this, Axis.AXIS_Y_POSITION_LEFT);
 	protected CrossLines crossLines = new CrossLines(this);
 	protected SimpleGrid simpleGrid = new SimpleGrid(this);
+	
+	protected IDataCursor dataCursor = new SimpleDataCursor(this);
+	protected IDegree axisYDegree = new DecimalDegree(this);
+	protected IDegree axisXDegree = new DateTimeDegree(this);
+	protected IHasValueRange dataRange = new StickValueRangeCalc(this);
+	    
+    public static final int DEFAULT_ALIGN_TYPE = IFlexableGrid.ALIGN_TYPE_CENTER;
+
+    protected int gridAlignType = DEFAULT_ALIGN_TYPE;
+
+    public static final int DEFAULT_STICK_SPACING = 1;
+
+    protected int stickSpacing = DEFAULT_STICK_SPACING;
+
+    protected IDisplayCursorListener onDisplayCursorListener;
+	    
+	    /**
+	     * <p>
+	     * data to draw sticks
+	     * </p>
+	     * <p>
+	     * スティックを書く用データ
+	     * </p>
+	     * <p>
+	     * 绘制柱条用的数据
+	     * </p>
+	     */
+	    protected ChartDataSet chartData;
 	
 	/*
 	 * (non-Javadoc)
@@ -148,30 +203,30 @@ public class GridChart extends AbstractBaseChart  {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		
+	        
 		axisX.draw(canvas);
 		axisY.draw(canvas);
 		simpleGrid.draw(canvas);
 		crossLines.draw(canvas);
+		
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * <p>Called when chart is touched<p> <p>チャートをタッチしたら、メソッドを呼ぶ<p>
-	 * <p>图表点击时调用<p>
-	 * 
-	 * @param event
-	 * 
-	 * @see android.view.View#onTouchEvent(MotionEvent)
-	 */
+	
 	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		if (!isValidTouchPoint(event.getX(),event.getY())) {
-			return false;
-		}
-		return touchGestureDetector.onTouchEvent(event);
-	}
+    public boolean onTouchEvent(MotionEvent event) {
+        if (!isValidTouchPoint(event.getX(),event.getY())) {
+            return false;
+        }
+        
+        if (null == chartData || chartData.size() == 0) {
+            return false;
+        }
+        
+        if (null == chartData.getChartTable() || chartData.getChartTable().size() == 0) {
+            return false;
+        }
+        
+        return touchGestureDetector.onTouchEvent(event) && zoomGestureDetector.onTouchEvent(event);
+    }
 	
 	protected boolean isValidTouchPoint (float x , float y) {
 		if (x < dataQuadrant.getPaddingStartX()
@@ -184,84 +239,196 @@ public class GridChart extends AbstractBaseChart  {
 		}
 		return true;
 	}
-	/**
-	 * <p>
-	 * calculate degree title on X axis
-	 * </p>
-	 * <p>
-	 * X軸の目盛を計算する
-	 * </p>
-	 * <p>
-	 * 计算X轴上显示的坐标值
-	 * </p>
-	 * 
-	 * @param value
-	 *            <p>
-	 *            value for calculate
-	 *            </p>
-	 *            <p>
-	 *            計算有用データ
-	 *            </p>
-	 *            <p>
-	 *            计算用数据
-	 *            </p>
-	 * 
-	 * @return String
-	 *         <p>
-	 *         degree
-	 *         </p>
-	 *         <p>
-	 *         目盛
-	 *         </p>
-	 *         <p>
-	 *         坐标值
-	 *         </p>
-	 */
-	public String getAxisXGraduate(Object value) {
+	
+	   /**
+     * <p>
+     * initialize degrees on X axis
+     * </p>
+     * <p>
+     * X軸の目盛を初期化
+     * </p>
+     * <p>
+     * 初始化X轴的坐标值
+     * </p>
+     */
+    protected void initAxisX() {
+        simpleGrid.setLongitudeTitles(axisXDegree.getDegrees());
+    }
+
+    /**
+     * <p>
+     * initialize degrees on Y axis
+     * </p>
+     * <p>
+     * Y軸の目盛を初期化
+     * </p>
+     * <p>
+     * 初始化Y轴的坐标值
+     * </p>
+     */
+    protected void initAxisY() {
+        if (dataRange.isAutoCalcValueRange()) {
+            dataRange.calcValueRange();
+        }
+        simpleGrid.setLatitudeTitles(axisYDegree.getDegrees());
+    }
+    
+
+    
+    public float longitudePostOffset(){
+        if (gridAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
+            float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber();
+            return (this.dataQuadrant.getPaddingWidth() - stickWidth)/ (simpleGrid.getLongitudeTitles().size() - 1);
+        }else{
+            return this.dataQuadrant.getPaddingWidth()/ (simpleGrid.getLongitudeTitles().size() - 1);
+        }
+    }
+    
+    public float longitudeOffset(){
+        if (gridAlignType ==IFlexableGrid.ALIGN_TYPE_CENTER) {
+            float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber();
+            return dataQuadrant.getPaddingStartX() + stickWidth / 2;
+        }else{
+            return dataQuadrant.getPaddingStartX();
+        }
+    }
+    
+    
+    protected PointF calcTouchedPoint(float x ,float y) {
+        if (!isValidTouchPoint(x,y)) {
+            return new PointF(0,0);
+        }
+        if (crossLines.getBindCrossLinesToStick() == ICrossLines.BIND_TO_TYPE_NONE) {
+            return new PointF(x, y);
+        } else if (crossLines.getBindCrossLinesToStick() == ICrossLines.BIND_TO_TYPE_BOTH) {
+            PointF bindPointF = calcBindPoint(x, y);
+            return bindPointF;
+        } else if (crossLines.getBindCrossLinesToStick() == ICrossLines.BIND_TO_TYPE_HIRIZIONAL) {
+            PointF bindPointF = calcBindPoint(x, y);
+            return new PointF(bindPointF.x, y);
+        } else if (crossLines.getBindCrossLinesToStick() == ICrossLines.BIND_TO_TYPE_VERTICAL) {
+            PointF bindPointF = calcBindPoint(x, y);
+            return new PointF(x, bindPointF.y);
+        } else {
+            return new PointF(x, y);
+        }   
+    }
+    
+    protected PointF calcBindPoint(float x ,float y) {
+        float calcX = 0;
+        float calcY = 0;
+        
+        int index = calcSelectedIndex(x,y);
+        
+        float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber();
+        IMeasurable stick = (IMeasurable)getChartData().getChartTable().get(index);
+        calcY = (float) ((1f - (stick.getHigh() - dataRange.getMinValue())
+                / dataRange.getValueRange())
+                * (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
+        calcX = dataQuadrant.getPaddingStartX() + stickWidth * (index - dataCursor.getDisplayFrom()) + stickWidth / 2;
+        
+        return new PointF(calcX,calcY);
+    }
+
+	public float getAxisXRate(Object value) {
 		float valueLength = ((Float) value).floatValue()
 				- dataQuadrant.getPaddingStartX();
-		return String.valueOf(valueLength / this.dataQuadrant.getPaddingWidth());
+		return valueLength / this.dataQuadrant.getPaddingWidth();
 	}
+	
+    /**
+     * <p>
+     * calculate degree title on X axis
+     * </p>
+     * <p>
+     * X軸の目盛を計算する
+     * </p>
+     * <p>
+     * 计算X轴上显示的坐标值
+     * </p>
+     * 
+     * @param value
+     *            <p>
+     *            value for calculate
+     *            </p>
+     *            <p>
+     *            計算有用データ
+     *            </p>
+     *            <p>
+     *            计算用数据
+     *            </p>
+     * 
+     * @return String
+     *         <p>
+     *         degree
+     *         </p>
+     *         <p>
+     *         目盛
+     *         </p>
+     *         <p>
+     *         坐标值
+     *         </p>
+     */
+    public String getAxisXGraduate(Object value) {
+        float graduate = getAxisXRate(value);
+        int index = (int) Math.floor(graduate * dataCursor.getDisplayNumber());
 
-	/**
-	 * <p>
-	 * calculate degree title on Y axis
-	 * </p>
-	 * <p>
-	 * Y軸の目盛を計算する
-	 * </p>
-	 * <p>
-	 * 计算Y轴上显示的坐标值
-	 * </p>
-	 * 
-	 * @param value
-	 *            <p>
-	 *            value for calculate
-	 *            </p>
-	 *            <p>
-	 *            計算有用データ
-	 *            </p>
-	 *            <p>
-	 *            计算用数据
-	 *            </p>
-	 * 
-	 * @return String
-	 *         <p>
-	 *         degree
-	 *         </p>
-	 *         <p>
-	 *         目盛
-	 *         </p>
-	 *         <p>
-	 *         坐标值
-	 *         </p>
-	 */
-	public String getAxisYGraduate(Object value) {
+        if (index >= dataCursor.getDisplayNumber()) {
+            index = dataCursor.getDisplayNumber() - 1;
+        } else if (index < 0) {
+            index = 0;
+        }
+
+        IHasDate dataRow= (IHasDate)chartData.getChartTable().get(index);
+        return axisXDegree.valueForDegree(dataRow.getDate());
+    }
+
+
+	
+	public float getAxisYRate(Object value) {
 		float valueLength = ((Float) value).floatValue()
 				- dataQuadrant.getPaddingStartY();
-		return String
-				.valueOf(1f - valueLength / this.dataQuadrant.getPaddingHeight());
+		return 1f - valueLength / this.dataQuadrant.getPaddingHeight();
 	}
+	
+	/**
+     * <p>
+     * calculate degree title on Y axis
+     * </p>
+     * <p>
+     * Y軸の目盛を計算する
+     * </p>
+     * <p>
+     * 计算Y轴上显示的坐标值
+     * </p>
+     * 
+     * @param value
+     *            <p>
+     *            value for calculate
+     *            </p>
+     *            <p>
+     *            計算有用データ
+     *            </p>
+     *            <p>
+     *            计算用数据
+     *            </p>
+     * 
+     * @return String
+     *         <p>
+     *         degree
+     *         </p>
+     *         <p>
+     *         目盛
+     *         </p>
+     *         <p>
+     *         坐标值
+     *         </p>
+     */
+    public String getAxisYGraduate(Object value) {
+        float graduate = getAxisYRate(value);
+        return axisYDegree.valueForDegree(graduate * dataRange.getValueRange() + dataRange.getMinValue());
+    }
+    
 
 
 
@@ -936,6 +1103,385 @@ public class GridChart extends AbstractBaseChart  {
         this.touchGestureDetector = touchGestureDetector;
     }
     
+
+
+    
+//  public String formatAxisYDegree(double value) {
+//      return new DecimalFormat(axisYDecimalFormat).format(Math.floor(value)/dataMultiple);
+//  }
+//  
+//  public String formatAxisXDegree(int date) {
+//      try {
+//          Date dt = new SimpleDateFormat(axisXDateSourceFormat).parse(String.valueOf(date));
+//          return new SimpleDateFormat(axisXDateTargetFormat).format(dt);
+//      } catch (ParseException e) {
+//          return "";
+//      }
+//  }
+    
+    /**
+     * <p>
+     * get current selected data index
+     * </p>
+     * <p>
+     * 選択したスティックのインデックス
+     * </p>
+     * <p>
+     * 获取当前选中的柱条的index
+     * </p>
+     * 
+     * @return int
+     *         <p>
+     *         index
+     *         </p>
+     *         <p>
+     *         インデックス
+     *         </p>
+     *         <p>
+     *         index
+     *         </p>
+     */
+    public int getSelectedIndex() {
+        if (null == touchPoint) {
+            return 0;
+        }
+        return calcSelectedIndex(touchPoint.x, touchPoint.y);
+    }
+    
+    protected int calcSelectedIndex(float x ,float y) {
+        if (!isValidTouchPoint(x,y)) {
+            return 0;
+        }
+        float graduate = getAxisXRate(x);
+        int index = (int) Math.floor(graduate * dataCursor.getDisplayNumber());
+
+        if (index >= dataCursor.getDisplayNumber()) {
+            index = dataCursor.getDisplayNumber() - 1;
+        } else if (index < 0) {
+            index = 0;
+        }
+        
+        return dataCursor.getDisplayFrom() + index;
+    }   
+    
+    /**
+     * @return the dataMultiple
+     */
+    public int getDataMultiple() {
+        return dataRange.getDataMultiple();
+    }
+
+    /**
+     * @param dataMultiple the dataMultiple to set
+     */
+    public void setDataMultiple(int dataMultiple) {
+        ((ValueRangeCalc)this.dataRange).setDataMultiple(dataMultiple);
+    }
+
+    /**
+     * @return the axisYDecimalFormat
+     */
+    @Deprecated
+    public String getAxisYDecimalFormat() {
+        return ((DecimalDegree)axisYDegree).getTargetFormat();
+    }
+
+    /**
+     * @param axisYDecimalFormat the axisYDecimalFormat to set
+     */
+    @Deprecated
+    public void setAxisYDecimalFormat(String axisYDecimalFormat) {
+        ((DecimalDegree)axisYDegree).setTargetFormat(axisYDecimalFormat);
+    }
+
+    /**
+     * @return the axisXDateTargetFormat
+     */
+    @Deprecated
+    public String getAxisXDateTargetFormat() {
+        return ((DateTimeDegree)axisXDegree).getTargetFormat();
+    }
+
+    /**
+     * @param axisXDateTargetFormat the axisXDateTargetFormat to set
+     */
+    @Deprecated
+    public void setAxisXDateTargetFormat(String axisXDateTargetFormat) {
+        ((DateTimeDegree)axisXDegree).setTargetFormat(axisXDateTargetFormat);
+    }
+
+    /**
+     * @return the axisXDateSourceFormat
+     */
+    @Deprecated
+    public String getAxisXDateSourceFormat() {
+        return ((DateTimeDegree)axisXDegree).getSourceFormat();
+    }
+
+    /**
+     * @param axisXDateSourceFormat the axisXDateSourceFormat to set
+     */
+    @Deprecated
+    public void setAxisXDateSourceFormat(String axisXDateSourceFormat) {
+        ((DateTimeDegree)axisXDegree).setSourceFormat(axisXDateSourceFormat);
+    }
+    
+    /**
+     * @return the maxValue
+     */
+    public double getMaxValue() {
+        return dataRange.getMaxValue();
+    }
+
+    /**
+     * @param maxValue
+     *            the maxValue to set
+     */
+    public void setMaxValue(double maxValue) {
+        ((ValueRangeCalc)this.dataRange).setMaxValue(maxValue);
+    }
+
+    /**
+     * @return the minValue
+     */
+    public double getMinValue() {
+        return dataRange.getMinValue();
+    }
+
+    /**
+     * @param minValue
+     *            the minValue to set
+     */
+    public void setMinValue(double minValue) {
+        ((ValueRangeCalc)this.dataRange).setMinValue(minValue);
+    }
+
+    /**
+     * @return the autoCalcValueRange
+     */
+    public boolean isAutoCalcValueRange() {
+        return this.dataRange.isAutoCalcValueRange();
+    }
+
+    /**
+     * @param autoCalcValueRange
+     *            the autoCalcValueRange to set
+     */
+    public void setAutoCalcValueRange(boolean autoCalcValueRange) {
+        ((ValueRangeCalc)this.dataRange).setAutoCalcValueRange(autoCalcValueRange);
+    }
+
+    /**
+     * @return the dataCursor
+     */
+    public IDataCursor getDataCursor() {
+        return dataCursor;
+    }
+
+    /**
+     * @param dataCursor the dataCursor to set
+     */
+    public void setDataCursor(IDataCursor dataCursor) {
+        this.dataCursor = dataCursor;
+    }
+
+    /**
+     * @return the dataRange
+     */
+    public IHasValueRange getDataRange() {
+        return dataRange;
+    }
+
+    /**
+     * @param dataRange the dataRange to set
+     */
+    public void setDataRange(IHasValueRange dataRange) {
+        this.dataRange = dataRange;
+    }
+
+    /**
+     * @return the axisYDegree
+     */
+    public IDegree getAxisYDegree() {
+        return axisYDegree;
+    }
+
+    /**
+     * @param axisYDegree the axisYDegree to set
+     */
+    public void setAxisYDegree(IDegree axisYDegree) {
+        this.axisYDegree = axisYDegree;
+    }
+
+    /**
+     * @return the axisXDegree
+     */
+    public IDegree getAxisXDegree() {
+        return axisXDegree;
+    }
+
+    /**
+     * @param axisXDegree the axisXDegree to set
+     */
+    public void setAxisXDegree(IDegree axisXDegree) {
+        this.axisXDegree = axisXDegree;
+    }
+
+    /**
+     * @return the chartData
+     */
+    public ChartDataSet getChartData() {
+        return chartData;
+    }
+
+    /**
+     * @param chartData the chartData to set
+     */
+    public void setChartData(ChartDataSet chartData) {
+        this.chartData = chartData;
+    }
+    
+    /**
+     * @return the gridAlignType
+     */
+    public int getStickAlignType() {
+        return gridAlignType;
+    }
+
+    /**
+     * @param gridAlignType the gridAlignType to set
+     */
+    public void setStickAlignType(int stickAlignType) {
+        this.gridAlignType = stickAlignType;
+    }
+    
+    /**
+     * @return the maxSticksNum
+     */
+    @Deprecated
+    public int getMaxSticksNum() {
+        return dataCursor.getDisplayNumber();
+    }
+
+    /**
+     * @param maxSticksNum
+     *            the maxSticksNum to set
+     */
+    @Deprecated
+    public void setMaxSticksNum(int maxSticksNum) {
+        this.dataCursor.setDisplayNumber(maxSticksNum);
+    }
+
+    /**
+     * @return the stickSpacing
+     */
+    @Deprecated
+    public int getStickSpacing() {
+        return stickSpacing;
+    }
+
+    /**
+     * @param stickSpacing the stickSpacing to set
+     */
+    @Deprecated
+    public void setStickSpacing(int stickSpacing) {
+        this.stickSpacing = stickSpacing;
+    }
+
+    /* (non-Javadoc)
+     * 
+     * @return 
+     * @see cn.limc.androidcharts.common.IDataCursor#displayFrom() 
+     */
+    public int getDisplayFrom() {
+        return this.dataCursor.getDisplayFrom();
+    }
+
+    /* (non-Javadoc)
+     * 
+     * @return 
+     * @see cn.limc.androidcharts.common.IDataCursor#displayNumber() 
+     */
+    public int getDisplayNumber() {
+        return this.dataCursor.getDisplayNumber();
+    }
+
+    /* (non-Javadoc)
+     * 
+     * @return 
+     * @see cn.limc.androidcharts.common.IDataCursor#displayTo() 
+     */
+    public int getDisplayTo() {
+        return this.dataCursor.getDisplayTo();
+    }
+
+    /* (non-Javadoc)
+     * 
+     * @param displayFrom 
+     * @see cn.limc.androidcharts.common.IDataCursor#setDisplayFrom(int) 
+     */
+    public void setDisplayFrom(int displayFrom) {
+        this.dataCursor.setDisplayFrom(displayFrom);
+    }
+
+    /* (non-Javadoc)
+     * 
+     * @param displayNumber 
+     * @see cn.limc.androidcharts.common.IDataCursor#setDisplayNumber(int) 
+     */
+    public void setDisplayNumber(int displayNumber) {
+        this.dataCursor.setDisplayNumber(displayNumber);
+    }
+
+    /* (non-Javadoc)
+     * 
+     * @return 
+     * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber() 
+     */
+    public int getMinDisplayNumber() {
+        return this.dataCursor.getMinDisplayNumber();
+    }
+
+    /* (non-Javadoc)
+     * 
+     * @param minDisplayNumber 
+     * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber(int) 
+     */
+    public void setMinDisplayNumber(int minDisplayNumber) {
+        this.dataCursor.setMinDisplayNumber(minDisplayNumber);
+    }
+    
+        /**
+      * @return the zoomBaseLine
+      */
+     @Deprecated
+     public int getZoomBaseLine() {
+         return ((SectionDataCursor)dataCursor).getZoomBaseLine();
+     }
+    
+     /**
+      * @param zoomBaseLine
+      *            the zoomBaseLine to set
+      */
+        @Deprecated
+     public void setZoomBaseLine(int zoomBaseLine) {
+         ((SectionDataCursor)dataCursor).setZoomBaseLine(zoomBaseLine);
+     }
+     
+     /**
+      * @return the onSlipListener
+      */
+     public OnSlipGestureListener getOnSlipListener() {
+         return onSlipListener;
+     }
+    
+     /**
+      * @param onSlipListener the onSlipListener to set
+      */
+     public void setOnSlipListener(OnSlipGestureListener onSlipListener) {
+         this.onSlipListener = onSlipListener;
+     }
+        
     public abstract class OnTouchListener implements OnTouchGestureListener{
 
         /* (non-Javadoc)
@@ -953,7 +1499,6 @@ public class GridChart extends AbstractBaseChart  {
          */
         @Override
         public void onTouchMoved(MotionEvent event , PointF pt) {
-            // TODO Auto-generated method stub
             GridChart.this.touchPoint = pt;
             GridChart.this.postInvalidate();
         }
@@ -963,10 +1508,78 @@ public class GridChart extends AbstractBaseChart  {
          */
         @Override
         public void onTouchUp(MotionEvent event , PointF pt) {
-            // TODO Auto-generated method stub
             GridChart.this.touchPoint = pt;
             GridChart.this.postInvalidate();
         }
+        
+    }
+    
+    public abstract class OnZoomListener implements OnZoomGestureListener{
+
+        /* (non-Javadoc)
+         * @see cn.limc.androidcharts.event.ZoomGestureDetector.OnZoomGestureListener#onZoomIn(android.view.MotionEvent)
+         */
+        @Override
+        public void onZoomIn(MotionEvent event) {
+            IZoomable dataCursor = (IZoomable) GridChart.this.getDataCursor();
+            if (dataCursor != null) {
+                dataCursor.zoomIn();
+            }
+            GridChart.this.postInvalidate();
+        }
+
+        /* (non-Javadoc)
+         * @see cn.limc.androidcharts.event.ZoomGestureDetector.OnZoomGestureListener#onZoomOut(android.view.MotionEvent)
+         */
+        @Override
+        public void onZoomOut(MotionEvent event) {
+           
+            IZoomable dataCursor = (IZoomable) GridChart.this.getDataCursor();
+            if (dataCursor != null) {
+                dataCursor.zoomOut();
+            }
+            GridChart.this.postInvalidate();
+        }   
+    }
+    
+    public class OnSlipListener implements OnSlipGestureListener {
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * cn.limc.androidcharts.event.SlipGestureDetector.OnSlipGestureListener
+         * #onMoveLeft(android.view.MotionEvent)
+         */
+        @Override
+        public void onMoveLeft(MotionEvent event) {
+            ISlipable dataCursor = (ISlipable) GridChart.this.getDataCursor();
+            if (dataCursor != null) {
+                dataCursor.moveLeft();
+            }
+            GridChart.this.postInvalidate();
+
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * cn.limc.androidcharts.event.SlipGestureDetector.OnSlipGestureListener
+         * #onMoveRight(android.view.MotionEvent)
+         */
+        @Override
+        public void onMoveRight(MotionEvent event) {
+            ISlipable dataCursor = (ISlipable) GridChart.this.getDataCursor();
+            if (dataCursor != null) {
+                dataCursor.moveRight();
+            }
+            GridChart.this.postInvalidate();
+
+        }
+    }
+    
+    public interface onDrawingListener{
         
     }
 }

@@ -22,9 +22,9 @@
 package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.axis.Axis;
-import cn.limc.androidcharts.entity.IStickEntity;
-import cn.limc.androidcharts.entity.ListChartData;
+import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.entity.ChartDataSet;
+import cn.limc.androidcharts.entity.ChartDataTable;
 import cn.limc.androidcharts.view.StickChart;
 import cn.limc.demo.common.BaseActivity;
 import android.os.Bundle;
@@ -93,7 +93,7 @@ public class StickChartActivity extends BaseActivity {
         stickchart.setAxisXDateSourceFormat("yyyyMMdd");
 
         // 为chart1增加均线
-        stickchart.setStickData(new ListChartData<IStickEntity>(vol));
+        stickchart.setChartData(new ChartDataSet(new ChartDataTable(vol)));
     }
 
 }

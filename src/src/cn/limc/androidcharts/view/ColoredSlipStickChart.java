@@ -21,15 +21,13 @@
 
 package cn.limc.androidcharts.view;
 
-import cn.limc.androidcharts.axis.IAxis;
-import cn.limc.androidcharts.entity.ColoredStickEntity;
+import cn.limc.androidcharts.entity.ChartDataTable;
 import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.mole.ColoredStickMole;
 import cn.limc.androidcharts.mole.StickMole;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.util.AttributeSet;
 
 /**
@@ -110,66 +108,36 @@ public class ColoredSlipStickChart extends SlipStickChart {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 	}
+   
+   protected void drawSticks(Canvas canvas) {
+       if (null == chartData) {
+           return;
+       }
+       if (chartData.size() == 0) {
+           return;
+       }
 
-//	@Override
-//	protected void drawSticks(Canvas canvas) {
-//		if (null == stickData) {
-//			return;
-//		}
-//		if (stickData.size() == 0) {
-//			return;
-//		}
-//
-//		float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber()
-//				- stickSpacing;
-//		float stickX = dataQuadrant.getPaddingStartX();
-//
-//		Paint mPaintStick = new Paint();
-//		for (int i = dataCursor.getDisplayFrom(); i < dataCursor.getDisplayFrom() + dataCursor.getDisplayNumber(); i++) {
-//			ColoredStickEntity entity = (ColoredStickEntity) stickData.get(i);
-//
-//			float highY = (float) ((1f - (entity.getHigh() - minValue)
-//					/ (maxValue - minValue))
-//					* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
-//			float lowY = (float) ((1f - (entity.getLow() - minValue)
-//					/ (maxValue - minValue))
-//					* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
-//
-//			mPaintStick.setColor(entity.getColor());
-//			// stick or line?
-//			if (stickWidth >= 2f) {
-//				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
-//						mPaintStick);
-//			} else {
-//				canvas.drawLine(stickX, highY, stickX, lowY, mPaintStick);
-//			}
-//
-//			// next x
-//			stickX = stickX + stickSpacing + stickWidth;
-//		}
-//	}
-	
-	   @Override
-	    protected void drawSticks(Canvas canvas) {
-	        if (null == stickData) {
-	            return;
-	        }
-	        if (stickData.size() == 0) {
-	            return;
-	        }
+       float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+       float stickX = dataQuadrant.getPaddingStartX();
 
-	        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
-	        float stickX = dataQuadrant.getPaddingStartX();
+       for(int i=0; i< chartData.size() ; i++){
+           ChartDataTable table = chartData.getChartTable(i);
+           if (null == table) {
+               continue;
+           }
+           if(table.size() == 0){
+               continue;
+           }
+           for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
+               IMeasurable stick = (IMeasurable)table.get(j);
+               
+               ColoredStickMole mole = new ColoredStickMole();
+               mole.setUp(this,stick,stickX,stickWidth);
+               mole.draw(canvas);
 
-	        for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
-	            IMeasurable stick = stickData.get(i);
-	            
-	            ColoredStickMole mole = new ColoredStickMole();
-	            mole.setUp(this,stick,stickX,stickWidth);
-	            mole.draw(canvas);
-
-	            // next x
-	            stickX = stickX  + stickWidth;
-	        }
-	    }
+               // next x
+               stickX = stickX + stickWidth;
+           }
+       }
+   }
 }

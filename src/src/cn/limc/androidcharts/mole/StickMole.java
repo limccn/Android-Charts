@@ -24,13 +24,13 @@ package cn.limc.androidcharts.mole;
 
 import cn.limc.androidcharts.common.IChart;
 import cn.limc.androidcharts.entity.IMeasurable;
-import cn.limc.androidcharts.view.DataGridChart;
+import cn.limc.androidcharts.view.GridChart;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
-public class StickMole extends RectMole {
+public class StickMole extends AbstractMole implements RectMole{
 
 	public static final int DEFAULT_STICK_SPACING = 2;
 	public static final int DEFAULT_STICK_STROKE_WIDTH = 0;
@@ -59,7 +59,7 @@ public class StickMole extends RectMole {
 	 * 默认表示柱条的填充颜色
 	 * </p>
 	 */
-	public static final int DEFAULT_STICK_FILL_COLOR = Color.BLUE;
+	public static final int DEFAULT_STICK_FILL_COLOR = Color.YELLOW;
 
 	/**
 	 * <p>
@@ -92,18 +92,20 @@ public class StickMole extends RectMole {
 	
 	private IMeasurable stickData;
 	
-	/** 
-	 * <p>Constructor of StickMole</p>
-	 * <p>StickMole类对象的构造函数</p>
-	 * <p>StickMoleのコンストラクター</p>
-	 *
-	 * @param inRect 
-	 */
+    /* (non-Javadoc)
+     * @see cn.limc.androidcharts.mole.RectMole#setUp(cn.limc.androidcharts.common.IChart, float, float)
+     */
+    @Override
+    public void setUp(IChart chart, float from, float width) {
+        super.setUp(chart);
+        left = from + stickSpacing / 2;
+        right = from + width - stickSpacing /2;
+        
+    }
+	
 	public void setUp(IChart chart ,IMeasurable data, float from , float width) {
-		super.setUp(chart);
+	    this.setUp(chart,from,width);
 		setStickData(data);
-		left = from + stickSpacing / 2;
-		right = from + width - stickSpacing /2;
 	}
 	
 	/* (non-Javadoc)
@@ -145,7 +147,7 @@ public class StickMole extends RectMole {
 	 */
 	public void setStickData(IMeasurable stickData) {
 		this.stickData = stickData;
-		DataGridChart chart = (DataGridChart)getInChart();
+		GridChart chart = (GridChart)getInChart();
 		float highY = (float) ((1f - (stickData.getHigh() - chart.getDataRange().getMinValue()) / (chart.getDataRange().getValueRange()))
 				* (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant().getPaddingStartY());
 		float lowY = (float) ((1f - (stickData.getLow() - chart.getDataRange().getMinValue()) / (chart.getDataRange().getValueRange()))

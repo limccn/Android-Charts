@@ -20,7 +20,7 @@
  */
 
 
-package cn.limc.androidcharts.axis;
+package cn.limc.androidcharts.component;
 
 import cn.limc.androidcharts.common.Quadrant;
 import cn.limc.androidcharts.view.GridChart;

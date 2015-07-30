@@ -22,7 +22,6 @@
 
 package cn.limc.androidcharts.event;
 import cn.limc.androidcharts.view.GridChart;
-import android.R.integer;
 import android.view.MotionEvent;
 
 

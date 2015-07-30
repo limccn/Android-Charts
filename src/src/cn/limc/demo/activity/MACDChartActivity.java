@@ -22,9 +22,9 @@
 package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.axis.Axis;
-import cn.limc.androidcharts.entity.IStickEntity;
-import cn.limc.androidcharts.entity.ListChartData;
+import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.entity.ChartDataSet;
+import cn.limc.androidcharts.entity.ChartDataTable;
 import cn.limc.androidcharts.event.IZoomable;
 import cn.limc.androidcharts.view.MACDChart;
 import cn.limc.demo.common.BaseActivity;
@@ -71,12 +71,12 @@ public class MACDChartActivity extends BaseActivity {
         macdChart.setBorderColor(Color.LTGRAY);
         macdChart.setLongitudeFontColor(Color.WHITE);
         macdChart.setLatitudeFontColor(Color.WHITE);
-        macdChart.setMacdDisplayType(MACDChart.MACD_DISPLAY_TYPE_STICK);
-        macdChart.setPositiveStickColor(Color.RED);
-        macdChart.setNegativeStickColor(Color.CYAN);
-        macdChart.setMacdLineColor(Color.CYAN);
-        macdChart.setDeaLineColor(Color.YELLOW);
-        macdChart.setDiffLineColor(Color.WHITE);
+//        macdChart.setMacdDisplayType(MACDChart.MACD_DISPLAY_TYPE_STICK);
+//        macdChart.setPositiveStickColor(Color.RED);
+//        macdChart.setNegativeStickColor(Color.CYAN);
+//        macdChart.setMacdLineColor(Color.CYAN);
+//        macdChart.setDeaLineColor(Color.YELLOW);
+//        macdChart.setDiffLineColor(Color.WHITE);
         macdChart.setDataQuadrantPaddingTop(5);
         macdChart.setDataQuadrantPaddingBottom(5);
         macdChart.setDataQuadrantPaddingLeft(5);
@@ -87,7 +87,7 @@ public class MACDChartActivity extends BaseActivity {
         macdChart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
         // 设置stickData
-        macdChart.setStickData(new ListChartData<IStickEntity>(macd));
+        macdChart.setChartData(new ChartDataSet(new ChartDataTable(macd)));
     }
 
 }

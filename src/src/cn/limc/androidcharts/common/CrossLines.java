@@ -23,11 +23,9 @@
 package cn.limc.androidcharts.common;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.Paint.Style;
-import cn.limc.androidcharts.axis.Axis;
+import cn.limc.androidcharts.component.Axis;
 import cn.limc.androidcharts.view.GridChart;
 
 /** 
@@ -346,30 +344,29 @@ public class CrossLines implements ICrossLines {
      * 
      * @param canvas
      */
-    private void drawAlphaTextBox(PointF ptStart, PointF ptEnd, String content,
-            int color, int fontSize, Canvas canvas) {
-
-        Paint mPaintBox = new Paint();
-        mPaintBox.setColor(Color.WHITE);
-        mPaintBox.setAlpha(80);
-        mPaintBox.setStyle(Style.FILL);
-
-        Paint mPaintBoxLine = new Paint();
-        mPaintBoxLine.setColor(color);
-        mPaintBoxLine.setAntiAlias(true);
-        mPaintBoxLine.setTextSize(fontSize);
-
-        // draw a rectangle
-        canvas.drawRect(ptStart.x, ptStart.y, ptEnd.x, ptEnd.y, mPaintBox);
-
-        // draw a rectangle' border
-        canvas.drawLine(ptStart.x, ptStart.y, ptStart.x, ptEnd.y, mPaintBoxLine);
-        canvas.drawLine(ptStart.x, ptEnd.y, ptEnd.x, ptEnd.y, mPaintBoxLine);
-        canvas.drawLine(ptEnd.x, ptEnd.y, ptEnd.x, ptStart.y, mPaintBoxLine);
-        canvas.drawLine(ptEnd.x, ptStart.y, ptStart.x, ptStart.y, mPaintBoxLine);
-
-        mPaintBoxLine.setColor(color);
-        // draw text
-        canvas.drawText(content, ptStart.x, ptStart.y + fontSize, mPaintBoxLine);
-    }
+//    private void drawAlphaTextBox(PointF ptStart, PointF ptEnd, String content, int color, int fontSize, Canvas canvas) {
+//
+//        Paint mPaintBox = new Paint();
+//        mPaintBox.setColor(Color.WHITE);
+//        mPaintBox.setAlpha(80);
+//        mPaintBox.setStyle(Style.FILL);
+//
+//        Paint mPaintBoxLine = new Paint();
+//        mPaintBoxLine.setColor(color);
+//        mPaintBoxLine.setAntiAlias(true);
+//        mPaintBoxLine.setTextSize(fontSize);
+//
+//        // draw a rectangle
+//        canvas.drawRect(ptStart.x, ptStart.y, ptEnd.x, ptEnd.y, mPaintBox);
+//
+//        // draw a rectangle' border
+//        canvas.drawLine(ptStart.x, ptStart.y, ptStart.x, ptEnd.y, mPaintBoxLine);
+//        canvas.drawLine(ptStart.x, ptEnd.y, ptEnd.x, ptEnd.y, mPaintBoxLine);
+//        canvas.drawLine(ptEnd.x, ptEnd.y, ptEnd.x, ptStart.y, mPaintBoxLine);
+//        canvas.drawLine(ptEnd.x, ptStart.y, ptStart.x, ptStart.y, mPaintBoxLine);
+//
+//        mPaintBoxLine.setColor(color);
+//        // draw text
+//        canvas.drawText(content, ptStart.x, ptStart.y + fontSize, mPaintBoxLine);
+//    }
 }

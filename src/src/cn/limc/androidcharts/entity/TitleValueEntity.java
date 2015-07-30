@@ -36,7 +36,7 @@ package cn.limc.androidcharts.entity;
  * @author limc
  * @version v1.0 2011/05/29 12:19:06
  */
-public class TitleValueEntity {
+public class TitleValueEntity implements ChartDataRow {
 
 	/**
 	 * <p>

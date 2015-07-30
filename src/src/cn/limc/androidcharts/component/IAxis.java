@@ -20,7 +20,7 @@
  */
 
 
-package cn.limc.androidcharts.axis;
+package cn.limc.androidcharts.component;
 
 /** 
  * <p>en</p>

@@ -22,9 +22,9 @@
 package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.axis.Axis;
-import cn.limc.androidcharts.entity.IStickEntity;
-import cn.limc.androidcharts.entity.ListChartData;
+import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.entity.ChartDataSet;
+import cn.limc.androidcharts.entity.ChartDataTable;
 import cn.limc.androidcharts.event.IZoomable;
 import cn.limc.androidcharts.view.ColoredSlipStickChart;
 import cn.limc.demo.common.BaseActivity;
@@ -95,7 +95,7 @@ public class ColoredSlipStickChartActivity extends BaseActivity {
         coloredslipstickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
         // 为chart1增加均线
-        coloredslipstickchart.setStickData(new ListChartData<IStickEntity>(volc));
+        coloredslipstickchart.setChartData(new ChartDataSet(new ChartDataTable(volc)));
     }
 
 }

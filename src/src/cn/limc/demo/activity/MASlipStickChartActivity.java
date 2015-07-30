@@ -21,15 +21,12 @@
 
 package cn.limc.demo.activity;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.axis.Axis;
-import cn.limc.androidcharts.entity.DateValueEntity;
-import cn.limc.androidcharts.entity.IStickEntity;
+import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.entity.ChartDataSet;
+import cn.limc.androidcharts.entity.ChartDataTable;
 import cn.limc.androidcharts.entity.LineEntity;
-import cn.limc.androidcharts.entity.ListChartData;
 import cn.limc.androidcharts.event.IZoomable;
 import cn.limc.androidcharts.view.MASlipStickChart;
 import cn.limc.demo.common.BaseActivity;
@@ -59,28 +56,30 @@ public class MASlipStickChartActivity extends BaseActivity {
     private void initMASlipStickChart() {
         this.maslipstickchart = (MASlipStickChart) findViewById(R.id.maslipstickchart);
 
+
         // 以下计算VOL
-        List<LineEntity<DateValueEntity>> vlines = new ArrayList<LineEntity<DateValueEntity>>();
+        ChartDataSet vlines = new ChartDataSet();
 
         // 计算5日均线
-        LineEntity<DateValueEntity> vma5 = new LineEntity<DateValueEntity>();
+        LineEntity vma5 = new LineEntity();
         vma5.setTitle("MA5");
         vma5.setLineColor(Color.WHITE);
-        vma5.setLineData(initVMA(5));
+        vma5.setTableData(initVMA(5));
         vlines.add(vma5);
 
         // 计算10日均线
-        LineEntity<DateValueEntity> vma10 = new LineEntity<DateValueEntity>();
+        LineEntity vma10 = new LineEntity();
         vma10.setTitle("MA10");
-        vma10.setLineColor(Color.RED);
-        vma10.setLineData(initVMA(10));
+        vma10.setLineColor(Color.CYAN);
+        vma10.setTableData(initVMA(10));
         vlines.add(vma10);
 
+        
         // 计算25日均线
-        LineEntity<DateValueEntity> vma25 = new LineEntity<DateValueEntity>();
+        LineEntity vma25 = new LineEntity();
         vma25.setTitle("MA25");
-        vma25.setLineColor(Color.GREEN);
-        vma25.setLineData(initVMA(25));
+        vma25.setLineColor(Color.BLUE);
+        vma25.setTableData(initVMA(25));
         vlines.add(vma25);
 
         maslipstickchart.setAxisXColor(Color.LTGRAY);
@@ -126,6 +125,6 @@ public class MASlipStickChartActivity extends BaseActivity {
         // 为chart1增加均线
         maslipstickchart.setLineData(vlines);
         // 为chart1增加均线
-        maslipstickchart.setStickData(new ListChartData<IStickEntity>(vol));
+        maslipstickchart.setChartData(new ChartDataSet(new ChartDataTable(vol)));
     }
 }

@@ -33,6 +33,16 @@ package cn.limc.androidcharts.common;
  */
 public interface IQuadrant {
     
+    public static final int QUADRANT_TOP_LEFT          = 1 << 0;
+    public static final int QUADRANT_TOP_MIDDLE        = 1 << 1; 
+    public static final int QUADRANT_TOP_RIGHT         = 1 << 2; 
+    public static final int QUADRANT_CENTER_LEFT       = 1 << 3;
+    public static final int QUADRANT_CENTER_MIDDLE     = 1 << 4; 
+    public static final int QUADRANT_CENTER_RIGHT      = 1 << 5; 
+    public static final int QUADRANT_BOTTOM_LEFT       = 1 << 6;
+    public static final int QUADRANT_BOTTOM_MIDDLE     = 1 << 7; 
+    public static final int QUADRANT_BOTTOM_RIGHT      = 1 << 8; 
+    
 	 static final float DEFAULT_PADDING_TOP = 5f;
 	 static final float DEFAULT_PADDING_BOTTOM = 5f;
 	 static final float DEFAULT_PADDING_LEFT = 5f;

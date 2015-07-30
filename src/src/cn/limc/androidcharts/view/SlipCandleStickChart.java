@@ -21,6 +21,7 @@
 
 package cn.limc.androidcharts.view;
 
+import cn.limc.androidcharts.entity.ChartDataTable;
 import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.mole.CandleStickMole;
 
@@ -103,43 +104,51 @@ public class SlipCandleStickChart extends SlipStickChart {
 		// TODO Auto-generated constructor stub
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * <p>Called when is going to draw this chart<p> <p>チャートを書く前、メソッドを呼ぶ<p>
-	 * <p>绘制图表时调用<p>
-	 * 
-	 * @param canvas
-	 * 
-	 * @see android.view.View#onDraw(android.graphics.Canvas)
-	 */
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-	}
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * <p>Called when is going to draw this chart<p> <p>チャートを書く前、メソッドを呼ぶ<p>
+//	 * <p>绘制图表时调用<p>
+//	 * 
+//	 * @param canvas
+//	 * 
+//	 * @see android.view.View#onDraw(android.graphics.Canvas)
+//	 */
+//	@Override
+//	protected void onDraw(Canvas canvas) {
+//		super.onDraw(canvas);
+//	}
 
 	
-	   @Override
-	    protected void drawSticks(Canvas canvas) {
-	        if (null == stickData) {
-	            return;
-	        }
-	        if (stickData.size() == 0) {
-	            return;
-	        }
+	protected void drawSticks(Canvas canvas) {
+        if (null == chartData) {
+            return;
+        }
+        if (chartData.size() == 0) {
+            return;
+        }
 
-	        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
-	        float stickX = dataQuadrant.getPaddingStartX();
+        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+        float stickX = dataQuadrant.getPaddingStartX();
 
-	        for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
-	            IMeasurable stick = stickData.get(i);
-	            
-	            CandleStickMole mole = new CandleStickMole();
-	            mole.setUp(this,stick,stickX,stickWidth);
-	            mole.draw(canvas);
+        for(int i=0; i< chartData.size() ; i++){
+            ChartDataTable table = chartData.getChartTable(i);
+            if (null == table) {
+                continue;
+            }
+            if(table.size() == 0){
+                continue;
+            }
+            for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
+                IMeasurable stick = (IMeasurable)table.get(j);
+                
+                CandleStickMole mole = new CandleStickMole();
+                mole.setUp(this,stick,stickX,stickWidth);
+                mole.draw(canvas);
 
-	            // next x
-	            stickX = stickX + stickWidth;
-	        }
-	    }
+                // next x
+                stickX = stickX + stickWidth;
+            }
+        }
+    }
 }

@@ -1,7 +1,7 @@
 
 package cn.limc.androidcharts.degree;
 
-import cn.limc.androidcharts.view.DataGridChart;
+import cn.limc.androidcharts.view.GridChart;
 
 public abstract class Degree implements IDegree {
 
@@ -14,12 +14,12 @@ public abstract class Degree implements IDegree {
     
     protected String targetFormat;
     
-    protected DataGridChart inChart;
+    protected GridChart inChart;
     
     /**
      * 
      */
-    public Degree(DataGridChart inChart) {
+    public Degree(GridChart inChart) {
         this.inChart = inChart;
     }
 
@@ -68,14 +68,14 @@ public abstract class Degree implements IDegree {
     /**
      * @return the inChart
      */
-    public DataGridChart getInChart() {
+    public GridChart getInChart() {
         return inChart;
     }
 
     /**
      * @param inChart the inChart to set
      */
-    public void setInChart(DataGridChart inChart) {
+    public void setInChart(GridChart inChart) {
         this.inChart = inChart;
     }
 }

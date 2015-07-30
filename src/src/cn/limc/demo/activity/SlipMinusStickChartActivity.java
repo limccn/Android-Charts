@@ -25,10 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.axis.Axis;
-import cn.limc.androidcharts.entity.IChartData;
-import cn.limc.androidcharts.entity.IStickEntity;
-import cn.limc.androidcharts.entity.ListChartData;
+import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.entity.ChartDataRow;
+import cn.limc.androidcharts.entity.ChartDataSet;
+import cn.limc.androidcharts.entity.ChartDataTable;
 import cn.limc.androidcharts.entity.StickEntity;
 import cn.limc.androidcharts.event.IZoomable;
 import cn.limc.androidcharts.view.SlipMinusStickChart;
@@ -59,7 +59,7 @@ public class SlipMinusStickChartActivity extends BaseActivity {
     private void initSlipMinusStickChart() {
         this.slipminusstickchart = (SlipMinusStickChart) findViewById(R.id.slipminusstickchart);
 
-        List<IStickEntity> data = new ArrayList<IStickEntity>();
+        List<ChartDataRow> data = new ArrayList<ChartDataRow>();
         data.add(new StickEntity(50000, 0, 20110603));
         data.add(new StickEntity(42000, 0, 20110703));
         data.add(new StickEntity(32000, 0, 20110803));
@@ -136,8 +136,8 @@ public class SlipMinusStickChartActivity extends BaseActivity {
         slipminusstickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
         slipminusstickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
-        IChartData<IStickEntity> datas = new ListChartData<IStickEntity>(data);
-        slipminusstickchart.setStickData(datas);
+        ChartDataSet datas = new ChartDataSet(new ChartDataTable(data));
+        slipminusstickchart.setChartData(datas);
     }
 
 }

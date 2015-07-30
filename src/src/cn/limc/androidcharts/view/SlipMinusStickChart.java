@@ -26,6 +26,7 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 
 import cn.limc.androidcharts.degree.MinusStickValueRangeCalc;
+import cn.limc.androidcharts.entity.ChartDataTable;
 import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.mole.StickMole;
 
@@ -56,7 +57,7 @@ public class SlipMinusStickChart extends SlipStickChart {
 	 */
 	public SlipMinusStickChart(Context context) {
 		super(context);
-		dataRange = new MinusStickValueRangeCalc(this);
+		this.dataRange = new MinusStickValueRangeCalc(this);
 	}
 
 	/*
@@ -73,6 +74,7 @@ public class SlipMinusStickChart extends SlipStickChart {
 	 */
 	public SlipMinusStickChart(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		this.dataRange = new MinusStickValueRangeCalc(this);
 	}
 
 	/*
@@ -87,6 +89,7 @@ public class SlipMinusStickChart extends SlipStickChart {
 	 */
 	public SlipMinusStickChart(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		this.dataRange = new MinusStickValueRangeCalc(this);
 	}
 
 	/*
@@ -100,22 +103,34 @@ public class SlipMinusStickChart extends SlipStickChart {
 	 */
 	@Override
 	protected void drawSticks(Canvas canvas) {
-		float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
-		float stickX = dataQuadrant.getPaddingStartX();
+        if (null == chartData) {
+            return;
+        }
+        if (chartData.size() == 0) {
+            return;
+        }
 
-		if (null != stickData) {
-			// display as stick or line
-			for (int i = super.getDisplayFrom(); i < super.getDisplayFrom()
-					+ super.getDisplayNumber(); i++) {
-				IMeasurable stick = stickData.get(i);
+        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+        float stickX = dataQuadrant.getPaddingStartX();
 
-				StickMole mole = new StickMole();
-				mole.setUp(this,stick,stickX,stickWidth);
-				mole.draw(canvas);
+        for(int i=0; i< chartData.size() ; i++){
+            ChartDataTable table = chartData.getChartTable(i);
+            if (null == table) {
+                continue;
+            }
+            if(table.size() == 0){
+                continue;
+            }
+            for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
+                IMeasurable stick = (IMeasurable)table.get(j);
+                
+                StickMole mole = new  StickMole();
+                mole.setUp(this,stick,stickX,stickWidth);
+                mole.draw(canvas);
 
-				// next x
-				stickX = stickX + stickWidth;
-			}
-		}
-	}
+                // next x
+                stickX = stickX + stickWidth;
+            }
+        }
+    }
 }

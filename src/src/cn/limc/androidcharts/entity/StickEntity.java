@@ -35,7 +35,7 @@ package cn.limc.androidcharts.entity;
  * @author limc
  * @version v1.0 2011/05/29 12:24:49
  */
-public class StickEntity implements IStickEntity {
+public class StickEntity implements ChartDataRow,IMeasurable, IHasDate {
 
 	/**
 	 * <p>
@@ -179,7 +179,7 @@ public class StickEntity implements IStickEntity {
 	/**
 	 * @return the date
 	 */
-	public int getDate() {
+	public Object getDate() {
 		return date;
 	}
 
@@ -187,7 +187,7 @@ public class StickEntity implements IStickEntity {
 	 * @param date
 	 *            the date to set
 	 */
-	public void setDate(int date) {
-		this.date = date;
+	public void setDate(Object date) {
+		this.date = (Integer)date;
 	}
 }
