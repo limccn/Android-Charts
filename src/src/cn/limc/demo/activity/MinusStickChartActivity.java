@@ -26,11 +26,11 @@ import java.util.List;
 
 import cn.limc.androidcharts.R;
 import cn.limc.androidcharts.component.Axis;
-import cn.limc.androidcharts.entity.ChartDataRow;
-import cn.limc.androidcharts.entity.ChartDataSet;
-import cn.limc.androidcharts.entity.ChartDataTable;
-import cn.limc.androidcharts.entity.StickEntity;
-import cn.limc.androidcharts.view.MinusStickChart;
+import cn.limc.androidcharts.diagram.MinusStickChart;
+import cn.limc.androidcharts.series.ChartDataRow;
+import cn.limc.androidcharts.series.ChartDataSet;
+import cn.limc.androidcharts.series.ChartDataTable;
+import cn.limc.androidcharts.series.StickEntity;
 import cn.limc.demo.common.BaseActivity;
 import android.os.Bundle;
 import android.graphics.Color;

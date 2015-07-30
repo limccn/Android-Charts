@@ -46,24 +46,24 @@ public class ChartListActivity extends Activity {
             "MASlipCandleStickChart", "BOLLMASlipCandleStckChart", "MACDChart", "PieChart",
             "RoseChart", "SpiderWebChart", "RadarChart", "DonutChart" };
 
-    private String[] mListStr = { "cn.limc.androidcharts.view.GridChart",
-            "cn.limc.androidcharts.view.LineChart", "cn.limc.androidcharts.view.SlipLineChart",
-            "cn.limc.androidcharts.view.SlipAreaChart",
-            "cn.limc.androidcharts.view.SlipBandAreaChart",
-            "cn.limc.androidcharts.view.StickChart", "cn.limc.androidcharts.view.SlipStickChart",
-            "cn.limc.androidcharts.view.ColoredSlipStickChart",
-            "cn.limc.androidcharts.view.MAStickChart",
-            "cn.limc.androidcharts.view.MASlipStickChart",
-            "cn.limc.androidcharts.view.MinusStickChart",
-            "cn.limc.androidcharts.view.SlipMinusStickChart",
-            "cn.limc.androidcharts.view.CandleStickChart",
-            "cn.limc.androidcharts.view.SlipCandleStickChart",
-            "cn.limc.androidcharts.view.MACandleStickChart",
-            "cn.limc.androidcharts.view.MASlipCandleStickChart",
-            "cn.limc.androidcharts.view.BOLLMASlipCandleStickChart",
-            "cn.limc.androidcharts.view.MACDChart", "cn.limc.androidcharts.view.PieChart",
-            "cn.limc.androidcharts.view.RoseChart", "cn.limc.androidcharts.view.SpiderWebChart",
-            "cn.limc.androidcharts.view.RadarChart", "cn.limc.androidcharts.view.DonutChart" };
+    private String[] mListStr = { "cn.limc.androidcharts.diagram.GridChart",
+            "cn.limc.androidcharts.diagram.LineChart", "cn.limc.androidcharts.diagram.SlipLineChart",
+            "cn.limc.androidcharts.diagram.SlipAreaChart",
+            "cn.limc.androidcharts.diagram.SlipBandAreaChart",
+            "cn.limc.androidcharts.diagram.StickChart", "cn.limc.androidcharts.diagram.SlipStickChart",
+            "cn.limc.androidcharts.diagram.ColoredSlipStickChart",
+            "cn.limc.androidcharts.diagram.MAStickChart",
+            "cn.limc.androidcharts.diagram.MASlipStickChart",
+            "cn.limc.androidcharts.diagram.MinusStickChart",
+            "cn.limc.androidcharts.diagram.SlipMinusStickChart",
+            "cn.limc.androidcharts.diagram.CandleStickChart",
+            "cn.limc.androidcharts.diagram.SlipCandleStickChart",
+            "cn.limc.androidcharts.diagram.MACandleStickChart",
+            "cn.limc.androidcharts.diagram.MASlipCandleStickChart",
+            "cn.limc.androidcharts.diagram.BOLLMASlipCandleStickChart",
+            "cn.limc.androidcharts.diagram.MACDChart", "cn.limc.androidcharts.diagram.PieChart",
+            "cn.limc.androidcharts.diagram.RoseChart", "cn.limc.androidcharts.diagram.SpiderWebChart",
+            "cn.limc.androidcharts.diagram.RadarChart", "cn.limc.androidcharts.diagram.DonutChart" };
     ListView mListView = null;
     ArrayList<Map<String, Object>> mData = new ArrayList<Map<String, Object>>();;
 

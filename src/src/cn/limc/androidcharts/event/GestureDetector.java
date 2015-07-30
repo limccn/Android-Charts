@@ -1,6 +1,6 @@
 package cn.limc.androidcharts.event;
 
-import cn.limc.androidcharts.view.GridChart;
+import cn.limc.androidcharts.diagram.GridChart;
 import android.view.MotionEvent;
 
 

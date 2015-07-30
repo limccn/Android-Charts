@@ -24,46 +24,46 @@ package cn.limc.androidcharts;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.limc.androidcharts.common.IDataCursor;
 import cn.limc.androidcharts.component.Axis;
-import cn.limc.androidcharts.entity.ChartDataRow;
-import cn.limc.androidcharts.entity.ChartDataSet;
-import cn.limc.androidcharts.entity.ChartDataTable;
-import cn.limc.androidcharts.entity.ColoredStickEntity;
-import cn.limc.androidcharts.entity.DateValueEntity;
-import cn.limc.androidcharts.entity.IHasDate;
-import cn.limc.androidcharts.entity.IMeasurable;
-import cn.limc.androidcharts.entity.LineEntity;
-import cn.limc.androidcharts.entity.MACDEntity;
-import cn.limc.androidcharts.entity.OHLCEntity;
-import cn.limc.androidcharts.entity.StickEntity;
-import cn.limc.androidcharts.entity.TitleValueColorEntity;
-import cn.limc.androidcharts.entity.TitleValueEntity;
-import cn.limc.androidcharts.event.ITouchable;
-import cn.limc.androidcharts.event.IZoomable;
+import cn.limc.androidcharts.diagram.BOLLMASlipCandleStickChart;
+import cn.limc.androidcharts.diagram.CandleStickChart;
+import cn.limc.androidcharts.diagram.ColoredSlipStickChart;
+import cn.limc.androidcharts.diagram.GridChart;
+import cn.limc.androidcharts.diagram.LineChart;
+import cn.limc.androidcharts.diagram.MACDChart;
+import cn.limc.androidcharts.diagram.MACandleStickChart;
+import cn.limc.androidcharts.diagram.MASlipCandleStickChart;
+import cn.limc.androidcharts.diagram.MASlipStickChart;
+import cn.limc.androidcharts.diagram.MAStickChart;
+import cn.limc.androidcharts.diagram.MinusStickChart;
+import cn.limc.androidcharts.diagram.PieChart;
+import cn.limc.androidcharts.diagram.RadarChart;
+import cn.limc.androidcharts.diagram.RoseChart;
+import cn.limc.androidcharts.diagram.SlipAreaChart;
+import cn.limc.androidcharts.diagram.SlipBandAreaChart;
+import cn.limc.androidcharts.diagram.SlipCandleStickChart;
+import cn.limc.androidcharts.diagram.SlipLineChart;
+import cn.limc.androidcharts.diagram.SlipMinusStickChart;
+import cn.limc.androidcharts.diagram.SlipStickChart;
+import cn.limc.androidcharts.diagram.SpiderWebChart;
+import cn.limc.androidcharts.diagram.StickChart;
+import cn.limc.androidcharts.event.Touchable;
+import cn.limc.androidcharts.event.Zoomable;
 import cn.limc.androidcharts.event.IDisplayCursorListener;
-import cn.limc.androidcharts.view.BOLLMASlipCandleStickChart;
-import cn.limc.androidcharts.view.CandleStickChart;
-import cn.limc.androidcharts.view.ColoredSlipStickChart;
-import cn.limc.androidcharts.view.GridChart;
-import cn.limc.androidcharts.view.LineChart;
-import cn.limc.androidcharts.view.MACDChart;
-import cn.limc.androidcharts.view.MACandleStickChart;
-import cn.limc.androidcharts.view.MASlipCandleStickChart;
-import cn.limc.androidcharts.view.MASlipStickChart;
-import cn.limc.androidcharts.view.MAStickChart;
-import cn.limc.androidcharts.view.MinusStickChart;
-import cn.limc.androidcharts.view.PieChart;
-import cn.limc.androidcharts.view.RadarChart;
-import cn.limc.androidcharts.view.RoseChart;
-import cn.limc.androidcharts.view.SlipAreaChart;
-import cn.limc.androidcharts.view.SlipBandAreaChart;
-import cn.limc.androidcharts.view.SlipCandleStickChart;
-import cn.limc.androidcharts.view.SlipLineChart;
-import cn.limc.androidcharts.view.SlipMinusStickChart;
-import cn.limc.androidcharts.view.SlipStickChart;
-import cn.limc.androidcharts.view.SpiderWebChart;
-import cn.limc.androidcharts.view.StickChart;
+import cn.limc.androidcharts.model.IDataCursor;
+import cn.limc.androidcharts.series.ChartDataRow;
+import cn.limc.androidcharts.series.ChartDataSet;
+import cn.limc.androidcharts.series.ChartDataTable;
+import cn.limc.androidcharts.series.ColoredStickEntity;
+import cn.limc.androidcharts.series.DateValueEntity;
+import cn.limc.androidcharts.series.IHasDate;
+import cn.limc.androidcharts.series.IMeasurable;
+import cn.limc.androidcharts.series.LineEntity;
+import cn.limc.androidcharts.series.MACDEntity;
+import cn.limc.androidcharts.series.OHLCEntity;
+import cn.limc.androidcharts.series.StickEntity;
+import cn.limc.androidcharts.series.TitleValueColorEntity;
+import cn.limc.androidcharts.series.TitleValueEntity;
 
 import cn.limc.androidcharts.R;
 
@@ -276,7 +276,7 @@ public class AndroidChartsActivity extends Activity {
 //		sliplinechart.setDisplayFrom(10);
 //		sliplinechart.setDisplayNumber(30);
 //		sliplinechart.setMinDisplayNumber(5);
-//		sliplinechart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+//		sliplinechart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
 //		//sliplinechart.setDisplayLongitudeTitle(true);
 //		//sliplinechart.setDisplayLatitudeTitle(true);
 //		//sliplinechart.setDisplayLatitude(true);
@@ -324,7 +324,7 @@ public class AndroidChartsActivity extends Activity {
 //		slipareachart.setDisplayFrom(10);
 //		slipareachart.setDisplayNumber(30);
 //		slipareachart.setMinDisplayNumber(5);
-//		slipareachart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+//		slipareachart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
 //		//slipareachart.setDisplayLongitudeTitle(true);
 //		//slipareachart.setDisplayLatitudeTitle(true);
 //		//slipareachart.setDisplayLatitude(true);
@@ -372,7 +372,7 @@ public class AndroidChartsActivity extends Activity {
 //		slipbandchart.setDisplayFrom(10);
 //		slipbandchart.setDisplayNumber(30);
 //		slipbandchart.setMinDisplayNumber(5);
-//		slipbandchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+//		slipbandchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
 //		//slipbandchart.setDisplayLongitudeTitle(true);
 //		//slipbandchart.setDisplayLatitudeTitle(true);
 //		//slipbandchart.setDisplayLatitude(true);
@@ -469,7 +469,7 @@ public class AndroidChartsActivity extends Activity {
 //
 //		slipstickchart.setMinDisplayNumber(5);
 //
-//		slipstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+//		slipstickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
 //
 ////		slipstickchart.setDisplayLongitudeTitle(true);
 ////		slipstickchart.setDisplayLatitudeTitle(true);
@@ -512,7 +512,7 @@ public class AndroidChartsActivity extends Activity {
 //
 //		coloredslipstickchart.setMinDisplayNumber(5);
 //
-//		coloredslipstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+//		coloredslipstickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
 //
 ////		coloredslipstickchart.setDisplayLongitudeTitle(true);
 ////		coloredslipstickchart.setDisplayLatitudeTitle(true);
@@ -652,7 +652,7 @@ public class AndroidChartsActivity extends Activity {
 //
 //		maslipstickchart.setMinDisplayNumber(5);
 //
-//		maslipstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+//		maslipstickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
 //
 //		maslipstickchart.setDisplayLongitudeTitle(true);
 //		maslipstickchart.setDisplayLatitudeTitle(true);
@@ -789,7 +789,7 @@ public class AndroidChartsActivity extends Activity {
 //		slipminusstickchart.setDisplayNumber(10);
 //		slipminusstickchart.setMinDisplayNumber(5);
 //
-//		slipminusstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+//		slipminusstickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
 //		slipminusstickchart.setDisplayLongitudeTitle(true);
 //		slipminusstickchart.setDisplayLatitudeTitle(true);
 //		//slipminusstickchart.setDisplayCrossXOnTouch(false);
@@ -876,7 +876,7 @@ public class AndroidChartsActivity extends Activity {
 //
 //		slipcandlestickchart.setMinDisplayNumber(5);
 //
-//		slipcandlestickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+//		slipcandlestickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
 //
 //		slipcandlestickchart.setDisplayLongitudeTitle(true);
 //		slipcandlestickchart.setDisplayLatitudeTitle(true);
@@ -1013,7 +1013,7 @@ public class AndroidChartsActivity extends Activity {
 //
 //		maslipcandlestickchart.setMinDisplayNumber(5);
 //
-//		maslipcandlestickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+//		maslipcandlestickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
 //
 //		maslipcandlestickchart.setDisplayLongitudeTitle(true);
 //		maslipcandlestickchart.setDisplayLatitudeTitle(true);
@@ -1111,7 +1111,7 @@ public class AndroidChartsActivity extends Activity {
 //		bollmaslipcandlestickchart.setMinDisplayNumber(5);
 //
 //		bollmaslipcandlestickchart
-//				.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+//				.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
 //
 //		bollmaslipcandlestickchart.setDisplayLongitudeTitle(true);
 //		bollmaslipcandlestickchart.setDisplayLatitudeTitle(true);
@@ -1270,7 +1270,7 @@ public class AndroidChartsActivity extends Activity {
 //		macdChart.setDisplayFrom(0);
 //		macdChart.setDisplayNumber(10);
 //		macdChart.setMinDisplayNumber(5);
-//		macdChart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+//		macdChart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
 //		macdChart.setAxisXColor(Color.LTGRAY);
 //		macdChart.setAxisYColor(Color.LTGRAY);
 //		macdChart.setLatitudeColor(Color.GRAY);

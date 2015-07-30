@@ -24,7 +24,7 @@ package cn.limc.androidcharts.component;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import cn.limc.androidcharts.view.GridChart;
+import cn.limc.androidcharts.diagram.GridChart;
 
 /** 
  * <p>en</p>

@@ -26,11 +26,11 @@ import java.util.List;
 
 import cn.limc.androidcharts.R;
 import cn.limc.androidcharts.component.Axis;
-import cn.limc.androidcharts.entity.ChartDataSet;
-import cn.limc.androidcharts.entity.DateValueEntity;
-import cn.limc.androidcharts.entity.LineEntity;
-import cn.limc.androidcharts.event.IZoomable;
-import cn.limc.androidcharts.view.SlipLineChart;
+import cn.limc.androidcharts.diagram.SlipLineChart;
+import cn.limc.androidcharts.event.Zoomable;
+import cn.limc.androidcharts.series.ChartDataSet;
+import cn.limc.androidcharts.series.DateValueEntity;
+import cn.limc.androidcharts.series.LineEntity;
 import cn.limc.demo.common.BaseActivity;
 import android.os.Bundle;
 import android.graphics.Color;
@@ -87,7 +87,7 @@ public class SlipLineChartActivity extends BaseActivity {
         sliplinechart.setDisplayFrom(10);
         sliplinechart.setDisplayNumber(30);
         sliplinechart.setMinDisplayNumber(5);
-        sliplinechart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+        sliplinechart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
         sliplinechart.setDisplayLongitudeTitle(true);
         sliplinechart.setDisplayLatitudeTitle(true);
         sliplinechart.setDisplayLatitude(true);

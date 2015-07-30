@@ -26,7 +26,7 @@ import java.util.List;
 
 import cn.limc.androidcharts.R;
 import cn.limc.androidcharts.component.Axis;
-import cn.limc.androidcharts.view.GridChart;
+import cn.limc.androidcharts.diagram.GridChart;
 import android.os.Bundle;
 import android.app.Activity;
 import android.graphics.Color;

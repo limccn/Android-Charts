@@ -26,12 +26,12 @@ import java.util.List;
 
 import cn.limc.androidcharts.R;
 import cn.limc.androidcharts.component.Axis;
-import cn.limc.androidcharts.entity.ChartDataSet;
-import cn.limc.androidcharts.entity.ChartDataTable;
-import cn.limc.androidcharts.entity.DateValueEntity;
-import cn.limc.androidcharts.entity.LineEntity;
-import cn.limc.androidcharts.event.IZoomable;
-import cn.limc.androidcharts.view.BOLLMASlipCandleStickChart;
+import cn.limc.androidcharts.diagram.BOLLMASlipCandleStickChart;
+import cn.limc.androidcharts.event.Zoomable;
+import cn.limc.androidcharts.series.ChartDataSet;
+import cn.limc.androidcharts.series.ChartDataTable;
+import cn.limc.androidcharts.series.DateValueEntity;
+import cn.limc.androidcharts.series.LineEntity;
 import cn.limc.demo.common.BaseActivity;
 import android.os.Bundle;
 import android.graphics.Color;
@@ -118,7 +118,7 @@ public class BOLLMASlipCandleStickChartActivity extends BaseActivity {
         bollmaslipcandlestickchart.setMinDisplayNumber(5);
 
         bollmaslipcandlestickchart
-                .setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+                .setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
 
         bollmaslipcandlestickchart.setDisplayLongitudeTitle(true);
         bollmaslipcandlestickchart.setDisplayLatitudeTitle(true);

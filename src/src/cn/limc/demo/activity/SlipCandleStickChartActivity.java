@@ -23,10 +23,10 @@ package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
 import cn.limc.androidcharts.component.Axis;
-import cn.limc.androidcharts.entity.ChartDataSet;
-import cn.limc.androidcharts.entity.ChartDataTable;
-import cn.limc.androidcharts.event.IZoomable;
-import cn.limc.androidcharts.view.SlipCandleStickChart;
+import cn.limc.androidcharts.diagram.SlipCandleStickChart;
+import cn.limc.androidcharts.event.Zoomable;
+import cn.limc.androidcharts.series.ChartDataSet;
+import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.demo.common.BaseActivity;
 import android.os.Bundle;
 import android.graphics.Color;
@@ -76,7 +76,7 @@ public class SlipCandleStickChartActivity extends BaseActivity {
 
         slipcandlestickchart.setMinDisplayNumber(5);
 
-        slipcandlestickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+        slipcandlestickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
 
         slipcandlestickchart.setDisplayLongitudeTitle(true);
         slipcandlestickchart.setDisplayLatitudeTitle(true);

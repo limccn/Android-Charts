@@ -26,10 +26,10 @@ import java.util.List;
 
 import cn.limc.androidcharts.R;
 import cn.limc.androidcharts.component.Axis;
-import cn.limc.androidcharts.entity.ChartDataSet;
-import cn.limc.androidcharts.entity.DateValueEntity;
-import cn.limc.androidcharts.entity.LineEntity;
-import cn.limc.androidcharts.view.LineChart;
+import cn.limc.androidcharts.diagram.LineChart;
+import cn.limc.androidcharts.series.ChartDataSet;
+import cn.limc.androidcharts.series.DateValueEntity;
+import cn.limc.androidcharts.series.LineEntity;
 import cn.limc.demo.common.BaseActivity;
 import android.os.Bundle;
 import android.graphics.Color;

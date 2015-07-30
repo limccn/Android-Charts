@@ -10,14 +10,14 @@ package cn.limc.androidcharts.draw;
 
 import android.R.integer;
 import android.graphics.Canvas;
-import cn.limc.androidcharts.common.IDataCursor;
-import cn.limc.androidcharts.common.IQuadrant;
-import cn.limc.androidcharts.entity.ChartDataRow;
-import cn.limc.androidcharts.entity.ChartDataSet;
-import cn.limc.androidcharts.entity.ChartDataTable;
-import cn.limc.androidcharts.entity.IMeasurable;
-import cn.limc.androidcharts.mole.IMole;
-import cn.limc.androidcharts.mole.StickMole;
+import cn.limc.androidcharts.component.IQuadrant;
+import cn.limc.androidcharts.model.IDataCursor;
+import cn.limc.androidcharts.series.ChartDataRow;
+import cn.limc.androidcharts.series.ChartDataSet;
+import cn.limc.androidcharts.series.ChartDataTable;
+import cn.limc.androidcharts.series.IMeasurable;
+import cn.limc.androidcharts.shape.Shape;
+import cn.limc.androidcharts.shape.Bar;
 
 /**
  * RectDrawMethod
@@ -71,7 +71,7 @@ public class RectDrawMethod extends DrawMethod {
             for (int j = dataCursor.getDisplayFrom(); j < dataCursor.getDisplayTo(); j++) {
                 IMeasurable stick = (IMeasurable)table.get(j);
                 
-                StickMole mole = new StickMole();
+                Bar mole = new Bar();
 //                mole.setUp(this,stick,stickX,stickWidth);
                 mole.draw(canvas);
 

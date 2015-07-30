@@ -26,12 +26,12 @@ import java.util.List;
 
 import cn.limc.androidcharts.R;
 import cn.limc.androidcharts.component.Axis;
-import cn.limc.androidcharts.entity.ChartDataSet;
-import cn.limc.androidcharts.entity.ChartDataTable;
-import cn.limc.androidcharts.entity.DateValueEntity;
-import cn.limc.androidcharts.entity.LineEntity;
-import cn.limc.androidcharts.event.IZoomable;
-import cn.limc.androidcharts.view.MASlipCandleStickChart;
+import cn.limc.androidcharts.diagram.MASlipCandleStickChart;
+import cn.limc.androidcharts.event.Zoomable;
+import cn.limc.androidcharts.series.ChartDataSet;
+import cn.limc.androidcharts.series.ChartDataTable;
+import cn.limc.androidcharts.series.DateValueEntity;
+import cn.limc.androidcharts.series.LineEntity;
 import cn.limc.demo.common.BaseActivity;
 import android.os.Bundle;
 import android.graphics.Color;
@@ -104,7 +104,7 @@ public class MASlipCandleStickChartActivity extends BaseActivity {
 
         maslipcandlestickchart.setMinDisplayNumber(5);
 
-        maslipcandlestickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+        maslipcandlestickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
 
         maslipcandlestickchart.setDisplayLongitudeTitle(true);
         maslipcandlestickchart.setDisplayLatitudeTitle(true);

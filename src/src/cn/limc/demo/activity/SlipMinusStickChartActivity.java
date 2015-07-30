@@ -26,12 +26,12 @@ import java.util.List;
 
 import cn.limc.androidcharts.R;
 import cn.limc.androidcharts.component.Axis;
-import cn.limc.androidcharts.entity.ChartDataRow;
-import cn.limc.androidcharts.entity.ChartDataSet;
-import cn.limc.androidcharts.entity.ChartDataTable;
-import cn.limc.androidcharts.entity.StickEntity;
-import cn.limc.androidcharts.event.IZoomable;
-import cn.limc.androidcharts.view.SlipMinusStickChart;
+import cn.limc.androidcharts.diagram.SlipMinusStickChart;
+import cn.limc.androidcharts.event.Zoomable;
+import cn.limc.androidcharts.series.ChartDataRow;
+import cn.limc.androidcharts.series.ChartDataSet;
+import cn.limc.androidcharts.series.ChartDataTable;
+import cn.limc.androidcharts.series.StickEntity;
 import cn.limc.demo.common.BaseActivity;
 import android.os.Bundle;
 import android.graphics.Color;
@@ -118,7 +118,7 @@ public class SlipMinusStickChartActivity extends BaseActivity {
         slipminusstickchart.setDisplayNumber(10);
         slipminusstickchart.setMinDisplayNumber(5);
 
-        slipminusstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+        slipminusstickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
         slipminusstickchart.setDisplayLongitudeTitle(true);
         slipminusstickchart.setDisplayLatitudeTitle(true);
         // slipminusstickchart.setDisplayCrossXOnTouch(false);

@@ -21,7 +21,7 @@
 
 
 package cn.limc.androidcharts.event;
-import cn.limc.androidcharts.common.IDataCursor;
+import cn.limc.androidcharts.model.IDataCursor;
 
 /** 
  * <p>en</p>

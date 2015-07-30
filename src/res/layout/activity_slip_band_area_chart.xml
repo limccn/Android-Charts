@@ -8,7 +8,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SlipBandAreaChartActivity" >
 
-        <cn.limc.androidcharts.view.SlipBandAreaChart
+        <cn.limc.androidcharts.diagram.SlipBandAreaChart
             android:id="@+id/slipbandchart"
             android:layout_width="match_parent"
             android:layout_height="@dimen/single_chart_height" />

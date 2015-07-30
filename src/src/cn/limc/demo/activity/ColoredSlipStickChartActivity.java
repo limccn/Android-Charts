@@ -23,10 +23,10 @@ package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
 import cn.limc.androidcharts.component.Axis;
-import cn.limc.androidcharts.entity.ChartDataSet;
-import cn.limc.androidcharts.entity.ChartDataTable;
-import cn.limc.androidcharts.event.IZoomable;
-import cn.limc.androidcharts.view.ColoredSlipStickChart;
+import cn.limc.androidcharts.diagram.ColoredSlipStickChart;
+import cn.limc.androidcharts.event.Zoomable;
+import cn.limc.androidcharts.series.ChartDataSet;
+import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.demo.common.BaseActivity;
 import android.os.Bundle;
 import android.graphics.Color;
@@ -77,7 +77,7 @@ public class ColoredSlipStickChartActivity extends BaseActivity {
 
         coloredslipstickchart.setMinDisplayNumber(5);
 
-        coloredslipstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+        coloredslipstickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
 
         coloredslipstickchart.setDisplayLongitudeTitle(true);
         coloredslipstickchart.setDisplayLatitudeTitle(true);

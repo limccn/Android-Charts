@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:text="@string/gridchart" />
 
-        <cn.limc.androidcharts.view.GridChart
+        <cn.limc.androidcharts.diagram.GridChart
             android:id="@+id/gridchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:text="@string/linechart" />
 
-        <cn.limc.androidcharts.view.LineChart
+        <cn.limc.androidcharts.diagram.LineChart
             android:id="@+id/linechart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:text="@string/sliplinechart" />
 
-        <cn.limc.androidcharts.view.SlipLineChart
+        <cn.limc.androidcharts.diagram.SlipLineChart
             android:id="@+id/sliplinechart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:text="@string/slipareachart" />
 
-        <cn.limc.androidcharts.view.SlipAreaChart
+        <cn.limc.androidcharts.diagram.SlipAreaChart
             android:id="@+id/slipareachart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:text="@string/slipbandchart" />
 
-        <cn.limc.androidcharts.view.SlipBandAreaChart
+        <cn.limc.androidcharts.diagram.SlipBandAreaChart
             android:id="@+id/slipbandchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:text="@string/stickchart" />
 
-        <cn.limc.androidcharts.view.StickChart
+        <cn.limc.androidcharts.diagram.StickChart
             android:id="@+id/stickchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:text="@string/slipstickchart" />
 
-        <cn.limc.androidcharts.view.SlipStickChart
+        <cn.limc.androidcharts.diagram.SlipStickChart
             android:id="@+id/slipstickchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:text="@string/coloredslipstickchart" />
 
-        <cn.limc.androidcharts.view.ColoredSlipStickChart
+        <cn.limc.androidcharts.diagram.ColoredSlipStickChart
             android:id="@+id/coloredslipstickchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:text="@string/mastickchart" />
 
-        <cn.limc.androidcharts.view.MAStickChart
+        <cn.limc.androidcharts.diagram.MAStickChart
             android:id="@+id/mastickchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -104,7 +104,7 @@
             android:layout_height="wrap_content"
             android:text="@string/maslipstickchart" />
 
-        <cn.limc.androidcharts.view.MASlipStickChart
+        <cn.limc.androidcharts.diagram.MASlipStickChart
             android:id="@+id/maslipstickchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -114,7 +114,7 @@
             android:layout_height="wrap_content"
             android:text="@string/minusstickchart" />
 
-        <cn.limc.androidcharts.view.MinusStickChart
+        <cn.limc.androidcharts.diagram.MinusStickChart
             android:id="@+id/minusstickchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -124,7 +124,7 @@
             android:layout_height="wrap_content"
             android:text="@string/slipminusstickchart" />
 
-        <cn.limc.androidcharts.view.SlipMinusStickChart
+        <cn.limc.androidcharts.diagram.SlipMinusStickChart
             android:id="@+id/slipminusstickchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -134,7 +134,7 @@
             android:layout_height="wrap_content"
             android:text="@string/candlestickchart" />
 
-        <cn.limc.androidcharts.view.CandleStickChart
+        <cn.limc.androidcharts.diagram.CandleStickChart
             android:id="@+id/candlestickchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -144,7 +144,7 @@
             android:layout_height="wrap_content"
             android:text="@string/slipcandlestickchart" />
 
-        <cn.limc.androidcharts.view.SlipCandleStickChart
+        <cn.limc.androidcharts.diagram.SlipCandleStickChart
             android:id="@+id/slipcandlestickchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -154,7 +154,7 @@
             android:layout_height="wrap_content"
             android:text="@string/macandlestickchart" />
 
-        <cn.limc.androidcharts.view.MACandleStickChart
+        <cn.limc.androidcharts.diagram.MACandleStickChart
             android:id="@+id/macandlestickchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -164,7 +164,7 @@
             android:layout_height="wrap_content"
             android:text="@string/maslipcandlestickchart" />
 
-        <cn.limc.androidcharts.view.MASlipCandleStickChart
+        <cn.limc.androidcharts.diagram.MASlipCandleStickChart
             android:id="@+id/maslipcandlestickchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -174,7 +174,7 @@
             android:layout_height="wrap_content"
             android:text="@string/bollmaslipcandlestickchart" />
         
-        <cn.limc.androidcharts.view.BOLLMASlipCandleStickChart
+        <cn.limc.androidcharts.diagram.BOLLMASlipCandleStickChart
             android:id="@+id/bollmaslipcandlestickchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -184,7 +184,7 @@
             android:layout_height="wrap_content"
             android:text="@string/macdchart" />
         
-        <cn.limc.androidcharts.view.MACDChart
+        <cn.limc.androidcharts.diagram.MACDChart
             android:id="@+id/macdchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip"/>
@@ -194,7 +194,7 @@
             android:layout_height="wrap_content"
             android:text="@string/piechart" />
 
-        <cn.limc.androidcharts.view.PieChart
+        <cn.limc.androidcharts.diagram.PieChart
             android:id="@+id/piechart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -204,7 +204,7 @@
             android:layout_height="wrap_content"
             android:text="@string/rosechart" />
 
-        <cn.limc.androidcharts.view.RoseChart
+        <cn.limc.androidcharts.diagram.RoseChart
             android:id="@+id/rosechart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -214,7 +214,7 @@
             android:layout_height="wrap_content"
             android:text="@string/spiderwebchart" />
 
-        <cn.limc.androidcharts.view.SpiderWebChart
+        <cn.limc.androidcharts.diagram.SpiderWebChart
             android:id="@+id/spiderwebchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />
@@ -224,7 +224,7 @@
             android:layout_height="wrap_content"
             android:text="@string/radarchart" />
 
-        <cn.limc.androidcharts.view.RadarChart
+        <cn.limc.androidcharts.diagram.RadarChart
             android:id="@+id/radarchart"
             android:layout_width="fill_parent"
             android:layout_height="240dip" />

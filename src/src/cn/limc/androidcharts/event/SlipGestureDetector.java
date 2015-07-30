@@ -21,7 +21,7 @@
 
 package cn.limc.androidcharts.event;
 
-import cn.limc.androidcharts.view.GridChart;
+import cn.limc.androidcharts.diagram.GridChart;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 
@@ -122,9 +122,9 @@ public class SlipGestureDetector extends GestureDetector{
 //						if (Math.abs(newdistance - olddistance) > MIN_DISTANCE) {
 //							if (onZoomGestureListener != null) {
 //								if (newdistance > olddistance) {
-//									onZoomGestureListener.onZoomIn((IZoomable)instance,event);
+//									onZoomGestureListener.onZoomIn((Zoomable)instance,event);
 //								} else {
-//									onZoomGestureListener.onZoomOut((IZoomable)instance,event);
+//									onZoomGestureListener.onZoomOut((Zoomable)instance,event);
 //								}
 //							}
 //							// reset distance

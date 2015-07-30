@@ -8,7 +8,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SlipCandleStickChartActivity" >
 
-        <cn.limc.androidcharts.view.SlipCandleStickChart
+        <cn.limc.androidcharts.diagram.SlipCandleStickChart
             android:id="@+id/slipcandlestickchart"
             android:layout_width="match_parent"
             android:layout_height="@dimen/single_chart_height" />

@@ -23,10 +23,10 @@ package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
 import cn.limc.androidcharts.component.Axis;
-import cn.limc.androidcharts.entity.ChartDataSet;
-import cn.limc.androidcharts.entity.ChartDataTable;
-import cn.limc.androidcharts.event.IZoomable;
-import cn.limc.androidcharts.view.MACDChart;
+import cn.limc.androidcharts.diagram.MACDChart;
+import cn.limc.androidcharts.event.Zoomable;
+import cn.limc.androidcharts.series.ChartDataSet;
+import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.demo.common.BaseActivity;
 import android.os.Bundle;
 import android.graphics.Color;
@@ -63,7 +63,7 @@ public class MACDChartActivity extends BaseActivity {
         macdChart.setDisplayFrom(0);
         macdChart.setDisplayNumber(10);
         macdChart.setMinDisplayNumber(5);
-        macdChart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+        macdChart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
         macdChart.setAxisXColor(Color.LTGRAY);
         macdChart.setAxisYColor(Color.LTGRAY);
         macdChart.setLatitudeColor(Color.GRAY);

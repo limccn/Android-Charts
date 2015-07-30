@@ -24,11 +24,11 @@ package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
 import cn.limc.androidcharts.component.Axis;
-import cn.limc.androidcharts.entity.ChartDataSet;
-import cn.limc.androidcharts.entity.ChartDataTable;
-import cn.limc.androidcharts.entity.LineEntity;
-import cn.limc.androidcharts.event.IZoomable;
-import cn.limc.androidcharts.view.MASlipStickChart;
+import cn.limc.androidcharts.diagram.MASlipStickChart;
+import cn.limc.androidcharts.event.Zoomable;
+import cn.limc.androidcharts.series.ChartDataSet;
+import cn.limc.androidcharts.series.ChartDataTable;
+import cn.limc.androidcharts.series.LineEntity;
 import cn.limc.demo.common.BaseActivity;
 import android.os.Bundle;
 import android.graphics.Color;
@@ -105,7 +105,7 @@ public class MASlipStickChartActivity extends BaseActivity {
 
         maslipstickchart.setMinDisplayNumber(5);
 
-        maslipstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+        maslipstickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
 
         maslipstickchart.setDisplayLongitudeTitle(true);
         maslipstickchart.setDisplayLatitudeTitle(true);
