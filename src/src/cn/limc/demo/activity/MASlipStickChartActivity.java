@@ -23,7 +23,7 @@ package cn.limc.demo.activity;
 
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.MASlipStickChart;
 import cn.limc.androidcharts.event.Zoomable;
 import cn.limc.androidcharts.series.ChartDataSet;
@@ -82,49 +82,49 @@ public class MASlipStickChartActivity extends BaseActivity {
         vma25.setTableData(initVMA(25));
         vlines.add(vma25);
 
-        maslipstickchart.setAxisXColor(Color.LTGRAY);
-        maslipstickchart.setAxisYColor(Color.LTGRAY);
-        maslipstickchart.setLatitudeColor(Color.GRAY);
-        maslipstickchart.setLongitudeColor(Color.GRAY);
-        maslipstickchart.setBorderColor(Color.LTGRAY);
-        maslipstickchart.setLongitudeFontColor(Color.WHITE);
-        maslipstickchart.setLatitudeFontColor(Color.WHITE);
-
-        // 最大纬线数
-        maslipstickchart.setLatitudeNum(2);
-        // 最大经线数
-        maslipstickchart.setLongitudeNum(3);
-        // 最大价格
-        maslipstickchart.setMaxValue(600000);
-        // 最小价格
-        maslipstickchart.setMinValue(100);
-
-        maslipstickchart.setDisplayFrom(10);
-
-        maslipstickchart.setDisplayNumber(30);
-
-        maslipstickchart.setMinDisplayNumber(5);
-
-        maslipstickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
-
-        maslipstickchart.setDisplayLongitudeTitle(true);
-        maslipstickchart.setDisplayLatitudeTitle(true);
-        maslipstickchart.setDisplayLatitude(true);
-        maslipstickchart.setDisplayLongitude(true);
-        maslipstickchart.setBackgroundColor(Color.BLACK);
-
-        maslipstickchart.setDataQuadrantPaddingTop(5);
-        maslipstickchart.setDataQuadrantPaddingBottom(5);
-        maslipstickchart.setDataQuadrantPaddingLeft(5);
-        maslipstickchart.setDataQuadrantPaddingRight(5);
+////        maslipstickchart.setAxisXColor(Color.LTGRAY);
+////        maslipstickchart.setAxisYColor(Color.LTGRAY);
+//        maslipstickchart.setLatitudeColor(Color.GRAY);
+//        maslipstickchart.setLongitudeColor(Color.GRAY);
+//        maslipstickchart.setBorderColor(Color.LTGRAY);
+//        maslipstickchart.setLongitudeFontColor(Color.WHITE);
+//        maslipstickchart.setLatitudeFontColor(Color.WHITE);
+//
+//        // 最大纬线数
+//        maslipstickchart.setLatitudeNum(2);
+//        // 最大经线数
+//        maslipstickchart.setLongitudeNum(3);
+//        // 最大价格
+//        maslipstickchart.setMaxValue(600000);
+//        // 最小价格
+//        maslipstickchart.setMinValue(100);
+//
+//        maslipstickchart.setDisplayFrom(10);
+//
+//        maslipstickchart.setDisplayNumber(30);
+//
+//        maslipstickchart.setMinDisplayNumber(5);
+//
+//        maslipstickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
+//
+//        maslipstickchart.setDisplayLongitudeTitle(true);
+//        maslipstickchart.setDisplayLatitudeTitle(true);
+//        maslipstickchart.setDisplayLatitude(true);
+//        maslipstickchart.setDisplayLongitude(true);
+//        maslipstickchart.setBackgroundColor(Color.BLACK);
+//
+//        maslipstickchart.setDataQuadrantPaddingTop(5);
+//        maslipstickchart.setDataQuadrantPaddingBottom(5);
+//        maslipstickchart.setDataQuadrantPaddingLeft(5);
+//        maslipstickchart.setDataQuadrantPaddingRight(5);
 //      maslipstickchart.setAxisYTitleQuadrantWidth(50);
 //      maslipstickchart.setAxisXTitleQuadrantHeight(20);
-        maslipstickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
-        maslipstickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+//        maslipstickchart.setAxisXPosition(AbstractAxis.AXIS_X_POSITION_BOTTOM);
+//        maslipstickchart.setAxisYPosition(AbstractAxis.AXIS_Y_POSITION_RIGHT);
 
         // 为chart1增加均线
         maslipstickchart.setLineData(vlines);
         // 为chart1增加均线
-        maslipstickchart.setChartData(new ChartDataSet(new ChartDataTable(vol)));
+    //    maslipstickchart.setChartData(new ChartDataSet(new ChartDataTable(vol)));
     }
 }

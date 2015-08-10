@@ -22,7 +22,7 @@
 
 package cn.limc.androidcharts.shape;
 
-import cn.limc.androidcharts.common.IChart;
+import cn.limc.androidcharts.component.DataComponent;
 
 /** 
  * <p>en</p>
@@ -35,5 +35,5 @@ import cn.limc.androidcharts.common.IChart;
  *  
  */
 public interface Rectangle {
-     void setUp(IChart chart ,float from , float width);
+     void setUp(DataComponent component ,float from , float width);
 }

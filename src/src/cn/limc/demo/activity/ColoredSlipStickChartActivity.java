@@ -22,7 +22,7 @@
 package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.ColoredSlipStickChart;
 import cn.limc.androidcharts.event.Zoomable;
 import cn.limc.androidcharts.series.ChartDataSet;
@@ -54,48 +54,44 @@ public class ColoredSlipStickChartActivity extends BaseActivity {
     private void initColoredSlipStickChart() {
         this.coloredslipstickchart = (ColoredSlipStickChart) findViewById(R.id.coloredslipstickchart);
 
-        coloredslipstickchart.setAxisXColor(Color.LTGRAY);
-        coloredslipstickchart.setAxisYColor(Color.LTGRAY);
-        coloredslipstickchart.setLatitudeColor(Color.GRAY);
-        coloredslipstickchart.setLongitudeColor(Color.GRAY);
-        coloredslipstickchart.setBorderColor(Color.LTGRAY);
-        coloredslipstickchart.setLongitudeFontColor(Color.WHITE);
-        coloredslipstickchart.setLatitudeFontColor(Color.WHITE);
-
-        // // 最大纬线数
-        // coloredslipstickchart.setLatitudeNum(2);
-        // // 最大经线数
-        // coloredslipstickchart.setLongitudeNum(3);
-        // 最大价格
-        coloredslipstickchart.setMaxValue(600000);
-        // 最小价格
-        coloredslipstickchart.setMinValue(100);
-
-        coloredslipstickchart.setDisplayFrom(10);
-
-        coloredslipstickchart.setDisplayNumber(30);
-
-        coloredslipstickchart.setMinDisplayNumber(5);
-
-        coloredslipstickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
-
-        coloredslipstickchart.setDisplayLongitudeTitle(true);
-        coloredslipstickchart.setDisplayLatitudeTitle(true);
-        coloredslipstickchart.setDisplayLatitude(true);
-        coloredslipstickchart.setDisplayLongitude(true);
-        coloredslipstickchart.setBackgroundColor(Color.BLACK);
-
-        coloredslipstickchart.setDataQuadrantPaddingTop(5);
-        coloredslipstickchart.setDataQuadrantPaddingBottom(5);
-        coloredslipstickchart.setDataQuadrantPaddingLeft(5);
-        coloredslipstickchart.setDataQuadrantPaddingRight(5);
+//        coloredslipstickchart.setLatitudeColor(Color.GRAY);
+//        coloredslipstickchart.setLongitudeColor(Color.GRAY);
+//        coloredslipstickchart.setBorderColor(Color.LTGRAY);
+//        coloredslipstickchart.setLongitudeFontColor(Color.WHITE);
+//        coloredslipstickchart.setLatitudeFontColor(Color.WHITE);
+//
+//        // // 最大纬线数
+//        // coloredslipstickchart.setLatitudeNum(2);
+//        // // 最大经线数
+//        // coloredslipstickchart.setLongitudeNum(3);
+//        // 最大价格
+//        coloredslipstickchart.setMaxValue(600000);
+//        // 最小价格
+//        coloredslipstickchart.setMinValue(100);
+//
+//        coloredslipstickchart.setDisplayFrom(10);
+//
+//        coloredslipstickchart.setDisplayNumber(30);
+//
+//        coloredslipstickchart.setMinDisplayNumber(5);
+//
+//        coloredslipstickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
+//
+//        coloredslipstickchart.setDisplayLongitudeTitle(true);
+//        coloredslipstickchart.setDisplayLatitudeTitle(true);
+//        coloredslipstickchart.setDisplayLatitude(true);
+//        coloredslipstickchart.setDisplayLongitude(true);
+//        coloredslipstickchart.setBackgroundColor(Color.BLACK);
+//
+//        coloredslipstickchart.setDataQuadrantPaddingTop(5);
+//        coloredslipstickchart.setDataQuadrantPaddingBottom(5);
+//        coloredslipstickchart.setDataQuadrantPaddingLeft(5);
+//        coloredslipstickchart.setDataQuadrantPaddingRight(5);
         // coloredslipstickchart.setAxisYTitleQuadrantWidth(50);
         // coloredslipstickchart.setAxisXTitleQuadrantHeight(20);
-        coloredslipstickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
-        coloredslipstickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
         // 为chart1增加均线
-        coloredslipstickchart.setChartData(new ChartDataSet(new ChartDataTable(volc)));
+   //     coloredslipstickchart.setChartData(new ChartDataSet(new ChartDataTable(volc)));
     }
 
 }

@@ -22,7 +22,7 @@
 package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.SlipStickChart;
 import cn.limc.androidcharts.event.Zoomable;
 import cn.limc.androidcharts.series.ChartDataSet;
@@ -54,52 +54,52 @@ public class SlipStickChartActivity extends BaseActivity {
     private void initSlipStickChart() {
         this.slipstickchart = (SlipStickChart) findViewById(R.id.slipstickchart);
 
-        slipstickchart.setAxisXColor(Color.LTGRAY);
-        slipstickchart.setAxisYColor(Color.LTGRAY);
-        slipstickchart.setLatitudeColor(Color.GRAY);
-        slipstickchart.setLongitudeColor(Color.GRAY);
-        slipstickchart.setBorderColor(Color.LTGRAY);
-        slipstickchart.setLongitudeFontColor(Color.WHITE);
-        slipstickchart.setLatitudeFontColor(Color.WHITE);
-        slipstickchart.setDataQuadrantPaddingTop(6);
-        slipstickchart.setDataQuadrantPaddingBottom(1);
-        slipstickchart.setDataQuadrantPaddingLeft(1);
-        slipstickchart.setDataQuadrantPaddingRight(1);
-        // slipstickchart.setAxisYTitleQuadrantWidth(50);
-        // slipstickchart.setAxisXTitleQuadrantHeight(20);
-        slipstickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
-        slipstickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
-
-        // // 最大纬线数
-        // slipstickchart.setLatitudeNum(2);
-        // // 最大经线数
-        // slipstickchart.setLongitudeNum(3);
-        // 最大价格
-        slipstickchart.setMaxValue(600000);
-        // 最小价格
-        slipstickchart.setMinValue(100);
-
-        slipstickchart.setDisplayFrom(10);
-
-        slipstickchart.setDisplayNumber(30);
-
-        slipstickchart.setMinDisplayNumber(5);
-
-        slipstickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
-
-        slipstickchart.setDisplayLongitudeTitle(true);
-        slipstickchart.setDisplayLatitudeTitle(true);
-        slipstickchart.setDisplayLatitude(true);
-        slipstickchart.setDisplayLongitude(true);
-        slipstickchart.setBackgroundColor(Color.BLACK);
-
-        slipstickchart.setDataMultiple(100);
-//        slipstickchart.setAxisYDecimalFormat("#,##0.00");
-//        slipstickchart.setAxisXDateTargetFormat("yyyy/MM/dd");
-//        slipstickchart.setAxisXDateSourceFormat("yyyyMMdd");
+////        slipstickchart.setAxisXColor(Color.LTGRAY);
+////        slipstickchart.setAxisYColor(Color.LTGRAY);
+//        slipstickchart.setLatitudeColor(Color.GRAY);
+//        slipstickchart.setLongitudeColor(Color.GRAY);
+//        slipstickchart.setBorderColor(Color.LTGRAY);
+//        slipstickchart.setLongitudeFontColor(Color.WHITE);
+//        slipstickchart.setLatitudeFontColor(Color.WHITE);
+//        slipstickchart.setDataQuadrantPaddingTop(6);
+//        slipstickchart.setDataQuadrantPaddingBottom(1);
+//        slipstickchart.setDataQuadrantPaddingLeft(1);
+//        slipstickchart.setDataQuadrantPaddingRight(1);
+//        // slipstickchart.setAxisYTitleQuadrantWidth(50);
+//        // slipstickchart.setAxisXTitleQuadrantHeight(20);
+////        slipstickchart.setAxisXPosition(AbstractAxis.AXIS_X_POSITION_BOTTOM);
+////        slipstickchart.setAxisYPosition(AbstractAxis.AXIS_Y_POSITION_RIGHT);
+//
+//        // // 最大纬线数
+//        // slipstickchart.setLatitudeNum(2);
+//        // // 最大经线数
+//        // slipstickchart.setLongitudeNum(3);
+//        // 最大价格
+//        slipstickchart.setMaxValue(600000);
+//        // 最小价格
+//        slipstickchart.setMinValue(100);
+//
+//        slipstickchart.setDisplayFrom(10);
+//
+//        slipstickchart.setDisplayNumber(30);
+//
+//        slipstickchart.setMinDisplayNumber(5);
+//
+//        slipstickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
+//
+//        slipstickchart.setDisplayLongitudeTitle(true);
+//        slipstickchart.setDisplayLatitudeTitle(true);
+//        slipstickchart.setDisplayLatitude(true);
+//        slipstickchart.setDisplayLongitude(true);
+//        slipstickchart.setBackgroundColor(Color.BLACK);
+//
+//        slipstickchart.setDataMultiple(100);
+////        slipstickchart.setAxisYDecimalFormat("#,##0.00");
+////        slipstickchart.setAxisXDateTargetFormat("yyyy/MM/dd");
+////        slipstickchart.setAxisXDateSourceFormat("yyyyMMdd");
 
         // 为chart1增加均线
-        slipstickchart.setChartData(new ChartDataSet(new ChartDataTable(vol)));
+       // slipstickchart.setChartData(new ChartDataSet(new ChartDataTable(vol)));
     }
 
 }

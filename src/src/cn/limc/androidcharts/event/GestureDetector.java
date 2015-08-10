@@ -28,14 +28,14 @@ public abstract class GestureDetector {
     }
 
     /**
-     * @return the inChart
+     * @return the parent
      */
     public GridChart getInChart() {
         return inChart;
     }
 
     /**
-     * @param inChart the inChart to set
+     * @param parent the parent to set
      */
     public void setInChart(GridChart inChart) {
         this.inChart = inChart;

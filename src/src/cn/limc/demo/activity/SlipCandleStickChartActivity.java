@@ -22,7 +22,7 @@
 package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.SlipCandleStickChart;
 import cn.limc.androidcharts.event.Zoomable;
 import cn.limc.androidcharts.series.ChartDataSet;
@@ -53,49 +53,49 @@ public class SlipCandleStickChartActivity extends BaseActivity {
     
     private void initSlipCandleStickChart() {
         this.slipcandlestickchart = (SlipCandleStickChart) findViewById(R.id.slipcandlestickchart);
-        slipcandlestickchart.setAxisXColor(Color.LTGRAY);
-        slipcandlestickchart.setAxisYColor(Color.LTGRAY);
-        slipcandlestickchart.setLatitudeColor(Color.GRAY);
-        slipcandlestickchart.setLongitudeColor(Color.GRAY);
-        slipcandlestickchart.setBorderColor(Color.LTGRAY);
-        slipcandlestickchart.setLongitudeFontColor(Color.WHITE);
-        slipcandlestickchart.setLatitudeFontColor(Color.WHITE);
-
-        // 最大纬线数
-        slipcandlestickchart.setLatitudeNum(5);
-        // 最大经线数
-        slipcandlestickchart.setLongitudeNum(3);
-        // 最大价格
-        slipcandlestickchart.setMaxValue(1200);
-        // 最小价格
-        slipcandlestickchart.setMinValue(200);
-
-        slipcandlestickchart.setDisplayFrom(10);
-
-        slipcandlestickchart.setDisplayNumber(30);
-
-        slipcandlestickchart.setMinDisplayNumber(5);
-
-        slipcandlestickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
-
-        slipcandlestickchart.setDisplayLongitudeTitle(true);
-        slipcandlestickchart.setDisplayLatitudeTitle(true);
-        slipcandlestickchart.setDisplayLatitude(true);
-        slipcandlestickchart.setDisplayLongitude(true);
-        slipcandlestickchart.setBackgroundColor(Color.BLACK);
-
-        slipcandlestickchart.setDataQuadrantPaddingTop(5);
-        slipcandlestickchart.setDataQuadrantPaddingBottom(5);
-        slipcandlestickchart.setDataQuadrantPaddingLeft(5);
-        slipcandlestickchart.setDataQuadrantPaddingRight(5);
+//        slipcandlestickchart.setAxisXColor(Color.LTGRAY);
+//        slipcandlestickchart.setAxisYColor(Color.LTGRAY);
+//        slipcandlestickchart.setLatitudeColor(Color.GRAY);
+//        slipcandlestickchart.setLongitudeColor(Color.GRAY);
+//        slipcandlestickchart.setBorderColor(Color.LTGRAY);
+//        slipcandlestickchart.setLongitudeFontColor(Color.WHITE);
+//        slipcandlestickchart.setLatitudeFontColor(Color.WHITE);
+//
+//        // 最大纬线数
+//        slipcandlestickchart.setLatitudeNum(5);
+//        // 最大经线数
+//        slipcandlestickchart.setLongitudeNum(3);
+//        // 最大价格
+//        slipcandlestickchart.setMaxValue(1200);
+//        // 最小价格
+//        slipcandlestickchart.setMinValue(200);
+//
+//        slipcandlestickchart.setDisplayFrom(10);
+//
+//        slipcandlestickchart.setDisplayNumber(30);
+//
+//        slipcandlestickchart.setMinDisplayNumber(5);
+//
+//        slipcandlestickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
+//
+//        slipcandlestickchart.setDisplayLongitudeTitle(true);
+//        slipcandlestickchart.setDisplayLatitudeTitle(true);
+//        slipcandlestickchart.setDisplayLatitude(true);
+//        slipcandlestickchart.setDisplayLongitude(true);
+//        slipcandlestickchart.setBackgroundColor(Color.BLACK);
+//
+//        slipcandlestickchart.setDataQuadrantPaddingTop(5);
+//        slipcandlestickchart.setDataQuadrantPaddingBottom(5);
+//        slipcandlestickchart.setDataQuadrantPaddingLeft(5);
+//        slipcandlestickchart.setDataQuadrantPaddingRight(5);
 //      slipcandlestickchart.setAxisYTitleQuadrantWidth(50);
 //      slipcandlestickchart.setAxisXTitleQuadrantHeight(20);
-        slipcandlestickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
-        slipcandlestickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+//        slipcandlestickchart.setAxisXPosition(AbstractAxis.AXIS_X_POSITION_BOTTOM);
+//        slipcandlestickchart.setAxisYPosition(AbstractAxis.AXIS_Y_POSITION_RIGHT);
 
         // 为chart2增加均线
-        slipcandlestickchart
-                .setChartData(new ChartDataSet(new ChartDataTable(ohlc)));
+     //   slipcandlestickchart
+      //          .setChartData(new ChartDataSet(new ChartDataTable(ohlc)));
     }
 
 }

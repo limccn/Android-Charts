@@ -1,7 +1,7 @@
 
 package cn.limc.androidcharts.model;
 
-import cn.limc.androidcharts.diagram.GridChart;
+import cn.limc.androidcharts.component.Axis;
 
 public abstract class AbstractDegree implements Degree {
 
@@ -9,19 +9,10 @@ public abstract class AbstractDegree implements Degree {
     
     protected boolean autoFormatDegree = DEFAULT_AUTO_FORMAT_DEGREE;
     
-    
     protected String sourceFormat;
-    
     protected String targetFormat;
     
-    protected GridChart inChart;
-    
-    /**
-     * 
-     */
-    public AbstractDegree(GridChart inChart) {
-        this.inChart = inChart;
-    }
+    protected Axis axis; 
 
     /**
      * @return the autoFormatDegree
@@ -66,16 +57,16 @@ public abstract class AbstractDegree implements Degree {
     }
 
     /**
-     * @return the inChart
+     * @return the axis
      */
-    public GridChart getInChart() {
-        return inChart;
+    public Axis getAxis() {
+        return axis;
     }
 
     /**
-     * @param inChart the inChart to set
+     * @param axis the axis to set
      */
-    public void setInChart(GridChart inChart) {
-        this.inChart = inChart;
+    public void setAxis(Axis axis) {
+        this.axis = axis;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * IGrid.java
+ * Grid.java
  * Android-Charts
  *
  * Created by limc on 2014.
@@ -35,7 +35,12 @@ import android.graphics.PathEffect;
  * @version v1.0 2014/06/24 17:18:55 
  *  
  */
-public interface IGrid {
+public interface Grid {
+    
+    
+    static final int ALIGN_TYPE_CENTER = 0;
+    static final int ALIGN_TYPE_JUSTIFY = 1;
+    
 	/**
 	 * <p>
 	 * default numbers of grid‘s latitude line
@@ -237,16 +242,16 @@ public interface IGrid {
     public static final PathEffect DEFAULT_DASH_EFFECT = new DashPathEffect(
             new float[] { 6, 3, 6, 3 }, 1);
     
-    /**
-     * <p>
-     * default titles' max length for display of Y axis
-     * </p>
-     * <p>
-     * Y軸の表示用タイトルの最大文字長さのデフォルト値
-     * </p>
-     * <p>
-     * 默认Y轴标题最大文字长度
-     * </p>
-     */
-    public static final int DEFAULT_LATITUDE_MAX_TITLE_LENGTH = 5;
+   
+    public static final int DEFAULT_ALIGN_TYPE = ALIGN_TYPE_CENTER;
+    
+    float longitudePostOffset();
+    float longitudeOffset();
+    
+    float latitudePostOffset();
+    float latitudeOffset();
+    
+    float longitudePostForIndex(int index);
+    float latitudePostForIndex(int index);
+    
 }

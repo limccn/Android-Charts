@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.SlipBandAreaChart;
 import cn.limc.androidcharts.event.Zoomable;
 import cn.limc.androidcharts.series.ChartDataSet;
@@ -73,33 +73,33 @@ public class SlipBandAreaChartActivity extends BaseActivity {
         ma10.setTableData(dv2);
         lines.add(ma10);
 
-        slipbandchart.setAxisXColor(Color.LTGRAY);
-        slipbandchart.setAxisYColor(Color.LTGRAY);
-        slipbandchart.setBorderColor(Color.LTGRAY);
-        slipbandchart.setLongitudeFontSize(14);
-        slipbandchart.setLongitudeFontColor(Color.WHITE);
-        slipbandchart.setLatitudeColor(Color.GRAY);
-        slipbandchart.setLatitudeFontColor(Color.WHITE);
-        slipbandchart.setLongitudeColor(Color.GRAY);
-        slipbandchart.setMaxValue(1300);
-        slipbandchart.setMinValue(700);
-        slipbandchart.setDisplayFrom(10);
-        slipbandchart.setDisplayNumber(30);
-        slipbandchart.setMinDisplayNumber(5);
-        slipbandchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
-        slipbandchart.setDisplayLongitudeTitle(true);
-        slipbandchart.setDisplayLatitudeTitle(true);
-        slipbandchart.setDisplayLatitude(true);
-        slipbandchart.setDisplayLongitude(true);
-        slipbandchart.setDataQuadrantPaddingTop(5);
-        slipbandchart.setDataQuadrantPaddingBottom(5);
-        slipbandchart.setDataQuadrantPaddingLeft(5);
-        slipbandchart.setDataQuadrantPaddingRight(5);
+//        slipbandchart.setAxisXColor(Color.LTGRAY);
+//        slipbandchart.setAxisYColor(Color.LTGRAY);
+//        slipbandchart.setBorderColor(Color.LTGRAY);
+//        slipbandchart.setLongitudeFontSize(14);
+//        slipbandchart.setLongitudeFontColor(Color.WHITE);
+//        slipbandchart.setLatitudeColor(Color.GRAY);
+//        slipbandchart.setLatitudeFontColor(Color.WHITE);
+//        slipbandchart.setLongitudeColor(Color.GRAY);
+//        slipbandchart.setMaxValue(1300);
+//        slipbandchart.setMinValue(700);
+//        slipbandchart.setDisplayFrom(10);
+//        slipbandchart.setDisplayNumber(30);
+//        slipbandchart.setMinDisplayNumber(5);
+//        slipbandchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
+//        slipbandchart.setDisplayLongitudeTitle(true);
+//        slipbandchart.setDisplayLatitudeTitle(true);
+//        slipbandchart.setDisplayLatitude(true);
+//        slipbandchart.setDisplayLongitude(true);
+//        slipbandchart.setDataQuadrantPaddingTop(5);
+//        slipbandchart.setDataQuadrantPaddingBottom(5);
+//        slipbandchart.setDataQuadrantPaddingLeft(5);
+//        slipbandchart.setDataQuadrantPaddingRight(5);
         // slipbandchart.setAxisYTitleQuadrantWidth(50);
         // slipbandchart.setAxisXTitleQuadrantHeight(20);
-        slipbandchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
-        slipbandchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+//        slipbandchart.setAxisXPosition(AbstractAxis.AXIS_X_POSITION_BOTTOM);
+//        slipbandchart.setAxisYPosition(AbstractAxis.AXIS_Y_POSITION_RIGHT);
 
-        slipbandchart.setChartData(lines);
+    //    slipbandchart.setChartData(lines);
     }
 }

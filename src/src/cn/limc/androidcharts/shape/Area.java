@@ -8,8 +8,7 @@
 //
 package cn.limc.androidcharts.shape;
 
-import cn.limc.androidcharts.common.IChart;
-import cn.limc.androidcharts.diagram.GridChart;
+import cn.limc.androidcharts.component.DataComponent;
 import cn.limc.androidcharts.series.IMeasurable;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -32,7 +31,6 @@ import android.graphics.Paint.Style;
  */
 public class Area extends AbstractShape implements Rectangle {
 
-    
     private Paint areaPaint = new Paint();
     
     private double currentHigh;
@@ -53,24 +51,11 @@ public class Area extends AbstractShape implements Rectangle {
     @Override
     public void draw(Canvas canvas) {
 
-        GridChart chart = (GridChart) getInChart();
         // calculate Y
-        float currentHighY = (float) ((1f - (currentHigh - chart.getDataRange().getMinValue())
-                / (chart.getDataRange().getValueRange()))
-                * (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant()
-                .getPaddingStartY());
-        float currentLowY = (float) ((1f - (currentLow - chart.getDataRange().getMinValue())
-                / (chart.getDataRange().getValueRange()))
-                * (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant()
-                .getPaddingStartY());
-        float nextHighY = (float) ((1f - (nextHigh - chart.getDataRange().getMinValue())
-                / (chart.getDataRange().getValueRange()))
-                * (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant()
-                .getPaddingStartY());
-        float nextLowY = (float) ((1f - (nextLow - chart.getDataRange().getMinValue())
-                / (chart.getDataRange().getValueRange()))
-                * (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant()
-                .getPaddingStartY());
+        float currentHighY = (float)component.heightForRate(currentHigh);
+        float currentLowY = (float)component.heightForRate(currentLow);
+        float nextHighY = (float)component.heightForRate(nextHigh);
+        float nextLowY = (float)component.heightForRate(nextLow);
 
         Path areaPath = new Path();
         areaPath.moveTo(left, currentHighY);
@@ -82,31 +67,30 @@ public class Area extends AbstractShape implements Rectangle {
         areaPaint.setStyle(Style.FILL_AND_STROKE);
         areaPaint.setAlpha(62);
         canvas.drawPath(areaPath, areaPaint);
-
     }
 
     /* (non-Javadoc)
      * @see cn.limc.androidcharts.shape.Rectangle#setUp(cn.limc.androidcharts.common.IChart, float, float)
      */
     @Override
-    public void setUp(IChart chart, float from, float width) {
-        super.setUp(chart);
+    public void setUp(DataComponent component, float from, float width) {
+        super.setUp(component);
         left = (float)Math.ceil(from);
         right = (float)Math.ceil(from + width);
         
     }
     
-    public void setUp(IChart chart, double currentHigh, double currrentLow, double nextHigt,
+    public void setUp(DataComponent component, double currentHigh, double currrentLow, double nextHigt,
             double nextLow, float from, float width) {
-        this.setUp(chart, from, width);
+        this.setUp(component, from, width);
         this.currentHigh = currentHigh;
         this.currentLow = currrentLow;
         this.nextHigh = nextHigt;
         this.nextLow = nextLow;
     }
 
-    public void setUp(IChart chart, IMeasurable current, IMeasurable next, float from, float width) {
-        this.setUp(chart, current.getHigh(), current.getLow(), next.getHigh(), next.getLow(), from,
+    public void setUp(DataComponent component, IMeasurable current, IMeasurable next, float from, float width) {
+        this.setUp(component, current.getHigh(), current.getLow(), next.getHigh(), next.getLow(), from,
                 width);
     }
 

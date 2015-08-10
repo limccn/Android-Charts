@@ -27,34 +27,35 @@ import cn.limc.androidcharts.series.IMeasurable;
  */
 public class ColorfulBar extends Bar {
     
-    public static final int DEFAULT_COLORED_STICK_STYLE_WITH_BORDER = 0;
-    public static final int DEFAULT_COLORED_STICK_STYLE_NO_BORDER = 1;
-    public static final int DEFAULT_COLORED_STICK_STYLE = DEFAULT_COLORED_STICK_STYLE_NO_BORDER;
+    public static final int DEFAULT_BAR_STYLE_WITH_BORDER = 0;
+    public static final int DEFAULT_BAR_STYLE_NO_BORDER = 1;
+    
+    public static final int DEFAULT_BAR_STYLE = DEFAULT_BAR_STYLE_NO_BORDER;
 
-    private int coloredStickStyle = DEFAULT_COLORED_STICK_STYLE_NO_BORDER;
+    private int barStyle = DEFAULT_BAR_STYLE_NO_BORDER;
     
     /**
-     * @return the coloredStickStyle
+     * @return the barStyle
      */
     public int getColoredStickStyle() {
-        return coloredStickStyle;
+        return barStyle;
     }
 
     /**
-     * @param coloredStickStyle
-     *            the coloredStickStyle to set
+     * @param barStyle
+     *            the barStyle to set
      */
     public void setColoredStickStyle(int coloredStickStyle) {
-        this.coloredStickStyle = coloredStickStyle;
+        this.barStyle = coloredStickStyle;
     }
     
     @Override
     public void setStickData(IMeasurable stickData) {
         super.setStickData(stickData);  
-        this.stickFillColor = ((ColoredStickEntity)stickData).getColor();
+        this.barFillColor = ((ColoredStickEntity)stickData).getColor();
                 
-        if (coloredStickStyle == DEFAULT_COLORED_STICK_STYLE_NO_BORDER) {
-            this.stickBorderColor = this.stickFillColor;
+        if (barStyle == DEFAULT_BAR_STYLE_NO_BORDER) {
+            this.barBorderColor = this.barFillColor;
         }
     }
 }

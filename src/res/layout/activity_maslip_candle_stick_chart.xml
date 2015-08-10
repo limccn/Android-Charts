@@ -8,7 +8,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MASlipCandleStickChartActivity" >
 
-        <cn.limc.androidcharts.diagram.MASlipCandleStickChart
+        <cn.limc.androidcharts.diagram.GridChart
             android:id="@+id/maslipcandlestickchart"
             android:layout_width="match_parent"
             android:layout_height="@dimen/single_chart_height" />

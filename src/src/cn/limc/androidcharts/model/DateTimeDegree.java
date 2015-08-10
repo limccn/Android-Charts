@@ -15,7 +15,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import cn.limc.androidcharts.component.Grid;
+import cn.limc.androidcharts.component.SimpleGrid;
 import cn.limc.androidcharts.diagram.GridChart;
+import cn.limc.androidcharts.series.ChartDataSet;
 import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.androidcharts.series.IHasDate;
 
@@ -38,11 +41,9 @@ public class DateTimeDegree extends AbstractDegree {
     public static final String DEFAULT_SOURCE_FORMAT = "yyyyMMdd";
     public static final String DEFAULT_TARGET_FORMAT = "yyyy/MM/dd";
     /**
-     * @param inChart
+     * @param parent
      */
-    public DateTimeDegree(GridChart inChart) {
-        super(inChart);
-        
+    public DateTimeDegree() {
         sourceFormat = DEFAULT_SOURCE_FORMAT;
         targetFormat = DEFAULT_TARGET_FORMAT;
     }
@@ -53,20 +54,27 @@ public class DateTimeDegree extends AbstractDegree {
     @Override
     public List<String> getDegrees() {
         List<String> titleX = new ArrayList<String>();
-        ChartDataTable table = inChart.getChartData().getChartTable();
-        if (null != table && table.size() > 0) {
-            float average = inChart.getDataCursor().getDisplayNumber() / inChart.getSimpleGrid().getLongitudeNum();
-            for (int i = 0; i < inChart.getSimpleGrid().getLongitudeNum(); i++) {
-                int index = (int) Math.floor(i * average);
-                if (index > inChart.getDataCursor().getDisplayNumber() - 1) {
-                    index = inChart.getDataCursor().getDisplayNumber() - 1;
+        ChartDataSet chartData = axis.getBindComponent().getChartData();
+        DataCursor dataCursor = axis.getBindComponent().getDataCursor();
+        SimpleGrid grid = axis.getBindComponent().getDataGrid();
+        if (chartData != null) {
+            ChartDataTable table = chartData.getChartTable();
+            if (null != table && table.size() > 0) {
+                //TODO How to get grid
+                float average = dataCursor.getDisplayNumber() / grid.getLongitudeNum();
+                for (int i = 0; i < grid.getLongitudeNum(); i++) {
+                    int index = (int) Math.floor(i * average);
+                    if (index > dataCursor.getDisplayNumber() - 1) {
+                        index = dataCursor.getDisplayNumber() - 1;
+                    }
+
+                    IHasDate rowDate = (IHasDate) table.get(index);
+                    titleX.add(this.valueForDegree(rowDate.getDate()));
                 }
-                
-                IHasDate rowDate= (IHasDate)table.get(index);
+                IHasDate rowDate = (IHasDate) table
+                        .get(dataCursor.getDisplayNumber() - 1);
                 titleX.add(this.valueForDegree(rowDate.getDate()));
             }
-            IHasDate rowDate= (IHasDate)table.get(inChart.getDataCursor().getDisplayNumber() - 1);
-            titleX.add(this.valueForDegree(rowDate.getDate()));
         }
         return titleX;
     }

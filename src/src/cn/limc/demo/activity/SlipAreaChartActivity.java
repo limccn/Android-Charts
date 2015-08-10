@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.SlipAreaChart;
 import cn.limc.androidcharts.event.Zoomable;
 import cn.limc.androidcharts.series.ChartDataSet;
@@ -75,33 +75,33 @@ public class SlipAreaChartActivity extends BaseActivity {
         ma5.setTableData(dv1);
         lines.add(ma5);
 
-        slipareachart.setAxisXColor(Color.LTGRAY);
-        slipareachart.setAxisYColor(Color.LTGRAY);
-        slipareachart.setBorderColor(Color.LTGRAY);
-        slipareachart.setLongitudeFontSize(14);
-        slipareachart.setLongitudeFontColor(Color.WHITE);
-        slipareachart.setLatitudeColor(Color.GRAY);
-        slipareachart.setLatitudeFontColor(Color.WHITE);
-        slipareachart.setLongitudeColor(Color.GRAY);
-        slipareachart.setMaxValue(1300);
-        slipareachart.setMinValue(700);
-        slipareachart.setDisplayFrom(10);
-        slipareachart.setDisplayNumber(30);
-        slipareachart.setMinDisplayNumber(5);
-        slipareachart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
-        slipareachart.setDisplayLongitudeTitle(true);
-        slipareachart.setDisplayLatitudeTitle(true);
-        slipareachart.setDisplayLatitude(true);
-        slipareachart.setDisplayLongitude(true);
-        slipareachart.setDataQuadrantPaddingTop(5);
-        slipareachart.setDataQuadrantPaddingBottom(5);
-        slipareachart.setDataQuadrantPaddingLeft(5);
-        slipareachart.setDataQuadrantPaddingRight(5);
+////        slipareachart.setAxisXColor(Color.LTGRAY);
+////        slipareachart.setAxisYColor(Color.LTGRAY);
+//        slipareachart.setBorderColor(Color.LTGRAY);
+//        slipareachart.setLongitudeFontSize(14);
+//        slipareachart.setLongitudeFontColor(Color.WHITE);
+//        slipareachart.setLatitudeColor(Color.GRAY);
+//        slipareachart.setLatitudeFontColor(Color.WHITE);
+//        slipareachart.setLongitudeColor(Color.GRAY);
+//        slipareachart.setMaxValue(1300);
+//        slipareachart.setMinValue(700);
+//        slipareachart.setDisplayFrom(10);
+//        slipareachart.setDisplayNumber(30);
+//        slipareachart.setMinDisplayNumber(5);
+//        slipareachart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
+//        slipareachart.setDisplayLongitudeTitle(true);
+//        slipareachart.setDisplayLatitudeTitle(true);
+//        slipareachart.setDisplayLatitude(true);
+//        slipareachart.setDisplayLongitude(true);
+//        slipareachart.setDataQuadrantPaddingTop(5);
+//        slipareachart.setDataQuadrantPaddingBottom(5);
+//        slipareachart.setDataQuadrantPaddingLeft(5);
+//        slipareachart.setDataQuadrantPaddingRight(5);
         // slipareachart.setAxisYTitleQuadrantWidth(50);
         // slipareachart.setAxisXTitleQuadrantHeight(20);
-        slipareachart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
-        slipareachart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+//        slipareachart.setAxisXPosition(AbstractAxis.AXIS_X_POSITION_BOTTOM);
+//        slipareachart.setAxisYPosition(AbstractAxis.AXIS_Y_POSITION_RIGHT);
 
-        slipareachart.setChartData(lines);
+      //  slipareachart.setChartData(lines);
     }
 }

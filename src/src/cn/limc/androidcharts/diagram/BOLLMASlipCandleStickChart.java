@@ -26,7 +26,7 @@ import cn.limc.androidcharts.series.ChartDataSet;
 import cn.limc.androidcharts.series.IMeasurable;
 import cn.limc.androidcharts.series.LineEntity;
 import cn.limc.androidcharts.shape.Area;
-import cn.limc.androidcharts.shape.LineMole;
+import cn.limc.androidcharts.shape.Points;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -157,94 +157,94 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 //			drawBandBorder(canvas);
 //		}
 		
-		
-
-		drawAreas(canvas);
-		drawBandBorder(canvas);
+//		
+//
+//		drawAreas(canvas);
+//		drawBandBorder(canvas);
 	}
-	
-    protected void drawBandBorder(Canvas canvas) {
-        if (null == bandData) {
-            return;
-        }
-        if (bandData.size() == 0) {
-            return;
-        }
-
-        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
-
-        for(int i=0; i< bandData.size() ; i++){
-            LineEntity table = (LineEntity)bandData.getChartTable(i);
-            if (null == table) {
-                continue;
-            }
-            if(table.size() == 0){
-                continue;
-            }
-            
-            Paint mPaint = new Paint();
-            mPaint.setColor(table.getLineColor());
-            mPaint.setAntiAlias(true);
-            
-            float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
-            for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
-                IMeasurable point = (IMeasurable)table.get(j-1);
-                IMeasurable nextpoint = (IMeasurable)table.get(j);
-                
-                LineMole lineMole = new LineMole();
-                lineMole.setUp(this,point.getHigh(),nextpoint.getHigh(),stickX,stickWidth);
-                lineMole.setLinePaint(mPaint);
-                lineMole.draw(canvas);
-
-                // next x
-                stickX = stickX + stickWidth;
-            }
-        }
-    }
-	   protected void drawAreas(Canvas canvas) {
-	        if (null == bandData) {
-	            return;
-	        }
-	        if (bandData.size() < 2 ) {
-	            return;
-	        }
-
-	        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
-	        for(int i=1; i< bandData.size() ; i++){
-	            LineEntity table1 = (LineEntity)bandData.getChartTable(i-1);
-	            LineEntity table2 = (LineEntity)bandData.getChartTable(i);
-	            
-	            if (null == table1 || null == table2) {
-	                continue;
-	            }
-	            if(table1.size() == 0 || table2.size() == 0){
-	                continue;
-	            }
-	            
-	            Paint mPaint = new Paint();
-	            mPaint.setStyle(Style.FILL);
-	            mPaint.setColor(table1.getLineColor());
-	            mPaint.setAntiAlias(true);
-	            
-	            float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
-	            for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
-
-	                IMeasurable pointLow = (IMeasurable)table1.get(j-1);
-	                IMeasurable nextpointLow = (IMeasurable)table1.get(j);
-	                
-	                IMeasurable pointHigh = (IMeasurable)table2.get(j-1);
-	                IMeasurable nextpointHigh = (IMeasurable)table2.get(j);
-	                
-	                Area areaMole = new Area();
-	                areaMole.setUp(this,pointHigh.getHigh(),pointLow.getHigh(),nextpointHigh.getHigh(),nextpointLow.getHigh(),stickX,stickWidth);
-	                areaMole.setAreaPaint(mPaint);
-	                areaMole.draw(canvas);
-
-	                // next x
-	                stickX = stickX + stickWidth;
-	            }
-	        }
-	    }
+//	
+//    protected void drawBandBorder(Canvas canvas) {
+//        if (null == bandData) {
+//            return;
+//        }
+//        if (bandData.size() == 0) {
+//            return;
+//        }
+//
+//        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+//
+//        for(int i=0; i< bandData.size() ; i++){
+//            LineEntity table = (LineEntity)bandData.getChartTable(i);
+//            if (null == table) {
+//                continue;
+//            }
+//            if(table.size() == 0){
+//                continue;
+//            }
+//            
+//            Paint mPaint = new Paint();
+//            mPaint.setColor(table.getLineColor());
+//            mPaint.setAntiAlias(true);
+//            
+//            float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
+//            for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
+//                IMeasurable point = (IMeasurable)table.get(j-1);
+//                IMeasurable nextpoint = (IMeasurable)table.get(j);
+//                
+//                Points lineMole = new Points();
+//                lineMole.setUp(this,point.getHigh(),nextpoint.getHigh(),stickX,stickWidth);
+//                lineMole.setLinePaint(mPaint);
+//                lineMole.draw(canvas);
+//
+//                // next x
+//                stickX = stickX + stickWidth;
+//            }
+//        }
+//    }
+//	   protected void drawAreas(Canvas canvas) {
+//	        if (null == bandData) {
+//	            return;
+//	        }
+//	        if (bandData.size() < 2 ) {
+//	            return;
+//	        }
+//
+//	        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+//	        for(int i=1; i< bandData.size() ; i++){
+//	            LineEntity table1 = (LineEntity)bandData.getChartTable(i-1);
+//	            LineEntity table2 = (LineEntity)bandData.getChartTable(i);
+//	            
+//	            if (null == table1 || null == table2) {
+//	                continue;
+//	            }
+//	            if(table1.size() == 0 || table2.size() == 0){
+//	                continue;
+//	            }
+//	            
+//	            Paint mPaint = new Paint();
+//	            mPaint.setStyle(Style.FILL);
+//	            mPaint.setColor(table1.getLineColor());
+//	            mPaint.setAntiAlias(true);
+//	            
+//	            float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
+//	            for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
+//
+//	                IMeasurable pointLow = (IMeasurable)table1.get(j-1);
+//	                IMeasurable nextpointLow = (IMeasurable)table1.get(j);
+//	                
+//	                IMeasurable pointHigh = (IMeasurable)table2.get(j-1);
+//	                IMeasurable nextpointHigh = (IMeasurable)table2.get(j);
+//	                
+//	                Area areaMole = new Area();
+//	                areaMole.setUp(this,pointHigh.getHigh(),pointLow.getHigh(),nextpointHigh.getHigh(),nextpointLow.getHigh(),stickX,stickWidth);
+//	                areaMole.setAreaPaint(mPaint);
+//	                areaMole.draw(canvas);
+//
+//	                // next x
+//	                stickX = stickX + stickWidth;
+//	            }
+//	        }
+//	    }
 
 //	/**
 //	 * <p>
@@ -290,10 +290,10 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 //		mPaint.setAntiAlias(true);
 //		// set start point’s X
 //		if (gridAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
-//            lineLength= (dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber()) - stickSpacing;
+//            lineLength= (dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber()) - barSpacing;
 //            startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 //        }else {
-//            lineLength= (dataQuadrant.getPaddingWidth() / (dataCursor.getDisplayNumber() - 1)) - stickSpacing;
+//            lineLength= (dataQuadrant.getPaddingWidth() / (dataCursor.getDisplayNumber() - 1)) - barSpacing;
 //            startX = dataQuadrant.getPaddingStartX();
 //        }
 //		Path areaPath = new Path();
@@ -325,7 +325,7 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 //
 //			lastX = startX;
 //			lastY = valueY2;
-//			startX = startX + stickSpacing + lineLength;
+//			startX = startX + barSpacing + lineLength;
 //		}
 //		areaPath.close();
 //		canvas.drawPath(areaPath, mPaint);
@@ -354,7 +354,7 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 //			return;
 //		}
 //		// distance between two points
-//		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - stickSpacing;
+//		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - barSpacing;
 //		// start point‘s X
 //		float startX;
 //
@@ -393,7 +393,7 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 //				}
 //				// reset
 //				ptFirst = new PointF(startX, valueY);
-//				startX = startX + stickSpacing + lineLength;
+//				startX = startX + barSpacing + lineLength;
 //			}
 //		}
 //	}

@@ -22,7 +22,7 @@
 
 package cn.limc.androidcharts.shape;
 
-import cn.limc.androidcharts.common.IChart;
+import cn.limc.androidcharts.component.DataComponent;
 import android.graphics.Canvas;
 
 /** 
@@ -35,6 +35,6 @@ import android.graphics.Canvas;
  *  
  */
 public interface Shape  {
-	void setUp(IChart chart);
+	void setUp(DataComponent component);
 	void draw(Canvas canvas);
 }

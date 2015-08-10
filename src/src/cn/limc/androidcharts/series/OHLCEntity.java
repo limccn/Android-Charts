@@ -23,7 +23,7 @@ package cn.limc.androidcharts.series;
 
 /**
  * <p>
- * Entity data which is use for display a candleStick in CandleStickChart use
+ * Entity mData which is use for display a candleStick in CandleStickChart use
  * OHLC(Open,High,Low,Close) four values for a candle
  * </p>
  * <p>

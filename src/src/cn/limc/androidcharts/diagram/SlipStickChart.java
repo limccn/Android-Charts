@@ -22,7 +22,7 @@
 package cn.limc.androidcharts.diagram;
 
 import cn.limc.androidcharts.event.GestureDetector;
-import cn.limc.androidcharts.event.ISlipable;
+import cn.limc.androidcharts.event.Slipable;
 import cn.limc.androidcharts.event.SlipGestureDetector.OnSlipGestureListener;
 import cn.limc.androidcharts.event.SlipGestureDetector;
 import cn.limc.androidcharts.model.SectionDataCursor;
@@ -62,7 +62,7 @@ public class SlipStickChart extends StickChart {
 	 */
 	public SlipStickChart(Context context) {
 		super(context);
-	    this.dataCursor = new SectionDataCursor(this);
+	    //this.dataCursor = new SectionDataCursor(this);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class SlipStickChart extends StickChart {
 	 */
 	public SlipStickChart(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-	      this.dataCursor = new SectionDataCursor(this);
+	     // this.dataCursor = new SectionDataCursor(this);
 	}
 
 	/**
@@ -101,6 +101,6 @@ public class SlipStickChart extends StickChart {
 	 */
 	public SlipStickChart(Context context, AttributeSet attrs) {
 		super(context, attrs);
-	      this.dataCursor = new SectionDataCursor(this);
+	     // this.dataCursor = new SectionDataCursor(this);
 	}
 }

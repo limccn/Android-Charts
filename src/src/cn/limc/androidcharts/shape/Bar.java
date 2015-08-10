@@ -22,8 +22,7 @@
 
 package cn.limc.androidcharts.shape;
 
-import cn.limc.androidcharts.common.IChart;
-import cn.limc.androidcharts.diagram.GridChart;
+import cn.limc.androidcharts.component.DataComponent;
 import cn.limc.androidcharts.series.IMeasurable;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -32,8 +31,8 @@ import android.graphics.Paint.Style;
 
 public class Bar extends AbstractShape implements Rectangle{
 
-	public static final int DEFAULT_STICK_SPACING = 2;
-	public static final int DEFAULT_STICK_STROKE_WIDTH = 0;
+	public static final int DEFAULT_BAR_SPACING = 2;
+	public static final int DEFAULT_BAR_STROKE_WIDTH = 0;
 	
 	/**
 	 * <p>
@@ -46,7 +45,7 @@ public class Bar extends AbstractShape implements Rectangle{
 	 * 默认表示柱条的边框颜色
 	 * </p>
 	 */
-	public static final int DEFAULT_STICK_BORDER_COLOR = Color.WHITE;
+	public static final int DEFAULT_BAR_BORDER_COLOR = Color.WHITE;
 
 	/**
 	 * <p>
@@ -59,7 +58,7 @@ public class Bar extends AbstractShape implements Rectangle{
 	 * 默认表示柱条的填充颜色
 	 * </p>
 	 */
-	public static final int DEFAULT_STICK_FILL_COLOR = Color.YELLOW;
+	public static final int DEFAULT_BAR_FILL_COLOR = Color.YELLOW;
 
 	/**
 	 * <p>
@@ -72,7 +71,7 @@ public class Bar extends AbstractShape implements Rectangle{
 	 * 表示柱条的边框颜色
 	 * </p>
 	 */
-	protected int stickBorderColor = DEFAULT_STICK_BORDER_COLOR;
+	protected int barBorderColor = DEFAULT_BAR_BORDER_COLOR;
 
 	/**
 	 * <p>
@@ -85,28 +84,32 @@ public class Bar extends AbstractShape implements Rectangle{
 	 * 表示柱条的填充颜色
 	 * </p>
 	 */
-	protected int stickFillColor = DEFAULT_STICK_FILL_COLOR;
+	protected int barFillColor = DEFAULT_BAR_FILL_COLOR;
 	
-	protected int stickStrokeWidth = DEFAULT_STICK_STROKE_WIDTH;
-	protected int stickSpacing = DEFAULT_STICK_SPACING;
+	protected int barStrokeWidth = DEFAULT_BAR_STROKE_WIDTH;
+	protected int barSpacing = DEFAULT_BAR_SPACING;
 	
-	private IMeasurable stickData;
+	private IMeasurable barData;
 	
     /* (non-Javadoc)
      * @see cn.limc.androidcharts.shape.Rectangle#setUp(cn.limc.androidcharts.common.IChart, float, float)
      */
     @Override
-    public void setUp(IChart chart, float from, float width) {
-        super.setUp(chart);
-        left = from + stickSpacing / 2;
-        right = from + width - stickSpacing /2;
+    public void setUp(DataComponent component, float from, float width) {
+        super.setUp(component);
+        left = from + barSpacing / 2;
+        right = from + width - barSpacing /2;
         
     }
 	
-	public void setUp(IChart chart ,IMeasurable data, float from , float width) {
-	    this.setUp(chart,from,width);
+	public void setUp(DataComponent component ,IMeasurable data, float from , float width) {
+	    this.setUp(component,from,width);
 		setStickData(data);
 	}
+	
+//	public void setUp(AbstractComponent quadrant ,IMeasurable mData, float from , float width) {
+//	    setStickData(mData);
+//	}
 	
 	/* (non-Javadoc)
 	 * 
@@ -116,17 +119,17 @@ public class Bar extends AbstractShape implements Rectangle{
 	public void draw(Canvas canvas) {	
 		Paint mPaintFill = new Paint();
 		mPaintFill.setStyle(Style.FILL);
-		mPaintFill.setColor(stickFillColor);
+		mPaintFill.setColor(barFillColor);
 		
-		if (width() >= 2f && width() >= 2 * stickStrokeWidth) {
-			if (stickStrokeWidth  > 0) {
+		if (width() >= 2f && width() >= 2 * barStrokeWidth) {
+			if (barStrokeWidth  > 0) {
 				Paint mPaintBorder = new Paint();
 				mPaintBorder.setStyle(Style.STROKE);
-				mPaintBorder.setStrokeWidth(stickStrokeWidth);
-				mPaintBorder.setColor(stickBorderColor);
+				mPaintBorder.setStrokeWidth(barStrokeWidth);
+				mPaintBorder.setColor(barBorderColor);
 				
-				canvas.drawRect(left + stickStrokeWidth, top + stickStrokeWidth, right - stickStrokeWidth, bottom - stickStrokeWidth, mPaintFill);
-				canvas.drawRect(left + stickStrokeWidth, top + stickStrokeWidth, right - stickStrokeWidth, bottom - stickStrokeWidth, mPaintBorder);
+				canvas.drawRect(left + barStrokeWidth, top + barStrokeWidth, right - barStrokeWidth, bottom - barStrokeWidth, mPaintFill);
+				canvas.drawRect(left + barStrokeWidth, top + barStrokeWidth, right - barStrokeWidth, bottom - barStrokeWidth, mPaintBorder);
 			}else{
 				canvas.drawRect(left, top, right, bottom, mPaintFill);
 			}
@@ -136,80 +139,21 @@ public class Bar extends AbstractShape implements Rectangle{
 	}
 
 	/**
-	 * @return the stickData
+	 * @return the barData
 	 */
 	public IMeasurable getStickData() {
-		return stickData;
+		return barData;
 	}
 
 	/**
-	 * @param stickData the stickData to set
+	 * @param barData the barData to set
 	 */
 	public void setStickData(IMeasurable stickData) {
-		this.stickData = stickData;
-		GridChart chart = (GridChart)getInChart();
-		float highY = (float) ((1f - (stickData.getHigh() - chart.getDataRange().getMinValue()) / (chart.getDataRange().getValueRange()))
-				* (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant().getPaddingStartY());
-		float lowY = (float) ((1f - (stickData.getLow() - chart.getDataRange().getMinValue()) / (chart.getDataRange().getValueRange()))
-				* (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant().getPaddingStartY());
+		this.barData = stickData;
+		float highY = (float) component.heightForRate(stickData.getHigh());
+		float lowY = (float)component.heightForRate(stickData.getLow());
 		
 		top = highY;
 		bottom = lowY;
 	}
-
-    /**
-     * @return the stickBorderColor
-     */
-    public int getStickBorderColor() {
-        return stickBorderColor;
-    }
-
-    /**
-     * @param stickBorderColor the stickBorderColor to set
-     */
-    public void setStickBorderColor(int stickBorderColor) {
-        this.stickBorderColor = stickBorderColor;
-    }
-
-    /**
-     * @return the stickFillColor
-     */
-    public int getStickFillColor() {
-        return stickFillColor;
-    }
-
-    /**
-     * @param stickFillColor the stickFillColor to set
-     */
-    public void setStickFillColor(int stickFillColor) {
-        this.stickFillColor = stickFillColor;
-    }
-
-    /**
-     * @return the stickStrokeWidth
-     */
-    public int getStickStrokeWidth() {
-        return stickStrokeWidth;
-    }
-
-    /**
-     * @param stickStrokeWidth the stickStrokeWidth to set
-     */
-    public void setStickStrokeWidth(int stickStrokeWidth) {
-        this.stickStrokeWidth = stickStrokeWidth;
-    }
-
-    /**
-     * @return the stickSpacing
-     */
-    public int getStickSpacing() {
-        return stickSpacing;
-    }
-
-    /**
-     * @param stickSpacing the stickSpacing to set
-     */
-    public void setStickSpacing(int stickSpacing) {
-        this.stickSpacing = stickSpacing;
-    }
 }

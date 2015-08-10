@@ -40,8 +40,8 @@ import android.util.AttributeSet;
 /**
  * 
  * <p>
- * RadarChart is a kind of graph that display data on web-like graph. each
- * data was displayed in the longitude lines,like a area graph.
+ * RadarChart is a kind of graph that display mData on web-like graph. each
+ * mData was displayed in the longitude lines,like a area graph.
  * </p>
  * <p>
  * RadarChartは円グラフとアリアグラフを合わせるのグラフ一種です、データをワッブで表示します。
@@ -201,7 +201,7 @@ public class RadarChart extends SpiderWebChart {
 
 	/**
 	 * <p>
-	 * Draw the data
+	 * Draw the mData
 	 * </p>
 	 * <p>
 	 * チャートでデータを書く

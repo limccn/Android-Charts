@@ -23,7 +23,6 @@ package cn.limc.androidcharts.diagram;
 
 import java.util.List;
 
-import cn.limc.androidcharts.component.IFlexableGrid;
 import cn.limc.androidcharts.series.DateValueEntity;
 import cn.limc.androidcharts.series.IMeasurable;
 import cn.limc.androidcharts.series.LineEntity;
@@ -125,49 +124,49 @@ public class SlipAreaChart extends SlipLineChart {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		// draw lines
-		drawAreas(canvas);
+//		drawAreas(canvas);
 	}
 
-	protected void drawAreas(Canvas canvas) {
-        if (null == chartData) {
-            return;
-        }
-        if (chartData.size() == 0 ) {
-            return;
-        }
-
-        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
-        for(int i=0; i< chartData.size() ; i++){
-            LineEntity table = (LineEntity)chartData.getChartTable(i);
-            
-            if (null == table) {
-                continue;
-            }
-            if(table.size() == 0){
-                continue;
-            }
-            
-            Paint mPaint = new Paint();
-            mPaint.setStyle(Style.FILL_AND_STROKE);
-            mPaint.setColor(table.getLineColor());
-            mPaint.setAntiAlias(true);
-            
-            float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
-            for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
-
-                IMeasurable point = (IMeasurable)table.get(j-1);
-                IMeasurable nextpoint = (IMeasurable)table.get(j);
-                
-                Area areaMole = new Area();
-                areaMole.setUp(this,point.getHigh(),getMinValue(),nextpoint.getHigh(),getMinValue(),stickX,stickWidth);
-                areaMole.setAreaPaint(mPaint);
-                areaMole.draw(canvas);
-
-                // next x
-                stickX = stickX + stickWidth;
-            }
-        }
-    }
+//	protected void drawAreas(Canvas canvas) {
+//        if (null == chartData) {
+//            return;
+//        }
+//        if (chartData.size() == 0 ) {
+//            return;
+//        }
+//
+//        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+//        for(int i=0; i< chartData.size() ; i++){
+//            LineEntity table = (LineEntity)chartData.getChartTable(i);
+//            
+//            if (null == table) {
+//                continue;
+//            }
+//            if(table.size() == 0){
+//                continue;
+//            }
+//            
+//            Paint mPaint = new Paint();
+//            mPaint.setStyle(Style.FILL_AND_STROKE);
+//            mPaint.setColor(table.getLineColor());
+//            mPaint.setAntiAlias(true);
+//            
+//            float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
+//            for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
+//
+//                IMeasurable point = (IMeasurable)table.get(j-1);
+//                IMeasurable nextpoint = (IMeasurable)table.get(j);
+//                
+//                Area areaMole = new Area();
+//                areaMole.setUp(this,point.getHigh(),getMinValue(),nextpoint.getHigh(),getMinValue(),stickX,stickWidth);
+//                areaMole.setAreaPaint(mPaint);
+//                areaMole.draw(canvas);
+//
+//                // next x
+//                stickX = stickX + stickWidth;
+//            }
+//        }
+//    }
 //	/**
 //	 * <p>
 //	 * draw lines

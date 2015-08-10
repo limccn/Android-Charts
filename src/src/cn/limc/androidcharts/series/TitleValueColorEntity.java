@@ -23,7 +23,7 @@ package cn.limc.androidcharts.series;
 
 /**
  * <p>
- * Entity data which its value is titled and with color
+ * Entity mData which its value is titled and with color
  * </p>
  * <p>
  * 表示用データです、値はタイトルや色の設定は可能です。

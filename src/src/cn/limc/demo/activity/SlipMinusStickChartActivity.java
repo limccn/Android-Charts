@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.SlipMinusStickChart;
 import cn.limc.androidcharts.event.Zoomable;
 import cn.limc.androidcharts.series.ChartDataRow;
@@ -100,44 +100,44 @@ public class SlipMinusStickChartActivity extends BaseActivity {
         data.add(new StickEntity(36000, 0, 20120303));
         data.add(new StickEntity(46000, 0, 20120303));
 
-        slipminusstickchart.setMaxValue(50000);
-        slipminusstickchart.setMinValue(-50000);
-
-        slipminusstickchart.setBorderColor(Color.GRAY);
-        slipminusstickchart.setAxisXColor(Color.WHITE);
-        slipminusstickchart.setAxisYColor(Color.WHITE);
-        slipminusstickchart.setLatitudeFontColor(Color.WHITE);
-        slipminusstickchart.setLatitudeColor(Color.GRAY);
-        slipminusstickchart.setLongitudeFontColor(Color.WHITE);
-        slipminusstickchart.setLongitudeColor(Color.GRAY);
-        // 最大纬线数
-        slipminusstickchart.setLatitudeNum(3);
-        // 最大经线数
-        slipminusstickchart.setLongitudeNum(2);
-        slipminusstickchart.setDisplayFrom(0);
-        slipminusstickchart.setDisplayNumber(10);
-        slipminusstickchart.setMinDisplayNumber(5);
-
-        slipminusstickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
-        slipminusstickchart.setDisplayLongitudeTitle(true);
-        slipminusstickchart.setDisplayLatitudeTitle(true);
-        // slipminusstickchart.setDisplayCrossXOnTouch(false);
-        // slipminusstickchart.setDisplayCrossYOnTouch(false);
-        slipminusstickchart.setDisplayLatitude(true);
-        slipminusstickchart.setDisplayLongitude(true);
-        slipminusstickchart.setStickSpacing(10);
-
-        slipminusstickchart.setDataQuadrantPaddingTop(5);
-        slipminusstickchart.setDataQuadrantPaddingBottom(5);
-        slipminusstickchart.setDataQuadrantPaddingLeft(5);
-        slipminusstickchart.setDataQuadrantPaddingRight(5);
-        // slipminusstickchart.setAxisYTitleQuadrantWidth(50);
-        // slipminusstickchart.setAxisXTitleQuadrantHeight(20);
-        slipminusstickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
-        slipminusstickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+//        slipminusstickchart.setMaxValue(50000);
+//        slipminusstickchart.setMinValue(-50000);
+//
+//        slipminusstickchart.setBorderColor(Color.GRAY);
+////        slipminusstickchart.setAxisXColor(Color.WHITE);
+////        slipminusstickchart.setAxisYColor(Color.WHITE);
+//        slipminusstickchart.setLatitudeFontColor(Color.WHITE);
+//        slipminusstickchart.setLatitudeColor(Color.GRAY);
+//        slipminusstickchart.setLongitudeFontColor(Color.WHITE);
+//        slipminusstickchart.setLongitudeColor(Color.GRAY);
+//        // 最大纬线数
+//        slipminusstickchart.setLatitudeNum(3);
+//        // 最大经线数
+//        slipminusstickchart.setLongitudeNum(2);
+//        slipminusstickchart.setDisplayFrom(0);
+//        slipminusstickchart.setDisplayNumber(10);
+//        slipminusstickchart.setMinDisplayNumber(5);
+//
+//        slipminusstickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
+//        slipminusstickchart.setDisplayLongitudeTitle(true);
+//        slipminusstickchart.setDisplayLatitudeTitle(true);
+//        // slipminusstickchart.setDisplayCrossXOnTouch(false);
+//        // slipminusstickchart.setDisplayCrossYOnTouch(false);
+//        slipminusstickchart.setDisplayLatitude(true);
+//        slipminusstickchart.setDisplayLongitude(true);
+//        slipminusstickchart.setStickSpacing(10);
+//
+//        slipminusstickchart.setDataQuadrantPaddingTop(5);
+//        slipminusstickchart.setDataQuadrantPaddingBottom(5);
+//        slipminusstickchart.setDataQuadrantPaddingLeft(5);
+//        slipminusstickchart.setDataQuadrantPaddingRight(5);
+//        // slipminusstickchart.setAxisYTitleQuadrantWidth(50);
+//        // slipminusstickchart.setAxisXTitleQuadrantHeight(20);
+////        slipminusstickchart.setAxisXPosition(AbstractAxis.AXIS_X_POSITION_BOTTOM);
+////        slipminusstickchart.setAxisYPosition(AbstractAxis.AXIS_Y_POSITION_RIGHT);
 
         ChartDataSet datas = new ChartDataSet(new ChartDataTable(data));
-        slipminusstickchart.setChartData(datas);
+       // slipminusstickchart.setChartData(datas);
     }
 
 }

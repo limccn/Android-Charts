@@ -28,7 +28,7 @@ import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.androidcharts.series.DateValueEntity;
 import cn.limc.androidcharts.series.IMeasurable;
 import cn.limc.androidcharts.series.LineEntity;
-import cn.limc.androidcharts.shape.LineMole;
+import cn.limc.androidcharts.shape.Points;
 import cn.limc.androidcharts.shape.Bar;
 
 import android.content.Context;
@@ -56,7 +56,7 @@ public class MASlipCandleStickChart extends SlipCandleStickChart {
 
 	/**
 	 * <p>
-	 * data to draw lines
+	 * mData to draw lines
 	 * </p>
 	 * <p>
 	 * ラインを書く用データ
@@ -157,47 +157,47 @@ public class MASlipCandleStickChart extends SlipCandleStickChart {
 	   @Override
 	    protected void onDraw(Canvas canvas) {
 	        super.onDraw(canvas);
-	        drawLines(canvas);
+//	        drawLines(canvas);
 	    }
-	    
-	     protected void drawLines(Canvas canvas) {
-	            if (null == linesData) {
-	                return;
-	            }
-	            if (linesData.size() == 0) {
-	                return;
-	            }
-
-	            float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
-	           
-	            for(int i=0; i< linesData.size() ; i++){
-	                LineEntity table = (LineEntity)linesData.getChartTable(i);
-	                if (null == table) {
-	                    continue;
-	                }
-	                if(table.size() == 0){
-	                    continue;
-	                }
-	                
-	                Paint mPaint = new Paint();
-	                mPaint.setColor(table.getLineColor());
-	                mPaint.setAntiAlias(true);
-	                float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
-	                for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
-	                    IMeasurable point = (IMeasurable)table.get(j-1);
-	                    IMeasurable nextpoint = (IMeasurable)table.get(j);
-	                    
-	                    LineMole lineMole = new LineMole();
-	                    lineMole.setUp(this,point.getHigh(),nextpoint.getHigh(),stickX,stickWidth);
-	                    lineMole.setLinePaint(mPaint);
-	                    lineMole.draw(canvas);
-
-	                    // next x
-	                    stickX = stickX + stickWidth;
-	                }
-	            }
-	        }
-	     
+//	    
+//	     protected void drawLines(Canvas canvas) {
+//	            if (null == linesData) {
+//	                return;
+//	            }
+//	            if (linesData.size() == 0) {
+//	                return;
+//	            }
+//
+//	            float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+//	           
+//	            for(int i=0; i< linesData.size() ; i++){
+//	                LineEntity table = (LineEntity)linesData.getChartTable(i);
+//	                if (null == table) {
+//	                    continue;
+//	                }
+//	                if(table.size() == 0){
+//	                    continue;
+//	                }
+//	                
+//	                Paint mPaint = new Paint();
+//	                mPaint.setColor(table.getLineColor());
+//	                mPaint.setAntiAlias(true);
+//	                float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
+//	                for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
+//	                    IMeasurable point = (IMeasurable)table.get(j-1);
+//	                    IMeasurable nextpoint = (IMeasurable)table.get(j);
+//	                    
+//	                    Points lineMole = new Points();
+//	                    lineMole.setUp(this,point.getHigh(),nextpoint.getHigh(),stickX,stickWidth);
+//	                    lineMole.setLinePaint(mPaint);
+//	                    lineMole.draw(canvas);
+//
+//	                    // next x
+//	                    stickX = stickX + stickWidth;
+//	                }
+//	            }
+//	        }
+//	     
 	/*
 	 * (non-Javadoc)
 	 * 

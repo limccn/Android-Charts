@@ -22,7 +22,7 @@
 package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.CandleStickChart;
 import cn.limc.androidcharts.series.ChartDataSet;
 import cn.limc.androidcharts.series.ChartDataTable;
@@ -52,42 +52,38 @@ public class CandleStickChartActivity extends BaseActivity {
 
     private void initCandleStickChart() {
         this.candlestickchart = (CandleStickChart) findViewById(R.id.candlestickchart);
-        candlestickchart.setAxisXColor(Color.LTGRAY);
-        candlestickchart.setAxisYColor(Color.LTGRAY);
-        candlestickchart.setLatitudeColor(Color.GRAY);
-        candlestickchart.setLongitudeColor(Color.GRAY);
-        candlestickchart.setBorderColor(Color.LTGRAY);
-        candlestickchart.setLongitudeFontColor(Color.WHITE);
-        candlestickchart.setLatitudeFontColor(Color.WHITE);
-
-        // 最大显示足数
-        //candlestickchart.setMaxSticksNum(52);
-        candlestickchart.setDisplayNumber(52);
-        // 最大纬线数
-        candlestickchart.setLatitudeNum(5);
-        // 最大经线数
-        candlestickchart.setLongitudeNum(3);
-        // 最大价格
-        candlestickchart.setMaxValue(1200);
-        // 最小价格
-        candlestickchart.setMinValue(200);
-
-        candlestickchart.setDisplayLongitudeTitle(true);
-        candlestickchart.setDisplayLatitudeTitle(true);
-        candlestickchart.setDisplayLatitude(true);
-        candlestickchart.setDisplayLongitude(true);
-        candlestickchart.setBackgroundColor(Color.BLACK);
-
-        candlestickchart.setDataQuadrantPaddingTop(5);
-        candlestickchart.setDataQuadrantPaddingBottom(5);
-        candlestickchart.setDataQuadrantPaddingLeft(5);
-        candlestickchart.setDataQuadrantPaddingRight(5);
+//        candlestickchart.setLatitudeColor(Color.GRAY);
+//        candlestickchart.setLongitudeColor(Color.GRAY);
+//        candlestickchart.setBorderColor(Color.LTGRAY);
+//        candlestickchart.setLongitudeFontColor(Color.WHITE);
+//        candlestickchart.setLatitudeFontColor(Color.WHITE);
+//
+//        // 最大显示足数
+//        //candlestickchart.setMaxSticksNum(52);
+//        candlestickchart.setDisplayNumber(52);
+//        // 最大纬线数
+//        candlestickchart.setLatitudeNum(5);
+//        // 最大经线数
+//        candlestickchart.setLongitudeNum(3);
+//        // 最大价格
+//        candlestickchart.setMaxValue(1200);
+//        // 最小价格
+//        candlestickchart.setMinValue(200);
+//
+//        candlestickchart.setDisplayLongitudeTitle(true);
+//        candlestickchart.setDisplayLatitudeTitle(true);
+//        candlestickchart.setDisplayLatitude(true);
+//        candlestickchart.setDisplayLongitude(true);
+//        candlestickchart.setBackgroundColor(Color.BLACK);
+//
+//        candlestickchart.setDataQuadrantPaddingTop(5);
+//        candlestickchart.setDataQuadrantPaddingBottom(5);
+//        candlestickchart.setDataQuadrantPaddingLeft(5);
+//        candlestickchart.setDataQuadrantPaddingRight(5);
 //      candlestickchart.setAxisYTitleQuadrantWidth(50);
 //      candlestickchart.setAxisXTitleQuadrantHeight(20);
-        candlestickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
-        candlestickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
         // 为chart2增加均线
-        candlestickchart.setChartData(new ChartDataSet(new ChartDataTable(ohlc)));
+    //    candlestickchart.setChartData(new ChartDataSet(new ChartDataTable(ohlc)));
     }
 }

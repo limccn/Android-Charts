@@ -1,5 +1,5 @@
 //
-// ValueRange.java
+// MinusStickRangeCalculator.java
 // cn.limc.androidcharts.degree
 //
 // Created by limc on 2015-7-22.
@@ -8,8 +8,9 @@
 //
 package cn.limc.androidcharts.model;
 
+
 /**
- * ValueRange
+ * MinusStickRangeCalculator
  * Description: <br>
  *   <p>add description here </p>
  * Tags: <br>
@@ -22,17 +23,16 @@ package cn.limc.androidcharts.model;
  * 2015-7-22 limc create v1.0 <br>
  *
  */
-public interface ValueRange {
+public class MinusStickRangeCalculator extends MeasuableRangeCalculator {    
+    public boolean shouldPaddingZero(){
+        return false;
+    }
     
-    public static final int DEFAULT_DATA_MULTIPLE = 1;
-    public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
+    public boolean shouldOptimizeForAxis(){
+        return false;
+    }
     
-    int getDataMultiple();
-    double getMaxValue();
-    double getMinValue();
-    double getValueRange();
-    boolean isAutoCalcValueRange();
-    
-    void calcValueRange();
-    
+    public boolean miniValueAlwaysZero(){
+        return false;
+    }
 }

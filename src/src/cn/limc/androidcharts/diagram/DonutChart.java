@@ -151,7 +151,7 @@ public class DonutChart extends RoundChart {
         
         drawInnerCircle(canvas);
 
-        // draw data on chart
+        // draw mData on chart
         drawData(canvas);
     }
 
@@ -209,7 +209,7 @@ public class DonutChart extends RoundChart {
 
     /**
      * <p>
-     * Draw the data
+     * Draw the mData
      * </p>
      * <p>
      * チャートでデータを書く
@@ -222,7 +222,7 @@ public class DonutChart extends RoundChart {
      */
     protected void drawData(Canvas canvas) {
         if (null != data) {
-            // sum all data's value
+            // sum all mData's value
             float sum = 0;
             for (int i = 0; i < data.size(); i++) {
                 sum = sum + data.get(i).getValue();
@@ -288,15 +288,15 @@ public class DonutChart extends RoundChart {
     }
 
     /**
-     * @return the data
+     * @return the mData
      */
     public List<TitleValueColorEntity> getData() {
         return data;
     }
 
     /**
-     * @param data
-     *            the data to set
+     * @param mData
+     *            the mData to set
      */
     public void setData(List<TitleValueColorEntity> data) {
         this.data = data;

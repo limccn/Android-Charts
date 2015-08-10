@@ -23,7 +23,7 @@ package cn.limc.androidcharts.series;
 
 /**
  * <p>
- * Entity data which is use for display a stick in CCSStickChart
+ * Entity mData which is use for display a stick in CCSStickChart
  * </p>
  * <p>
  * StickChartのスティック表示用データです、高安値を格納用オブジェクトです。

@@ -1,5 +1,5 @@
 /*
- * ISlipable.java
+ * Slipable.java
  * Android-Charts
  *
  * Created by limc on 2014.
@@ -31,7 +31,7 @@ package cn.limc.androidcharts.event;
  * @version v1.0 2014/05/29 16:49:51 
  *  
  */
-public interface ISlipable extends Zoomable{	
+public interface Slipable extends Zoomable{	
 	
 	static final int SLIP_DIRECTION_NONE = 0;
 	static final int SLIP_DIRECTION_TOP = 1;

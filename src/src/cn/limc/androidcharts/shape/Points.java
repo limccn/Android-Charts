@@ -1,5 +1,5 @@
 //
-// LineMole.java
+// Points.java
 // cn.limc.androidcharts.shape
 //
 // Created by limc on 2015-7-24.
@@ -8,13 +8,12 @@
 //
 package cn.limc.androidcharts.shape;
 
-import cn.limc.androidcharts.common.IChart;
-import cn.limc.androidcharts.diagram.GridChart;
+import cn.limc.androidcharts.component.DataComponent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
 /**
- * LineMole
+ * Points
  * Description: <br>
  *   <p>add description here </p>
  * Tags: <br>
@@ -27,7 +26,7 @@ import android.graphics.Paint;
  * 2015-7-24 limc create v1.0 <br>
  *
  */
-public class LineMole extends AbstractShape implements Rectangle{
+public class Points extends AbstractShape implements Rectangle{
 
     public static double NON_DISPLAY_VALUE = 0; 
     private Paint linePaint = new Paint();
@@ -38,7 +37,7 @@ public class LineMole extends AbstractShape implements Rectangle{
     /**
      * 
      */
-    public LineMole() {
+    public Points() {
         // TODO Auto-generated constructor stub
     }
 
@@ -47,14 +46,9 @@ public class LineMole extends AbstractShape implements Rectangle{
      */
     @Override
     public void draw(Canvas canvas) {
-        GridChart chart = (GridChart)getInChart();
         if (current!=NON_DISPLAY_VALUE && next!=NON_DISPLAY_VALUE) {
-            float valueY = (float) ((1f - (current - chart.getDataRange().getMinValue()) / (chart.getDataRange().getValueRange()))
-                    * (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant().getPaddingStartY());
-            
-            float nextValueY = (float) ((1f - (next - chart.getDataRange().getMinValue()) / (chart.getDataRange().getValueRange()))
-                    * (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant().getPaddingStartY());
-            
+            float valueY = (float) component.heightForRate(current);
+            float nextValueY = (float) component.heightForRate(next);
             canvas.drawLine(left, valueY, right, nextValueY, linePaint);
         }
     }
@@ -63,16 +57,16 @@ public class LineMole extends AbstractShape implements Rectangle{
      * @see cn.limc.androidcharts.shape.Rectangle#setUp(cn.limc.androidcharts.common.IChart, float, float)
      */
     @Override
-    public void setUp(IChart chart, float from, float width) {
-        super.setUp(chart);
+    public void setUp(DataComponent component, float from, float width) {
+        super.setUp(component);
         left = from ;
         right = from + width;
         
     }
     
     
-    public void setUp(IChart chart ,double lineData,double nextData, float from , float width) {
-        this.setUp(chart,from,width);
+    public void setUp(DataComponent component ,double lineData,double nextData, float from , float width) {
+        this.setUp(component,from,width);
         this.current = lineData;
         this.next = nextData;
     }

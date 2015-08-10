@@ -106,38 +106,38 @@ public class ColoredSlipStickChart extends SlipStickChart {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
+//		super.onDraw(canvas);
 	}
    
-   protected void drawSticks(Canvas canvas) {
-       if (null == chartData) {
-           return;
-       }
-       if (chartData.size() == 0) {
-           return;
-       }
-
-       float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
-       float stickX = dataQuadrant.getPaddingStartX();
-
-       for(int i=0; i< chartData.size() ; i++){
-           ChartDataTable table = chartData.getChartTable(i);
-           if (null == table) {
-               continue;
-           }
-           if(table.size() == 0){
-               continue;
-           }
-           for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
-               IMeasurable stick = (IMeasurable)table.get(j);
-               
-               ColorfulBar mole = new ColorfulBar();
-               mole.setUp(this,stick,stickX,stickWidth);
-               mole.draw(canvas);
-
-               // next x
-               stickX = stickX + stickWidth;
-           }
-       }
-   }
+//   protected void drawSticks(Canvas canvas) {
+//       if (null == chartData) {
+//           return;
+//       }
+//       if (chartData.size() == 0) {
+//           return;
+//       }
+//
+//       float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+//       float stickX = dataQuadrant.getPaddingStartX();
+//
+//       for(int i=0; i< chartData.size() ; i++){
+//           ChartDataTable table = chartData.getChartTable(i);
+//           if (null == table) {
+//               continue;
+//           }
+//           if(table.size() == 0){
+//               continue;
+//           }
+//           for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
+//               IMeasurable stick = (IMeasurable)table.get(j);
+//               
+//               ColorfulBar mole = new ColorfulBar();
+//               mole.setUp(this,stick,stickX,stickWidth);
+//               mole.draw(canvas);
+//
+//               // next x
+//               stickX = stickX + stickWidth;
+//           }
+//       }
+//   }
 }

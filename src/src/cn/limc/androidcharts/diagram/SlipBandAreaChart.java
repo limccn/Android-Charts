@@ -23,12 +23,12 @@ package cn.limc.androidcharts.diagram;
 
 import java.util.List;
 
-import cn.limc.androidcharts.component.IFlexableGrid;
+
 import cn.limc.androidcharts.series.DateValueEntity;
 import cn.limc.androidcharts.series.IMeasurable;
 import cn.limc.androidcharts.series.LineEntity;
 import cn.limc.androidcharts.shape.Area;
-import cn.limc.androidcharts.shape.LineMole;
+import cn.limc.androidcharts.shape.Points;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -125,53 +125,53 @@ public class SlipBandAreaChart extends SlipLineChart {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		// draw lines
-		drawAreas(canvas);
+//		drawAreas(canvas);
 	}
-	
-	protected void drawAreas(Canvas canvas) {
-        if (null == chartData) {
-            return;
-        }
-        if (chartData.size() < 2 ) {
-            return;
-        }
-
-        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
-        for(int i=1; i< chartData.size() ; i++){
-            LineEntity table1 = (LineEntity)chartData.getChartTable(i-1);
-            LineEntity table2 = (LineEntity)chartData.getChartTable(i);
-            
-            if (null == table1 || null == table2) {
-                continue;
-            }
-            if(table1.size() == 0 || table2.size() == 0){
-                continue;
-            }
-            
-            Paint mPaint = new Paint();
-            mPaint.setStyle(Style.FILL);
-            mPaint.setColor(table1.getLineColor());
-            mPaint.setAntiAlias(true);
-            
-            float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
-            for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
-
-                IMeasurable pointLow = (IMeasurable)table1.get(j-1);
-                IMeasurable nextpointLow = (IMeasurable)table1.get(j);
-                
-                IMeasurable pointHigh = (IMeasurable)table2.get(j-1);
-                IMeasurable nextpointHigh = (IMeasurable)table2.get(j);
-                
-                Area areaMole = new Area();
-                areaMole.setUp(this,pointHigh.getHigh(),pointLow.getHigh(),nextpointHigh.getHigh(),nextpointLow.getHigh(),stickX,stickWidth);
-                areaMole.setAreaPaint(mPaint);
-                areaMole.draw(canvas);
-
-                // next x
-                stickX = stickX + stickWidth;
-            }
-        }
-    }
+//	
+//	protected void drawAreas(Canvas canvas) {
+//        if (null == chartData) {
+//            return;
+//        }
+//        if (chartData.size() < 2 ) {
+//            return;
+//        }
+//
+//        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+//        for(int i=1; i< chartData.size() ; i++){
+//            LineEntity table1 = (LineEntity)chartData.getChartTable(i-1);
+//            LineEntity table2 = (LineEntity)chartData.getChartTable(i);
+//            
+//            if (null == table1 || null == table2) {
+//                continue;
+//            }
+//            if(table1.size() == 0 || table2.size() == 0){
+//                continue;
+//            }
+//            
+//            Paint mPaint = new Paint();
+//            mPaint.setStyle(Style.FILL);
+//            mPaint.setColor(table1.getLineColor());
+//            mPaint.setAntiAlias(true);
+//            
+//            float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
+//            for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
+//
+//                IMeasurable pointLow = (IMeasurable)table1.get(j-1);
+//                IMeasurable nextpointLow = (IMeasurable)table1.get(j);
+//                
+//                IMeasurable pointHigh = (IMeasurable)table2.get(j-1);
+//                IMeasurable nextpointHigh = (IMeasurable)table2.get(j);
+//                
+//                Area areaMole = new Area();
+//                areaMole.setUp(this,pointHigh.getHigh(),pointLow.getHigh(),nextpointHigh.getHigh(),nextpointLow.getHigh(),stickX,stickWidth);
+//                areaMole.setAreaPaint(mPaint);
+//                areaMole.draw(canvas);
+//
+//                // next x
+//                stickX = stickX + stickWidth;
+//            }
+//        }
+//    }
 
 //	/**
 //	 * <p>

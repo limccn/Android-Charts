@@ -41,7 +41,7 @@ import android.util.AttributeSet;
  * 
  * <p>
  * PieChart is a kind of graph that display all in a pie-like graph, each of the
- * data will get a part of the pie. another kind of pie chart you can refer from
+ * mData will get a part of the pie. another kind of pie chart you can refer from
  * PizzaChart
  * </p>
  * <p>
@@ -138,7 +138,7 @@ public class PieChart extends RoundChart {
 		// draw this chart
 		drawCircle(canvas);
 
-		// draw data on chart
+		// draw mData on chart
 		drawData(canvas);
 	}
 
@@ -170,7 +170,7 @@ public class PieChart extends RoundChart {
 
 	/**
 	 * <p>
-	 * Draw the data
+	 * Draw the mData
 	 * </p>
 	 * <p>
 	 * チャートでデータを書く
@@ -183,7 +183,7 @@ public class PieChart extends RoundChart {
 	 */
 	protected void drawData(Canvas canvas) {
 		if (null != data) {
-			// sum all data's value
+			// sum all mData's value
 			float sum = 0;
 			for (int i = 0; i < data.size(); i++) {
 				sum = sum + data.get(i).getValue();
@@ -268,15 +268,15 @@ public class PieChart extends RoundChart {
 	}
 
 	/**
-	 * @return the data
+	 * @return the mData
 	 */
 	public List<TitleValueColorEntity> getData() {
 		return data;
 	}
 
 	/**
-	 * @param data
-	 *            the data to set
+	 * @param mData
+	 *            the mData to set
 	 */
 	public void setData(List<TitleValueColorEntity> data) {
 		this.data = data;

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.MAStickChart;
 import cn.limc.androidcharts.series.ChartDataSet;
 import cn.limc.androidcharts.series.ChartDataTable;
@@ -82,45 +82,45 @@ public class MAStickChartActivity extends BaseActivity {
         vma25.setTableData(initVMA(25));
         vlines.add(vma25);
 
-        mastickchart.setAxisXColor(Color.LTGRAY);
-        mastickchart.setAxisYColor(Color.LTGRAY);
-        mastickchart.setLatitudeColor(Color.GRAY);
-        mastickchart.setLongitudeColor(Color.GRAY);
-        mastickchart.setBorderColor(Color.LTGRAY);
-        mastickchart.setLongitudeFontColor(Color.WHITE);
-        mastickchart.setLatitudeFontColor(Color.WHITE);
-
-        // 最大显示足数
-        //mastickchart.setMaxSticksNum(52);
-        mastickchart.setDisplayNumber(52);
-        // 最大纬线数
-        mastickchart.setLatitudeNum(2);
-        // 最大经线数
-        mastickchart.setLongitudeNum(3);
-        // 最大价格
-        mastickchart.setMaxValue(10000);
-        // 最小价格
-        mastickchart.setMinValue(100);
-
-        mastickchart.setDisplayLongitudeTitle(true);
-        mastickchart.setDisplayLatitudeTitle(true);
-        mastickchart.setDisplayLatitude(true);
-        mastickchart.setDisplayLongitude(true);
-        mastickchart.setBackgroundColor(Color.BLACK);
-
-        mastickchart.setDataQuadrantPaddingTop(5);
-        mastickchart.setDataQuadrantPaddingBottom(5);
-        mastickchart.setDataQuadrantPaddingLeft(5);
-        mastickchart.setDataQuadrantPaddingRight(5);
+////        mastickchart.setAxisXColor(Color.LTGRAY);
+////        mastickchart.setAxisYColor(Color.LTGRAY);
+//        mastickchart.setLatitudeColor(Color.GRAY);
+//        mastickchart.setLongitudeColor(Color.GRAY);
+//        mastickchart.setBorderColor(Color.LTGRAY);
+//        mastickchart.setLongitudeFontColor(Color.WHITE);
+//        mastickchart.setLatitudeFontColor(Color.WHITE);
+//
+//        // 最大显示足数
+//        //mastickchart.setMaxSticksNum(52);
+//        mastickchart.setDisplayNumber(52);
+//        // 最大纬线数
+//        mastickchart.setLatitudeNum(2);
+//        // 最大经线数
+//        mastickchart.setLongitudeNum(3);
+//        // 最大价格
+//        mastickchart.setMaxValue(10000);
+//        // 最小价格
+//        mastickchart.setMinValue(100);
+//
+//        mastickchart.setDisplayLongitudeTitle(true);
+//        mastickchart.setDisplayLatitudeTitle(true);
+//        mastickchart.setDisplayLatitude(true);
+//        mastickchart.setDisplayLongitude(true);
+//        mastickchart.setBackgroundColor(Color.BLACK);
+//
+//        mastickchart.setDataQuadrantPaddingTop(5);
+//        mastickchart.setDataQuadrantPaddingBottom(5);
+//        mastickchart.setDataQuadrantPaddingLeft(5);
+//        mastickchart.setDataQuadrantPaddingRight(5);
 //      mastickchart.setAxisYTitleQuadrantWidth(50);
 //      mastickchart.setAxisXTitleQuadrantHeight(20);
-        mastickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
-        mastickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+//        mastickchart.setAxisXPosition(AbstractAxis.AXIS_X_POSITION_BOTTOM);
+//        mastickchart.setAxisYPosition(AbstractAxis.AXIS_Y_POSITION_RIGHT);
 
         // 为chart1增加均线
         mastickchart.setLinesData(vlines);
         // 为chart1增加均线
-        mastickchart.setChartData(new ChartDataSet(new ChartDataTable(vol)));
+       // mastickchart.setChartData(new ChartDataSet(new ChartDataTable(vol)));
 
     }
 

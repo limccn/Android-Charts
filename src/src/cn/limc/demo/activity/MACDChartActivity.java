@@ -22,7 +22,7 @@
 package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.MACDChart;
 import cn.limc.androidcharts.event.Zoomable;
 import cn.limc.androidcharts.series.ChartDataSet;
@@ -53,41 +53,41 @@ public class MACDChartActivity extends BaseActivity {
 
     private void initMACDChart() {
 
-        macdChart = (MACDChart) findViewById(R.id.macdchart);
-        macdChart.setMaxValue(300000);
-        macdChart.setMinValue(-300000);
-        // macdChart.setDisplayCrossXOnTouch(true);
-        // macdChart.setDisplayCrossYOnTouch(true);
-        macdChart.setLatitudeNum(4);
-        macdChart.setLongitudeNum(3);
-        macdChart.setDisplayFrom(0);
-        macdChart.setDisplayNumber(10);
-        macdChart.setMinDisplayNumber(5);
-        macdChart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
-        macdChart.setAxisXColor(Color.LTGRAY);
-        macdChart.setAxisYColor(Color.LTGRAY);
-        macdChart.setLatitudeColor(Color.GRAY);
-        macdChart.setLongitudeColor(Color.GRAY);
-        macdChart.setBorderColor(Color.LTGRAY);
-        macdChart.setLongitudeFontColor(Color.WHITE);
-        macdChart.setLatitudeFontColor(Color.WHITE);
-//        macdChart.setMacdDisplayType(MACDChart.MACD_DISPLAY_TYPE_STICK);
-//        macdChart.setPositiveStickColor(Color.RED);
-//        macdChart.setNegativeStickColor(Color.CYAN);
-//        macdChart.setMacdLineColor(Color.CYAN);
-//        macdChart.setDeaLineColor(Color.YELLOW);
-//        macdChart.setDiffLineColor(Color.WHITE);
-        macdChart.setDataQuadrantPaddingTop(5);
-        macdChart.setDataQuadrantPaddingBottom(5);
-        macdChart.setDataQuadrantPaddingLeft(5);
-        macdChart.setDataQuadrantPaddingRight(5);
+//        macdChart = (MACDChart) findViewById(R.id.macdchart);
+//        macdChart.setMaxValue(300000);
+//        macdChart.setMinValue(-300000);
+//        // macdChart.setDisplayCrossXOnTouch(true);
+//        // macdChart.setDisplayCrossYOnTouch(true);
+//        macdChart.setLatitudeNum(4);
+//        macdChart.setLongitudeNum(3);
+//        macdChart.setDisplayFrom(0);
+//        macdChart.setDisplayNumber(10);
+//        macdChart.setMinDisplayNumber(5);
+//        macdChart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
+////        macdChart.setAxisXColor(Color.LTGRAY);
+////        macdChart.setAxisYColor(Color.LTGRAY);
+//        macdChart.setLatitudeColor(Color.GRAY);
+//        macdChart.setLongitudeColor(Color.GRAY);
+//        macdChart.setBorderColor(Color.LTGRAY);
+//        macdChart.setLongitudeFontColor(Color.WHITE);
+//        macdChart.setLatitudeFontColor(Color.WHITE);
+////        macdChart.setMacdDisplayType(MACDChart.MACD_DISPLAY_TYPE_STICK);
+////        macdChart.setPositiveStickColor(Color.RED);
+////        macdChart.setNegativeStickColor(Color.CYAN);
+////        macdChart.setMacdLineColor(Color.CYAN);
+////        macdChart.setDeaLineColor(Color.YELLOW);
+////        macdChart.setDiffLineColor(Color.WHITE);
+//        macdChart.setDataQuadrantPaddingTop(5);
+//        macdChart.setDataQuadrantPaddingBottom(5);
+//        macdChart.setDataQuadrantPaddingLeft(5);
+//        macdChart.setDataQuadrantPaddingRight(5);
         // macdChart.setAxisYTitleQuadrantWidth(50);
         // macdChart.setAxisXTitleQuadrantHeight(20);
-        macdChart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
-        macdChart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+//        macdChart.setAxisXPosition(AbstractAxis.AXIS_X_POSITION_BOTTOM);
+//        macdChart.setAxisYPosition(AbstractAxis.AXIS_Y_POSITION_RIGHT);
 
         // 设置stickData
-        macdChart.setChartData(new ChartDataSet(new ChartDataTable(macd)));
+    //    macdChart.setChartData(new ChartDataSet(new ChartDataTable(macd)));
     }
 
 }

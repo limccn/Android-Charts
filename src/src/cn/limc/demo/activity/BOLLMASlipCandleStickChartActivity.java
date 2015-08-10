@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.BOLLMASlipCandleStickChart;
 import cn.limc.androidcharts.event.Zoomable;
 import cn.limc.androidcharts.series.ChartDataSet;
@@ -94,56 +94,51 @@ public class BOLLMASlipCandleStickChartActivity extends BaseActivity {
         upper.setTableData(dv2);
         band.add(upper);
 
-        bollmaslipcandlestickchart.setAxisXColor(Color.LTGRAY);
-        bollmaslipcandlestickchart.setAxisYColor(Color.LTGRAY);
-        bollmaslipcandlestickchart.setLatitudeColor(Color.GRAY);
-        bollmaslipcandlestickchart.setLongitudeColor(Color.GRAY);
-        bollmaslipcandlestickchart.setBorderColor(Color.LTGRAY);
-        bollmaslipcandlestickchart.setLongitudeFontColor(Color.WHITE);
-        bollmaslipcandlestickchart.setLatitudeFontColor(Color.WHITE);
 
-        // 最大纬线数
-        bollmaslipcandlestickchart.setLatitudeNum(5);
-        // 最大经线数
-        bollmaslipcandlestickchart.setLongitudeNum(3);
-        // 最大价格
-        bollmaslipcandlestickchart.setMaxValue(1200);
-        // 最小价格
-        bollmaslipcandlestickchart.setMinValue(200);
-
-        bollmaslipcandlestickchart.setDisplayFrom(10);
-
-        bollmaslipcandlestickchart.setDisplayNumber(30);
-
-        bollmaslipcandlestickchart.setMinDisplayNumber(5);
-
-        bollmaslipcandlestickchart
-                .setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
-
-        bollmaslipcandlestickchart.setDisplayLongitudeTitle(true);
-        bollmaslipcandlestickchart.setDisplayLatitudeTitle(true);
-        bollmaslipcandlestickchart.setDisplayLatitude(true);
-        bollmaslipcandlestickchart.setDisplayLongitude(true);
-        bollmaslipcandlestickchart.setBackgroundColor(Color.BLACK);
-
-        bollmaslipcandlestickchart.setDataQuadrantPaddingTop(5);
-        bollmaslipcandlestickchart.setDataQuadrantPaddingBottom(5);
-        bollmaslipcandlestickchart.setDataQuadrantPaddingLeft(5);
-        bollmaslipcandlestickchart.setDataQuadrantPaddingRight(5);
-//      bollmaslipcandlestickchart.setAxisYTitleQuadrantWidth(50);
-//      bollmaslipcandlestickchart.setAxisXTitleQuadrantHeight(20);
-        bollmaslipcandlestickchart
-                .setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
-        bollmaslipcandlestickchart
-                .setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
-
-        // 为chart2增加均线
-        bollmaslipcandlestickchart.setLinesData(lines);
-        bollmaslipcandlestickchart.setBandData(band);
+//        bollmaslipcandlestickchart.setLatitudeColor(Color.GRAY);
+//        bollmaslipcandlestickchart.setLongitudeColor(Color.GRAY);
+//        bollmaslipcandlestickchart.setBorderColor(Color.LTGRAY);
+//        bollmaslipcandlestickchart.setLongitudeFontColor(Color.WHITE);
+//        bollmaslipcandlestickchart.setLatitudeFontColor(Color.WHITE);
+//
+//        // 最大纬线数
+//        bollmaslipcandlestickchart.setLatitudeNum(5);
+//        // 最大经线数
+//        bollmaslipcandlestickchart.setLongitudeNum(3);
+//        // 最大价格
+//        bollmaslipcandlestickchart.setMaxValue(1200);
+//        // 最小价格
+//        bollmaslipcandlestickchart.setMinValue(200);
+//
+//        bollmaslipcandlestickchart.setDisplayFrom(10);
+//
+//        bollmaslipcandlestickchart.setDisplayNumber(30);
+//
+//        bollmaslipcandlestickchart.setMinDisplayNumber(5);
+//
+//        bollmaslipcandlestickchart
+//                .setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
+//
+//        bollmaslipcandlestickchart.setDisplayLongitudeTitle(true);
+//        bollmaslipcandlestickchart.setDisplayLatitudeTitle(true);
+//        bollmaslipcandlestickchart.setDisplayLatitude(true);
+//        bollmaslipcandlestickchart.setDisplayLongitude(true);
+//        bollmaslipcandlestickchart.setBackgroundColor(Color.BLACK);
+//
+//        bollmaslipcandlestickchart.setDataQuadrantPaddingTop(5);
+//        bollmaslipcandlestickchart.setDataQuadrantPaddingBottom(5);
+//        bollmaslipcandlestickchart.setDataQuadrantPaddingLeft(5);
+//        bollmaslipcandlestickchart.setDataQuadrantPaddingRight(5);
+////      bollmaslipcandlestickchart.setAxisYTitleQuadrantWidth(50);
+////      bollmaslipcandlestickchart.setAxisXTitleQuadrantHeight(20);
+//
+//        // 为chart2增加均线
+//        bollmaslipcandlestickchart.setLinesData(lines);
+//        bollmaslipcandlestickchart.setBandData(band);
 
         // 为chart2增加均线
-        bollmaslipcandlestickchart
-                .setChartData(new ChartDataSet(new ChartDataTable(ohlc)));
+    //    bollmaslipcandlestickchart
+    //            .setChartData(new ChartDataSet(new ChartDataTable(ohlc)));
     }
 
 }

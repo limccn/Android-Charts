@@ -23,7 +23,7 @@ package cn.limc.androidcharts.series;
 
 /**
  * <p>
- * Entity data which is use for display a single line in LineChart
+ * Entity mData which is use for display a single line in LineChart
  * </p>
  * <p>
  * LineChartの線表示用データです。単線です。

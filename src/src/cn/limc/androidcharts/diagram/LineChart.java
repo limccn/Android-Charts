@@ -24,7 +24,7 @@ package cn.limc.androidcharts.diagram;
 import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.androidcharts.series.IMeasurable;
 import cn.limc.androidcharts.series.LineEntity;
-import cn.limc.androidcharts.shape.LineMole;
+import cn.limc.androidcharts.shape.Points;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -52,7 +52,7 @@ public class LineChart extends StickChart {
 //	public static final int DEFAULT_LINE_ALIGN_TYPE = IFlexableGrid.ALIGN_TYPE_JUSTIFY;
 //	/**
 //	 * <p>
-//	 * data to draw lines
+//	 * mData to draw lines
 //	 * </p>
 //	 * <p>
 //	 * ラインを書く用データ
@@ -153,44 +153,44 @@ public class LineChart extends StickChart {
 		super(context, attrs);
 	}
 	
-	protected void drawSticks(Canvas canvas) {
-        if (null == chartData) {
-            return;
-        }
-        if (chartData.size() == 0) {
-            return;
-        }
-
-        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
-
-        for(int i=0; i< chartData.size() ; i++){
-            LineEntity table = (LineEntity)chartData.getChartTable(i);
-            if (null == table) {
-                continue;
-            }
-            if(table.size() == 0){
-                continue;
-            }
-            
-            Paint mPaint = new Paint();
-            mPaint.setColor(table.getLineColor());
-            mPaint.setAntiAlias(true);
-            
-            float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
-            for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
-                IMeasurable point = (IMeasurable)table.get(j-1);
-                IMeasurable nextpoint = (IMeasurable)table.get(j);
-                
-                LineMole lineMole = new LineMole();
-                lineMole.setUp(this,point.getHigh(),nextpoint.getHigh(),stickX,stickWidth);
-                lineMole.setLinePaint(mPaint);
-                lineMole.draw(canvas);
-
-                // next x
-                stickX = stickX + stickWidth;
-            }
-        }
-    }
+//	protected void drawSticks(Canvas canvas) {
+//        if (null == chartData) {
+//            return;
+//        }
+//        if (chartData.size() == 0) {
+//            return;
+//        }
+//
+//        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+//
+//        for(int i=0; i< chartData.size() ; i++){
+//            LineEntity table = (LineEntity)chartData.getChartTable(i);
+//            if (null == table) {
+//                continue;
+//            }
+//            if(table.size() == 0){
+//                continue;
+//            }
+//            
+//            Paint mPaint = new Paint();
+//            mPaint.setColor(table.getLineColor());
+//            mPaint.setAntiAlias(true);
+//            
+//            float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
+//            for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
+//                IMeasurable point = (IMeasurable)table.get(j-1);
+//                IMeasurable nextpoint = (IMeasurable)table.get(j);
+//                
+//                Points lineMole = new Points();
+//                lineMole.setUp(this,point.getHigh(),nextpoint.getHigh(),stickX,stickWidth);
+//                lineMole.setLinePaint(mPaint);
+//                lineMole.draw(canvas);
+//
+//                // next x
+//                stickX = stickX + stickWidth;
+//            }
+//        }
+//    }
 
 //	protected void calcDataValueRange() {
 //		double maxValue = Double.MIN_VALUE;
@@ -212,7 +212,7 @@ public class LineChart extends StickChart {
 //			// 判断显示为方柱或显示为线条
 //			for (int j = 0; j < lineData.size(); j++) {
 //				DateValueEntity<Integer,Double> entity;
-//				if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+//				if (axisY.getPosition() == Axis.AXIS_Y_POSITION_LEFT) {
 //					entity = line.getLineData().get(j);
 //				} else {
 //					entity = line.getLineData().get(lineData.size() - 1 - j);
@@ -406,7 +406,7 @@ public class LineChart extends StickChart {
 //			mPaint.setAntiAlias(true);
 //			// start point
 //			PointF ptFirst = null;
-//			if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+//			if (axisY.getPosition() == Axis.AXIS_Y_POSITION_LEFT) {
 //	            if (lineAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
 //	                lineLength= (dataQuadrant.getPaddingWidth() / maxPointNum);
 //	                startX = dataQuadrant.getPaddingStartX() + lineLength / 2;

@@ -25,7 +25,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 
-import cn.limc.androidcharts.model.MinusStickValueRangeCalc;
+import cn.limc.androidcharts.model.MinusStickRangeCalculator;
 import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.androidcharts.series.IMeasurable;
 import cn.limc.androidcharts.shape.Bar;
@@ -57,7 +57,7 @@ public class SlipMinusStickChart extends SlipStickChart {
 	 */
 	public SlipMinusStickChart(Context context) {
 		super(context);
-		this.dataRange = new MinusStickValueRangeCalc(this);
+//		this.dataRange = new MinusStickRangeCalculator(this);
 	}
 
 	/*
@@ -74,7 +74,7 @@ public class SlipMinusStickChart extends SlipStickChart {
 	 */
 	public SlipMinusStickChart(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		this.dataRange = new MinusStickValueRangeCalc(this);
+//		this.dataRange = new MinusStickRangeCalculator(this);
 	}
 
 	/*
@@ -89,48 +89,48 @@ public class SlipMinusStickChart extends SlipStickChart {
 	 */
 	public SlipMinusStickChart(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		this.dataRange = new MinusStickValueRangeCalc(this);
+//		this.dataRange = new MinusStickRangeCalculator(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param canvas
-	 * 
-	 * 
-	 * 
-	 * @see cn.limc.androidcharts.diagram.StickChart#drawSticks(Canvas)
-	 */
-	@Override
-	protected void drawSticks(Canvas canvas) {
-        if (null == chartData) {
-            return;
-        }
-        if (chartData.size() == 0) {
-            return;
-        }
-
-        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
-        float stickX = dataQuadrant.getPaddingStartX();
-
-        for(int i=0; i< chartData.size() ; i++){
-            ChartDataTable table = chartData.getChartTable(i);
-            if (null == table) {
-                continue;
-            }
-            if(table.size() == 0){
-                continue;
-            }
-            for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
-                IMeasurable stick = (IMeasurable)table.get(j);
-                
-                Bar mole = new  Bar();
-                mole.setUp(this,stick,stickX,stickWidth);
-                mole.draw(canvas);
-
-                // next x
-                stickX = stickX + stickWidth;
-            }
-        }
-    }
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @param canvas
+//	 * 
+//	 * 
+//	 * 
+//	 * @see cn.limc.androidcharts.diagram.StickChart#drawSticks(Canvas)
+//	 */
+//	@Override
+//	protected void drawSticks(Canvas canvas) {
+//        if (null == chartData) {
+//            return;
+//        }
+//        if (chartData.size() == 0) {
+//            return;
+//        }
+//
+//        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+//        float stickX = dataQuadrant.getPaddingStartX();
+//
+//        for(int i=0; i< chartData.size() ; i++){
+//            ChartDataTable table = chartData.getChartTable(i);
+//            if (null == table) {
+//                continue;
+//            }
+//            if(table.size() == 0){
+//                continue;
+//            }
+//            for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
+//                IMeasurable stick = (IMeasurable)table.get(j);
+//                
+//                Bar mole = new  Bar();
+//                mole.setUp(this,stick,stickX,stickWidth);
+//                mole.draw(canvas);
+//
+//                // next x
+//                stickX = stickX + stickWidth;
+//            }
+//        }
+//    }
 }

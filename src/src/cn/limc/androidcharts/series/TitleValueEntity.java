@@ -24,7 +24,7 @@ package cn.limc.androidcharts.series;
 /**
  * 
  * <p>
- * Entity data which its value is titled
+ * Entity mData which its value is titled
  * </p>
  * <p>
  * 表示用データです、値はタイトル設定は可能です。

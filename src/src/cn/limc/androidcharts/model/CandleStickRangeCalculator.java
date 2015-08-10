@@ -1,5 +1,5 @@
 //
-// CandleStickValueRangeCalc.java
+// CandleStickRangeCalculator.java
 // cn.limc.androidcharts.degree
 //
 // Created by limc on 2015-7-22.
@@ -8,12 +8,11 @@
 //
 package cn.limc.androidcharts.model;
 
-import cn.limc.androidcharts.diagram.GridChart;
 import cn.limc.androidcharts.series.IMeasurable;
 import cn.limc.androidcharts.series.OHLCEntity;
 
 /**
- * CandleStickValueRangeCalc
+ * CandleStickRangeCalculator
  * Description: <br>
  *   <p>add description here </p>
  * Tags: <br>
@@ -26,17 +25,15 @@ import cn.limc.androidcharts.series.OHLCEntity;
  * 2015-7-22 limc create v1.0 <br>
  *
  */
-public class CandleStickValueRangeCalc extends StickValueRangeCalc {
+public class CandleStickRangeCalculator extends MeasuableRangeCalculator {
  
-    /**
-     * @param inChart
-     */
-    public CandleStickValueRangeCalc(GridChart inChart) {
-        super(inChart);
-    }
 
-    public void compareValue(IMeasurable ohlc) {
+    public void compareValue(DataRange dataRange,IMeasurable ohlc) {
 
+        double maxValue = dataRange.getMaxValue();
+        double minValue = dataRange.getMinValue();
+
+        
         OHLCEntity stick = (OHLCEntity) ohlc;
         
         if (stick.getOpen() == 0 && stick.getHigh() == 0
@@ -44,22 +41,21 @@ public class CandleStickValueRangeCalc extends StickValueRangeCalc {
             // 停盘期间计算收盘价
             if (stick.getClose() > 0) {
                 if (stick.getClose() < minValue) {
-                    minValue = stick.getClose();
+                    dataRange.setMinValue(stick.getLow());
                 }
 
                 if (stick.getClose() > maxValue) {
-                    maxValue = stick.getClose();
+                    dataRange.setMaxValue(stick.getHigh());
                 }
             }
         } else {
             if (stick.getLow() < minValue) {
-                minValue = stick.getLow();
+                dataRange.setMinValue(stick.getLow());
             }
 
             if (stick.getHigh() > maxValue) {
-                maxValue = stick.getHigh();
+                dataRange.setMaxValue(stick.getHigh());
             }
         }
     }
-
 }

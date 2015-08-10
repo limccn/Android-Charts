@@ -22,9 +22,8 @@
 
 package cn.limc.androidcharts.model;
 
-import cn.limc.androidcharts.component.IAxis;
-import cn.limc.androidcharts.diagram.GridChart;
 import cn.limc.androidcharts.event.Zoomable;
+import cn.limc.androidcharts.series.ChartDataSet;
 
 /** 
  * <p>en</p>
@@ -35,10 +34,10 @@ import cn.limc.androidcharts.event.Zoomable;
  * @version v1.0 2014/06/18 16:00:16 
  *  
  */
-public class SimpleDataCursor implements IDataCursor,Zoomable {
+public class SimpleDataCursor extends AbstractDataCursor implements DataCursor,Zoomable {
     public static int MAX_DISPLAY_NUM = 30;
     
-    protected GridChart inChart;
+    protected ChartDataSet chartData;
 
 	private int maxDisplayNum = MAX_DISPLAY_NUM; 
 	private int minDisplayNumber = MINI_DISPLAY_NUM;
@@ -49,8 +48,7 @@ public class SimpleDataCursor implements IDataCursor,Zoomable {
 	 * <p>SimpleDataCursorのコンストラクター</p>
 	 * 
 	 */
-	public SimpleDataCursor(GridChart inChart) {
-	    this.inChart = inChart;
+	public SimpleDataCursor() {
 	}
 
 	/* (non-Javadoc)
@@ -59,11 +57,11 @@ public class SimpleDataCursor implements IDataCursor,Zoomable {
 	 * @see cn.limc.androidcharts.diagram.IDataCursor#displayFrom() 
 	 */
 	public int getDisplayFrom() {
-	     if (inChart.getAxisY().getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+//	     if (inChart.getAxisY().getPosition() == Axis.AXIS_Y_POSITION_LEFT) {
 	            return 0;
-	     }else{
-	            return inChart.getChartData().getChartTable().size() - maxDisplayNum;
-	     }
+//	     }else{
+//	            return inChart.getChartData().getChartTable().size() - maxDisplayNum;
+//	     }
 	}
 
 	/* (non-Javadoc)
@@ -81,11 +79,11 @@ public class SimpleDataCursor implements IDataCursor,Zoomable {
 	 * @see cn.limc.androidcharts.diagram.IDataCursor#displayTo() 
 	 */
 	public int getDisplayTo() {
-	    if (inChart.getAxisY().getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
-            return maxDisplayNum;
-        }else{
-            return inChart.getChartData().getChartTable().size() - 1;
-        }
+//	    if (inChart.getAxisY().getPosition() == Axis.AXIS_Y_POSITION_LEFT) {
+//            return maxDisplayNum;
+//        }else{
+            return chartData.getChartTable().size() - 1;
+//        }
 	}
 
 	/* (non-Javadoc)
@@ -144,7 +142,7 @@ public class SimpleDataCursor implements IDataCursor,Zoomable {
     @Override
     public void zoomOut() {
         // TODO Auto-generated method stub
-        if (getDisplayNumber() < inChart.getChartData().getChartTable().size() - 1 - ZOOM_STEP) {
+        if (getDisplayNumber() < chartData.getChartTable().size() - 1 - ZOOM_STEP) {
             setDisplayNumber(getDisplayNumber() + ZOOM_STEP);
         }
     }

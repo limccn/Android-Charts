@@ -7,9 +7,7 @@
 // Copyright 2015 Shanghai Okasan-Huada Computer System Co. Ltd., All rights reserved.
 //
 package cn.limc.androidcharts.shape;
-
-import cn.limc.androidcharts.common.IChart;
-import cn.limc.androidcharts.diagram.GridChart;
+import cn.limc.androidcharts.component.DataComponent;
 import cn.limc.androidcharts.series.IMeasurable;
 import cn.limc.androidcharts.series.OHLCEntity;
 import android.graphics.Canvas;
@@ -181,8 +179,8 @@ public class Candle extends AbstractShape implements Rectangle {
      * @see cn.limc.androidcharts.shape.Rectangle#setUp(cn.limc.androidcharts.common.IChart, float, float)
      */
     @Override
-    public void setUp(IChart chart, float from, float width) {
-        super.setUp(chart);
+    public void setUp(DataComponent component, float from, float width) {
+        super.setUp(component);
         left = from + stickSpacing / 2;
         right = from + width - stickSpacing /2;
         
@@ -192,8 +190,8 @@ public class Candle extends AbstractShape implements Rectangle {
      * (non-Javadoc)
      * @see cn.limc.androidcharts.shape.Rectangle#setUp(cn.limc.androidcharts.common.IChart, cn.limc.androidcharts.series.IMeasurable, float, float)
      */
-    public void setUp(IChart chart ,IMeasurable data, float from , float width) {
-        this.setUp(chart,from,width);
+    public void setUp(DataComponent component ,IMeasurable data, float from , float width) {
+        this.setUp(component,from,width);
         setStickData(data);
     }
     
@@ -258,15 +256,10 @@ public class Candle extends AbstractShape implements Rectangle {
      */
     public void setStickData(IMeasurable stickData) {
         this.stickData = (OHLCEntity)stickData;
-        GridChart chart = (GridChart)getInChart();
-        float openY = (float) ((1f - (this.stickData.getOpen() - chart.getDataRange().getMinValue()) / (chart.getDataRange().getValueRange()))
-                * (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant().getPaddingStartY());
-        float highY = (float) ((1f - (this.stickData.getHigh() - chart.getDataRange().getMinValue()) / (chart.getDataRange().getValueRange()))
-                * (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant().getPaddingStartY());
-        float lowY = (float) ((1f - (this.stickData.getLow() - chart.getDataRange().getMinValue()) / (chart.getDataRange().getValueRange()))
-                * (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant().getPaddingStartY());
-        float closeY = (float) ((1f - (this.stickData.getClose() - chart.getDataRange().getMinValue()) / (chart.getDataRange().getValueRange()))
-                * (chart.getDataQuadrant().getPaddingHeight()) + chart.getDataQuadrant().getPaddingStartY());
+        float openY = (float) component.heightForRate(this.stickData.getOpen());
+        float highY = (float) component.heightForRate(this.stickData.getHigh());
+        float lowY = (float) component.heightForRate(this.stickData.getLow());
+        float closeY = (float) component.heightForRate(this.stickData.getClose());
         
         this.openY = openY;
         this.top = highY;

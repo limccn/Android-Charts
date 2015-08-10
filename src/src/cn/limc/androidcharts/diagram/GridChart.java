@@ -21,20 +21,22 @@
 
 package cn.limc.androidcharts.diagram;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.component.Axis;
 import cn.limc.androidcharts.component.CrossLines;
-import cn.limc.androidcharts.component.DataQuadrant;
+import cn.limc.androidcharts.component.DataComponent;
+import cn.limc.androidcharts.component.Grid;
+import cn.limc.androidcharts.component.Layer;
 import cn.limc.androidcharts.component.HorizontalAxis;
-import cn.limc.androidcharts.component.ICrossLines;
-import cn.limc.androidcharts.component.IFlexableGrid;
-import cn.limc.androidcharts.component.IQuadrant;
+import cn.limc.androidcharts.component.Component;
+import cn.limc.androidcharts.component.DividedLayer;
 import cn.limc.androidcharts.component.SimpleGrid;
 import cn.limc.androidcharts.component.VerticalAxis;
 import cn.limc.androidcharts.event.GestureDetector;
 import cn.limc.androidcharts.event.IDisplayCursorListener;
-import cn.limc.androidcharts.event.ISlipable;
+import cn.limc.androidcharts.event.Slipable;
 import cn.limc.androidcharts.event.Zoomable;
 import cn.limc.androidcharts.event.SlipGestureDetector;
 import cn.limc.androidcharts.event.ZoomGestureDetector;
@@ -44,17 +46,16 @@ import cn.limc.androidcharts.event.ZoomGestureDetector.OnZoomGestureListener;
 import cn.limc.androidcharts.event.TouchGestureDetector;
 import cn.limc.androidcharts.model.DateTimeDegree;
 import cn.limc.androidcharts.model.DecimalDegree;
-import cn.limc.androidcharts.model.IDataCursor;
+import cn.limc.androidcharts.model.DataCursor;
 import cn.limc.androidcharts.model.Degree;
-import cn.limc.androidcharts.model.ValueRange;
+import cn.limc.androidcharts.model.DataRange;
 import cn.limc.androidcharts.model.SectionDataCursor;
 import cn.limc.androidcharts.model.SimpleDataCursor;
-import cn.limc.androidcharts.model.StickValueRangeCalc;
-import cn.limc.androidcharts.model.AbstractValueRange;
+import cn.limc.androidcharts.model.MeasuableRangeCalculator;
+import cn.limc.androidcharts.model.AbstractDataRange;
 import cn.limc.androidcharts.series.ChartDataSet;
-import cn.limc.androidcharts.series.IHasDate;
-import cn.limc.androidcharts.series.IMeasurable;
 
+import android.R.integer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PathEffect;
@@ -108,47 +109,179 @@ public class GridChart extends AbstractBaseChart  {
 	 * </p>
 	 */
 	
+    /**
+     * <p>
+     * mData to draw sticks
+     * </p>
+     * <p>
+     * スティックを書く用データ
+     * </p>
+     * <p>
+     * 绘制柱条用的数据
+     * </p>
+     */
+ //   protected ChartDataSet chartData;
+    
+   
 	protected OnTouchGestureListener onTouchListener = new OnTouchListener() {};
 	protected GestureDetector touchGestureDetector = new TouchGestureDetector(this,onTouchListener);
 	protected OnZoomGestureListener onZoomListener = new OnZoomListener(){};
 	protected GestureDetector zoomGestureDetector = new ZoomGestureDetector(this, onZoomListener);
-    protected OnSlipGestureListener onSlipListener = new OnSlipListener();
+    protected OnSlipGestureListener onSlipListener = new OnSlipListener(){};
     protected GestureDetector slipGestureDetector = new SlipGestureDetector(this,onSlipListener);
 	
-	protected IQuadrant dataQuadrant = new DataQuadrant(this);
-	protected HorizontalAxis axisX = new HorizontalAxis(this,Axis.AXIS_X_POSITION_BOTTOM);
-	protected VerticalAxis axisY = new VerticalAxis(this, Axis.AXIS_Y_POSITION_LEFT);
-	protected CrossLines crossLines = new CrossLines(this);
-	protected SimpleGrid simpleGrid = new SimpleGrid(this);
+	protected HorizontalAxis topAxis;
+	protected HorizontalAxis bottomAxis;
+	protected VerticalAxis leftAxis;
+	protected VerticalAxis rightAxis;
 	
-	protected IDataCursor dataCursor = new SimpleDataCursor(this);
-	protected Degree axisYDegree = new DecimalDegree(this);
-	protected Degree axisXDegree = new DateTimeDegree(this);
-	protected ValueRange dataRange = new StickValueRangeCalc(this);
+	protected Layer topAxisLayer;
+	protected Layer bottomAxisLayer;
+	protected Layer leftAxisLayer;
+	protected Layer rightAxisLayer;
+	protected Layer gridLayer;
+	protected Layer crossLinesLayer;
+	
+	protected List<Layer> dataLayers = new ArrayList<Layer>();
+	protected List<Layer> userLayers = new ArrayList<Layer>();
+    
+    
+	protected CrossLines crossLines;
+	protected SimpleGrid dataGrid;
+	
+	protected DataCursor dataCursor = new SimpleDataCursor();
+	protected Degree axisYDegree = new DecimalDegree();
+	protected Degree axisXDegree = new DateTimeDegree();
+	protected DataRange dataRange;
 	    
-    public static final int DEFAULT_ALIGN_TYPE = IFlexableGrid.ALIGN_TYPE_CENTER;
-
-    protected int gridAlignType = DEFAULT_ALIGN_TYPE;
-
     public static final int DEFAULT_STICK_SPACING = 1;
 
     protected int stickSpacing = DEFAULT_STICK_SPACING;
 
     protected IDisplayCursorListener onDisplayCursorListener;
-	    
-	    /**
-	     * <p>
-	     * data to draw sticks
-	     * </p>
-	     * <p>
-	     * スティックを書く用データ
-	     * </p>
-	     * <p>
-	     * 绘制柱条用的数据
-	     * </p>
-	     */
-	    protected ChartDataSet chartData;
 	
+    public void setTopAxis(HorizontalAxis axis){
+        axis.setParent(this);
+        axis.setPosition(Axis.AXIS_X_POSITION_TOP);
+        this.topAxis = axis;
+        topAxisLayer = new DividedLayer();
+        topAxisLayer.setParent(this);
+        topAxisLayer.FillComponent(axis,DividedLayer.TOP_MIDDLE);
+    }
+    public void setTopAxis(HorizontalAxis axis,int divide){
+        axis.setParent(this);
+        axis.setPosition(Axis.AXIS_X_POSITION_TOP);
+        this.topAxis = axis;
+        topAxisLayer = new DividedLayer();
+        topAxisLayer.setParent(this);
+        topAxisLayer.FillComponent(axis, divide);
+    }
+    public void setBottomAxis(HorizontalAxis axis){
+        axis.setParent(this);
+        axis.setPosition(Axis.AXIS_X_POSITION_BOTTOM);
+        this.bottomAxis = axis;
+        bottomAxisLayer = new DividedLayer();
+        bottomAxisLayer.setParent(this);
+        bottomAxisLayer.FillComponent(axis,DividedLayer.BOTTOM_MIDDLE);
+    }
+    public void setBottomAxis(HorizontalAxis axis,int divide){
+        axis.setParent(this);
+        axis.setPosition(Axis.AXIS_X_POSITION_BOTTOM);
+        this.bottomAxis = axis;
+        bottomAxisLayer = new DividedLayer();
+        bottomAxisLayer.setParent(this);
+        bottomAxisLayer.FillComponent(axis,divide);
+    }
+    public void setLeftAxis(VerticalAxis axis){ 
+        axis.setParent(this);
+        axis.setPosition(Axis.AXIS_Y_POSITION_LEFT);
+        this.leftAxis = axis;
+        leftAxisLayer = new DividedLayer();
+        leftAxisLayer.setParent(this);
+        leftAxisLayer.FillComponent(axis,DividedLayer.CENTER_LEFT);
+    }
+    
+    public void setLeftAxis(VerticalAxis axis,int divide){
+        axis.setParent(this);
+        axis.setPosition(Axis.AXIS_Y_POSITION_LEFT);
+        this.leftAxis = axis;
+        leftAxisLayer = new DividedLayer();
+        leftAxisLayer.setParent(this);
+        leftAxisLayer.FillComponent(axis,divide);
+    }
+    
+    public void setRightAxis(VerticalAxis axis){
+        axis.setParent(this);
+        axis.setPosition(Axis.AXIS_Y_POSITION_RIGHT);
+        this.rightAxis = axis;
+        rightAxisLayer = new DividedLayer();
+        rightAxisLayer.setParent(this);
+        rightAxisLayer.FillComponent(axis,DividedLayer.CENTER_RIGHT);
+    }
+    
+    public void setRightAxis(VerticalAxis axis,int divide){
+        axis.setParent(this);
+        axis.setPosition(Axis.AXIS_Y_POSITION_RIGHT);
+        this.rightAxis = axis;
+        rightAxisLayer = new DividedLayer();
+        rightAxisLayer.setParent(this);
+        rightAxisLayer.FillComponent(axis,divide);
+    }
+    
+    public void setDataGrid(SimpleGrid grid){
+        grid.setParent(this);
+        this.dataGrid = grid;
+        gridLayer = new DividedLayer();
+        gridLayer.setParent(this);
+        gridLayer.FillComponent(grid,DividedLayer.CENTER_MIDDLE);
+    }
+    
+    public void setDataGrid(SimpleGrid grid, int divide){
+        grid.setParent(this);
+        this.dataGrid = grid;
+        gridLayer = new DividedLayer();
+        gridLayer.setParent(this);
+        gridLayer.FillComponent(grid,divide);
+    }
+    
+    public void setCrossLines(CrossLines crossLines){
+        crossLines.setParent(this);
+        this.crossLines = crossLines;
+        crossLinesLayer = new DividedLayer();
+        crossLinesLayer.setParent(this);
+        crossLinesLayer.FillComponent(crossLines,DividedLayer.CENTER_MIDDLE);
+    }
+    
+    public void setCrossLines(CrossLines crossLines,int divide){
+        crossLines.setParent(this);
+        this.crossLines = crossLines;
+        crossLinesLayer = new DividedLayer();
+        crossLinesLayer.setParent(this);
+        crossLinesLayer.FillComponent(crossLines,divide);
+    }
+    
+    public void addLayer(Layer layer){
+        if (layer != null) {
+            layer.setParent(this);
+            this.userLayers.add(layer);
+        }
+    }
+    
+    public void addComponent(Component component){
+        Layer layer = new DividedLayer();
+        layer.setParent(this);
+        layer.FillComponent(component, DividedLayer.CENTER_MIDDLE);
+        this.dataLayers.add(layer);
+    }
+    
+    public void addComponent(Component component, int divide){
+        Layer layer = new DividedLayer();
+        layer.setParent(this);
+        layer.FillComponent(component, divide);
+        this.dataLayers.add(layer);
+    }
+    
+    
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -202,279 +335,184 @@ public class GridChart extends AbstractBaseChart  {
 	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-	        
-		axisX.draw(canvas);
-		axisY.draw(canvas);
-		simpleGrid.draw(canvas);
-		crossLines.draw(canvas);
+	    
+		super.onDraw(canvas);  
+	    if (gridLayer != null) {
+	        gridLayer.draw(canvas);
+	    }
+		if (leftAxisLayer != null) {
+            leftAxisLayer.draw(canvas);
+        }
+		if (topAxisLayer != null) {
+		    topAxisLayer.draw(canvas);
+        }
+		if (rightAxisLayer != null) {
+		    rightAxisLayer.draw(canvas);
+        }
+		if (bottomAxisLayer != null) {
+		    bottomAxisLayer.draw(canvas);
+        }
+		for(Layer mlayer : this.dataLayers){
+		    if (mlayer != null) {
+                mlayer.draw(canvas);
+            }
+		}
+		for(Layer mlayer : this.userLayers){
+            if (mlayer != null) {
+                mlayer.draw(canvas);
+            }
+        }
+		if(crossLines != null){
+		    crossLines.draw(canvas);
+		}
 		
+//		axisX.draw(canvas);
+//		axisY.draw(canvas);
+
+//		gridLayer.draw(canvas);
+//	    axisXLayer.draw(canvas);
+//	    axisYLayer.draw(canvas);
+//		dataLayer.draw(canvas);
+//		//simpleGrid.draw(canvas);
+//		crossLineLayer.draw(canvas);
 	}
 	
 	@Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!isValidTouchPoint(event.getX(),event.getY())) {
-            return false;
-        }
+//        if (!isValidTouchPoint(event.getX(),event.getY())) {
+//            return false;
+//        }
         
-        if (null == chartData || chartData.size() == 0) {
-            return false;
-        }
+//        if (null == chartData || chartData.size() == 0) {
+//            return false;
+//        }
+//        
+//        if (null == chartData.getChartTable() || chartData.getChartTable().size() == 0) {
+//            return false;
+//        }
         
-        if (null == chartData.getChartTable() || chartData.getChartTable().size() == 0) {
-            return false;
-        }
-        
-        return touchGestureDetector.onTouchEvent(event) && zoomGestureDetector.onTouchEvent(event);
+        return touchGestureDetector.onTouchEvent(event) &&
+                zoomGestureDetector.onTouchEvent(event) && 
+                slipGestureDetector.onTouchEvent(event);
     }
 	
-	protected boolean isValidTouchPoint (float x , float y) {
-		if (x < dataQuadrant.getPaddingStartX()
-				|| x > dataQuadrant.getPaddingEndX()) {
-			return false;
-		}
-		if (y < dataQuadrant.getPaddingStartY()
-				|| y > dataQuadrant.getPaddingEndY()) {
-			return false;
-		}
-		return true;
-	}
-	
-	   /**
-     * <p>
-     * initialize degrees on X axis
-     * </p>
-     * <p>
-     * X軸の目盛を初期化
-     * </p>
-     * <p>
-     * 初始化X轴的坐标值
-     * </p>
-     */
-    protected void initAxisX() {
-        simpleGrid.setLongitudeTitles(axisXDegree.getDegrees());
-    }
-
+//	   public boolean isValidTouchPoint (float x , float y) {
+//	        if (x < dataQuadrant.getPaddingStartX()
+//	                || x > dataQuadrant.getPaddingEndX()) {
+//	            return false;
+//	        }
+//	        if (y < dataQuadrant.getPaddingStartY()
+//	                || y > dataQuadrant.getPaddingEndY()) {
+//	            return false;
+//	        }
+//	        return true;
+//	    }
+	    
     /**
      * <p>
-     * initialize degrees on Y axis
+     * get current selected mData index
      * </p>
      * <p>
-     * Y軸の目盛を初期化
+     * 選択したスティックのインデックス
      * </p>
      * <p>
-     * 初始化Y轴的坐标值
-     * </p>
-     */
-    protected void initAxisY() {
-        if (dataRange.isAutoCalcValueRange()) {
-            dataRange.calcValueRange();
-        }
-        simpleGrid.setLatitudeTitles(axisYDegree.getDegrees());
-    }
-    
-
-    
-    public float longitudePostOffset(){
-        if (gridAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
-            float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber();
-            return (this.dataQuadrant.getPaddingWidth() - stickWidth)/ (simpleGrid.getLongitudeTitles().size() - 1);
-        }else{
-            return this.dataQuadrant.getPaddingWidth()/ (simpleGrid.getLongitudeTitles().size() - 1);
-        }
-    }
-    
-    public float longitudeOffset(){
-        if (gridAlignType ==IFlexableGrid.ALIGN_TYPE_CENTER) {
-            float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber();
-            return dataQuadrant.getPaddingStartX() + stickWidth / 2;
-        }else{
-            return dataQuadrant.getPaddingStartX();
-        }
-    }
-    
-    
-    protected PointF calcTouchedPoint(float x ,float y) {
-        if (!isValidTouchPoint(x,y)) {
-            return new PointF(0,0);
-        }
-        if (crossLines.getBindCrossLinesToStick() == ICrossLines.BIND_TO_TYPE_NONE) {
-            return new PointF(x, y);
-        } else if (crossLines.getBindCrossLinesToStick() == ICrossLines.BIND_TO_TYPE_BOTH) {
-            PointF bindPointF = calcBindPoint(x, y);
-            return bindPointF;
-        } else if (crossLines.getBindCrossLinesToStick() == ICrossLines.BIND_TO_TYPE_HIRIZIONAL) {
-            PointF bindPointF = calcBindPoint(x, y);
-            return new PointF(bindPointF.x, y);
-        } else if (crossLines.getBindCrossLinesToStick() == ICrossLines.BIND_TO_TYPE_VERTICAL) {
-            PointF bindPointF = calcBindPoint(x, y);
-            return new PointF(x, bindPointF.y);
-        } else {
-            return new PointF(x, y);
-        }   
-    }
-    
-    protected PointF calcBindPoint(float x ,float y) {
-        float calcX = 0;
-        float calcY = 0;
-        
-        int index = calcSelectedIndex(x,y);
-        
-        float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber();
-        IMeasurable stick = (IMeasurable)getChartData().getChartTable().get(index);
-        calcY = (float) ((1f - (stick.getHigh() - dataRange.getMinValue())
-                / dataRange.getValueRange())
-                * (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
-        calcX = dataQuadrant.getPaddingStartX() + stickWidth * (index - dataCursor.getDisplayFrom()) + stickWidth / 2;
-        
-        return new PointF(calcX,calcY);
-    }
-
-	public float getAxisXRate(Object value) {
-		float valueLength = ((Float) value).floatValue()
-				- dataQuadrant.getPaddingStartX();
-		return valueLength / this.dataQuadrant.getPaddingWidth();
-	}
-	
-    /**
-     * <p>
-     * calculate degree title on X axis
-     * </p>
-     * <p>
-     * X軸の目盛を計算する
-     * </p>
-     * <p>
-     * 计算X轴上显示的坐标值
+     * 获取当前选中的柱条的index
      * </p>
      * 
-     * @param value
-     *            <p>
-     *            value for calculate
-     *            </p>
-     *            <p>
-     *            計算有用データ
-     *            </p>
-     *            <p>
-     *            计算用数据
-     *            </p>
-     * 
-     * @return String
+     * @return int
      *         <p>
-     *         degree
+     *         index
      *         </p>
      *         <p>
-     *         目盛
+     *         インデックス
      *         </p>
      *         <p>
-     *         坐标值
+     *         index
      *         </p>
      */
-    public String getAxisXGraduate(Object value) {
-        float graduate = getAxisXRate(value);
-        int index = (int) Math.floor(graduate * dataCursor.getDisplayNumber());
-
-        if (index >= dataCursor.getDisplayNumber()) {
-            index = dataCursor.getDisplayNumber() - 1;
-        } else if (index < 0) {
-            index = 0;
+    public int getSelectedIndex() {
+        if (null == touchPoint) {
+            return 0;
         }
-
-        IHasDate dataRow= (IHasDate)chartData.getChartTable().get(index);
-        return axisXDegree.valueForDegree(dataRow.getDate());
-    }
-
-
-	
-	public float getAxisYRate(Object value) {
-		float valueLength = ((Float) value).floatValue()
-				- dataQuadrant.getPaddingStartY();
-		return 1f - valueLength / this.dataQuadrant.getPaddingHeight();
-	}
-	
-	/**
-     * <p>
-     * calculate degree title on Y axis
-     * </p>
-     * <p>
-     * Y軸の目盛を計算する
-     * </p>
-     * <p>
-     * 计算Y轴上显示的坐标值
-     * </p>
-     * 
-     * @param value
-     *            <p>
-     *            value for calculate
-     *            </p>
-     *            <p>
-     *            計算有用データ
-     *            </p>
-     *            <p>
-     *            计算用数据
-     *            </p>
-     * 
-     * @return String
-     *         <p>
-     *         degree
-     *         </p>
-     *         <p>
-     *         目盛
-     *         </p>
-     *         <p>
-     *         坐标值
-     *         </p>
-     */
-    public String getAxisYGraduate(Object value) {
-        float graduate = getAxisYRate(value);
-        return axisYDegree.valueForDegree(graduate * dataRange.getValueRange() + dataRange.getMinValue());
+//        if (!isValidTouchPoint(touchPoint.x,touchPoint.y)) {
+//            return 0;
+//        }
+        return crossLines.calcSelectedIndex(touchPoint.x, touchPoint.y);
     }
     
+//	   /**
+//     * <p>
+//     * initialize degrees on X axis
+//     * </p>
+//     * <p>
+//     * X軸の目盛を初期化
+//     * </p>
+//     * <p>
+//     * 初始化X轴的坐标值
+//     * </p>
+//     */
+//    protected void initAxisX() {
+//        dataGrid.setLongitudeTitles(axisXDegree.getDegrees());
+//    }
+//
+//    /**
+//     * <p>
+//     * initialize degrees on Y axis
+//     * </p>
+//     * <p>
+//     * Y軸の目盛を初期化
+//     * </p>
+//     * <p>
+//     * 初始化Y轴的坐标值
+//     * </p>
+//     */
+//    protected void initAxisY() {
+//        dataGrid.setLatitudeTitles(axisYDegree.getDegrees());
+//    }  
 
-
-
-	/**
-	 * @return the axisXColor
-	 */
-	public int getAxisXColor() {
-		return axisX.getLineColor();
-	}
-
-	/**
-	 * @param axisXColor
-	 *            the axisXColor to set
-	 */
-	public void setAxisXColor(int axisXColor) {
-		this.axisX.setLineColor(axisXColor);
-	}
-
-	/**
-	 * @return the axisYColor
-	 */
-	public int getAxisYColor() {
-		return axisY.getLineColor();
-	}
-
-	/**
-	 * @param axisYColor
-	 *            the axisYColor to set
-	 */
-	public void setAxisYColor(int axisYColor) {
-		this.axisY.setLineColor(axisYColor);
-	}
-	/**
-	 * @return the axisWidth
-	 */
-	public float getAxisXWidth() {
-		return axisX.getLineWidth();
-	}
-
-	/**
-	 * @param axisWidth
-	 *            the axisWidth to set
-	 */
-	public void setAxisXWidth(float axisWidth) {
-		this.axisX.setLineWidth(axisWidth);
-	}
+//	/**
+//	 * @return the axisXColor
+//	 */
+//	public int getAxisXColor() {
+//		return axisX.getLineColor();
+//	}
+//
+//	/**
+//	 * @param axisXColor
+//	 *            the axisXColor to set
+//	 */
+//	public void setAxisXColor(int axisXColor) {
+//		this.axisX.setLineColor(axisXColor);
+//	}
+//
+//	/**
+//	 * @return the axisYColor
+//	 */
+//	public int getAxisYColor() {
+//		return axisY.getLineColor();
+//	}
+//
+//	/**
+//	 * @param axisYColor
+//	 *            the axisYColor to set
+//	 */
+//	public void setAxisYColor(int axisYColor) {
+//		this.axisY.setLineColor(axisYColor);
+//	}
+//	/**
+//	 * @return the axisWidth
+//	 */
+//	public float getAxisXWidth() {
+//		return axisX.getLineWidth();
+//	}
+//
+//	/**
+//	 * @param axisWidth
+//	 *            the axisWidth to set
+//	 */
+//	public void setAxisXWidth(float axisWidth) {
+//		this.axisX.setLineWidth(axisWidth);
+//	}
 //
 //	/**
 //	 * @return the axisMarginLeft
@@ -508,50 +546,35 @@ public class GridChart extends AbstractBaseChart  {
 
 
 
-	/**
-	 * @return the longitudeTitles
-	 */
-	public List<String> getLongitudeTitles() {
-		return simpleGrid.getLongitudeTitles();
-	}
-
-	/**
-	 * @param longitudeTitles
-	 *            the longitudeTitles to set
-	 */
-	public void setLongitudeTitles(List<String> longitudeTitles) {
-		this.simpleGrid.setLongitudeTitles(longitudeTitles);
-	}
-
-	/**
-	 * @return the latitudeTitles
-	 */
-	public List<String> getLatitudeTitles() {
-		return simpleGrid.getLatitudeTitles();
-	}
-
-	/**
-	 * @param latitudeTitles
-	 *            the latitudeTitles to set
-	 */
-	public void setLatitudeTitles(List<String> latitudeTitles) {
-	    this.simpleGrid.setLatitudeTitles(latitudeTitles);
-	}
-
-	/**
-	 * @return the latitudeMaxTitleLength
-	 */
-	public int getLatitudeMaxTitleLength() {
-		return simpleGrid.getLatitudeMaxTitleLength();
-	}
-
-	/**
-	 * @param latitudeMaxTitleLength
-	 *            the latitudeMaxTitleLength to set
-	 */
-	public void setLatitudeMaxTitleLength(int latitudeMaxTitleLength) {
-		this.simpleGrid.setLatitudeMaxTitleLength(latitudeMaxTitleLength) ;
-	}
+//	/**
+//	 * @return the longitudeTitles
+//	 */
+//	public List<String> getLongitudeTitles() {
+//		return dataGrid.getLongitudeTitles();
+//	}
+//
+//	/**
+//	 * @param longitudeTitles
+//	 *            the longitudeTitles to set
+//	 */
+//	public void setLongitudeTitles(List<String> longitudeTitles) {
+//		this.dataGrid.setLongitudeTitles(longitudeTitles);
+//	}
+//
+//	/**
+//	 * @return the latitudeTitles
+//	 */
+//	public List<String> getLatitudeTitles() {
+//		return dataGrid.getLatitudeTitles();
+//	}
+//
+//	/**
+//	 * @param latitudeTitles
+//	 *            the latitudeTitles to set
+//	 */
+//	public void setLatitudeTitles(List<String> latitudeTitles) {
+//	    this.dataGrid.setLatitudeTitles(latitudeTitles);
+//	}
 
 
 	/**
@@ -616,137 +639,137 @@ public class GridChart extends AbstractBaseChart  {
 		this.touchPoint = touchPoint;
 	}
 
-	/**
-	 * @return the axisXPosition
-	 */
-	public int getAxisXPosition() {
-		return axisX.getPosition();
-	}
+//	/**
+//	 * @return the axisXPosition
+//	 */
+//	public int getAxisXPosition() {
+//		return axisX.getPosition();
+//	}
+//
+//	/**
+//	 * @param axisXPosition
+//	 *            the axisXPosition to set
+//	 */
+//	public void setAxisXPosition(int axisXPosition) {
+//		this.axisX.setPosition(axisXPosition);
+//	}
+//
+//	/**
+//	 * @return the axisYPosition
+//	 */
+//	public int getAxisYPosition() {
+//		return axisY.getPosition();
+//	}
+//
+//	/**
+//	 * @param axisYPosition
+//	 *            the axisYPosition to set
+//	 */
+//	public void setAxisYPosition(int axisYPosition) {
+//		this.axisY.setPosition(axisYPosition);
+//	}	
 
-	/**
-	 * @param axisXPosition
-	 *            the axisXPosition to set
-	 */
-	public void setAxisXPosition(int axisXPosition) {
-		this.axisX.setPosition(axisXPosition);
-	}
+//	/**
+//	 * @return the dataQuadrant
+//	 */
+//	public Component getDataQuadrant() {
+//		return dataQuadrant;
+//	}
+//
+//	/**
+//	 * @param dataQuadrant the dataQuadrant to set
+//	 */
+//	public void setDataQuadrant(Component dataQuadrant) {
+//		this.dataQuadrant = dataQuadrant;
+//	}
+//	
+//	/**
+//	 * @return the paddingTop
+//	 */
+//	public float getDataQuadrantPaddingTop() {
+//		return dataQuadrant.getPaddingTop();
+//	}
+//
+//	/**
+//	 * @param paddingTop
+//	 *            the paddingTop to set
+//	 */
+//	public void setDataQuadrantPaddingTop(float quadrantPaddingTop) {
+//		dataQuadrant.setPaddingTop(quadrantPaddingTop);
+//	}
+//
+//	/**
+//	 * @return the paddingLeft
+//	 */
+//	public float getDataQuadrantPaddingLeft() {
+//		return dataQuadrant.getPaddingLeft();
+//	}
+//
+//	/**
+//	 * @param paddingLeft
+//	 *            the paddingLeft to set
+//	 */
+//	public void setDataQuadrantPaddingLeft(float quadrantPaddingLeft) {
+//		dataQuadrant.setPaddingLeft(quadrantPaddingLeft);
+//	}
+//
+//	/**
+//	 * @return the paddingBottom
+//	 */
+//	public float getDataQuadrantPaddingBottom() {
+//		return dataQuadrant.getPaddingBottom();
+//	}
+//
+//	/**
+//	 * @param paddingBottom
+//	 *            the paddingBottom to set
+//	 */
+//	public void setDataQuadrantPaddingBottom(float quadrantPaddingBottom) {
+//		dataQuadrant.setPaddingBottom(quadrantPaddingBottom);
+//	}
+//
+//	/**
+//	 * @return the paddingRight
+//	 */
+//	public float getDataQuadrantPaddingRight() {
+//		return dataQuadrant.getPaddingRight();
+//	}
+//
+//	/**
+//	 * @param paddingRight
+//	 *            the paddingRight to set
+//	 */
+//	public void setDataQuadrantPaddingRight(float quadrantPaddingRight) {
+//		dataQuadrant.setPaddingRight(quadrantPaddingRight);
+//	}
 
-	/**
-	 * @return the axisYPosition
-	 */
-	public int getAxisYPosition() {
-		return axisY.getPosition();
-	}
-
-	/**
-	 * @param axisYPosition
-	 *            the axisYPosition to set
-	 */
-	public void setAxisYPosition(int axisYPosition) {
-		this.axisY.setPosition(axisYPosition);
-	}	
-
-	/**
-	 * @return the dataQuadrant
-	 */
-	public IQuadrant getDataQuadrant() {
-		return dataQuadrant;
-	}
-
-	/**
-	 * @param dataQuadrant the dataQuadrant to set
-	 */
-	public void setDataQuadrant(IQuadrant dataQuadrant) {
-		this.dataQuadrant = dataQuadrant;
-	}
-	
-	/**
-	 * @return the paddingTop
-	 */
-	public float getDataQuadrantPaddingTop() {
-		return dataQuadrant.getPaddingTop();
-	}
-
-	/**
-	 * @param paddingTop
-	 *            the paddingTop to set
-	 */
-	public void setDataQuadrantPaddingTop(float quadrantPaddingTop) {
-		dataQuadrant.setPaddingTop(quadrantPaddingTop);
-	}
-
-	/**
-	 * @return the paddingLeft
-	 */
-	public float getDataQuadrantPaddingLeft() {
-		return dataQuadrant.getPaddingLeft();
-	}
-
-	/**
-	 * @param paddingLeft
-	 *            the paddingLeft to set
-	 */
-	public void setDataQuadrantPaddingLeft(float quadrantPaddingLeft) {
-		dataQuadrant.setPaddingLeft(quadrantPaddingLeft);
-	}
-
-	/**
-	 * @return the paddingBottom
-	 */
-	public float getDataQuadrantPaddingBottom() {
-		return dataQuadrant.getPaddingBottom();
-	}
-
-	/**
-	 * @param paddingBottom
-	 *            the paddingBottom to set
-	 */
-	public void setDataQuadrantPaddingBottom(float quadrantPaddingBottom) {
-		dataQuadrant.setPaddingBottom(quadrantPaddingBottom);
-	}
-
-	/**
-	 * @return the paddingRight
-	 */
-	public float getDataQuadrantPaddingRight() {
-		return dataQuadrant.getPaddingRight();
-	}
-
-	/**
-	 * @param paddingRight
-	 *            the paddingRight to set
-	 */
-	public void setDataQuadrantPaddingRight(float quadrantPaddingRight) {
-		dataQuadrant.setPaddingRight(quadrantPaddingRight);
-	}
-
-    /**
-     * @return the axisX
-     */
-    public HorizontalAxis getAxisX() {
-        return axisX;
-    }
-
-    /**
-     * @param axisX the axisX to set
-     */
-    public void setAxisX(HorizontalAxis axisX) {
-        this.axisX = axisX;
-    }
-
-    /**
-     * @return the axisY
-     */
-    public VerticalAxis getAxisY() {
-        return axisY;
-    }
-
-    /**
-     * @param axisY the axisY to set
-     */
-    public void setAxisY(VerticalAxis axisY) {
-        this.axisY = axisY;
-    }
+//    /**
+//     * @return the axisX
+//     */
+//    public HorizontalAxis getAxisX() {
+//        return axisX;
+//    }
+//
+//    /**
+//     * @param axisX the axisX to set
+//     */
+//    public void setAxisX(HorizontalAxis axisX) {
+//        this.axisX = axisX;
+//    }
+//
+//    /**
+//     * @return the axisY
+//     */
+//    public VerticalAxis getAxisY() {
+//        return axisY;
+//    }
+//
+//    /**
+//     * @param axisY the axisY to set
+//     */
+//    public void setAxisY(VerticalAxis axisY) {
+//        this.axisY = axisY;
+//    }
 
     /**
      * @return the crossLines
@@ -755,27 +778,14 @@ public class GridChart extends AbstractBaseChart  {
         return crossLines;
     }
 
-    /**
-     * @param crossLines the crossLines to set
-     */
-    public void setCrossLines(CrossLines crossLines) {
-        this.crossLines = crossLines;
-    }
 
     /**
-     * @return the simpleGrid
+     * @return the dataGrid
      */
-    public SimpleGrid getSimpleGrid() {
-        return simpleGrid;
+    public Grid getDataGrid() {
+        return dataGrid;
     }
 
-    /**
-     * @param simpleGrid the simpleGrid to set
-     */
-    public void setSimpleGrid(SimpleGrid simpleGrid) {
-        this.simpleGrid = simpleGrid;
-    }
-	
 	/**
 	 * @return the crossLinesColor
 	 */
@@ -840,7 +850,7 @@ public class GridChart extends AbstractBaseChart  {
      * @return the displayLongitudeTitle
      */
     public boolean isDisplayLongitudeTitle() {
-        return this.simpleGrid.isDisplayLongitude();
+        return this.dataGrid.isDisplayLongitude();
     }
 
     /**
@@ -848,14 +858,14 @@ public class GridChart extends AbstractBaseChart  {
      *            the displayLongitudeTitle to set
      */
     public void setDisplayLongitudeTitle(boolean displayLongitudeTitle) {
-        this.simpleGrid.setDisplayLongitudeTitle(displayLongitudeTitle);
+        this.dataGrid.setDisplayLongitudeTitle(displayLongitudeTitle);
     }
 
     /**
      * @return the displayAxisYTitle
      */
     public boolean isDisplayLatitudeTitle() {
-        return this.simpleGrid.isDisplayLatitudeTitle();
+        return this.dataGrid.isDisplayLatitudeTitle();
     }
 
     /**
@@ -863,14 +873,14 @@ public class GridChart extends AbstractBaseChart  {
      *            the displayLatitudeTitle to set
      */
     public void setDisplayLatitudeTitle(boolean displayLatitudeTitle) {
-        this.simpleGrid.setDisplayLatitudeTitle(displayLatitudeTitle);
+        this.dataGrid.setDisplayLatitudeTitle(displayLatitudeTitle);
     }
 
     /**
      * @return the latitudeNum
      */
     public int getLatitudeNum() {
-        return this.simpleGrid.getLatitudeNum();
+        return this.dataGrid.getLatitudeNum();
     }
 
     /**
@@ -878,14 +888,14 @@ public class GridChart extends AbstractBaseChart  {
      *            the latitudeNum to set
      */
     public void setLatitudeNum(int latitudeNum) {
-        this.simpleGrid.setLatitudeNum(latitudeNum);
+        this.dataGrid.setLatitudeNum(latitudeNum);
     }
 
     /**
      * @return the longitudeNum
      */
     public int getLongitudeNum() {
-        return this.simpleGrid.getLongitudeNum();
+        return this.dataGrid.getLongitudeNum();
     }
 
     /**
@@ -893,14 +903,14 @@ public class GridChart extends AbstractBaseChart  {
      *            the longitudeNum to set
      */
     public void setLongitudeNum(int longitudeNum) {
-        this.simpleGrid.setLongitudeNum(longitudeNum);
+        this.dataGrid.setLongitudeNum(longitudeNum);
     }
 
     /**
      * @return the displayLongitude
      */
     public boolean isDisplayLongitude() {
-        return this.simpleGrid.isDisplayLongitude();
+        return this.dataGrid.isDisplayLongitude();
     }
 
     /**
@@ -908,14 +918,14 @@ public class GridChart extends AbstractBaseChart  {
      *            the displayLongitude to set
      */
     public void setDisplayLongitude(boolean displayLongitude) {
-        this.simpleGrid.setDisplayLongitude(displayLongitude);
+        this.dataGrid.setDisplayLongitude(displayLongitude);
     }
 
     /**
      * @return the dashLongitude
      */
     public boolean isDashLongitude() {
-        return this.simpleGrid.isDashLatitude();
+        return this.dataGrid.isDashLatitude();
     }
 
     /**
@@ -923,14 +933,14 @@ public class GridChart extends AbstractBaseChart  {
      *            the dashLongitude to set
      */
     public void setDashLongitude(boolean dashLongitude) {
-        this.simpleGrid.setDashLongitude(dashLongitude);
+        this.dataGrid.setDashLongitude(dashLongitude);
     }
 
     /**
      * @return the displayLatitude
      */
     public boolean isDisplayLatitude() {
-        return this.simpleGrid.isDisplayLatitude();
+        return this.dataGrid.isDisplayLatitude();
     }
 
     /**
@@ -938,14 +948,14 @@ public class GridChart extends AbstractBaseChart  {
      *            the displayLatitude to set
      */
     public void setDisplayLatitude(boolean displayLatitude) {
-        this.simpleGrid.setDisplayLatitude(displayLatitude);
+        this.dataGrid.setDisplayLatitude(displayLatitude);
     }
 
     /**
      * @return the dashLatitude
      */
     public boolean isDashLatitude() {
-        return this.simpleGrid.isDashLatitude();
+        return this.dataGrid.isDashLatitude();
     }
 
     /**
@@ -953,14 +963,14 @@ public class GridChart extends AbstractBaseChart  {
      *            the dashLatitude to set
      */
     public void setDashLatitude(boolean dashLatitude) {
-        this.simpleGrid.setDashLatitude(dashLatitude);
+        this.dataGrid.setDashLatitude(dashLatitude);
     }
 
     /**
      * @return the dashEffect
      */
     public PathEffect getDashEffect() {
-        return this.simpleGrid.getDashEffect();
+        return this.dataGrid.getDashEffect();
     }
 
     /**
@@ -975,35 +985,35 @@ public class GridChart extends AbstractBaseChart  {
      * @return the longitudeWidth
      */
     public float getLongitudeWidth() {
-        return this.simpleGrid.getLongitudeWidth();
+        return this.dataGrid.getLongitudeWidth();
     }
 
     /**
      * @param longitudeWidth the longitudeWidth to set
      */
     public void setLongitudeWidth(float longitudeWidth) {
-        this.simpleGrid.setLongitudeWidth(longitudeWidth);
+        this.dataGrid.setLongitudeWidth(longitudeWidth);
     }
 
     /**
      * @return the latitudeWidth
      */
     public float getLatitudeWidth() {
-        return this.simpleGrid.getLatitudeWidth();
+        return this.dataGrid.getLatitudeWidth();
     }
 
     /**
      * @param latitudeWidth the latitudeWidth to set
      */
     public void setLatitudeWidth(float latitudeWidth) {
-        this.simpleGrid.setLatitudeWidth(latitudeWidth);
+        this.dataGrid.setLatitudeWidth(latitudeWidth);
     }
 
     /**
      * @return the longitudeFontColor
      */
     public int getLongitudeFontColor() {
-        return this.simpleGrid.getLongitudeFontColor();
+        return this.dataGrid.getLongitudeFontColor();
     }
 
     /**
@@ -1011,14 +1021,14 @@ public class GridChart extends AbstractBaseChart  {
      *            the longitudeFontColor to set
      */
     public void setLongitudeFontColor(int longitudeFontColor) {
-        this.simpleGrid.setLongitudeFontColor(longitudeFontColor);
+        this.dataGrid.setLongitudeFontColor(longitudeFontColor);
     }
 
     /**
      * @return the longitudeFontSize
      */
     public int getLongitudeFontSize() {
-        return this.simpleGrid.getLongitudeFontSize();
+        return this.dataGrid.getLongitudeFontSize();
     }
 
     /**
@@ -1026,14 +1036,14 @@ public class GridChart extends AbstractBaseChart  {
      *            the longitudeFontSize to set
      */
     public void setLongitudeFontSize(int longitudeFontSize) {
-        this.simpleGrid.setLongitudeFontSize(longitudeFontSize);
+        this.dataGrid.setLongitudeFontSize(longitudeFontSize);
     }
 
     /**
      * @return the latitudeFontColor
      */
     public int getLatitudeFontColor() {
-        return this.simpleGrid.getLatitudeFontColor();
+        return this.dataGrid.getLatitudeFontColor();
     }
 
     /**
@@ -1041,14 +1051,14 @@ public class GridChart extends AbstractBaseChart  {
      *            the latitudeFontColor to set
      */
     public void setLatitudeFontColor(int latitudeFontColor) {
-        this.simpleGrid.setLatitudeFontColor(latitudeFontColor);
+        this.dataGrid.setLatitudeFontColor(latitudeFontColor);
     }
 
     /**
      * @return the latitudeFontSize
      */
     public int getLatitudeFontSize() {
-        return this.simpleGrid.getLatitudeFontSize();
+        return this.dataGrid.getLatitudeFontSize();
     }
 
     /**
@@ -1056,14 +1066,14 @@ public class GridChart extends AbstractBaseChart  {
      *            the latitudeFontSize to set
      */
     public void setLatitudeFontSize(int latitudeFontSize) {
-        this.simpleGrid.setLatitudeFontSize(latitudeFontSize);
+        this.dataGrid.setLatitudeFontSize(latitudeFontSize);
     }
     
     /**
      * @return the longitudeColor
      */
     public int getLongitudeColor() {
-        return this.simpleGrid.getLongitudeColor();
+        return this.dataGrid.getLongitudeColor();
     }
 
     /**
@@ -1071,14 +1081,14 @@ public class GridChart extends AbstractBaseChart  {
      *            the longitudeColor to set
      */
     public void setLongitudeColor(int longitudeColor) {
-        this.simpleGrid.setLongitudeColor(longitudeColor);
+        this.dataGrid.setLongitudeColor(longitudeColor);
     }
 
     /**
      * @return the latitudeColor
      */
     public int getLatitudeColor() {
-        return this.simpleGrid.getLatitudeColor();
+        return this.dataGrid.getLatitudeColor();
     }
 
     /**
@@ -1086,7 +1096,7 @@ public class GridChart extends AbstractBaseChart  {
      *            the latitudeColor to set
      */
     public void setLatitudeColor(int latitudeColor) {
-        this.simpleGrid.setLatitudeColor(latitudeColor);
+        this.dataGrid.setLatitudeColor(latitudeColor);
     }
 
     /**
@@ -1119,50 +1129,7 @@ public class GridChart extends AbstractBaseChart  {
 //      }
 //  }
     
-    /**
-     * <p>
-     * get current selected data index
-     * </p>
-     * <p>
-     * 選択したスティックのインデックス
-     * </p>
-     * <p>
-     * 获取当前选中的柱条的index
-     * </p>
-     * 
-     * @return int
-     *         <p>
-     *         index
-     *         </p>
-     *         <p>
-     *         インデックス
-     *         </p>
-     *         <p>
-     *         index
-     *         </p>
-     */
-    public int getSelectedIndex() {
-        if (null == touchPoint) {
-            return 0;
-        }
-        return calcSelectedIndex(touchPoint.x, touchPoint.y);
-    }
     
-    protected int calcSelectedIndex(float x ,float y) {
-        if (!isValidTouchPoint(x,y)) {
-            return 0;
-        }
-        float graduate = getAxisXRate(x);
-        int index = (int) Math.floor(graduate * dataCursor.getDisplayNumber());
-
-        if (index >= dataCursor.getDisplayNumber()) {
-            index = dataCursor.getDisplayNumber() - 1;
-        } else if (index < 0) {
-            index = 0;
-        }
-        
-        return dataCursor.getDisplayFrom() + index;
-    }   
     
     /**
      * @return the dataMultiple
@@ -1175,7 +1142,7 @@ public class GridChart extends AbstractBaseChart  {
      * @param dataMultiple the dataMultiple to set
      */
     public void setDataMultiple(int dataMultiple) {
-        ((AbstractValueRange)this.dataRange).setDataMultiple(dataMultiple);
+        ((AbstractDataRange)this.dataRange).setDataMultiple(dataMultiple);
     }
 
     /**
@@ -1238,7 +1205,7 @@ public class GridChart extends AbstractBaseChart  {
      *            the maxValue to set
      */
     public void setMaxValue(double maxValue) {
-        ((AbstractValueRange)this.dataRange).setMaxValue(maxValue);
+        ((AbstractDataRange)this.dataRange).setMaxValue(maxValue);
     }
 
     /**
@@ -1253,7 +1220,7 @@ public class GridChart extends AbstractBaseChart  {
      *            the minValue to set
      */
     public void setMinValue(double minValue) {
-        ((AbstractValueRange)this.dataRange).setMinValue(minValue);
+        ((AbstractDataRange)this.dataRange).setMinValue(minValue);
     }
 
     /**
@@ -1268,36 +1235,36 @@ public class GridChart extends AbstractBaseChart  {
      *            the autoCalcValueRange to set
      */
     public void setAutoCalcValueRange(boolean autoCalcValueRange) {
-        ((AbstractValueRange)this.dataRange).setAutoCalcValueRange(autoCalcValueRange);
+        ((AbstractDataRange)this.dataRange).setAutoCalcValueRange(autoCalcValueRange);
     }
 
-    /**
-     * @return the dataCursor
-     */
-    public IDataCursor getDataCursor() {
-        return dataCursor;
-    }
-
-    /**
-     * @param dataCursor the dataCursor to set
-     */
-    public void setDataCursor(IDataCursor dataCursor) {
-        this.dataCursor = dataCursor;
-    }
-
-    /**
-     * @return the dataRange
-     */
-    public ValueRange getDataRange() {
-        return dataRange;
-    }
-
-    /**
-     * @param dataRange the dataRange to set
-     */
-    public void setDataRange(ValueRange dataRange) {
-        this.dataRange = dataRange;
-    }
+//    /**
+//     * @return the dataCursor
+//     */
+//    public DataCursor getDataCursor() {
+//        return dataCursor;
+//    }
+//
+//    /**
+//     * @param dataCursor the dataCursor to set
+//     */
+//    public void setDataCursor(DataCursor dataCursor) {
+//        this.dataCursor = dataCursor;
+//    }
+//
+//    /**
+//     * @return the dataRange
+//     */
+//    public DataRange getDataRange() {
+//        return dataRange;
+//    }
+//
+//    /**
+//     * @param dataRange the dataRange to set
+//     */
+//    public void setDataRange(DataRange dataRange) {
+//        this.dataRange = dataRange;
+//    }
 
     /**
      * @return the axisYDegree
@@ -1327,34 +1294,34 @@ public class GridChart extends AbstractBaseChart  {
         this.axisXDegree = axisXDegree;
     }
 
-    /**
-     * @return the chartData
-     */
-    public ChartDataSet getChartData() {
-        return chartData;
-    }
-
-    /**
-     * @param chartData the chartData to set
-     */
-    public void setChartData(ChartDataSet chartData) {
-        this.chartData = chartData;
-    }
-    
-    /**
-     * @return the gridAlignType
-     */
-    public int getStickAlignType() {
-        return gridAlignType;
-    }
-
-    /**
-     * @param gridAlignType the gridAlignType to set
-     */
-    public void setStickAlignType(int stickAlignType) {
-        this.gridAlignType = stickAlignType;
-    }
-    
+//    /**
+//     * @return the chartData
+//     */
+//    public ChartDataSet getChartData() {
+//        return chartData;
+//    }
+//
+//    /**
+//     * @param chartData the chartData to set
+//     */
+//    public void setChartData(ChartDataSet chartData) {
+//        this.chartData = chartData;
+//    }
+//    
+//    /**
+//     * @return the gridAlignType
+//     */
+//    public int getStickAlignType() {
+//        return gridAlignType;
+//    }
+//
+//    /**
+//     * @param gridAlignType the gridAlignType to set
+//     */
+//    public void setStickAlignType(int stickAlignType) {
+//        this.gridAlignType = stickAlignType;
+//    }
+//    
     /**
      * @return the maxSticksNum
      */
@@ -1373,7 +1340,7 @@ public class GridChart extends AbstractBaseChart  {
     }
 
     /**
-     * @return the stickSpacing
+     * @return the barSpacing
      */
     @Deprecated
     public int getStickSpacing() {
@@ -1381,7 +1348,7 @@ public class GridChart extends AbstractBaseChart  {
     }
 
     /**
-     * @param stickSpacing the stickSpacing to set
+     * @param barSpacing the barSpacing to set
      */
     @Deprecated
     public void setStickSpacing(int stickSpacing) {
@@ -1521,9 +1488,17 @@ public class GridChart extends AbstractBaseChart  {
          */
         @Override
         public void onZoomIn(MotionEvent event) {
-            Zoomable dataCursor = (Zoomable) GridChart.this.getDataCursor();
-            if (dataCursor != null) {
-                dataCursor.zoomIn();
+//            Zoomable dataCursor = (Zoomable) GridChart.this.getDataCursor();
+//            if (dataCursor != null) {
+//                dataCursor.zoomIn();
+//            }
+            for(Layer layer:dataLayers){
+                DataCursor dataCursor = ((DataComponent)layer.getComponent()).getDataCursor();
+                if (dataCursor != null) {
+                    if (dataCursor instanceof Zoomable) {
+                        ((Zoomable)dataCursor).zoomIn();
+                    }
+                }
             }
             GridChart.this.postInvalidate();
         }
@@ -1534,15 +1509,23 @@ public class GridChart extends AbstractBaseChart  {
         @Override
         public void onZoomOut(MotionEvent event) {
            
-            Zoomable dataCursor = (Zoomable) GridChart.this.getDataCursor();
-            if (dataCursor != null) {
-                dataCursor.zoomOut();
+//            Zoomable dataCursor = (Zoomable) GridChart.this.getDataCursor();
+//            if (dataCursor != null) {
+//                dataCursor.zoomOut();
+//            }
+            for(Layer layer:dataLayers){
+                DataCursor dataCursor = ((DataComponent)layer.getComponent()).getDataCursor();
+                if (dataCursor != null) {
+                    if (dataCursor instanceof Zoomable) {
+                        ((Zoomable)dataCursor).zoomOut();
+                    }
+                }
             }
             GridChart.this.postInvalidate();
         }   
     }
     
-    public class OnSlipListener implements OnSlipGestureListener {
+    public abstract class OnSlipListener implements OnSlipGestureListener {
 
         /*
          * (non-Javadoc)
@@ -1553,12 +1536,19 @@ public class GridChart extends AbstractBaseChart  {
          */
         @Override
         public void onMoveLeft(MotionEvent event) {
-            ISlipable dataCursor = (ISlipable) GridChart.this.getDataCursor();
-            if (dataCursor != null) {
-                dataCursor.moveLeft();
+//            Slipable dataCursor = (Slipable) GridChart.this.getDataCursor();
+//            if (dataCursor != null) {
+//                dataCursor.moveLeft();
+//            }
+            for(Layer layer:dataLayers){
+                DataCursor dataCursor = ((DataComponent)layer.getComponent()).getDataCursor();
+                if (dataCursor != null) {
+                    if (dataCursor instanceof Slipable) {
+                        ((Slipable)dataCursor).moveLeft();
+                    }
+                }
             }
             GridChart.this.postInvalidate();
-
         }
 
         /*
@@ -1570,12 +1560,15 @@ public class GridChart extends AbstractBaseChart  {
          */
         @Override
         public void onMoveRight(MotionEvent event) {
-            ISlipable dataCursor = (ISlipable) GridChart.this.getDataCursor();
-            if (dataCursor != null) {
-                dataCursor.moveRight();
+            for(Layer layer:dataLayers){
+                DataCursor dataCursor = ((DataComponent)layer.getComponent()).getDataCursor();
+                if (dataCursor != null) {
+                    if (dataCursor instanceof Slipable) {
+                        ((Slipable)dataCursor).moveRight();
+                    }
+                }
             }
             GridChart.this.postInvalidate();
-
         }
     }
     

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.MACandleStickChart;
 import cn.limc.androidcharts.series.ChartDataSet;
 import cn.limc.androidcharts.series.ChartDataTable;
@@ -78,47 +78,47 @@ public class MACandleStickChartActivity extends BaseActivity {
         ma25.setLineColor(Color.BLUE);
         ma25.setTableData(initMA(25));
         lines.add(ma25);
-
-        macandlestickchart.setAxisXColor(Color.LTGRAY);
-        macandlestickchart.setAxisYColor(Color.LTGRAY);
-        macandlestickchart.setLatitudeColor(Color.GRAY);
-        macandlestickchart.setLongitudeColor(Color.GRAY);
-        macandlestickchart.setBorderColor(Color.LTGRAY);
-        macandlestickchart.setLongitudeFontColor(Color.WHITE);
-        macandlestickchart.setLatitudeFontColor(Color.WHITE);
-
-        // 最大显示足数
-        //macandlestickchart.setMaxSticksNum(52);
-        macandlestickchart.setDisplayNumber(52);
-        // 最大纬线数
-        macandlestickchart.setLatitudeNum(5);
-        // 最大经线数
-        macandlestickchart.setLongitudeNum(3);
-        // 最大价格
-        macandlestickchart.setMaxValue(1200);
-        // 最小价格
-        macandlestickchart.setMinValue(200);
-
-        macandlestickchart.setDisplayLongitudeTitle(true);
-        macandlestickchart.setDisplayLatitudeTitle(true);
-        macandlestickchart.setDisplayLatitude(true);
-        macandlestickchart.setDisplayLongitude(true);
-        macandlestickchart.setBackgroundColor(Color.BLACK);
-
-        macandlestickchart.setDataQuadrantPaddingTop(5);
-        macandlestickchart.setDataQuadrantPaddingBottom(5);
-        macandlestickchart.setDataQuadrantPaddingLeft(5);
-        macandlestickchart.setDataQuadrantPaddingRight(5);
+//
+////        macandlestickchart.setAxisXColor(Color.LTGRAY);
+////        macandlestickchart.setAxisYColor(Color.LTGRAY);
+//        macandlestickchart.setLatitudeColor(Color.GRAY);
+//        macandlestickchart.setLongitudeColor(Color.GRAY);
+//        macandlestickchart.setBorderColor(Color.LTGRAY);
+//        macandlestickchart.setLongitudeFontColor(Color.WHITE);
+//        macandlestickchart.setLatitudeFontColor(Color.WHITE);
+//
+//        // 最大显示足数
+//        //macandlestickchart.setMaxSticksNum(52);
+//        macandlestickchart.setDisplayNumber(52);
+//        // 最大纬线数
+//        macandlestickchart.setLatitudeNum(5);
+//        // 最大经线数
+//        macandlestickchart.setLongitudeNum(3);
+//        // 最大价格
+//        macandlestickchart.setMaxValue(1200);
+//        // 最小价格
+//        macandlestickchart.setMinValue(200);
+//
+//        macandlestickchart.setDisplayLongitudeTitle(true);
+//        macandlestickchart.setDisplayLatitudeTitle(true);
+//        macandlestickchart.setDisplayLatitude(true);
+//        macandlestickchart.setDisplayLongitude(true);
+//        macandlestickchart.setBackgroundColor(Color.BLACK);
+//
+//        macandlestickchart.setDataQuadrantPaddingTop(5);
+//        macandlestickchart.setDataQuadrantPaddingBottom(5);
+//        macandlestickchart.setDataQuadrantPaddingLeft(5);
+//        macandlestickchart.setDataQuadrantPaddingRight(5);
 //      macandlestickchart.setAxisYTitleQuadrantWidth(50);
 //      macandlestickchart.setAxisXTitleQuadrantHeight(20);
-        macandlestickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
-        macandlestickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+//        macandlestickchart.setAxisXPosition(AbstractAxis.AXIS_X_POSITION_BOTTOM);
+//        macandlestickchart.setAxisYPosition(AbstractAxis.AXIS_Y_POSITION_RIGHT);
 
         // 为chart2增加均线
         macandlestickchart.setLinesData(lines);
 
         // 为chart2增加均线
-        macandlestickchart.setChartData(new ChartDataSet(new ChartDataTable(ohlc)));
+   //     macandlestickchart.setChartData(new ChartDataSet(new ChartDataTable(ohlc)));
 
     }
 

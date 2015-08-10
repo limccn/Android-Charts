@@ -12,6 +12,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.SimpleGrid;
 import cn.limc.androidcharts.diagram.GridChart;
 
 /**
@@ -34,10 +36,9 @@ public class DecimalDegree extends AbstractDegree {
     public static final String DEFAULT_TARGET_FORMAT = "#,##0";
 
     /**
-     * @param inChart
+     * @param parent
      */
-    public DecimalDegree(GridChart inChart) {
-        super(inChart);
+    public DecimalDegree() {
         sourceFormat = DEFAULT_SOURCE_FORMAT;
         targetFormat = DEFAULT_TARGET_FORMAT;
     }
@@ -48,15 +49,20 @@ public class DecimalDegree extends AbstractDegree {
     @Override
     public List<String> getDegrees() {
         List<String> titleY = new ArrayList<String>();
-        double average = inChart.getDataRange().getValueRange() / inChart.getSimpleGrid().getLatitudeNum();
+        DataRange dataRange = axis.getBindComponent().getDataRange();
+        if (dataRange.isAutoCalcValueRange()) {
+            dataRange.calcValueRange();
+        }
+        SimpleGrid grid = axis.getBindComponent().getDataGrid();
+        double average = dataRange.getValueRange() / grid.getLatitudeNum();
         // calculate degrees on Y axis
-        for (int i = 0; i < inChart.getSimpleGrid().getLatitudeNum(); i++) {
-            String value = valueForDegree(inChart.getDataRange().getMinValue() + i * average);
+        for (int i = 0; i < grid.getLatitudeNum(); i++) {
+            String value = valueForDegree(dataRange.getMinValue() + i * average);
 
             titleY.add(value);
         }
         // calculate last degrees by use max value
-        String value = valueForDegree(inChart.getDataRange().getMaxValue());
+        String value = valueForDegree(dataRange.getMaxValue());
         titleY.add(value);
         return titleY;
     }
@@ -67,12 +73,13 @@ public class DecimalDegree extends AbstractDegree {
     @Override
     public String valueForDegree(Object value) {
         DecimalFormat formator = new DecimalFormat(targetFormat);
+        DataRange dataRange = axis.getBindComponent().getDataRange();
         if (value instanceof Integer) {
-            return formator.format(Math.floor((Integer)value)/ inChart.getDataRange().getDataMultiple());
+            return formator.format(Math.floor((Integer)value)/ dataRange.getDataMultiple());
         }else if (value instanceof Float) {
-            return formator.format(Math.floor((Float)value)/ inChart.getDataRange().getDataMultiple());
+            return formator.format(Math.floor((Float)value)/ dataRange.getDataMultiple());
         }else if (value instanceof Double) {
-            return formator.format(Math.floor((Double)value)/ inChart.getDataRange().getDataMultiple());
+            return formator.format(Math.floor((Double)value)/ dataRange.getDataMultiple());
         }else{
             return "";
         }

@@ -21,7 +21,7 @@
 
 package cn.limc.androidcharts.diagram;
 
-import cn.limc.androidcharts.model.MinusStickValueRangeCalc;
+import cn.limc.androidcharts.model.MinusStickRangeCalculator;
 import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.androidcharts.series.IMeasurable;
 import cn.limc.androidcharts.shape.Bar;
@@ -33,7 +33,7 @@ import android.util.AttributeSet;
 /**
  * 
  * <p>
- * MinusStickChart is inherits from StickChart which its data can be minus value
+ * MinusStickChart is inherits from StickChart which its mData can be minus value
  * </p>
  * <p>
  * MinusStickChartはグラフの一種です、マイナーデータをチャートで表示は可能です
@@ -58,7 +58,7 @@ public class MinusStickChart extends StickChart {
 	 */
 	public MinusStickChart(Context context) {
 		super(context);
-		this.dataRange = new MinusStickValueRangeCalc(this);
+//		this.dataRange = new MinusStickRangeCalculator(this);
 	}
 
 	/*
@@ -75,7 +75,7 @@ public class MinusStickChart extends StickChart {
 	 */
 	public MinusStickChart(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		this.dataRange = new MinusStickValueRangeCalc(this);
+//		this.dataRange = new MinusStickRangeCalculator(this);
 	}
 
 	/*
@@ -90,7 +90,7 @@ public class MinusStickChart extends StickChart {
 	 */
 	public MinusStickChart(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		this.dataRange = new MinusStickValueRangeCalc(this);
+//		this.dataRange = new MinusStickRangeCalculator(this);
 	}
 
 	/*

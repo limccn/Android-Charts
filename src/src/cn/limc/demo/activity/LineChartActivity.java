@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.LineChart;
 import cn.limc.androidcharts.series.ChartDataSet;
 import cn.limc.androidcharts.series.DateValueEntity;
@@ -78,33 +78,33 @@ public class LineChartActivity extends BaseActivity {
         ma25.setTableData(initMA(25));
         lines.add(ma25);
 
-        linechart.setAxisXColor(Color.LTGRAY);
-        linechart.setAxisYColor(Color.LTGRAY);
-        linechart.setBorderColor(Color.LTGRAY);
-        linechart.setLongitudeFontSize(14);
-        linechart.setLongitudeFontColor(Color.WHITE);
-        linechart.setLatitudeColor(Color.GRAY);
-        linechart.setLatitudeFontColor(Color.WHITE);
-        linechart.setLongitudeColor(Color.GRAY);
-        linechart.setMaxValue(280);
-        linechart.setMinValue(240);
-        //linechart.setMaxPointNum(36);
-        linechart.setDisplayLongitudeTitle(true);
-        linechart.setDisplayLatitudeTitle(true);
-        linechart.setDisplayLatitude(true);
-        linechart.setDisplayLongitude(true);
-        linechart.setLatitudeNum(5);
-        linechart.setLongitudeNum(6);
-        linechart.setDataQuadrantPaddingTop(5);
-        linechart.setDataQuadrantPaddingBottom(5);
-        linechart.setDataQuadrantPaddingLeft(5);
-        linechart.setDataQuadrantPaddingRight(5);
+////        linechart.setAxisXColor(Color.LTGRAY);
+////        linechart.setAxisYColor(Color.LTGRAY);
+//        linechart.setBorderColor(Color.LTGRAY);
+//        linechart.setLongitudeFontSize(14);
+//        linechart.setLongitudeFontColor(Color.WHITE);
+//        linechart.setLatitudeColor(Color.GRAY);
+//        linechart.setLatitudeFontColor(Color.WHITE);
+//        linechart.setLongitudeColor(Color.GRAY);
+//        linechart.setMaxValue(280);
+//        linechart.setMinValue(240);
+//        //linechart.setMaxPointNum(36);
+//        linechart.setDisplayLongitudeTitle(true);
+//        linechart.setDisplayLatitudeTitle(true);
+//        linechart.setDisplayLatitude(true);
+//        linechart.setDisplayLongitude(true);
+//        linechart.setLatitudeNum(5);
+//        linechart.setLongitudeNum(6);
+//        linechart.setDataQuadrantPaddingTop(5);
+//        linechart.setDataQuadrantPaddingBottom(5);
+//        linechart.setDataQuadrantPaddingLeft(5);
+//        linechart.setDataQuadrantPaddingRight(5);
         // linechart.setAxisYTitleQuadrantWidth(50);
         // linechart.setAxisXTitleQuadrantHeight(20);
-        linechart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
-        linechart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+//        linechart.setAxisXPosition(AbstractAxis.AXIS_X_POSITION_BOTTOM);
+//        linechart.setAxisYPosition(AbstractAxis.AXIS_Y_POSITION_RIGHT);
 
         // 为chart1增加均线
-        linechart.setChartData(lines);
+  //      linechart.setChartData(lines);
     }
 }

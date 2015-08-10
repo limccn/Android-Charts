@@ -22,7 +22,7 @@
 
 package cn.limc.androidcharts.shape;
 
-import cn.limc.androidcharts.common.IChart;
+import cn.limc.androidcharts.component.DataComponent;
 import android.graphics.RectF;
 
 /** 
@@ -35,23 +35,23 @@ import android.graphics.RectF;
  *  
  */
 public abstract class AbstractShape  extends RectF implements Shape {
-	protected IChart inChart;
+	protected DataComponent component;
 	
-	public void setUp(IChart chart){
-		setInChart(chart);
+	public void setUp(DataComponent component){
+		setComponent(component);
 	} 
 
 	/**
-	 * @return the inChart
+	 * @return the parent
 	 */
-	public IChart getInChart() {
-		return inChart;
+	public DataComponent getComponent() {
+		return component;
 	}
 
 	/**
-	 * @param inChart the inChart to set
+	 * @param parent the parent to set
 	 */
-	public void setInChart(IChart inChart) {
-		this.inChart = inChart;
+	public void setComponent(DataComponent component) {
+		this.component = component;
 	}
 }

@@ -42,8 +42,8 @@ import android.util.AttributeSet;
 /**
  * 
  * <p>
- * SpiderWebChart is a kind of graph that display data on web-like graph. each
- * data was displayed in the longitude lines,like a area graph.
+ * SpiderWebChart is a kind of graph that display mData on web-like graph. each
+ * mData was displayed in the longitude lines,like a area graph.
  * </p>
  * <p>
  * SpiderWebChartは円グラフとアリアグラフを合わせるのグラフ一種です、データをワッブで表示します。
@@ -113,7 +113,7 @@ public class SpiderWebChart extends RoundChart {
 
 	/**
 	 * <p>
-	 * default color for display data
+	 * default color for display mData
 	 * </p>
 	 * <p>
 	 * データの色のデフォルト値
@@ -272,7 +272,7 @@ public class SpiderWebChart extends RoundChart {
 		// draw this chart
 		drawWeb(canvas);
 
-		// draw data on chart
+		// draw mData on chart
 		drawData(canvas);
 	}
 
@@ -326,7 +326,7 @@ public class SpiderWebChart extends RoundChart {
 
 	/**
 	 * <p>
-	 * calculate the points to draw the data
+	 * calculate the points to draw the mData
 	 * </p>
 	 * <p>
 	 * データを使ってポイントを計算する
@@ -335,9 +335,9 @@ public class SpiderWebChart extends RoundChart {
 	 * 根据参数的数据计算需要在图上绘制的点
 	 * </p>
 	 * 
-	 * @param data
+	 * @param mData
 	 *            <p>
-	 *            data for calculation
+	 *            mData for calculation
 	 *            </p>
 	 *            <p>
 	 *            計算用データ
@@ -479,7 +479,7 @@ public class SpiderWebChart extends RoundChart {
 
 	/**
 	 * <p>
-	 * Draw the data
+	 * Draw the mData
 	 * </p>
 	 * <p>
 	 * チャートでデータを書く
@@ -538,15 +538,15 @@ public class SpiderWebChart extends RoundChart {
 	}
 
 	/**
-	 * @return the data
+	 * @return the mData
 	 */
 	public List<List<TitleValueEntity>> getData() {
 		return data;
 	}
 
 	/**
-	 * @param data
-	 *            the data to set
+	 * @param mData
+	 *            the mData to set
 	 */
 	public void setData(List<List<TitleValueEntity>> data) {
 		this.data = data;

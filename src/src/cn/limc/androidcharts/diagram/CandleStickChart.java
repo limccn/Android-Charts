@@ -21,9 +21,9 @@
 
 package cn.limc.androidcharts.diagram;
 
+import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.component.Axis;
-import cn.limc.androidcharts.component.IAxis;
-import cn.limc.androidcharts.model.CandleStickValueRangeCalc;
+import cn.limc.androidcharts.model.CandleStickRangeCalculator;
 import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.androidcharts.series.IMeasurable;
 import cn.limc.androidcharts.series.OHLCEntity;
@@ -198,7 +198,7 @@ public class CandleStickChart extends StickChart {
 	 */
 	public CandleStickChart(Context context) {
 		super(context);
-		this.dataRange = new CandleStickValueRangeCalc(this);
+//		this.dataRange = new CandleStickRangeCalculator(this);
 	}
 
 	/*
@@ -260,7 +260,7 @@ public class CandleStickChart extends StickChart {
 	 * 
 	 * @param canvas
 	 */
-	@Override
+//	@Override
 //	protected void drawSticks(Canvas canvas) {
 //		if (null == stickData) {
 //			return;
@@ -279,9 +279,9 @@ public class CandleStickChart extends StickChart {
 //		mPaintCross.setColor(crossStarColor);
 //
 //		float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber()
-//				- stickSpacing;
+//				- barSpacing;
 //
-//		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+//		if (axisY.getPosition() == Axis.AXIS_Y_POSITION_LEFT) {
 //			float stickX = dataQuadrant.getPaddingStartX();
 //
 //			for (int i = 0; i < stickData.size(); i++) {
@@ -326,7 +326,7 @@ public class CandleStickChart extends StickChart {
 //				}
 //
 //				// next x
-//				stickX = stickX + stickSpacing + stickWidth;
+//				stickX = stickX + barSpacing + stickWidth;
 //			}
 //		} else {
 //			float stickX = dataQuadrant.getPaddingEndX() - stickWidth;
@@ -372,42 +372,42 @@ public class CandleStickChart extends StickChart {
 //				}
 //
 //				// next x
-//				stickX = stickX - stickSpacing - stickWidth;
+//				stickX = stickX - barSpacing - stickWidth;
 //			}
 //		}
 //	}
-	
-	protected void drawSticks(Canvas canvas) {
-        if (null == chartData) {
-            return;
-        }
-        if (chartData.size() == 0) {
-            return;
-        }
-
-        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
-        float stickX = dataQuadrant.getPaddingStartX();
-
-        for(int i=0; i< chartData.size() ; i++){
-            ChartDataTable table = chartData.getChartTable(i);
-            if (null == table) {
-                continue;
-            }
-            if(table.size() == 0){
-                continue;
-            }
-            for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
-                IMeasurable stick = (IMeasurable)table.get(j);
-                
-                Candle mole = new Candle();
-                mole.setUp(this,stick,stickX,stickWidth);
-                mole.draw(canvas);
-
-                // next x
-                stickX = stickX + stickWidth;
-            }
-        }
-    }
+//	
+//	protected void drawSticks(Canvas canvas) {
+//        if (null == chartData) {
+//            return;
+//        }
+//        if (chartData.size() == 0) {
+//            return;
+//        }
+//
+//        float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+//        float stickX = dataQuadrant.getPaddingStartX();
+//
+//        for(int i=0; i< chartData.size() ; i++){
+//            ChartDataTable table = chartData.getChartTable(i);
+//            if (null == table) {
+//                continue;
+//            }
+//            if(table.size() == 0){
+//                continue;
+//            }
+//            for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
+//                IMeasurable stick = (IMeasurable)table.get(j);
+//                
+//                Candle mole = new Candle();
+//                mole.setUp(this,stick,stickX,stickWidth);
+//                mole.draw(canvas);
+//
+//                // next x
+//                stickX = stickX + stickWidth;
+//            }
+//        }
+//    }
 	
 //	protected PointF calcBindPoint(float x ,float y) {
 //		float calcX = 0;
@@ -420,7 +420,7 @@ public class CandleStickChart extends StickChart {
 //		calcY = (float) ((1f - (stick.getClose() - dataRange.getMinValue())
 //				/ dataRange.getValueRange())
 //				* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
-//		if (axisY.getPosition() == Axis.AXIS_Y_POSITION_LEFT) {
+//		if (axisY.getPosition() == AbstractAxis.AXIS_Y_POSITION_LEFT) {
 //			calcX = dataQuadrant.getPaddingStartX() + stickWidth * index + stickWidth / 2;
 //		}else{
 //			if(stickData.size() - index <= dataCursor.getDisplayNumber()){
@@ -433,79 +433,79 @@ public class CandleStickChart extends StickChart {
 //		return new PointF(calcX,calcY);
 //	}
 
-	/**
-	 * @return the positiveStickBorderColor
-	 */
-	public int getPositiveStickBorderColor() {
-		return positiveStickBorderColor;
-	}
-
-	/**
-	 * @param positiveStickBorderColor
-	 *            the positiveStickBorderColor to set
-	 */
-	public void setPositiveStickBorderColor(int positiveStickBorderColor) {
-		this.positiveStickBorderColor = positiveStickBorderColor;
-	}
-
-	/**
-	 * @return the positiveStickFillColor
-	 */
-	public int getPositiveStickFillColor() {
-		return positiveStickFillColor;
-	}
-
-	/**
-	 * @param positiveStickFillColor
-	 *            the positiveStickFillColor to set
-	 */
-	public void setPositiveStickFillColor(int positiveStickFillColor) {
-		this.positiveStickFillColor = positiveStickFillColor;
-	}
-
-	/**
-	 * @return the negativeStickBorderColor
-	 */
-	public int getNegativeStickBorderColor() {
-		return negativeStickBorderColor;
-	}
-
-	/**
-	 * @param negativeStickBorderColor
-	 *            the negativeStickBorderColor to set
-	 */
-	public void setNegativeStickBorderColor(int negativeStickBorderColor) {
-		this.negativeStickBorderColor = negativeStickBorderColor;
-	}
-
-	/**
-	 * @return the negativeStickFillColor
-	 */
-	public int getNegativeStickFillColor() {
-		return negativeStickFillColor;
-	}
-
-	/**
-	 * @param negativeStickFillColor
-	 *            the negativeStickFillColor to set
-	 */
-	public void setNegativeStickFillColor(int negativeStickFillColor) {
-		this.negativeStickFillColor = negativeStickFillColor;
-	}
-
-	/**
-	 * @return the crossStarColor
-	 */
-	public int getCrossStarColor() {
-		return crossStarColor;
-	}
-
-	/**
-	 * @param crossStarColor
-	 *            the crossStarColor to set
-	 */
-	public void setCrossStarColor(int crossStarColor) {
-		this.crossStarColor = crossStarColor;
-	}
+//	/**
+//	 * @return the positiveStickBorderColor
+//	 */
+//	public int getPositiveStickBorderColor() {
+//		return positiveStickBorderColor;
+//	}
+//
+//	/**
+//	 * @param positiveStickBorderColor
+//	 *            the positiveStickBorderColor to set
+//	 */
+//	public void setPositiveStickBorderColor(int positiveStickBorderColor) {
+//		this.positiveStickBorderColor = positiveStickBorderColor;
+//	}
+//
+//	/**
+//	 * @return the positiveStickFillColor
+//	 */
+//	public int getPositiveStickFillColor() {
+//		return positiveStickFillColor;
+//	}
+//
+//	/**
+//	 * @param positiveStickFillColor
+//	 *            the positiveStickFillColor to set
+//	 */
+//	public void setPositiveStickFillColor(int positiveStickFillColor) {
+//		this.positiveStickFillColor = positiveStickFillColor;
+//	}
+//
+//	/**
+//	 * @return the negativeStickBorderColor
+//	 */
+//	public int getNegativeStickBorderColor() {
+//		return negativeStickBorderColor;
+//	}
+//
+//	/**
+//	 * @param negativeStickBorderColor
+//	 *            the negativeStickBorderColor to set
+//	 */
+//	public void setNegativeStickBorderColor(int negativeStickBorderColor) {
+//		this.negativeStickBorderColor = negativeStickBorderColor;
+//	}
+//
+//	/**
+//	 * @return the negativeStickFillColor
+//	 */
+//	public int getNegativeStickFillColor() {
+//		return negativeStickFillColor;
+//	}
+//
+//	/**
+//	 * @param negativeStickFillColor
+//	 *            the negativeStickFillColor to set
+//	 */
+//	public void setNegativeStickFillColor(int negativeStickFillColor) {
+//		this.negativeStickFillColor = negativeStickFillColor;
+//	}
+//
+//	/**
+//	 * @return the crossStarColor
+//	 */
+//	public int getCrossStarColor() {
+//		return crossStarColor;
+//	}
+//
+//	/**
+//	 * @param crossStarColor
+//	 *            the crossStarColor to set
+//	 */
+//	public void setCrossStarColor(int crossStarColor) {
+//		this.crossStarColor = crossStarColor;
+//	}
 
 }

@@ -21,7 +21,7 @@
 
 
 package cn.limc.androidcharts.event;
-import cn.limc.androidcharts.model.IDataCursor;
+import cn.limc.androidcharts.model.DataCursor;
 
 /** 
  * <p>en</p>
@@ -33,5 +33,5 @@ import cn.limc.androidcharts.model.IDataCursor;
  *  
  */
 public interface IDisplayCursorListener {
-	void onCursorChanged(IDataCursor dataCursor,int displayFrom, int displayNumber);
+	void onCursorChanged(DataCursor dataCursor,int displayFrom, int displayNumber);
 }

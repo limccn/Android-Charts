@@ -1,5 +1,5 @@
 /*
- * IDataCursor.java
+ * DataCursor.java
  * Android-Charts
  *
  * Created by limc on 2014.
@@ -22,6 +22,8 @@
 
 package cn.limc.androidcharts.model;
 
+import cn.limc.androidcharts.series.ChartDataSet;
+
 
 /** 
  * <p>en</p>
@@ -32,7 +34,7 @@ package cn.limc.androidcharts.model;
  * @version v1.0 2014/06/18 15:54:24 
  *  
  */
-public interface IDataCursor {
+public interface DataCursor {
 	
 	static final int MINI_DISPLAY_NUM = 10;
 	
@@ -45,4 +47,9 @@ public interface IDataCursor {
 	 void setDisplayNumber(int displayNumber);
 	 //void setDisplayTo(int displayTo);
 	 void setMinDisplayNumber(int minDisplayNumber);
+	 
+	 ChartDataSet getData();
+	 
+	 void setData(ChartDataSet data);
+	 
 }

@@ -172,7 +172,7 @@ public class MACDChart extends SlipMinusStickChart {
 //		mPaintStick.setAntiAlias(true);
 //
 //		float stickWidth = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber()
-//				- stickSpacing;
+//				- barSpacing;
 //		float stickX = dataQuadrant.getPaddingStartX();
 //
 //		// 判断显示为方柱或显示为线条
@@ -221,7 +221,7 @@ public class MACDChart extends SlipMinusStickChart {
 //			}
 //
 //			// X位移
-//			stickX = stickX + stickSpacing + stickWidth;
+//			stickX = stickX + barSpacing + stickWidth;
 //		}
 //	}
 //
@@ -235,7 +235,7 @@ public class MACDChart extends SlipMinusStickChart {
 //		mPaintStick.setColor(diffLineColor);
 //
 //		// distance between two points
-//		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - stickSpacing;
+//		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - barSpacing;
 //		// start point‘s X
 //		float startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 //		// start point
@@ -254,7 +254,7 @@ public class MACDChart extends SlipMinusStickChart {
 //			}
 //			// reset
 //			ptFirst = new PointF(startX, valueY);
-//			startX = startX + stickSpacing + lineLength;
+//			startX = startX + barSpacing + lineLength;
 //		}
 //	}
 //
@@ -264,7 +264,7 @@ public class MACDChart extends SlipMinusStickChart {
 //		mPaintStick.setAntiAlias(true);
 //		mPaintStick.setColor(deaLineColor);
 //		// distance between two points
-//		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - stickSpacing;
+//		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - barSpacing;
 //		// set start point’s X
 //		float startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 //		// start point
@@ -283,7 +283,7 @@ public class MACDChart extends SlipMinusStickChart {
 //			}
 //			// reset
 //			ptFirst = new PointF(startX, valueY);
-//			startX = startX + stickSpacing + lineLength;
+//			startX = startX + barSpacing + lineLength;
 //		}
 //	}
 //
@@ -293,7 +293,7 @@ public class MACDChart extends SlipMinusStickChart {
 //		mPaintStick.setColor(macdLineColor);
 //
 //		// distance between two points
-//		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - stickSpacing;
+//		float lineLength = dataQuadrant.getPaddingWidth() / dataCursor.getDisplayNumber() - barSpacing;
 //		// set start point’s X
 //		float startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 //		// start point
@@ -312,7 +312,7 @@ public class MACDChart extends SlipMinusStickChart {
 //			}
 //			// reset
 //			ptFirst = new PointF(startX, valueY);
-//			startX = startX + stickSpacing + lineLength;
+//			startX = startX + barSpacing + lineLength;
 //		}
 //	}
 //

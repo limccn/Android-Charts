@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.MASlipCandleStickChart;
 import cn.limc.androidcharts.event.Zoomable;
 import cn.limc.androidcharts.series.ChartDataSet;
@@ -81,53 +81,53 @@ public class MASlipCandleStickChartActivity extends BaseActivity {
         ma25.setTableData(initMA(25));
         lines.add(ma25);
 
-        maslipcandlestickchart.setAxisXColor(Color.LTGRAY);
-        maslipcandlestickchart.setAxisYColor(Color.LTGRAY);
-        maslipcandlestickchart.setLatitudeColor(Color.GRAY);
-        maslipcandlestickchart.setLongitudeColor(Color.GRAY);
-        maslipcandlestickchart.setBorderColor(Color.LTGRAY);
-        maslipcandlestickchart.setLongitudeFontColor(Color.WHITE);
-        maslipcandlestickchart.setLatitudeFontColor(Color.WHITE);
-
-        // 最大纬线数
-        maslipcandlestickchart.setLatitudeNum(5);
-        // 最大经线数
-        maslipcandlestickchart.setLongitudeNum(3);
-        // 最大价格
-        maslipcandlestickchart.setMaxValue(1200);
-        // 最小价格
-        maslipcandlestickchart.setMinValue(200);
-
-        maslipcandlestickchart.setDisplayFrom(10);
-
-        maslipcandlestickchart.setDisplayNumber(30);
-
-        maslipcandlestickchart.setMinDisplayNumber(5);
-
-        maslipcandlestickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
-
-        maslipcandlestickchart.setDisplayLongitudeTitle(true);
-        maslipcandlestickchart.setDisplayLatitudeTitle(true);
-        maslipcandlestickchart.setDisplayLatitude(true);
-        maslipcandlestickchart.setDisplayLongitude(true);
-        maslipcandlestickchart.setBackgroundColor(Color.BLACK);
-
-        maslipcandlestickchart.setDataQuadrantPaddingTop(5);
-        maslipcandlestickchart.setDataQuadrantPaddingBottom(5);
-        maslipcandlestickchart.setDataQuadrantPaddingLeft(5);
-        maslipcandlestickchart.setDataQuadrantPaddingRight(5);
+////        maslipcandlestickchart.setAxisXColor(Color.LTGRAY);
+////        maslipcandlestickchart.setAxisYColor(Color.LTGRAY);
+//        maslipcandlestickchart.setLatitudeColor(Color.GRAY);
+//        maslipcandlestickchart.setLongitudeColor(Color.GRAY);
+//        maslipcandlestickchart.setBorderColor(Color.LTGRAY);
+//        maslipcandlestickchart.setLongitudeFontColor(Color.WHITE);
+//        maslipcandlestickchart.setLatitudeFontColor(Color.WHITE);
+//
+//        // 最大纬线数
+//        maslipcandlestickchart.setLatitudeNum(5);
+//        // 最大经线数
+//        maslipcandlestickchart.setLongitudeNum(3);
+//        // 最大价格
+//        maslipcandlestickchart.setMaxValue(1200);
+//        // 最小价格
+//        maslipcandlestickchart.setMinValue(200);
+//
+//        maslipcandlestickchart.setDisplayFrom(10);
+//
+//        maslipcandlestickchart.setDisplayNumber(30);
+//
+//        maslipcandlestickchart.setMinDisplayNumber(5);
+//
+//        maslipcandlestickchart.setZoomBaseLine(Zoomable.ZOOM_BASE_LINE_CENTER);
+//
+//        maslipcandlestickchart.setDisplayLongitudeTitle(true);
+//        maslipcandlestickchart.setDisplayLatitudeTitle(true);
+//        maslipcandlestickchart.setDisplayLatitude(true);
+//        maslipcandlestickchart.setDisplayLongitude(true);
+//        maslipcandlestickchart.setBackgroundColor(Color.BLACK);
+//
+//        maslipcandlestickchart.setDataQuadrantPaddingTop(5);
+//        maslipcandlestickchart.setDataQuadrantPaddingBottom(5);
+//        maslipcandlestickchart.setDataQuadrantPaddingLeft(5);
+//        maslipcandlestickchart.setDataQuadrantPaddingRight(5);
 //      maslipcandlestickchart.setAxisYTitleQuadrantWidth(50);
 //      maslipcandlestickchart.setAxisXTitleQuadrantHeight(20);
-        maslipcandlestickchart
-                .setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
-        maslipcandlestickchart
-                .setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+//        maslipcandlestickchart
+//                .setAxisXPosition(AbstractAxis.AXIS_X_POSITION_BOTTOM);
+//        maslipcandlestickchart
+//                .setAxisYPosition(AbstractAxis.AXIS_Y_POSITION_RIGHT);
 
         // 为chart2增加均线
         maslipcandlestickchart.setLinesData(lines);
 
         // 为chart2增加均线
-        maslipcandlestickchart.setChartData(new ChartDataSet(new ChartDataTable(ohlc)));
+  //      maslipcandlestickchart.setChartData(new ChartDataSet(new ChartDataTable(ohlc)));
 
     }
 

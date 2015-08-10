@@ -96,7 +96,7 @@ public class RoseChart extends PieChart {
 
     /**
      * <p>
-     * Draw the data
+     * Draw the mData
      * </p>
      * <p>
      * チャートでデータを書く
@@ -110,7 +110,7 @@ public class RoseChart extends PieChart {
     @Override
     protected void drawData(Canvas canvas) {
         if (null != data) {
-            // data's value max
+            // mData's value max
             float max = 0;
             for (int i = 0; i < data.size(); i++) {
                 max = Math.max(max,data.get(i).getValue());
@@ -153,8 +153,8 @@ public class RoseChart extends PieChart {
             }
 
 //            float sumvalue = 0f;
-//            for (int k = 0; k < data.size(); k++) {
-//                TitleValueColorEntity e = data.get(k);
+//            for (int k = 0; k < mData.size(); k++) {
+//                TitleValueColorEntity e = mData.get(k);
 //                float value = e.getValue();
 //                sumvalue = sumvalue + value;
 //                float rate = (sumvalue - value / 2) / sum;

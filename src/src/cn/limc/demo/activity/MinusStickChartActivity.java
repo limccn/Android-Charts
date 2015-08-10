@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.MinusStickChart;
 import cn.limc.androidcharts.series.ChartDataRow;
 import cn.limc.androidcharts.series.ChartDataSet;
@@ -71,40 +71,40 @@ public class MinusStickChartActivity extends BaseActivity {
         data.add(new StickEntity(24000, 0, 20120303));
         data.add(new StickEntity(36000, 0, 20120303));
         data.add(new StickEntity(46000, 0, 20120303));
-        minusstickchart.setChartData(new ChartDataSet(new ChartDataTable(data)));
+   //     minusstickchart.setChartData(new ChartDataSet(new ChartDataTable(mData)));
 
-        //minusstickchart.setMaxSticksNum(data.size());
-        minusstickchart.setDisplayNumber(data.size());
-        
-        minusstickchart.setMaxValue(50000);
-        minusstickchart.setMinValue(-50000);
-
-        minusstickchart.setBorderColor(Color.GRAY);
-        minusstickchart.setAxisXColor(Color.WHITE);
-        minusstickchart.setAxisYColor(Color.WHITE);
-        minusstickchart.setLatitudeFontColor(Color.WHITE);
-        minusstickchart.setLatitudeColor(Color.GRAY);
-        minusstickchart.setLongitudeFontColor(Color.WHITE);
-        minusstickchart.setLongitudeColor(Color.GRAY);
-        // 最大纬线数
-        minusstickchart.setLatitudeNum(3);
-        // 最大经线数
-        minusstickchart.setLongitudeNum(2);
-        minusstickchart.setDisplayLongitudeTitle(true);
-        minusstickchart.setDisplayLatitudeTitle(true);
-        // minusstickchart.setDisplayCrossXOnTouch(false);
-        // minusstickchart.setDisplayCrossYOnTouch(false);
-        minusstickchart.setDisplayLatitude(true);
-        minusstickchart.setDisplayLongitude(true);
-
-        minusstickchart.setDataQuadrantPaddingTop(5);
-        minusstickchart.setDataQuadrantPaddingBottom(5);
-        minusstickchart.setDataQuadrantPaddingLeft(5);
-        minusstickchart.setDataQuadrantPaddingRight(5);
+//        //minusstickchart.setMaxSticksNum(mData.size());
+//        minusstickchart.setDisplayNumber(mData.size());
+//        
+//        minusstickchart.setMaxValue(50000);
+//        minusstickchart.setMinValue(-50000);
+//
+//        minusstickchart.setBorderColor(Color.GRAY);
+////        minusstickchart.setAxisXColor(Color.WHITE);
+////        minusstickchart.setAxisYColor(Color.WHITE);
+//        minusstickchart.setLatitudeFontColor(Color.WHITE);
+//        minusstickchart.setLatitudeColor(Color.GRAY);
+//        minusstickchart.setLongitudeFontColor(Color.WHITE);
+//        minusstickchart.setLongitudeColor(Color.GRAY);
+//        // 最大纬线数
+//        minusstickchart.setLatitudeNum(3);
+//        // 最大经线数
+//        minusstickchart.setLongitudeNum(2);
+//        minusstickchart.setDisplayLongitudeTitle(true);
+//        minusstickchart.setDisplayLatitudeTitle(true);
+//        // minusstickchart.setDisplayCrossXOnTouch(false);
+//        // minusstickchart.setDisplayCrossYOnTouch(false);
+//        minusstickchart.setDisplayLatitude(true);
+//        minusstickchart.setDisplayLongitude(true);
+//
+//        minusstickchart.setDataQuadrantPaddingTop(5);
+//        minusstickchart.setDataQuadrantPaddingBottom(5);
+//        minusstickchart.setDataQuadrantPaddingLeft(5);
+//        minusstickchart.setDataQuadrantPaddingRight(5);
         // minusstickchart.setAxisYTitleQuadrantWidth(50);
         // minusstickchart.setAxisXTitleQuadrantHeight(20);
-        minusstickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
-        minusstickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+//        minusstickchart.setAxisXPosition(AbstractAxis.AXIS_X_POSITION_BOTTOM);
+//        minusstickchart.setAxisYPosition(AbstractAxis.AXIS_Y_POSITION_RIGHT);
 
     }
 
