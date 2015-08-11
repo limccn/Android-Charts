@@ -43,4 +43,6 @@ public interface DataRange {
     
     DataComponent getBindComponent();
     void setBindComponent(DataComponent bindComponent);
+    
+
 }

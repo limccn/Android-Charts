@@ -22,7 +22,6 @@
 package cn.limc.androidcharts.component;
 
 import android.graphics.Canvas;
-import cn.limc.androidcharts.diagram.GridChart;
 import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.androidcharts.series.IMeasurable;
 import cn.limc.androidcharts.shape.Bar;

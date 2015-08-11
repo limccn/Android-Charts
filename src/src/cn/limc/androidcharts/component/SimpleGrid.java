@@ -21,9 +21,6 @@
 
 package cn.limc.androidcharts.component;
 
-import java.util.List;
-
-import cn.limc.androidcharts.diagram.GridChart;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;

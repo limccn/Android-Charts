@@ -1,5 +1,5 @@
 //
-// Candle.java
+// KShape.java
 // cn.limc.androidcharts.shape
 //
 // Created by limc on 2015-7-22.
@@ -16,7 +16,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
 /**
- * Candle
+ * KShape
  * Description: <br>
  *   <p>add description here </p>
  * Tags: <br>
@@ -29,9 +29,12 @@ import android.graphics.Paint.Style;
  * 2015-7-22 limc create v1.0 <br>
  *
  */
-public class Candle extends AbstractShape implements Rectangle {
+public class KShape extends AbstractShape implements Rectangle {
+    public static final int K_STYLE_CANDLE = 1;
+    public static final int K_STYLE_AMAERICAN = 2;
     
-
+    public static final int DEFAULT_K_STYLE = K_STYLE_CANDLE;
+    
     public static final int DEFAULT_STICK_SPACING = 1;
 
     /**
@@ -151,6 +154,8 @@ public class Candle extends AbstractShape implements Rectangle {
      * </p>
      */
     private int negativeStickFillColor = DEFAULT_NEGATIVE_STICK_FILL_COLOR;
+    
+    private int kStyle = DEFAULT_K_STYLE;
 
     /**
      * <p>
@@ -213,7 +218,12 @@ public class Candle extends AbstractShape implements Rectangle {
             
             // stick or line
             if (width() >= 2f) {
-                canvas.drawRect(left, openY, right, closeY, mPaintPositiveFill);
+                if (kStyle == K_STYLE_CANDLE) {
+                    canvas.drawRect(left, openY, right, closeY, mPaintPositiveFill);
+                }else if(kStyle == K_STYLE_AMAERICAN){
+                    canvas.drawLine(left, openY, left + width() / 2f, openY, mPaintPositiveBorder);
+                    canvas.drawLine(left + width() / 2f, closeY,right, closeY, mPaintPositiveBorder);
+                }
             }
             canvas.drawLine(left + width() / 2f, top, left + width() / 2f, bottom, mPaintPositiveBorder);
         } else if (stickData.getOpen() > stickData.getClose()) {
@@ -228,7 +238,12 @@ public class Candle extends AbstractShape implements Rectangle {
             
             // stick or line
             if (width() >= 2f) {
-                canvas.drawRect(left, openY,right, closeY, mPaintNegativeFill);
+                if (kStyle == K_STYLE_CANDLE) {
+                    canvas.drawRect(left, openY,right, closeY, mPaintNegativeFill);
+                }else if(kStyle == K_STYLE_AMAERICAN){
+                    canvas.drawLine(left, openY, left + width() / 2f, openY, mPaintNegativeBorder);
+                    canvas.drawLine(left + width() / 2f, closeY,right, closeY, mPaintNegativeBorder);
+                }
             }
             canvas.drawLine(left + width() / 2f, top, left + width() / 2f, bottom, mPaintNegativeBorder);
         } else {
@@ -238,7 +253,7 @@ public class Candle extends AbstractShape implements Rectangle {
             
             // line or point
             if (width() >= 2f) {
-                canvas.drawRect(left, openY, right,closeY, mPaintCrossStar);
+                canvas.drawLine(left, openY, right,closeY, mPaintCrossStar);
             }
             canvas.drawLine(left + width() / 2f, top, left + width() / 2f, bottom, mPaintCrossStar);
         }
@@ -393,6 +408,41 @@ public class Candle extends AbstractShape implements Rectangle {
      */
     public void setCloseY(float closeY) {
         this.closeY = closeY;
+    }
+
+    /**
+     * @return the kStyle
+     */
+    public int getkStyle() {
+        return kStyle;
+    }
+
+    /**
+     * @param kStyle the kStyle to set
+     */
+    public void setkStyle(int kStyle) {
+        this.kStyle = kStyle;
+    }
+
+    /**
+     * @return the stickSpacing
+     */
+    public int getStickSpacing() {
+        return stickSpacing;
+    }
+
+    /**
+     * @param stickSpacing the stickSpacing to set
+     */
+    public void setStickSpacing(int stickSpacing) {
+        this.stickSpacing = stickSpacing;
+    }
+
+    /**
+     * @param stickData the stickData to set
+     */
+    public void setStickData(OHLCEntity stickData) {
+        this.stickData = stickData;
     }
 
 }

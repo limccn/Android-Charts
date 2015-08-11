@@ -100,16 +100,16 @@ public class StickChart extends GridChart{
 	 * 
 	 * @see android.view.View#onDraw(android.graphics.Canvas)
 	 */
-	@Override
-	protected void onDraw(Canvas canvas) {
-		if (this.dataRange.isAutoCalcValueRange()) {
-		    this.dataRange.calcValueRange();
-		}
-//		initAxisY();
-//		initAxisX();
-		super.onDraw(canvas);
-		//drawSticks(canvas);
-	}
+//	@Override
+//	protected void onDraw(Canvas canvas) {
+//		if (this.dataRange.isAutoCalcValueRange()) {
+//		    this.dataRange.calcValueRange();
+//		}
+////		initAxisY();
+////		initAxisX();
+//		super.onDraw(canvas);
+//		//drawSticks(canvas);
+//	}
 
 	/**
 	 * <p>

@@ -87,7 +87,7 @@ public abstract class AbstractBaseChart extends View implements IChart {
 	 * 默认经线刻度字体颜色
 	 * </p>
 	 */
-	public static final int DEFAULT_BORDER_COLOR = Color.RED;
+	public static final int DEFAULT_BORDER_COLOR = Color.LTGRAY;
 
 	public static final float DEFAULT_BORDER_WIDTH = 1f;
 	

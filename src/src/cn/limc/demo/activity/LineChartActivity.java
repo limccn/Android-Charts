@@ -21,14 +21,9 @@
 
 package cn.limc.demo.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.LineChart;
 import cn.limc.androidcharts.series.ChartDataSet;
-import cn.limc.androidcharts.series.DateValueEntity;
 import cn.limc.androidcharts.series.LineEntity;
 import cn.limc.demo.common.BaseActivity;
 import android.os.Bundle;

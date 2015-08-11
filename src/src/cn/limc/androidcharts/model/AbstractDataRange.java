@@ -2,10 +2,8 @@ package cn.limc.androidcharts.model;
 
 import cn.limc.androidcharts.component.DataComponent;
 
-
 public abstract class AbstractDataRange implements DataRange{
     
-
     protected int dataMultiple =  DEFAULT_DATA_MULTIPLE;
     protected double maxValue = 1;
     protected double minValue = 0;
@@ -114,4 +112,5 @@ public abstract class AbstractDataRange implements DataRange{
     public void setRangeCalculator(RangeCalculator rangeCalculator) {
         this.rangeCalculator = rangeCalculator;
     }
+    
 }

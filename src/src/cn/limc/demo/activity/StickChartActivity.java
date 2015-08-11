@@ -22,13 +22,9 @@
 package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.diagram.StickChart;
-import cn.limc.androidcharts.series.ChartDataSet;
-import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.demo.common.BaseActivity;
 import android.os.Bundle;
-import android.graphics.Color;
 import android.view.Menu;
 
 public class StickChartActivity extends BaseActivity {

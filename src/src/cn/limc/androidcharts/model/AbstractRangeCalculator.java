@@ -2,7 +2,7 @@
 // AbstractRangeCalculator.java
 // cn.limc.androidcharts.model
 //
-// Created by limc on 2015-8-7.
+// Created by limc on 2015-8-10.
 //
 // Copyright 2015 Shanghai Okasan-Huada Computer System Co. Ltd., All rights reserved.
 //
@@ -24,12 +24,20 @@ import cn.limc.androidcharts.series.IMeasurable;
  * @version v1.0 
  * 
  * History: <br>
- * 2015-8-7 limc create v1.0 <br>
+ * 2015-8-10 limc create v1.0 <br>
  *
  */
 public abstract class AbstractRangeCalculator implements RangeCalculator {
-   
     
+    /**
+     * 
+     */
+    public AbstractRangeCalculator() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+
     /* (non-Javadoc)
      * @see cn.limc.androidcharts.model.RangeCalculator#calc(cn.limc.androidcharts.model.DataRange)
      */

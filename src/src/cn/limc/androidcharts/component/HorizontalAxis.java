@@ -27,7 +27,6 @@ import java.util.List;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
-import cn.limc.androidcharts.diagram.GridChart;
 import cn.limc.androidcharts.series.IHasDate;
 
 /** 
@@ -81,7 +80,7 @@ public class HorizontalAxis extends AbstractAxis {
         if (position == AXIS_X_POSITION_BOTTOM) {
             postY = getStartY() +  degreeFontSize;
         } else {
-            postY = getEndY() - degreeFontSize  -2;
+            postY = getEndY()  - 2;
         }
 
         Grid grid = bindComponent.getDataGrid();

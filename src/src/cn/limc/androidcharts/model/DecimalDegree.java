@@ -12,9 +12,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.limc.androidcharts.component.Axis;
 import cn.limc.androidcharts.component.SimpleGrid;
-import cn.limc.androidcharts.diagram.GridChart;
 
 /**
  * DecimalDegree

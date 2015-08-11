@@ -23,10 +23,6 @@ package cn.limc.androidcharts.model;
  *
  */
 public class SimpleDataRange extends AbstractDataRange {
-
-    /**
-     * 
-     */
     public SimpleDataRange() {
         // TODO Auto-generated constructor stub
     }

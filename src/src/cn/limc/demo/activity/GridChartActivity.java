@@ -26,22 +26,26 @@ import java.util.List;
 
 import cn.limc.androidcharts.R;
 import cn.limc.androidcharts.component.AbstractAxis;
+import cn.limc.androidcharts.component.AreaChartComponent;
 import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.HorizontalIndicator;
+import cn.limc.androidcharts.component.Indicator;
 import cn.limc.androidcharts.component.DataComponent;
 import cn.limc.androidcharts.component.DividedLayer;
 import cn.limc.androidcharts.component.HorizontalAxis;
+import cn.limc.androidcharts.component.KChartComponent;
 import cn.limc.androidcharts.component.Layer;
 import cn.limc.androidcharts.component.LineChartComponent;
 import cn.limc.androidcharts.component.SimpleGrid;
 import cn.limc.androidcharts.component.StickChartComponent;
 import cn.limc.androidcharts.component.VerticalAxis;
+import cn.limc.androidcharts.component.VerticalIndicator;
 import cn.limc.androidcharts.diagram.GridChart;
 import cn.limc.androidcharts.model.DataCursor;
 import cn.limc.androidcharts.model.DateTimeDegree;
 import cn.limc.androidcharts.model.DecimalDegree;
-import cn.limc.androidcharts.model.SectionDataCursor;
 import cn.limc.androidcharts.model.MeasuableRangeCalculator;
-import cn.limc.androidcharts.model.DataRange;
+import cn.limc.androidcharts.model.SectionDataCursor;
 import cn.limc.androidcharts.model.SimpleDataRange;
 import cn.limc.androidcharts.series.ChartDataSet;
 import cn.limc.androidcharts.series.ChartDataTable;
@@ -115,67 +119,122 @@ public class GridChartActivity extends BaseActivity {
 //        gridchart.setCrossLinesFontColor(Color.GREEN);
 //        gridchart.setBorderWidth(1);
         
-     // 以下计算VOL
-        ChartDataSet vlines = new ChartDataSet();
-
+        ChartDataSet lines = new ChartDataSet();
         // 计算5日均线
-        LineEntity vma5 = new LineEntity();
-        vma5.setTitle("MA5");
-        vma5.setLineColor(Color.WHITE);
-        vma5.setTableData(initVMA(5));
-        vlines.add(vma5);
+        LineEntity ma5 = new LineEntity();
+        ma5.setTitle("MA5");
+        ma5.setLineColor(Color.WHITE);
+        ma5.setTableData(initMA(5));
+        lines.add(ma5);
 
         // 计算10日均线
-        LineEntity vma10 = new LineEntity();
-        vma10.setTitle("MA10");
-        vma10.setLineColor(Color.CYAN);
-        vma10.setTableData(initVMA(10));
-        vlines.add(vma10);
+        LineEntity ma10 = new LineEntity();
+        ma10.setTitle("MA10");
+        ma10.setLineColor(Color.RED);
+        ma10.setTableData(initMA(10));
+        lines.add(ma10);
 
-        
         // 计算25日均线
-        LineEntity vma25 = new LineEntity();
-        vma25.setTitle("MA25");
-        vma25.setLineColor(Color.BLUE);
-        vma25.setTableData(initVMA(25));
-        vlines.add(vma25);
+        LineEntity ma25 = new LineEntity();
+        ma25.setTitle("MA25");
+        ma25.setLineColor(Color.GREEN);
+        ma25.setTableData(initMA(25));
+        lines.add(ma25);
+
+        ChartDataSet band = new ChartDataSet();
+        LineEntity lower = new LineEntity();
+        lower.setTitle("LOWER");
+        lower.setLineColor(Color.YELLOW);
+        lower.setTableData(dv1);
+        band.add(lower);
+
+        LineEntity upper = new LineEntity();
+        upper.setTitle("UPPER");
+        upper.setLineColor(Color.CYAN);
+        upper.setTableData(dv2);
+        band.add(upper);
         
         SimpleGrid grid= new SimpleGrid();
         gridchart.setDataGrid(grid);
         
-        SimpleDataRange dataRange = new SimpleDataRange();
-        dataRange.setRangeCalculator(new MeasuableRangeCalculator());
-  
-        DataComponent stickDataComponent = new StickChartComponent();
-        stickDataComponent.setChartData(new ChartDataSet(new ChartDataTable(vol)));
-        stickDataComponent.setDataCursor(new SectionDataCursor());
-        stickDataComponent.setDataGrid(grid);
-        stickDataComponent.setDataRange(dataRange);
+        SimpleDataRange dataRange1 = new SimpleDataRange();
+        dataRange1.setRangeCalculator(new MeasuableRangeCalculator());
+        
+        SimpleDataRange dataRange2 = new SimpleDataRange();
+        dataRange2.setRangeCalculator(new MeasuableRangeCalculator());
+        
+        SimpleDataRange dataRange3 = new SimpleDataRange();
+        dataRange3.setRangeCalculator(new MeasuableRangeCalculator());
+        
+        SimpleDataRange dataRange4 = new SimpleDataRange();
+        dataRange4.setRangeCalculator(new MeasuableRangeCalculator());
+        
+        DataComponent kChartComponent = new StickChartComponent();
+        kChartComponent.setChartData(new ChartDataSet(new ChartDataTable(vol)));
+        kChartComponent.setDataCursor(new SectionDataCursor());
+        kChartComponent.setDataGrid(grid);
+        kChartComponent.setDataRange(dataRange1);
+        
+//        DataComponent kChartComponent = new KChartComponent();
+//        kChartComponent.setChartData(new ChartDataSet(new ChartDataTable(ohlc)));
+//        kChartComponent.setDataCursor(new SectionDataCursor());
+//        kChartComponent.setDataGrid(grid);
+//        kChartComponent.setDataRange(dataRange1);
         
         DataComponent lineDataComponent = new LineChartComponent();
-        lineDataComponent.setChartData(vlines);
+        lineDataComponent.setChartData(lines);
         lineDataComponent.setDataCursor(new SectionDataCursor());
         lineDataComponent.setDataGrid(grid);
-        lineDataComponent.setDataRange(dataRange);
+        lineDataComponent.setDataRange(dataRange2);
         
-        gridchart.addComponent(stickDataComponent);
+        DataComponent bandDataComponent = new LineChartComponent();
+        bandDataComponent.setChartData(band);
+        bandDataComponent.setDataCursor(new SectionDataCursor());
+        bandDataComponent.setDataGrid(grid);
+        bandDataComponent.setDataRange(dataRange3);
+        
+        DataComponent bandChartComponent = new AreaChartComponent();
+        bandChartComponent.setChartData(band);
+        bandChartComponent.setDataCursor(new SectionDataCursor());
+        bandChartComponent.setDataGrid(grid);
+        bandChartComponent.setDataRange(dataRange4);
+        
+        gridchart.addComponent(kChartComponent);
         gridchart.addComponent(lineDataComponent);
+        gridchart.addComponent(bandDataComponent);     
+        gridchart.addComponent(bandChartComponent);     
         
         HorizontalAxis axisX = new HorizontalAxis();
-        axisX.setBindComponent(stickDataComponent);
+        axisX.setBindComponent(kChartComponent);
         axisX.setDegree(new DateTimeDegree());
         
         VerticalAxis axisY = new VerticalAxis();
-        axisY.setBindComponent(stickDataComponent);
+        axisY.setBindComponent(kChartComponent);
         axisY.setDegree(new DecimalDegree());
         
         VerticalAxis axisYLine = new VerticalAxis();
         axisYLine.setBindComponent(lineDataComponent);
         axisYLine.setDegree(new DecimalDegree());
+        
+        HorizontalAxis axisXLine = new HorizontalAxis();
+        axisXLine.setBindComponent(lineDataComponent);
+        axisXLine.setDegree(new DateTimeDegree());
+        
+        VerticalIndicator vIndicator = new VerticalIndicator();
+        vIndicator.setBindComponent(lineDataComponent);
+        vIndicator.setBindToStyle(Indicator.BIND_TO_TYPE_NONE);
+        
+        HorizontalIndicator hIndicator = new HorizontalIndicator();
+        hIndicator.setBindComponent(lineDataComponent);
+        hIndicator.setBindToStyle(Indicator.BIND_TO_TYPE_NONE);
        
         gridchart.setBottomAxis(axisX);
         gridchart.setRightAxis(axisY);
         gridchart.setLeftAxis(axisYLine);
+        gridchart.setTopAxis(axisXLine);
+        gridchart.setVerticalIndicator(vIndicator);
+        gridchart.setHorizontalIndicator(hIndicator);
+        
     }
 
 }

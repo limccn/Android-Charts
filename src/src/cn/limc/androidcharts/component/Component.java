@@ -23,6 +23,7 @@ package cn.limc.androidcharts.component;
 
 import cn.limc.androidcharts.diagram.GridChart;
 import android.graphics.Canvas;
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 /**
@@ -49,10 +50,14 @@ public interface Component {
     
     void draw(Canvas canvas);
     
+    boolean isValidTouchPoint(PointF pt);
+    boolean isValidTouchPoint(float x, float y);
+    
     RectF getFrame();
     void  setFrame(RectF frame);
     GridChart getParent();
     void setParent(GridChart parent);
+    
 
     float getPaddingTop();
 

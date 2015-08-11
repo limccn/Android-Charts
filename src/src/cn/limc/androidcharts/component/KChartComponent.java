@@ -9,10 +9,9 @@
 package cn.limc.androidcharts.component;
 
 import android.graphics.Canvas;
-import cn.limc.androidcharts.diagram.GridChart;
 import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.androidcharts.series.IMeasurable;
-import cn.limc.androidcharts.shape.Candle;
+import cn.limc.androidcharts.shape.KShape;
 
 /**
  * KChartComponent
@@ -43,10 +42,10 @@ public class KChartComponent extends DataComponent {
     @Override
     public void draw(Canvas canvas) {
         // TODO Auto-generated method stub
-
+        drawK(canvas);
     }
     
-    protected void drawSticks(Canvas canvas) {
+    protected void drawK(Canvas canvas) {
         if (null == chartData) {
             return;
         }
@@ -68,7 +67,7 @@ public class KChartComponent extends DataComponent {
             for (int j = dataCursor.getDisplayFrom(); j < dataCursor.getDisplayTo(); j++) {
                 IMeasurable stick = (IMeasurable)table.get(j);
                 
-                Candle mole = new Candle();
+                KShape mole = new KShape();
                 mole.setUp(this,stick,stickX,stickWidth);
                 mole.draw(canvas);
 

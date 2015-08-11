@@ -27,7 +27,7 @@ import cn.limc.androidcharts.model.CandleStickRangeCalculator;
 import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.androidcharts.series.IMeasurable;
 import cn.limc.androidcharts.series.OHLCEntity;
-import cn.limc.androidcharts.shape.Candle;
+import cn.limc.androidcharts.shape.KShape;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -399,7 +399,7 @@ public class CandleStickChart extends StickChart {
 //            for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
 //                IMeasurable stick = (IMeasurable)table.get(j);
 //                
-//                Candle mole = new Candle();
+//                KShape mole = new KShape();
 //                mole.setUp(this,stick,stickX,stickWidth);
 //                mole.draw(canvas);
 //

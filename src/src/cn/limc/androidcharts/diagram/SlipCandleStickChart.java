@@ -23,7 +23,7 @@ package cn.limc.androidcharts.diagram;
 
 import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.androidcharts.series.IMeasurable;
-import cn.limc.androidcharts.shape.Candle;
+import cn.limc.androidcharts.shape.KShape;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -142,7 +142,7 @@ public class SlipCandleStickChart extends SlipStickChart {
 //            for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
 //                IMeasurable stick = (IMeasurable)table.get(j);
 //                
-//                Candle mole = new Candle();
+//                KShape mole = new KShape();
 //                mole.setUp(this,stick,stickX,stickWidth);
 //                mole.draw(canvas);
 //

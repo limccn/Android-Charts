@@ -10,7 +10,6 @@ package cn.limc.androidcharts.component;
 
 import cn.limc.androidcharts.model.DataCursor;
 import cn.limc.androidcharts.model.SectionDataCursor;
-import cn.limc.androidcharts.model.MeasuableRangeCalculator;
 import cn.limc.androidcharts.model.DataRange;
 import cn.limc.androidcharts.model.SimpleDataRange;
 import cn.limc.androidcharts.series.ChartDataSet;

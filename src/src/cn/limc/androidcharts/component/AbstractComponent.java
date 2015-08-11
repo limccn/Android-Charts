@@ -59,6 +59,20 @@ public abstract class AbstractComponent implements Component{
     public AbstractComponent() {
 	}
     
+    public boolean isValidTouchPoint(PointF pt){
+        return isValidTouchPoint(pt.x,pt.y);
+    }
+
+    public boolean isValidTouchPoint(float x, float y) {
+        if (x < getPaddingStartX() || x > getPaddingEndX()) {
+            return false;
+        }
+        if (y < getPaddingStartY() || y > getPaddingEndY()) {
+            return false;
+        }
+        return true;
+    }
+
     public float getWidthRate(float value) {
         float valueLength = value - getPaddingStartX();
         return valueLength / getPaddingWidth();

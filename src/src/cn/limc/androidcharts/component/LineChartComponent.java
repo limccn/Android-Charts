@@ -10,7 +10,6 @@ package cn.limc.androidcharts.component;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import cn.limc.androidcharts.diagram.GridChart;
 import cn.limc.androidcharts.series.IMeasurable;
 import cn.limc.androidcharts.series.LineEntity;
 import cn.limc.androidcharts.shape.Points;
@@ -41,46 +40,7 @@ public class LineChartComponent extends DataComponent {
         drawLines(canvas);
 
     }
-    
-//  protected void drawLines(Canvas canvas) {
-//  if (null == linesData) {
-//      return;
-//  }
-//  if (linesData.size() == 0) {
-//      return;
-//  }
-//
-//  float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
-//
-//  for(int i=0; i< linesData.size() ; i++){
-//      LineEntity table = (LineEntity)linesData.getChartTable(i);
-//      if (null == table) {
-//          continue;
-//      }
-//      if(table.size() == 0){
-//          continue;
-//      }
-//      
-//      Paint mPaint = new Paint();
-//      mPaint.setColor(table.getLineColor());
-//      mPaint.setAntiAlias(true);
-//      
-//      float stickX = dataQuadrant.getPaddingStartX() + stickWidth / 2;
-//      for (int j = getDisplayFrom()+1; j < getDisplayTo(); j++) {
-//          IMeasurable point = (IMeasurable)table.get(j-1);
-//          IMeasurable nextpoint = (IMeasurable)table.get(j);
-//          
-//          Points lineMole = new Points();
-//          lineMole.setUp(this,point.getHigh(),nextpoint.getHigh(),stickX,stickWidth);
-//          lineMole.setLinePaint(mPaint);
-//          lineMole.draw(canvas);
-//
-//          // next x
-//          stickX = stickX + stickWidth;
-//      }
-//  }
-//}
-    
+        
     protected void drawLines(Canvas canvas) {
         if (null == chartData) {
             return;

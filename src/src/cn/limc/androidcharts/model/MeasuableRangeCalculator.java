@@ -1,5 +1,6 @@
 package cn.limc.androidcharts.model;
 
+import cn.limc.androidcharts.model.AbstractRangeCalculator;
 import cn.limc.androidcharts.series.IMeasurable;
 
 public class MeasuableRangeCalculator extends AbstractRangeCalculator {

@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.component.Axis;
-import cn.limc.androidcharts.component.CrossLines;
+import cn.limc.androidcharts.component.HorizontalIndicator;
+import cn.limc.androidcharts.component.Indicator;
 import cn.limc.androidcharts.component.DataComponent;
 import cn.limc.androidcharts.component.Grid;
 import cn.limc.androidcharts.component.Layer;
@@ -34,6 +35,7 @@ import cn.limc.androidcharts.component.Component;
 import cn.limc.androidcharts.component.DividedLayer;
 import cn.limc.androidcharts.component.SimpleGrid;
 import cn.limc.androidcharts.component.VerticalAxis;
+import cn.limc.androidcharts.component.VerticalIndicator;
 import cn.limc.androidcharts.event.GestureDetector;
 import cn.limc.androidcharts.event.IDisplayCursorListener;
 import cn.limc.androidcharts.event.Slipable;
@@ -51,11 +53,8 @@ import cn.limc.androidcharts.model.Degree;
 import cn.limc.androidcharts.model.DataRange;
 import cn.limc.androidcharts.model.SectionDataCursor;
 import cn.limc.androidcharts.model.SimpleDataCursor;
-import cn.limc.androidcharts.model.MeasuableRangeCalculator;
 import cn.limc.androidcharts.model.AbstractDataRange;
-import cn.limc.androidcharts.series.ChartDataSet;
 
-import android.R.integer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PathEffect;
@@ -96,32 +95,6 @@ public class GridChart extends AbstractBaseChart  {
 	 * </p>
 	 */
 	protected PointF touchPoint;
-
-	/**
-	 * <p>
-	 * Event will notify objects' list
-	 * </p>
-	 * <p>
-	 * イベント通知対象リスト
-	 * </p>
-	 * <p>
-	 * 事件通知对象列表
-	 * </p>
-	 */
-	
-    /**
-     * <p>
-     * mData to draw sticks
-     * </p>
-     * <p>
-     * スティックを書く用データ
-     * </p>
-     * <p>
-     * 绘制柱条用的数据
-     * </p>
-     */
- //   protected ChartDataSet chartData;
-    
    
 	protected OnTouchGestureListener onTouchListener = new OnTouchListener() {};
 	protected GestureDetector touchGestureDetector = new TouchGestureDetector(this,onTouchListener);
@@ -129,6 +102,7 @@ public class GridChart extends AbstractBaseChart  {
 	protected GestureDetector zoomGestureDetector = new ZoomGestureDetector(this, onZoomListener);
     protected OnSlipGestureListener onSlipListener = new OnSlipListener(){};
     protected GestureDetector slipGestureDetector = new SlipGestureDetector(this,onSlipListener);
+    protected IDisplayCursorListener onDisplayCursorListener;
 	
 	protected HorizontalAxis topAxis;
 	protected HorizontalAxis bottomAxis;
@@ -140,25 +114,25 @@ public class GridChart extends AbstractBaseChart  {
 	protected Layer leftAxisLayer;
 	protected Layer rightAxisLayer;
 	protected Layer gridLayer;
-	protected Layer crossLinesLayer;
 	
+	protected Layer vIndicatorLayer;
+	protected Layer hIndicatorLayer;
+   
 	protected List<Layer> dataLayers = new ArrayList<Layer>();
 	protected List<Layer> userLayers = new ArrayList<Layer>();
     
     
-	protected CrossLines crossLines;
+	protected Indicator vIndicator;
+	protected Indicator hIndicator;
 	protected SimpleGrid dataGrid;
 	
-	protected DataCursor dataCursor = new SimpleDataCursor();
-	protected Degree axisYDegree = new DecimalDegree();
-	protected Degree axisXDegree = new DateTimeDegree();
-	protected DataRange dataRange;
+//	protected DataCursor dataCursor = new SimpleDataCursor();
+//	protected Degree axisYDegree = new DecimalDegree();
+//	protected Degree axisXDegree = new DateTimeDegree();
+//	protected DataRange dataRange;
 	    
-    public static final int DEFAULT_STICK_SPACING = 1;
-
-    protected int stickSpacing = DEFAULT_STICK_SPACING;
-
-    protected IDisplayCursorListener onDisplayCursorListener;
+//    public static final int DEFAULT_STICK_SPACING = 1;
+//    protected int stickSpacing = DEFAULT_STICK_SPACING;
 	
     public void setTopAxis(HorizontalAxis axis){
         axis.setParent(this);
@@ -244,20 +218,36 @@ public class GridChart extends AbstractBaseChart  {
         gridLayer.FillComponent(grid,divide);
     }
     
-    public void setCrossLines(CrossLines crossLines){
-        crossLines.setParent(this);
-        this.crossLines = crossLines;
-        crossLinesLayer = new DividedLayer();
-        crossLinesLayer.setParent(this);
-        crossLinesLayer.FillComponent(crossLines,DividedLayer.CENTER_MIDDLE);
+    public void setVerticalIndicator(VerticalIndicator indicator){
+        indicator.setParent(this);
+        this.vIndicator = indicator;
+        vIndicatorLayer = new DividedLayer();
+        vIndicatorLayer.setParent(this);
+        vIndicatorLayer.FillComponent(indicator,DividedLayer.CENTER_MIDDLE);
     }
     
-    public void setCrossLines(CrossLines crossLines,int divide){
-        crossLines.setParent(this);
-        this.crossLines = crossLines;
-        crossLinesLayer = new DividedLayer();
-        crossLinesLayer.setParent(this);
-        crossLinesLayer.FillComponent(crossLines,divide);
+    public void setVerticalIndicator(VerticalIndicator indicator,int divide){
+        indicator.setParent(this);
+        this.vIndicator = indicator;
+        vIndicatorLayer = new DividedLayer();
+        vIndicatorLayer.setParent(this);
+        vIndicatorLayer.FillComponent(indicator,divide);
+    }
+    
+    public void setHorizontalIndicator(HorizontalIndicator indicator){
+        indicator.setParent(this);
+        this.hIndicator = indicator;
+        hIndicatorLayer = new DividedLayer();
+        hIndicatorLayer.setParent(this);
+        hIndicatorLayer.FillComponent(indicator,DividedLayer.CENTER_MIDDLE);
+    }
+    
+    public void setHorizontalIndicator(HorizontalIndicator indicator,int divide){
+        indicator.setParent(this);
+        this.hIndicator = indicator;
+        hIndicatorLayer = new DividedLayer();
+        hIndicatorLayer.setParent(this);
+        hIndicatorLayer.FillComponent(indicator,divide);
     }
     
     public void addLayer(Layer layer){
@@ -270,6 +260,7 @@ public class GridChart extends AbstractBaseChart  {
     public void addComponent(Component component){
         Layer layer = new DividedLayer();
         layer.setParent(this);
+        component.setParent(this);
         layer.FillComponent(component, DividedLayer.CENTER_MIDDLE);
         this.dataLayers.add(layer);
     }
@@ -277,6 +268,7 @@ public class GridChart extends AbstractBaseChart  {
     public void addComponent(Component component, int divide){
         Layer layer = new DividedLayer();
         layer.setParent(this);
+        component.setParent(this);
         layer.FillComponent(component, divide);
         this.dataLayers.add(layer);
     }
@@ -337,6 +329,13 @@ public class GridChart extends AbstractBaseChart  {
 	protected void onDraw(Canvas canvas) {
 	    
 		super.onDraw(canvas);  
+		
+        for (Layer mlayer : this.dataLayers) {
+            if (mlayer != null) {
+                ((DataComponent) mlayer.getComponent()).getDataRange().calcValueRange();
+            }
+        }
+	      
 	    if (gridLayer != null) {
 	        gridLayer.draw(canvas);
 	    }
@@ -362,51 +361,22 @@ public class GridChart extends AbstractBaseChart  {
                 mlayer.draw(canvas);
             }
         }
-		if(crossLines != null){
-		    crossLines.draw(canvas);
+		if(vIndicatorLayer != null){
+		    vIndicatorLayer.draw(canvas);
 		}
-		
-//		axisX.draw(canvas);
-//		axisY.draw(canvas);
-
-//		gridLayer.draw(canvas);
-//	    axisXLayer.draw(canvas);
-//	    axisYLayer.draw(canvas);
-//		dataLayer.draw(canvas);
-//		//simpleGrid.draw(canvas);
-//		crossLineLayer.draw(canvas);
+        if(hIndicatorLayer != null){
+            hIndicatorLayer.draw(canvas);
+        }
 	}
 	
 	@Override
     public boolean onTouchEvent(MotionEvent event) {
-//        if (!isValidTouchPoint(event.getX(),event.getY())) {
-//            return false;
-//        }
-        
-//        if (null == chartData || chartData.size() == 0) {
-//            return false;
-//        }
-//        
-//        if (null == chartData.getChartTable() || chartData.getChartTable().size() == 0) {
-//            return false;
-//        }
-        
         return touchGestureDetector.onTouchEvent(event) &&
                 zoomGestureDetector.onTouchEvent(event) && 
                 slipGestureDetector.onTouchEvent(event);
     }
 	
-//	   public boolean isValidTouchPoint (float x , float y) {
-//	        if (x < dataQuadrant.getPaddingStartX()
-//	                || x > dataQuadrant.getPaddingEndX()) {
-//	            return false;
-//	        }
-//	        if (y < dataQuadrant.getPaddingStartY()
-//	                || y > dataQuadrant.getPaddingEndY()) {
-//	            return false;
-//	        }
-//	        return true;
-//	    }
+
 	    
     /**
      * <p>
@@ -434,10 +404,10 @@ public class GridChart extends AbstractBaseChart  {
         if (null == touchPoint) {
             return 0;
         }
-//        if (!isValidTouchPoint(touchPoint.x,touchPoint.y)) {
-//            return 0;
-//        }
-        return crossLines.calcSelectedIndex(touchPoint.x, touchPoint.y);
+        if (!((Component)vIndicator).isValidTouchPoint(touchPoint)) {
+            return 0;
+        }
+        return vIndicator.calcSelectedIndex(touchPoint);
     }
     
 //	   /**
@@ -577,52 +547,52 @@ public class GridChart extends AbstractBaseChart  {
 //	}
 
 
-	/**
-	 * @return the clickPostX
-	 */
-	@Deprecated
-	public float getClickPostX() {
-		if (touchPoint == null) {
-			return 0f;
-		}else{
-			return touchPoint.x;
-		}
-
-	}
-
-	/**
-	 * @param clickPostX
-	 *            the clickPostX to set
-	 */
-	@Deprecated
-	public void setClickPostX(float clickPostX) {
-		if (clickPostX >= 0) {
-			this.touchPoint.x = clickPostX;
-		}
-	}
-
-	/**
-	 * @return the clickPostY
-	 */
-	@Deprecated
-	public float getClickPostY() {
-		if (touchPoint == null) {
-			return 0f;
-		} else {
-			return touchPoint.y;
-		}
-	}
-
-	/**
-	 * @param touchPoint.y
-	 *            the clickPostY to set
-	 */
-	@Deprecated
-	public void setClickPostY(float clickPostY) {
-		if (clickPostY >= 0) {
-			this.touchPoint.y = clickPostY;
-		}
-	}
+//	/**
+//	 * @return the clickPostX
+//	 */
+//	@Deprecated
+//	public float getClickPostX() {
+//		if (touchPoint == null) {
+//			return 0f;
+//		}else{
+//			return touchPoint.x;
+//		}
+//
+//	}
+//
+//	/**
+//	 * @param clickPostX
+//	 *            the clickPostX to set
+//	 */
+//	@Deprecated
+//	public void setClickPostX(float clickPostX) {
+//		if (clickPostX >= 0) {
+//			this.touchPoint.x = clickPostX;
+//		}
+//	}
+//
+//	/**
+//	 * @return the clickPostY
+//	 */
+//	@Deprecated
+//	public float getClickPostY() {
+//		if (touchPoint == null) {
+//			return 0f;
+//		} else {
+//			return touchPoint.y;
+//		}
+//	}
+//
+//	/**
+//	 * @param touchPoint.y
+//	 *            the clickPostY to set
+//	 */
+//	@Deprecated
+//	public void setClickPostY(float clickPostY) {
+//		if (clickPostY >= 0) {
+//			this.touchPoint.y = clickPostY;
+//		}
+//	}
 
 	/**
 	 * @return the touchPoint
@@ -771,12 +741,12 @@ public class GridChart extends AbstractBaseChart  {
 //        this.axisY = axisY;
 //    }
 
-    /**
-     * @return the crossLines
-     */
-    public CrossLines getCrossLines() {
-        return crossLines;
-    }
+//    /**
+//     * @return the crossLines
+//     */
+//    public Indicator getCrossLines() {
+//        return crossLines;
+//    }
 
 
     /**
@@ -786,65 +756,65 @@ public class GridChart extends AbstractBaseChart  {
         return dataGrid;
     }
 
-	/**
-	 * @return the crossLinesColor
-	 */
-	public int getCrossLinesColor() {
-		return crossLines.getCrossLinesColor();
-	}
-
-	/**
-	 * @param crossLinesColor
-	 *            the crossLinesColor to set
-	 */
-	public void setCrossLinesColor(int crossLinesColor) {
-		this.crossLines.setCrossLinesColor(crossLinesColor);
-	}
-
-	/**
-	 * @return the crossLinesFontColor
-	 */
-	public int getCrossLinesFontColor() {
-		return crossLines.getCrossLinesFontColor();
-	}
-
-	/**
-	 * @param crossLinesFontColor
-	 *            the crossLinesFontColor to set
-	 */
-	public void setCrossLinesFontColor(int crossLinesFontColor) {
-		this.crossLines.setCrossLinesFontColor(crossLinesFontColor);
-	}
-	
-	/**
-	 * @return the displayCrossXOnTouch
-	 */
-	public boolean isDisplayCrossXOnTouch() {
-		return crossLines.isDisplayCrossXOnTouch();
-	}
-
-	/**
-	 * @param displayCrossXOnTouch
-	 *            the displayCrossXOnTouch to set
-	 */
-	public void setDisplayCrossXOnTouch(boolean displayCrossXOnTouch) {
-		this.crossLines.setDisplayCrossXOnTouch(displayCrossXOnTouch) ;
-	}
-
-	/**
-	 * @return the displayCrossYOnTouch
-	 */
-	public boolean isDisplayCrossYOnTouch() {
-		return crossLines.isDisplayCrossYOnTouch();
-	}
-
-	/**
-	 * @param displayCrossYOnTouch
-	 *            the displayCrossYOnTouch to set
-	 */
-	public void setDisplayCrossYOnTouch(boolean displayCrossYOnTouch) {
-	    this.crossLines.setDisplayCrossYOnTouch(displayCrossYOnTouch) ;
-	}
+//	/**
+//	 * @return the crossLinesColor
+//	 */
+//	public int getCrossLinesColor() {
+//		return crossLines.getCrossLinesColor();
+//	}
+//
+//	/**
+//	 * @param crossLinesColor
+//	 *            the crossLinesColor to set
+//	 */
+//	public void setCrossLinesColor(int crossLinesColor) {
+//		this.crossLines.setCrossLinesColor(crossLinesColor);
+//	}
+//
+//	/**
+//	 * @return the crossLinesFontColor
+//	 */
+//	public int getCrossLinesFontColor() {
+//		return crossLines.getCrossLinesFontColor();
+//	}
+//
+//	/**
+//	 * @param crossLinesFontColor
+//	 *            the crossLinesFontColor to set
+//	 */
+//	public void setCrossLinesFontColor(int crossLinesFontColor) {
+//		this.crossLines.setCrossLinesFontColor(crossLinesFontColor);
+//	}
+//	
+//	/**
+//	 * @return the displayCrossXOnTouch
+//	 */
+//	public boolean isDisplayCrossXOnTouch() {
+//		return crossLines.isDisplayCrossXOnTouch();
+//	}
+//
+//	/**
+//	 * @param displayCrossXOnTouch
+//	 *            the displayCrossXOnTouch to set
+//	 */
+//	public void setDisplayCrossXOnTouch(boolean displayCrossXOnTouch) {
+//		this.crossLines.setDisplayCrossXOnTouch(displayCrossXOnTouch) ;
+//	}
+//
+//	/**
+//	 * @return the displayCrossYOnTouch
+//	 */
+//	public boolean isDisplayCrossYOnTouch() {
+//		return crossLines.isDisplayCrossYOnTouch();
+//	}
+//
+//	/**
+//	 * @param displayCrossYOnTouch
+//	 *            the displayCrossYOnTouch to set
+//	 */
+//	public void setDisplayCrossYOnTouch(boolean displayCrossYOnTouch) {
+//	    this.crossLines.setDisplayCrossYOnTouch(displayCrossYOnTouch) ;
+//	}
 	
     /**
      * @return the displayLongitudeTitle
@@ -1129,114 +1099,112 @@ public class GridChart extends AbstractBaseChart  {
 //      }
 //  }
     
-    
-    
-    /**
-     * @return the dataMultiple
-     */
-    public int getDataMultiple() {
-        return dataRange.getDataMultiple();
-    }
-
-    /**
-     * @param dataMultiple the dataMultiple to set
-     */
-    public void setDataMultiple(int dataMultiple) {
-        ((AbstractDataRange)this.dataRange).setDataMultiple(dataMultiple);
-    }
-
-    /**
-     * @return the axisYDecimalFormat
-     */
-    @Deprecated
-    public String getAxisYDecimalFormat() {
-        return ((DecimalDegree)axisYDegree).getTargetFormat();
-    }
-
-    /**
-     * @param axisYDecimalFormat the axisYDecimalFormat to set
-     */
-    @Deprecated
-    public void setAxisYDecimalFormat(String axisYDecimalFormat) {
-        ((DecimalDegree)axisYDegree).setTargetFormat(axisYDecimalFormat);
-    }
-
-    /**
-     * @return the axisXDateTargetFormat
-     */
-    @Deprecated
-    public String getAxisXDateTargetFormat() {
-        return ((DateTimeDegree)axisXDegree).getTargetFormat();
-    }
-
-    /**
-     * @param axisXDateTargetFormat the axisXDateTargetFormat to set
-     */
-    @Deprecated
-    public void setAxisXDateTargetFormat(String axisXDateTargetFormat) {
-        ((DateTimeDegree)axisXDegree).setTargetFormat(axisXDateTargetFormat);
-    }
-
-    /**
-     * @return the axisXDateSourceFormat
-     */
-    @Deprecated
-    public String getAxisXDateSourceFormat() {
-        return ((DateTimeDegree)axisXDegree).getSourceFormat();
-    }
-
-    /**
-     * @param axisXDateSourceFormat the axisXDateSourceFormat to set
-     */
-    @Deprecated
-    public void setAxisXDateSourceFormat(String axisXDateSourceFormat) {
-        ((DateTimeDegree)axisXDegree).setSourceFormat(axisXDateSourceFormat);
-    }
-    
-    /**
-     * @return the maxValue
-     */
-    public double getMaxValue() {
-        return dataRange.getMaxValue();
-    }
-
-    /**
-     * @param maxValue
-     *            the maxValue to set
-     */
-    public void setMaxValue(double maxValue) {
-        ((AbstractDataRange)this.dataRange).setMaxValue(maxValue);
-    }
-
-    /**
-     * @return the minValue
-     */
-    public double getMinValue() {
-        return dataRange.getMinValue();
-    }
-
-    /**
-     * @param minValue
-     *            the minValue to set
-     */
-    public void setMinValue(double minValue) {
-        ((AbstractDataRange)this.dataRange).setMinValue(minValue);
-    }
-
-    /**
-     * @return the autoCalcValueRange
-     */
-    public boolean isAutoCalcValueRange() {
-        return this.dataRange.isAutoCalcValueRange();
-    }
-
-    /**
-     * @param autoCalcValueRange
-     *            the autoCalcValueRange to set
-     */
-    public void setAutoCalcValueRange(boolean autoCalcValueRange) {
-        ((AbstractDataRange)this.dataRange).setAutoCalcValueRange(autoCalcValueRange);
-    }
+//    /**
+//     * @return the dataMultiple
+//     */
+//    public int getDataMultiple() {
+//        return dataRange.getDataMultiple();
+//    }
+//
+//    /**
+//     * @param dataMultiple the dataMultiple to set
+//     */
+//    public void setDataMultiple(int dataMultiple) {
+//        ((AbstractDataRange)this.dataRange).setDataMultiple(dataMultiple);
+//    }
+//
+//    /**
+//     * @return the axisYDecimalFormat
+//     */
+//    @Deprecated
+//    public String getAxisYDecimalFormat() {
+//        return ((DecimalDegree)axisYDegree).getTargetFormat();
+//    }
+//
+//    /**
+//     * @param axisYDecimalFormat the axisYDecimalFormat to set
+//     */
+//    @Deprecated
+//    public void setAxisYDecimalFormat(String axisYDecimalFormat) {
+//        ((DecimalDegree)axisYDegree).setTargetFormat(axisYDecimalFormat);
+//    }
+//
+//    /**
+//     * @return the axisXDateTargetFormat
+//     */
+//    @Deprecated
+//    public String getAxisXDateTargetFormat() {
+//        return ((DateTimeDegree)axisXDegree).getTargetFormat();
+//    }
+//
+//    /**
+//     * @param axisXDateTargetFormat the axisXDateTargetFormat to set
+//     */
+//    @Deprecated
+//    public void setAxisXDateTargetFormat(String axisXDateTargetFormat) {
+//        ((DateTimeDegree)axisXDegree).setTargetFormat(axisXDateTargetFormat);
+//    }
+//
+//    /**
+//     * @return the axisXDateSourceFormat
+//     */
+//    @Deprecated
+//    public String getAxisXDateSourceFormat() {
+//        return ((DateTimeDegree)axisXDegree).getSourceFormat();
+//    }
+//
+//    /**
+//     * @param axisXDateSourceFormat the axisXDateSourceFormat to set
+//     */
+//    @Deprecated
+//    public void setAxisXDateSourceFormat(String axisXDateSourceFormat) {
+//        ((DateTimeDegree)axisXDegree).setSourceFormat(axisXDateSourceFormat);
+//    }
+//    
+//    /**
+//     * @return the maxValue
+//     */
+//    public double getMaxValue() {
+//        return dataRange.getMaxValue();
+//    }
+//
+//    /**
+//     * @param maxValue
+//     *            the maxValue to set
+//     */
+//    public void setMaxValue(double maxValue) {
+//        ((AbstractDataRange)this.dataRange).setMaxValue(maxValue);
+//    }
+//
+//    /**
+//     * @return the minValue
+//     */
+//    public double getMinValue() {
+//        return dataRange.getMinValue();
+//    }
+//
+//    /**
+//     * @param minValue
+//     *            the minValue to set
+//     */
+//    public void setMinValue(double minValue) {
+//        ((AbstractDataRange)this.dataRange).setMinValue(minValue);
+//    }
+//
+//    /**
+//     * @return the autoCalcValueRange
+//     */
+//    public boolean isAutoCalcValueRange() {
+//        return this.dataRange.isAutoCalcValueRange();
+//    }
+//
+//    /**
+//     * @param autoCalcValueRange
+//     *            the autoCalcValueRange to set
+//     */
+//    public void setAutoCalcValueRange(boolean autoCalcValueRange) {
+//        ((AbstractDataRange)this.dataRange).setAutoCalcValueRange(autoCalcValueRange);
+//    }
 
 //    /**
 //     * @return the dataCursor
@@ -1266,33 +1234,33 @@ public class GridChart extends AbstractBaseChart  {
 //        this.dataRange = dataRange;
 //    }
 
-    /**
-     * @return the axisYDegree
-     */
-    public Degree getAxisYDegree() {
-        return axisYDegree;
-    }
-
-    /**
-     * @param axisYDegree the axisYDegree to set
-     */
-    public void setAxisYDegree(Degree axisYDegree) {
-        this.axisYDegree = axisYDegree;
-    }
-
-    /**
-     * @return the axisXDegree
-     */
-    public Degree getAxisXDegree() {
-        return axisXDegree;
-    }
-
-    /**
-     * @param axisXDegree the axisXDegree to set
-     */
-    public void setAxisXDegree(Degree axisXDegree) {
-        this.axisXDegree = axisXDegree;
-    }
+//    /**
+//     * @return the axisYDegree
+//     */
+//    public Degree getAxisYDegree() {
+//        return axisYDegree;
+//    }
+//
+//    /**
+//     * @param axisYDegree the axisYDegree to set
+//     */
+//    public void setAxisYDegree(Degree axisYDegree) {
+//        this.axisYDegree = axisYDegree;
+//    }
+//
+//    /**
+//     * @return the axisXDegree
+//     */
+//    public Degree getAxisXDegree() {
+//        return axisXDegree;
+//    }
+//
+//    /**
+//     * @param axisXDegree the axisXDegree to set
+//     */
+//    public void setAxisXDegree(Degree axisXDegree) {
+//        this.axisXDegree = axisXDegree;
+//    }
 
 //    /**
 //     * @return the chartData
@@ -1322,119 +1290,119 @@ public class GridChart extends AbstractBaseChart  {
 //        this.gridAlignType = stickAlignType;
 //    }
 //    
-    /**
-     * @return the maxSticksNum
-     */
-    @Deprecated
-    public int getMaxSticksNum() {
-        return dataCursor.getDisplayNumber();
-    }
+//    /**
+//     * @return the maxSticksNum
+//     */
+//    @Deprecated
+//    public int getMaxSticksNum() {
+//        return dataCursor.getDisplayNumber();
+//    }
+//
+//    /**
+//     * @param maxSticksNum
+//     *            the maxSticksNum to set
+//     */
+//    @Deprecated
+//    public void setMaxSticksNum(int maxSticksNum) {
+//        this.dataCursor.setDisplayNumber(maxSticksNum);
+//    }
+//
+//    /**
+//     * @return the barSpacing
+//     */
+//    @Deprecated
+//    public int getStickSpacing() {
+//        return stickSpacing;
+//    }
+//
+//    /**
+//     * @param barSpacing the barSpacing to set
+//     */
+//    @Deprecated
+//    public void setStickSpacing(int stickSpacing) {
+//        this.stickSpacing = stickSpacing;
+//    }
 
-    /**
-     * @param maxSticksNum
-     *            the maxSticksNum to set
-     */
-    @Deprecated
-    public void setMaxSticksNum(int maxSticksNum) {
-        this.dataCursor.setDisplayNumber(maxSticksNum);
-    }
-
-    /**
-     * @return the barSpacing
-     */
-    @Deprecated
-    public int getStickSpacing() {
-        return stickSpacing;
-    }
-
-    /**
-     * @param barSpacing the barSpacing to set
-     */
-    @Deprecated
-    public void setStickSpacing(int stickSpacing) {
-        this.stickSpacing = stickSpacing;
-    }
-
-    /* (non-Javadoc)
-     * 
-     * @return 
-     * @see cn.limc.androidcharts.common.IDataCursor#displayFrom() 
-     */
-    public int getDisplayFrom() {
-        return this.dataCursor.getDisplayFrom();
-    }
-
-    /* (non-Javadoc)
-     * 
-     * @return 
-     * @see cn.limc.androidcharts.common.IDataCursor#displayNumber() 
-     */
-    public int getDisplayNumber() {
-        return this.dataCursor.getDisplayNumber();
-    }
-
-    /* (non-Javadoc)
-     * 
-     * @return 
-     * @see cn.limc.androidcharts.common.IDataCursor#displayTo() 
-     */
-    public int getDisplayTo() {
-        return this.dataCursor.getDisplayTo();
-    }
-
-    /* (non-Javadoc)
-     * 
-     * @param displayFrom 
-     * @see cn.limc.androidcharts.common.IDataCursor#setDisplayFrom(int) 
-     */
-    public void setDisplayFrom(int displayFrom) {
-        this.dataCursor.setDisplayFrom(displayFrom);
-    }
-
-    /* (non-Javadoc)
-     * 
-     * @param displayNumber 
-     * @see cn.limc.androidcharts.common.IDataCursor#setDisplayNumber(int) 
-     */
-    public void setDisplayNumber(int displayNumber) {
-        this.dataCursor.setDisplayNumber(displayNumber);
-    }
-
-    /* (non-Javadoc)
-     * 
-     * @return 
-     * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber() 
-     */
-    public int getMinDisplayNumber() {
-        return this.dataCursor.getMinDisplayNumber();
-    }
-
-    /* (non-Javadoc)
-     * 
-     * @param minDisplayNumber 
-     * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber(int) 
-     */
-    public void setMinDisplayNumber(int minDisplayNumber) {
-        this.dataCursor.setMinDisplayNumber(minDisplayNumber);
-    }
-    
-        /**
-      * @return the zoomBaseLine
-      */
-     @Deprecated
-     public int getZoomBaseLine() {
-         return ((SectionDataCursor)dataCursor).getZoomBaseLine();
-     }
-    
-     /**
-      * @param zoomBaseLine
-      *            the zoomBaseLine to set
-      */
-        @Deprecated
-     public void setZoomBaseLine(int zoomBaseLine) {
-         ((SectionDataCursor)dataCursor).setZoomBaseLine(zoomBaseLine);
-     }
-     
+//    /* (non-Javadoc)
+//     * 
+//     * @return 
+//     * @see cn.limc.androidcharts.common.IDataCursor#displayFrom() 
+//     */
+//    public int getDisplayFrom() {
+//        return this.dataCursor.getDisplayFrom();
+//    }
+//
+//    /* (non-Javadoc)
+//     * 
+//     * @return 
+//     * @see cn.limc.androidcharts.common.IDataCursor#displayNumber() 
+//     */
+//    public int getDisplayNumber() {
+//        return this.dataCursor.getDisplayNumber();
+//    }
+//
+//    /* (non-Javadoc)
+//     * 
+//     * @return 
+//     * @see cn.limc.androidcharts.common.IDataCursor#displayTo() 
+//     */
+//    public int getDisplayTo() {
+//        return this.dataCursor.getDisplayTo();
+//    }
+//
+//    /* (non-Javadoc)
+//     * 
+//     * @param displayFrom 
+//     * @see cn.limc.androidcharts.common.IDataCursor#setDisplayFrom(int) 
+//     */
+//    public void setDisplayFrom(int displayFrom) {
+//        this.dataCursor.setDisplayFrom(displayFrom);
+//    }
+//
+//    /* (non-Javadoc)
+//     * 
+//     * @param displayNumber 
+//     * @see cn.limc.androidcharts.common.IDataCursor#setDisplayNumber(int) 
+//     */
+//    public void setDisplayNumber(int displayNumber) {
+//        this.dataCursor.setDisplayNumber(displayNumber);
+//    }
+//
+//    /* (non-Javadoc)
+//     * 
+//     * @return 
+//     * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber() 
+//     */
+//    public int getMinDisplayNumber() {
+//        return this.dataCursor.getMinDisplayNumber();
+//    }
+//
+//    /* (non-Javadoc)
+//     * 
+//     * @param minDisplayNumber 
+//     * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber(int) 
+//     */
+//    public void setMinDisplayNumber(int minDisplayNumber) {
+//        this.dataCursor.setMinDisplayNumber(minDisplayNumber);
+//    }
+//    
+//        /**
+//      * @return the zoomBaseLine
+//      */
+//     @Deprecated
+//     public int getZoomBaseLine() {
+//         return ((SectionDataCursor)dataCursor).getZoomBaseLine();
+//     }
+//    
+//     /**
+//      * @param zoomBaseLine
+//      *            the zoomBaseLine to set
+//      */
+//        @Deprecated
+//     public void setZoomBaseLine(int zoomBaseLine) {
+//         ((SectionDataCursor)dataCursor).setZoomBaseLine(zoomBaseLine);
+//     }
+//     
      /**
       * @return the onSlipListener
       */
@@ -1456,7 +1424,7 @@ public class GridChart extends AbstractBaseChart  {
          */
         @Override
         public void onTouchDown(MotionEvent event , PointF pt) {
-            GridChart.this.touchPoint = pt;
+            touchPoint = pt;
             GridChart.this.postInvalidate();
             
         }
@@ -1466,7 +1434,7 @@ public class GridChart extends AbstractBaseChart  {
          */
         @Override
         public void onTouchMoved(MotionEvent event , PointF pt) {
-            GridChart.this.touchPoint = pt;
+            touchPoint = pt;
             GridChart.this.postInvalidate();
         }
 
@@ -1475,7 +1443,7 @@ public class GridChart extends AbstractBaseChart  {
          */
         @Override
         public void onTouchUp(MotionEvent event , PointF pt) {
-            GridChart.this.touchPoint = pt;
+            touchPoint = pt;
             GridChart.this.postInvalidate();
         }
         
@@ -1570,9 +1538,5 @@ public class GridChart extends AbstractBaseChart  {
             }
             GridChart.this.postInvalidate();
         }
-    }
-    
-    public interface onDrawingListener{
-        
     }
 }

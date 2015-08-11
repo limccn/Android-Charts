@@ -15,9 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import cn.limc.androidcharts.component.Grid;
 import cn.limc.androidcharts.component.SimpleGrid;
-import cn.limc.androidcharts.diagram.GridChart;
 import cn.limc.androidcharts.series.ChartDataSet;
 import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.androidcharts.series.IHasDate;

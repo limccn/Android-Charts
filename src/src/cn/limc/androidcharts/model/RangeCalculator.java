@@ -2,7 +2,7 @@
 // RangeCalculator.java
 // cn.limc.androidcharts.model
 //
-// Created by limc on 2015-8-7.
+// Created by limc on 2015-8-10.
 //
 // Copyright 2015 Shanghai Okasan-Huada Computer System Co. Ltd., All rights reserved.
 //
@@ -19,10 +19,9 @@ package cn.limc.androidcharts.model;
  * @version v1.0 
  * 
  * History: <br>
- * 2015-8-7 limc create v1.0 <br>
+ * 2015-8-10 limc create v1.0 <br>
  *
  */
 public interface RangeCalculator {
-
     void calc(DataRange dataRange);
 }

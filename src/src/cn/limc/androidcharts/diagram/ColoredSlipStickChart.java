@@ -23,7 +23,6 @@ package cn.limc.androidcharts.diagram;
 
 import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.androidcharts.series.IMeasurable;
-import cn.limc.androidcharts.shape.ColorfulBar;
 import cn.limc.androidcharts.shape.Bar;
 
 import android.content.Context;
