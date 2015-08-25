@@ -23,7 +23,6 @@
 package cn.limc.androidcharts.model;
 
 import cn.limc.androidcharts.event.Zoomable;
-import cn.limc.androidcharts.series.ChartDataSet;
 
 /** 
  * <p>en</p>
@@ -34,10 +33,10 @@ import cn.limc.androidcharts.series.ChartDataSet;
  * @version v1.0 2014/06/18 16:00:16 
  *  
  */
-public class SimpleDataCursor extends AbstractDataCursor implements DataCursor,Zoomable {
-    public static int MAX_DISPLAY_NUM = 30;
+public abstract class SimpleDataCursor extends AbstractDataCursor implements DataCursor,Zoomable {
     
-    protected ChartDataSet chartData;
+    public static int MAX_DISPLAY_NUM = 30;
+   
 
 	private int maxDisplayNum = MAX_DISPLAY_NUM; 
 	private int minDisplayNumber = MINI_DISPLAY_NUM;
@@ -82,7 +81,7 @@ public class SimpleDataCursor extends AbstractDataCursor implements DataCursor,Z
 //	    if (inChart.getAxisY().getPosition() == Axis.AXIS_Y_POSITION_LEFT) {
 //            return maxDisplayNum;
 //        }else{
-            return chartData.getChartTable().size() - 1;
+            return dataSizeForCursor(this) - 1;
 //        }
 	}
 
@@ -142,7 +141,7 @@ public class SimpleDataCursor extends AbstractDataCursor implements DataCursor,Z
     @Override
     public void zoomOut() {
         // TODO Auto-generated method stub
-        if (getDisplayNumber() < chartData.getChartTable().size() - 1 - ZOOM_STEP) {
+        if (getDisplayNumber() < dataSizeForCursor(this) - 1 - ZOOM_STEP) {
             setDisplayNumber(getDisplayNumber() + ZOOM_STEP);
         }
     }

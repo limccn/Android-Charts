@@ -29,7 +29,7 @@ import android.graphics.Paint;
 public class Points extends AbstractShape implements Rectangle{
 
     public static double NON_DISPLAY_VALUE = 0; 
-    private Paint linePaint = new Paint();
+    private Paint linePaint;
     
     private double current;
     private double next;
@@ -38,7 +38,8 @@ public class Points extends AbstractShape implements Rectangle{
      * 
      */
     public Points() {
-        // TODO Auto-generated constructor stub
+        super();
+        linePaint = new Paint();
     }
 
     /* (non-Javadoc)

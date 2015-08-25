@@ -1,24 +1,33 @@
 package cn.limc.androidcharts.model;
 
-import cn.limc.androidcharts.component.DataComponent;
+import cn.limc.androidcharts.series.ChartDataSet;
 
 public abstract class AbstractDataRange implements DataRange{
     
     protected int dataMultiple =  DEFAULT_DATA_MULTIPLE;
-    protected double maxValue = 1;
-    protected double minValue = 0;
-    protected DataComponent bindComponent;
+    protected double maxValue = -Double.MAX_VALUE;
+    protected double minValue = Double.MAX_VALUE;
     protected boolean autoCalcValueRange = DEFAULT_AUTO_CALC_VALUE_RANGE;
     
     protected RangeCalculator rangeCalculator;
    
     public double valueForRate(double rate){
-        return 1f - (rate - getMinValue())/getValueRange();
+        if (maxValue<minValue) {
+            return 1;
+        }else{
+            return 1f - (rate - getMinValue())/getValueRange();
+        }
     }
     
-    public void calcValueRange(){
+    public void calcValueRange(ChartDataSet data){
+        if(rangeCalculator != null && data != null){
+            rangeCalculator.calc(this,data);
+        }
+    }
+    
+    public void optimizeValueRange(){
         if(rangeCalculator != null){
-            rangeCalculator.calc(this);
+            rangeCalculator.optimize(this);
         }
     }
     
@@ -27,7 +36,11 @@ public abstract class AbstractDataRange implements DataRange{
      */
     @Override
     public double getValueRange() {
-        return maxValue - minValue;
+        if (maxValue<minValue) {
+            return 1;
+        }else{
+            return maxValue - minValue;
+        }
     }
    
     /**
@@ -86,19 +99,6 @@ public abstract class AbstractDataRange implements DataRange{
         this.autoCalcValueRange = autoCalcValueRange;
     }
     
-    /**
-     * @return the bindComponent
-     */
-    public DataComponent getBindComponent() {
-        return bindComponent;
-    }
-    /**
-     * @param bindComponent the bindComponent to set
-     */
-    public void setBindComponent(DataComponent bindComponent) {
-        this.bindComponent = bindComponent;
-    }
-
     /**
      * @return the rangeCalculator
      */

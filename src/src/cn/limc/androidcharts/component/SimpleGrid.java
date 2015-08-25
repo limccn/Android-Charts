@@ -41,7 +41,7 @@ import android.graphics.Paint.Style;
  * 2014/09/01 limc create v1.0 <br>
  *
  */
-public class SimpleGrid extends AbstractComponent implements Grid {
+public abstract class SimpleGrid extends AbstractComponent implements Grid {
 
     
     /**
@@ -70,65 +70,15 @@ public class SimpleGrid extends AbstractComponent implements Grid {
      */
     private int latitudeColor = DEFAULT_LAITUDE_COLOR;
     
-    
-    /**
-     * <p>
-     * Should display the degrees in X axis?
-     * </p>
-     * <p>
-     * X軸のタイトルを表示するか?
-     * </p>
-     * <p>
-     * X轴上的标题是否显示
-     * </p>
-     */
-    private boolean displayLongitudeTitle = DEFAULT_DISPLAY_LONGITUDE_TITLE;
+ 
     
     private float longitudeWidth = DEFAULT_LONGITUDE_WIDTH;
     
     
-    /**
-     * <p>
-     * Should display the degrees in Y axis?
-     * </p>
-     * <p>
-     * Y軸のタイトルを表示するか?
-     * </p>
-     * <p>
-     * Y轴上的标题是否显示
-     * </p>
-     */
-    private boolean displayLatitudeTitle = DEFAULT_DISPLAY_LATITUDE_TITLE;
     
     private float latitudeWidth = DEFAULT_LATITUDE_WIDTH;
     
-    
-
-    /**
-     * <p>
-     * Numbers of grid‘s latitude line
-     * </p>
-     * <p>
-     * 緯線の数量
-     * </p>
-     * <p>
-     * 网格纬线的数量
-     * </p>
-     */
-    protected int latitudeNum = DEFAULT_LATITUDE_NUM;
-
-    /**
-     * <p>
-     * Numbers of grid‘s longitude line
-     * </p>
-     * <p>
-     * 経線の数量
-     * </p>
-     * <p>
-     * 网格经线的数量
-     * </p>
-     */
-    protected int longitudeNum = DEFAULT_LONGITUDE_NUM;
+   
 
     /**
      * <p>
@@ -274,36 +224,39 @@ public class SimpleGrid extends AbstractComponent implements Grid {
 //     */
 //    protected List<String> latitudeTitles;
     
-    
-    //
-    protected int gridAlignType = DEFAULT_ALIGN_TYPE;
 
     
     public void draw(Canvas canvas){        
-        if (displayLongitude ) {
-            drawLongitudeLine(canvas);
-        }
-        
-        if (displayLatitude) {
-            drawLatitudeLine(canvas);
-        }
+        drawLongitudeLine(canvas);
+        drawLatitudeLine(canvas);
     }
     
-    public float longitudePostOffset(){
-        return getPaddingWidth() / (longitudeNum - 1);
-    }
-    
-    public float longitudeOffset(){
-        return getPaddingStartX();
-    }
-    
-    public float latitudePostOffset(){
-        return getPaddingHeight() / (latitudeNum - 1);
-    }
-    
-    public float latitudeOffset(){
-        return getPaddingEndY();
-    }
+//    public float longitudePostOffset(){
+//        return getPaddingWidth() / (longitudeNum - 1);
+//    }
+//    
+//    public float longitudeOffset(){
+//        return getPaddingStartX();
+//    }
+//    
+//    public float longitudePostForIndex(int index){
+//        float postOffset = longitudePostOffset();
+//        float offset = longitudeOffset();
+//        return offset + index * postOffset;
+//    }
+//    
+//    public float latitudePostOffset(){
+//        return getPaddingHeight() / (latitudeNum - 1);
+//    }
+//    
+//    public float latitudeOffset(){
+//        return getPaddingEndY();
+//    }
+//    public float latitudePostForIndex(int index){
+//        float postOffset = latitudePostOffset();
+//        float offset = latitudeOffset();
+//        return offset - index * postOffset;
+//    }
     
 //  public float longitudePostOffset(){
 //  if (gridAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
@@ -323,18 +276,7 @@ public class SimpleGrid extends AbstractComponent implements Grid {
 //  }
 //}
     
-    public float longitudePostForIndex(int index){
-        float postOffset = longitudePostOffset();
-        float offset = longitudeOffset();
-        return offset + index * postOffset;
-    }
-    
-    public float latitudePostForIndex(int index){
-        float postOffset = latitudePostOffset();
-        float offset = latitudeOffset();
-        return offset - index * postOffset;
-    }
-    
+
     /**
      * <p>
      * draw longitude lines
@@ -352,7 +294,6 @@ public class SimpleGrid extends AbstractComponent implements Grid {
         if (!displayLongitude) {
             return;
         }
-        int counts = longitudeNum;
 
         Paint mPaintLine = new Paint();
         mPaintLine.setStyle(Style.STROKE);
@@ -362,16 +303,22 @@ public class SimpleGrid extends AbstractComponent implements Grid {
         if (dashLongitude) {
             mPaintLine.setPathEffect(dashEffect);
         }
-        if (counts > 1) {
-            for (int i = 0; i < counts; i++) {
+        HorizontalAxis mAxis = horizontalAxisForGrid(this);
+        if (mAxis.titlesNum() > 1) {
+            for (int i = 0; i < mAxis.titlesNum(); i++) {
                 Path path = new Path();
-                path.moveTo(longitudePostForIndex(i), getStartY());
-                path.lineTo(longitudePostForIndex(i), getEndY());
+                
+                
+                path.moveTo(mAxis.postForIndex(i), getStartY());
+                path.lineTo(mAxis.postForIndex(i), getEndY());
                 canvas.drawPath(path, mPaintLine);
             }
         }
     }
-
+    
+    public abstract HorizontalAxis horizontalAxisForGrid(Grid grid);
+    public abstract VerticalAxis verticalAxisForGrid(Grid grid);
+        
     /**
      * <p>
      * draw latitude lines
@@ -404,73 +351,74 @@ public class SimpleGrid extends AbstractComponent implements Grid {
         mPaintFont.setTextSize(latitudeFontSize);
         mPaintFont.setAntiAlias(true);
 
-        for (int i = 0; i < latitudeNum; i++) {
+        VerticalAxis mAxis = verticalAxisForGrid(this);
+        for (int i = 0; i < mAxis.titlesNum(); i++) {
                 Path path = new Path();
-                path.moveTo(getStartX(), latitudePostForIndex(i));
-                path.lineTo(getEndX(),  latitudePostForIndex(i));
+                path.moveTo(getStartX(), mAxis.postForIndex(i));
+                path.lineTo(getEndX(),  mAxis.postForIndex(i));
                 canvas.drawPath(path, mPaintLine);
         }
     }
     
-    /**
-     * @return the displayLongitudeTitle
-     */
-    public boolean isDisplayLongitudeTitle() {
-        return displayLongitudeTitle;
-    }
+//    /**
+//     * @return the displayLongitudeTitle
+//     */
+//    public boolean isDisplayLongitudeTitle() {
+//        return displayLongitudeTitle;
+//    }
+//
+//    /**
+//     * @param displayLongitudeTitle
+//     *            the displayLongitudeTitle to set
+//     */
+//    public void setDisplayLongitudeTitle(boolean displayLongitudeTitle) {
+//        this.displayLongitudeTitle = displayLongitudeTitle;
+//    }
+//
+//    /**
+//     * @return the displayAxisYTitle
+//     */
+//    public boolean isDisplayLatitudeTitle() {
+//        return displayLatitudeTitle;
+//    }
+//
+//    /**
+//     * @param displayLatitudeTitle
+//     *            the displayLatitudeTitle to set
+//     */
+//    public void setDisplayLatitudeTitle(boolean displayLatitudeTitle) {
+//        this.displayLatitudeTitle = displayLatitudeTitle;
+//    }
 
-    /**
-     * @param displayLongitudeTitle
-     *            the displayLongitudeTitle to set
-     */
-    public void setDisplayLongitudeTitle(boolean displayLongitudeTitle) {
-        this.displayLongitudeTitle = displayLongitudeTitle;
-    }
-
-    /**
-     * @return the displayAxisYTitle
-     */
-    public boolean isDisplayLatitudeTitle() {
-        return displayLatitudeTitle;
-    }
-
-    /**
-     * @param displayLatitudeTitle
-     *            the displayLatitudeTitle to set
-     */
-    public void setDisplayLatitudeTitle(boolean displayLatitudeTitle) {
-        this.displayLatitudeTitle = displayLatitudeTitle;
-    }
-
-    /**
-     * @return the latitudeNum
-     */
-    public int getLatitudeNum() {
-        return latitudeNum;
-    }
-
-    /**
-     * @param latitudeNum
-     *            the latitudeNum to set
-     */
-    public void setLatitudeNum(int latitudeNum) {
-        this.latitudeNum = latitudeNum;
-    }
-
-    /**
-     * @return the longitudeNum
-     */
-    public int getLongitudeNum() {
-        return longitudeNum;
-    }
-
-    /**
-     * @param longitudeNum
-     *            the longitudeNum to set
-     */
-    public void setLongitudeNum(int longitudeNum) {
-        this.longitudeNum = longitudeNum;
-    }
+//    /**
+//     * @return the latitudeNum
+//     */
+//    public int getLatitudeNum() {
+//        return latitudeNum;
+//    }
+//
+//    /**
+//     * @param latitudeNum
+//     *            the latitudeNum to set
+//     */
+//    public void setLatitudeNum(int latitudeNum) {
+//        this.latitudeNum = latitudeNum;
+//    }
+//
+//    /**
+//     * @return the longitudeNum
+//     */
+//    public int getLongitudeNum() {
+//        return longitudeNum;
+//    }
+//
+//    /**
+//     * @param longitudeNum
+//     *            the longitudeNum to set
+//     */
+//    public void setLongitudeNum(int longitudeNum) {
+//        this.longitudeNum = longitudeNum;
+//    }
 
     /**
      * @return the displayLongitude

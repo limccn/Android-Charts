@@ -8,6 +8,8 @@
 //
 package cn.limc.androidcharts.component;
 
+import cn.limc.androidcharts.model.DataCursor;
+import cn.limc.androidcharts.series.ChartDataSet;
 import cn.limc.androidcharts.series.IMeasurable;
 import cn.limc.androidcharts.series.LineEntity;
 import cn.limc.androidcharts.shape.Area;
@@ -40,12 +42,16 @@ public class AreaChartComponent extends DataComponent {
     }
     
     protected void drawAreas(Canvas canvas) {
+        ChartDataSet chartData = getChartData();
+        
         if (null == chartData) {
             return;
         }
         if (chartData.size() == 0) {
             return;
         }
+        
+        DataCursor dataCursor = getDataCursor();
 
         float stickWidth = getPaddingWidth() / dataCursor.getDisplayNumber();
         for (int i = 1; i < chartData.size(); i++) {
@@ -68,9 +74,10 @@ public class AreaChartComponent extends DataComponent {
             }
 
             Paint mPaint = new Paint();
+            mPaint.setAntiAlias(true);
             mPaint.setStyle(Style.FILL_AND_STROKE);
             mPaint.setColor(table1.getLineColor());
-            mPaint.setAntiAlias(true);
+            mPaint.setAlpha(Area.DEFAULT_AREA_FILL_ALPHA);
 
             float stickX = getPaddingStartX() + stickWidth / 2;
             for (int j = dataCursor.getDisplayFrom() + 1; j < dataCursor.getDisplayTo(); j++) {

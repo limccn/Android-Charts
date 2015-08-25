@@ -9,6 +9,8 @@
 package cn.limc.androidcharts.component;
 
 import android.graphics.Canvas;
+import cn.limc.androidcharts.model.DataCursor;
+import cn.limc.androidcharts.series.ChartDataSet;
 import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.androidcharts.series.IMeasurable;
 import cn.limc.androidcharts.shape.KShape;
@@ -46,6 +48,7 @@ public class KChartComponent extends DataComponent {
     }
     
     protected void drawK(Canvas canvas) {
+        ChartDataSet chartData = getChartData();
         if (null == chartData) {
             return;
         }
@@ -53,6 +56,8 @@ public class KChartComponent extends DataComponent {
             return;
         }
 
+        DataCursor dataCursor = getDataCursor();
+        
         float stickWidth = getPaddingWidth() / dataCursor.getDisplayNumber();
         float stickX = getPaddingStartX();
 

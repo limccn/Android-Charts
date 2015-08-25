@@ -27,7 +27,7 @@ import android.graphics.Point;
 import android.util.AttributeSet;
 
 
-public class RoundChart extends AbstractBaseChart {
+public class RoundChart extends AbstractChart {
     
     /**
      * <p>

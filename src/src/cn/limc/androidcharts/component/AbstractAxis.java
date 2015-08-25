@@ -22,9 +22,6 @@
 
 package cn.limc.androidcharts.component;
 
-import java.util.List;
-
-import cn.limc.androidcharts.model.AbstractDegree;
 import cn.limc.androidcharts.model.Degree;
 import android.graphics.Canvas;
 
@@ -44,20 +41,22 @@ public abstract class AbstractAxis extends AbstractComponent implements Axis {
 	protected int degreeFontColor = DEFAULT_DEGREE_FONT_COLOR;
 	protected int degreeFontSize = DEFAULT_DEGREE_FONT_SIZE;
 	
-	protected Degree degree = new AbstractDegree() {
-        
-        @Override
-        public String valueForDegree(Object value) {
-            return null;
-        }
-        
-        @Override
-        public List<String> getDegrees() {
-            return null;
-        }
-    };
-    
-	protected DataComponent bindComponent;
+    protected int gridAlignType = DEFAULT_ALIGN_TYPE;
+	
+    /**
+     * <p>
+     * Numbers of grid‘s latitude line
+     * </p>
+     * <p>
+     * 緯線の数量
+     * </p>
+     * <p>
+     * 网格纬线的数量
+     * </p>
+     */
+    protected int titlesNum = DEFAULT_TITLES_NUM;
+
+
 	
 	public abstract void drawLine(Canvas canvas);
 	public abstract void drawDegrees(Canvas canvas);
@@ -75,6 +74,10 @@ public abstract class AbstractAxis extends AbstractComponent implements Axis {
         drawDegrees(canvas);
     }
     
+    @Override
+    public int titlesNum(){
+        return titlesNum;
+    }
 
 	/**
 	 * @return the lineColor
@@ -145,25 +148,16 @@ public abstract class AbstractAxis extends AbstractComponent implements Axis {
      * @return the degree
      */
     public Degree getDegree() {
-        return degree;
-    }
-    /**
-     * @param degree the degree to set
-     */
-    public void setDegree(Degree degree) {
-        degree.setAxis(this);
-        this.degree = degree;
+        return degreeForAxis(this);
     }
     /**
      * @return the bindComponent
      */
     public DataComponent getBindComponent() {
-        return bindComponent;
+        return componentForAxis(this);
     }
-    /**
-     * @param bindComponent the bindComponent to set
-     */
-    public void setBindComponent(DataComponent bindComponent) {
-        this.bindComponent = bindComponent;
-    }
+    
+     public abstract Degree degreeForAxis(Axis axis);
+     public abstract DataComponent componentForAxis(Axis axis);
+     
 }

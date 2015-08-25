@@ -9,7 +9,9 @@
 package cn.limc.androidcharts.component;
 
 import cn.limc.androidcharts.model.DataCursor;
+import cn.limc.androidcharts.model.Degree;
 import cn.limc.androidcharts.series.IMeasurable;
+import android.R.integer;
 import android.graphics.Canvas;
 import android.graphics.PointF;
 
@@ -28,9 +30,6 @@ import android.graphics.PointF;
  *
  */
 public abstract class AbstractIndicator extends AbstractComponent implements Indicator {
-
-    protected DataComponent bindComponent;
-    
     /**
      * <p>
      * Color of cross line inside grid when touched
@@ -83,17 +82,19 @@ public abstract class AbstractIndicator extends AbstractComponent implements Ind
         // TODO Auto-generated constructor stub
     }
     
-    public int calcSelectedIndex(float x ,float y) {
-        DataCursor dataCursor = bindComponent.getDataCursor();
-        float graduate = bindComponent.getWidthRate(y);
-        int index = (int) Math.floor(graduate * dataCursor.getDisplayNumber());
-
-        if (index >= dataCursor.getDisplayNumber()) {
-            index = dataCursor.getDisplayNumber() - 1;
-        } else if (index < 0) {
-            index = 0;
-        }
-        return dataCursor.getDisplayFrom() + index;
+   public int calcSelectedIndex(float x ,float y) {
+////        DataCursor dataCursor = dataCursorForIndicator(this);
+////        float graduate = bindComponent.getWidthRate(y);
+////        int index = (int) Math.floor(graduate * dataCursor.getDisplayNumber());
+////
+////        if (index >= dataCursor.getDisplayNumber()) {
+////            index = dataCursor.getDisplayNumber() - 1;
+////        } else if (index < 0) {
+////            index = 0;
+////        }
+////        return dataCursor.getDisplayFrom() + index;
+       
+       return 0;
     }   
     
     public int calcSelectedIndex(PointF pt) {
@@ -129,31 +130,17 @@ public abstract class AbstractIndicator extends AbstractComponent implements Ind
     }
     
     public PointF calcBindPoint(float x ,float y) {
+        DataCursor dataCursor = dataCursorForIndicator(this);
         float calcX = 0;
         float calcY = 0;
         
         int index = calcSelectedIndex(x,y);
-        float stickWidth = getPaddingWidth() / bindComponent.getDataCursor().getDisplayNumber();
-        IMeasurable stick = (IMeasurable)bindComponent.getChartData().getChartTable().get(index);
-        calcY = (float) (bindComponent.getDataRange().valueForRate(stick.getHigh()) * (getPaddingHeight()) + getPaddingStartY());
-        calcX = getPaddingStartX() + stickWidth * (index - bindComponent.getDataCursor().getDisplayFrom()) + stickWidth / 2;
-        
+//        float stickWidth = getPaddingWidth() / bindComponent.getDataCursor().getDisplayNumber();
+//        IMeasurable stick = (IMeasurable)bindComponent.getChartData().getChartTable().get(index);
+//        calcY = (float) (bindComponent.getDataRange().valueForRate(stick.getHigh()) * (getPaddingHeight()) + getPaddingStartY());
+//        calcX = getPaddingStartX() + stickWidth * (index - bindComponent.getDataCursor().getDisplayFrom()) + stickWidth / 2;
+//        
         return new PointF(calcX,calcY);
-    }
-
-    
-    /**
-     * @return the bindComponent
-     */
-    public DataComponent getBindComponent() {
-        return bindComponent;
-    }
-
-    /**
-     * @param bindComponent the bindComponent to set
-     */
-    public void setBindComponent(DataComponent bindComponent) {
-        this.bindComponent = bindComponent;
     }
 
     /**
@@ -308,4 +295,8 @@ public abstract class AbstractIndicator extends AbstractComponent implements Ind
 //        // draw text
 //        canvas.drawText(content, ptStart.x, ptStart.y + fontSize, mPaintBoxLine);
 //    }
+    
+        public abstract DataCursor dataCursorForIndicator(Indicator indicator);
+        public abstract DataComponent componentForIndicator(Indicator indicator);
+
 }

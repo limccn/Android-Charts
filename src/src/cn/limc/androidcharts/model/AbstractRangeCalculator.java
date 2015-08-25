@@ -8,7 +8,6 @@
 //
 package cn.limc.androidcharts.model;
 
-import cn.limc.androidcharts.component.SimpleGrid;
 import cn.limc.androidcharts.series.ChartDataSet;
 import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.androidcharts.series.IMeasurable;
@@ -42,26 +41,17 @@ public abstract class AbstractRangeCalculator implements RangeCalculator {
      * @see cn.limc.androidcharts.model.RangeCalculator#calc(cn.limc.androidcharts.model.DataRange)
      */
     @Override
-    public void calc(DataRange dataRange) {
-
+    public void calc(DataRange dataRange, ChartDataSet datas) {
         this.initRange(dataRange);
-        
-        ChartDataSet chartData = dataRange.getBindComponent().getChartData();
-       
-        if (chartData == null) {
-            return;
-        }
-        if (chartData.getChartTables() == null) {
-            return;
-        }
-
-        for (int i = 0; i < chartData.getChartTables().size(); i++) {
-            ChartDataTable data = chartData.getChartTables().get(i);
+        for (int i = 0; i < datas.size(); i++) {
+            ChartDataTable data = datas.getChartTable(i);
             if (data != null && data.size() > 0) {
                 this.calcDataValueRange(dataRange,data);
             }
-        }
-
+        }        
+    }
+    
+    public void optimize(DataRange dataRange) {
         if (shouldPaddingZero()) {
             this.calcValueRangePaddingZero(dataRange);
         }
@@ -95,11 +85,9 @@ public abstract class AbstractRangeCalculator implements RangeCalculator {
     
     public void calcDataValueRange(DataRange dataRange,ChartDataTable data) {
         
-        DataCursor dataCursor = dataRange.getBindComponent().getDataCursor();
-        
-        IMeasurable first = (IMeasurable)data.get(dataCursor.getDisplayFrom());
+        IMeasurable first = (IMeasurable)data.get(startCalcPost(this));
          this.initFirst(dataRange,first);
-        for (int i = dataCursor.getDisplayFrom(); i < dataCursor.getDisplayTo(); i++) {
+        for (int i = startCalcPost(this); i < endCalcPost(this); i++) {
             IMeasurable stick =  (IMeasurable)data.get(i);
             this.compareValue(dataRange,stick);
         }
@@ -152,9 +140,8 @@ public abstract class AbstractRangeCalculator implements RangeCalculator {
     
     public void calcValueRangeFormatForAxis(DataRange dataRange) {
         
-        SimpleGrid grid = dataRange.getBindComponent().getDataGrid();
         // 修正最大值和最小值
-        long rate = (long) (dataRange.getValueRange()) / (grid.getLatitudeNum());
+        long rate = (long) (dataRange.getValueRange()) / (rangeDivide(this));
         String strRate = String.valueOf(rate);
         float first = Integer.parseInt(String.valueOf(strRate.charAt(0))) + 1.0f;
         if (first > 0 && strRate.length() > 1) {
@@ -167,15 +154,17 @@ public abstract class AbstractRangeCalculator implements RangeCalculator {
             rate = 1;
         }
         // 等分轴修正
-        if (grid.getLatitudeNum() > 0
+        if (rangeDivide(this) > 0
                 && (long) (dataRange.getValueRange())
-                        % (grid.getLatitudeNum() * rate) != 0) {
+                        % (rangeDivide(this) * rate) != 0) {
             // 最大值加上轴差
             long maxValue =  (long) dataRange.getMaxValue()
-                    + (grid.getLatitudeNum() * rate)
-                    - ((long) (dataRange.getValueRange()) % (grid.getLatitudeNum() * rate));
+                    + (rangeDivide(this) * rate)
+                    - ((long) (dataRange.getValueRange()) % (rangeDivide(this) * rate));
             
             dataRange.setMaxValue(maxValue);
         }
     }
+   
+    
 }

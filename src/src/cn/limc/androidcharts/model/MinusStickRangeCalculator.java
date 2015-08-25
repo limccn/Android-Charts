@@ -23,7 +23,7 @@ package cn.limc.androidcharts.model;
  * 2015-7-22 limc create v1.0 <br>
  *
  */
-public class MinusStickRangeCalculator extends MeasuableRangeCalculator {    
+public abstract class MinusStickRangeCalculator extends MeasuableRangeCalculator {    
     public boolean shouldPaddingZero(){
         return false;
     }

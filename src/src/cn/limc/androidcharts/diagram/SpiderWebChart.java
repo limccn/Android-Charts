@@ -209,7 +209,7 @@ public class SpiderWebChart extends RoundChart {
 	 * 
 	 * @param context
 	 * 
-	 * @see cn.limc.androidcharts.diagram.AbstractBaseChart#BaseChart(Context)
+	 * @see cn.limc.androidcharts.diagram.AbstractChart#BaseChart(Context)
 	 */
 	public SpiderWebChart(Context context) {
 		super(context);
@@ -224,7 +224,7 @@ public class SpiderWebChart extends RoundChart {
 	 * 
 	 * @param defStyle
 	 * 
-	 * @see cn.limc.androidcharts.diagram.AbstractBaseChart#BaseChart(Context,AttributeSet,
+	 * @see cn.limc.androidcharts.diagram.AbstractChart#BaseChart(Context,AttributeSet,
 	 * int)
 	 */
 	public SpiderWebChart(Context context, AttributeSet attrs, int defStyle) {
@@ -238,7 +238,7 @@ public class SpiderWebChart extends RoundChart {
 	 * 
 	 * @param attrs
 	 * 
-	 * @see cn.limc.androidcharts.diagram.AbstractBaseChart#BaseChart(Context,
+	 * @see cn.limc.androidcharts.diagram.AbstractChart#BaseChart(Context,
 	 * AttributeSet)
 	 */
 	public SpiderWebChart(Context context, AttributeSet attrs) {

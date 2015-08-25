@@ -24,6 +24,8 @@ package cn.limc.androidcharts.component;
 
 import java.util.List;
 
+import cn.limc.androidcharts.model.Degree;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
@@ -37,7 +39,7 @@ import android.graphics.Paint.Align;
  * @version v1.0 2014/06/24 19:43:01 
  *  
  */
-public class VerticalAxis extends AbstractAxis {
+public abstract class VerticalAxis extends AbstractAxis {
     
 	    
     public void drawLine(Canvas canvas){
@@ -56,11 +58,12 @@ public class VerticalAxis extends AbstractAxis {
     }
 
     public void drawDegrees(Canvas canvas) {
+        Degree degree = getDegree();
         if (degree == null) {
             return;
         }
 
-        List<String> degrees = degree.getDegrees();
+        List<String> degrees = degree.getDegrees(this);
 
         if (degrees == null) {
             return;
@@ -84,16 +87,39 @@ public class VerticalAxis extends AbstractAxis {
             mPaintFont.setTextAlign(Align.LEFT);
             postX = getStartX() + 2f;
         }
-        Grid grid = bindComponent.getDataGrid();
         for (int i = 0; i < degrees.size(); i++) {
             if (0 == i) {
-                canvas.drawText(degrees.get(i), postX, grid.latitudePostForIndex(i) - 2f,
+                canvas.drawText(degrees.get(i), postX, postForIndex(i) - 2f,
                         mPaintFont);
             } else {
-                canvas.drawText(degrees.get(i), postX, grid.latitudePostForIndex(i)
+                canvas.drawText(degrees.get(i), postX, postForIndex(i)
                         + degreeFontSize / 2f, mPaintFont);
             }
         }
+    }
+    
+    public float latitudePostOffset(){
+        DataComponent bindComponent = getBindComponent();
+        if (bindComponent != null) {
+            return bindComponent.getPaddingHeight() / (titlesNum() - 1);
+        }else{
+            return getPaddingHeight()/(titlesNum() - 1);
+        }
+        
+    }
+    
+    public float latitudeOffset(){
+        DataComponent bindComponent = getBindComponent();
+        if (bindComponent != null) {
+            return bindComponent.getPaddingEndY();
+        }else{
+            return getPaddingEndY();
+        }
+    }
+    public float postForIndex(int index){
+        float postOffset = latitudePostOffset();
+        float offset = latitudeOffset();
+        return offset - index * postOffset;
     }
     
     /**
@@ -130,7 +156,10 @@ public class VerticalAxis extends AbstractAxis {
      *         </p>
      */
     public String getHeightDegree(float value) {
+        Degree degree = getDegree();
+        DataComponent bindComponent = getBindComponent();
+        
         float graduate = bindComponent.getHeightRate(value);
-        return degree.valueForDegree(graduate * bindComponent.getDataRange().getValueRange() + bindComponent.getDataRange().getMinValue());
+        return degree.valueForDegree(this, graduate * bindComponent.getDataRange().getValueRange() + bindComponent.getDataRange().getMinValue());
     }
 }

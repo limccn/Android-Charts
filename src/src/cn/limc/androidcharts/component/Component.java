@@ -22,6 +22,7 @@
 package cn.limc.androidcharts.component;
 
 import cn.limc.androidcharts.diagram.GridChart;
+import cn.limc.androidcharts.handler.ComponentHandler;
 import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.RectF;
@@ -57,6 +58,8 @@ public interface Component {
     void  setFrame(RectF frame);
     GridChart getParent();
     void setParent(GridChart parent);
+    ComponentHandler getComponentController();
+    void setComponentHandler(ComponentHandler componentHandler);
     
 
     float getPaddingTop();

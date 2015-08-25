@@ -8,6 +8,8 @@
 //
 package cn.limc.androidcharts.model;
 
+import cn.limc.androidcharts.series.ChartDataSet;
+
 /**
  * RangeCalculator
  * Description: <br>
@@ -23,5 +25,12 @@ package cn.limc.androidcharts.model;
  *
  */
 public interface RangeCalculator {
-    void calc(DataRange dataRange);
+    void calc(DataRange dataRange,ChartDataSet data);
+    void optimize(DataRange dataRange);
+    
+    public abstract int rangeDivide(RangeCalculator calc);
+//    public abstract ChartDataTable chartDataTableFor(RangeCalculator calc, int index);
+//    public abstract int chartDataTableCount(RangeCalculator calc);
+    public abstract int startCalcPost(RangeCalculator calc);
+    public abstract int endCalcPost(RangeCalculator calc);
 }

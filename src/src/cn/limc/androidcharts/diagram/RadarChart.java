@@ -61,7 +61,7 @@ public class RadarChart extends SpiderWebChart {
 	 * 
 	 * @param context
 	 * 
-	 * @see cn.limc.androidcharts.diagram.AbstractBaseChart#BaseChart(Context)
+	 * @see cn.limc.androidcharts.diagram.AbstractChart#BaseChart(Context)
 	 */
 	public RadarChart(Context context) {
 		super(context);
@@ -76,7 +76,7 @@ public class RadarChart extends SpiderWebChart {
 	 * 
 	 * @param defStyle
 	 * 
-	 * @see cn.limc.androidcharts.diagram.AbstractBaseChart#BaseChart(Context,AttributeSet,
+	 * @see cn.limc.androidcharts.diagram.AbstractChart#BaseChart(Context,AttributeSet,
 	 * int)
 	 */
 	public RadarChart(Context context, AttributeSet attrs, int defStyle) {
@@ -90,7 +90,7 @@ public class RadarChart extends SpiderWebChart {
 	 * 
 	 * @param attrs
 	 * 
-	 * @see cn.limc.androidcharts.diagram.AbstractBaseChart#BaseChart(Context,
+	 * @see cn.limc.androidcharts.diagram.AbstractChart#BaseChart(Context,
 	 * AttributeSet)
 	 */
 	public RadarChart(Context context, AttributeSet attrs) {

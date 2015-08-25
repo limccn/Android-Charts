@@ -10,6 +10,8 @@ package cn.limc.androidcharts.component;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import cn.limc.androidcharts.model.DataCursor;
+import cn.limc.androidcharts.series.ChartDataSet;
 import cn.limc.androidcharts.series.IMeasurable;
 import cn.limc.androidcharts.series.LineEntity;
 import cn.limc.androidcharts.shape.Points;
@@ -42,6 +44,7 @@ public class LineChartComponent extends DataComponent {
     }
         
     protected void drawLines(Canvas canvas) {
+        ChartDataSet chartData = getChartData();
         if (null == chartData) {
             return;
         }
@@ -49,6 +52,8 @@ public class LineChartComponent extends DataComponent {
             return;
         }
 
+        DataCursor dataCursor = getDataCursor();
+        
         float stickWidth = getPaddingWidth() / dataCursor.getDisplayNumber();
 
         for(int i=0; i< chartData.size() ; i++){

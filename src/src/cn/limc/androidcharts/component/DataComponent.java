@@ -9,9 +9,7 @@
 package cn.limc.androidcharts.component;
 
 import cn.limc.androidcharts.model.DataCursor;
-import cn.limc.androidcharts.model.SectionDataCursor;
 import cn.limc.androidcharts.model.DataRange;
-import cn.limc.androidcharts.model.SimpleDataRange;
 import cn.limc.androidcharts.series.ChartDataSet;
 
 /**
@@ -30,64 +28,51 @@ import cn.limc.androidcharts.series.ChartDataSet;
  */
 public abstract class DataComponent extends AbstractComponent {
 
-    protected ChartDataSet chartData;
-    protected DataCursor dataCursor = new SectionDataCursor();
-    protected DataRange dataRange = new SimpleDataRange();
-    protected SimpleGrid dataGrid = new SimpleGrid();
+//    protected ChartDataSet chartData;
     
     /**
      * @return the chartDataSet
      */
     public ChartDataSet getChartData() {
-        return chartData;
+        DataComponentDataSource delegate = ((DataComponentDataSource)componentController);
+        return delegate.dataForComponent(this);
     }
-    /**
-     * @param chartDataSet the chartDataSet to set
-     */
-    public void setChartData(ChartDataSet chartDataSet) {
-        dataCursor.setData(chartData);
-        this.chartData = chartDataSet;
-    }
+
     /**
      * @return the dataCursor
      */
     public DataCursor getDataCursor() {
-        return dataCursor;
+        DataComponentDelegate delegate = ((DataComponentDelegate)componentController);
+        return delegate.dataCursorForData(this,getChartData());
     }
-    /**
-     * @param dataCursor the dataCursor to set
-     */
-    public void setDataCursor(DataCursor dataCursor) {
-        dataCursor.setData(chartData);
-        this.dataCursor = dataCursor;
-    }
+
     /**
      * @return the valueRange
      */
     public DataRange getDataRange() {
-        return dataRange;
+        DataComponentDelegate delegate = ((DataComponentDelegate)componentController);
+        return delegate.dataRangeForComponent(this);
     }
-    /**
-     * @param valueRange the valueRange to set
-     */
-    public void setDataRange(DataRange valueRange) {
-        valueRange.setBindComponent(this);
-        this.dataRange = valueRange;
-    }
+
     /**
      * @return the dataGrid
      */
     public SimpleGrid getDataGrid() {
-        return dataGrid;
-    }
-    /**
-     * @param dataGrid the dataGrid to set
-     */
-    public void setDataGrid(SimpleGrid dataGrid) {
-        this.dataGrid = dataGrid;
+        DataComponentDelegate delegate = ((DataComponentDelegate)componentController);
+        return delegate.dataGridForComponent(this);
     }
     
     public double heightForRate(double rate){
-        return dataRange.valueForRate(rate) * getPaddingHeight() + getPaddingStartY();
+        return getDataRange().valueForRate(rate) * getPaddingHeight() + getPaddingStartY();
+    }
+    
+    public interface DataComponentDelegate{
+        DataCursor dataCursorForData(DataComponent component , ChartDataSet dataSet);
+        DataRange dataRangeForComponent(DataComponent component);
+        SimpleGrid dataGridForComponent(DataComponent component);  
+    }
+    
+    public interface DataComponentDataSource{
+        ChartDataSet dataForComponent(DataComponent component);
     }
 }

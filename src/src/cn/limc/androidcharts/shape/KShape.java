@@ -102,84 +102,54 @@ public class KShape extends AbstractShape implements Rectangle {
      */
     public static final int DEFAULT_CROSS_STAR_COLOR = Color.LTGRAY;
 
-    /**
-     * <p>
-     * Price up stick's border color
-     * </p>
-     * <p>
-     * 値上がりローソクのボーダー色
-     * </p>
-     * <p>
-     * 阳线的边框颜色
-     * </p>
-     */
-    private int positiveStickBorderColor = DEFAULT_POSITIVE_STICK_BORDER_COLOR;
-
-    /**
-     * <p>
-     * Price up stick's fill color
-     * </p>
-     * <p>
-     * 値上がりローソクの色
-     * </p>
-     * <p>
-     * 阳线的填充颜色
-     * </p>
-     */
-    private int positiveStickFillColor = DEFAULT_POSITIVE_STICK_FILL_COLOR;
-
-    /**
-     * <p>
-     * Price down stick's border color
-     * </p>
-     * <p>
-     * 値下りローソクのボーダー色
-     * </p>
-     * <p>
-     * 阴线的边框颜色
-     * </p>
-     */
-
-    private int negativeStickBorderColor = DEFAULT_NEGATIVE_STICK_BORDER_COLOR;
-
-    /**
-     * <p>
-     * Price down stick's fill color
-     * </p>
-     * <p>
-     * 値下りローソクの色
-     * </p>
-     * <p>
-     * 阴线的填充颜色
-     * </p>
-     */
-    private int negativeStickFillColor = DEFAULT_NEGATIVE_STICK_FILL_COLOR;
     
-    private int kStyle = DEFAULT_K_STYLE;
+    protected int kStyle = DEFAULT_K_STYLE;
 
-    /**
-     * <p>
-     * Price no change stick's color (cross-star,T-like etc.)
-     * </p>
-     * <p>
-     * クローススターの色（価格変動無し）
-     * </p>
-     * <p>
-     * 十字线显示颜色（十字星,一字平线,T形线的情况）
-     * </p>
-     */
-    private int crossStarColor = DEFAULT_CROSS_STAR_COLOR;
-    
-    
     protected int stickSpacing = DEFAULT_STICK_SPACING;
     
-    private OHLCEntity stickData;
+    protected Paint positiveFillPaint;
+    protected Paint positiveBorderPaint;
+    protected Paint negativeFillPaint;
+    protected Paint negativeBorderPaint;
+    protected Paint crossStarPaint;
     
-    private float openY;
-    private float highY;
-    private float lowY;
-    private float closeY;
     
+    protected OHLCEntity stickData;
+    
+    protected float openY;
+    protected float highY;
+    protected float lowY;
+    protected float closeY;
+   
+    
+    /**
+     * 
+     */
+    public KShape() {
+        super();
+        
+        positiveFillPaint = new Paint();
+        positiveFillPaint.setStyle(Style.FILL);
+        positiveFillPaint.setColor(DEFAULT_POSITIVE_STICK_FILL_COLOR);
+        
+        positiveBorderPaint = new Paint();
+        positiveBorderPaint.setStyle(Style.STROKE);
+        positiveBorderPaint.setColor(DEFAULT_POSITIVE_STICK_BORDER_COLOR);
+        
+        negativeFillPaint = new Paint();
+        negativeFillPaint.setStyle(Style.FILL);
+        negativeFillPaint.setColor(DEFAULT_NEGATIVE_STICK_FILL_COLOR);
+        
+        negativeBorderPaint = new Paint();
+        negativeBorderPaint.setStyle(Style.STROKE);
+        negativeBorderPaint.setColor(DEFAULT_NEGATIVE_STICK_BORDER_COLOR);
+        
+        crossStarPaint = new Paint();
+        crossStarPaint.setStyle(Style.STROKE);
+        crossStarPaint.setColor(DEFAULT_CROSS_STAR_COLOR);
+        
+    }
+
     /* (non-Javadoc)
      * @see cn.limc.androidcharts.shape.Rectangle#setUp(cn.limc.androidcharts.common.IChart, float, float)
      */
@@ -208,54 +178,33 @@ public class KShape extends AbstractShape implements Rectangle {
     public void draw(Canvas canvas) {   
 
         if (stickData.getOpen() < stickData.getClose()) {
-            Paint mPaintPositiveFill = new Paint();
-            mPaintPositiveFill.setStyle(Style.FILL);
-            mPaintPositiveFill.setColor(positiveStickFillColor);
-            
-            Paint mPaintPositiveBorder = new Paint();
-            mPaintPositiveBorder.setStyle(Style.STROKE);
-            mPaintPositiveBorder.setColor(positiveStickBorderColor);
-            
             // stick or line
             if (width() >= 2f) {
                 if (kStyle == K_STYLE_CANDLE) {
-                    canvas.drawRect(left, openY, right, closeY, mPaintPositiveFill);
+                    canvas.drawRect(left, closeY, right, openY, positiveFillPaint);
                 }else if(kStyle == K_STYLE_AMAERICAN){
-                    canvas.drawLine(left, openY, left + width() / 2f, openY, mPaintPositiveBorder);
-                    canvas.drawLine(left + width() / 2f, closeY,right, closeY, mPaintPositiveBorder);
+                    canvas.drawLine(left, openY, left + width() / 2f, openY, positiveBorderPaint);
+                    canvas.drawLine(left + width() / 2f, closeY,right, closeY, positiveBorderPaint);
                 }
             }
-            canvas.drawLine(left + width() / 2f, top, left + width() / 2f, bottom, mPaintPositiveBorder);
+            canvas.drawLine(left + width() / 2f, top, left + width() / 2f, bottom, positiveBorderPaint);
         } else if (stickData.getOpen() > stickData.getClose()) {
-            
-            Paint mPaintNegativeFill = new Paint();
-            mPaintNegativeFill.setStyle(Style.FILL);
-            mPaintNegativeFill.setColor(negativeStickFillColor);
-            
-            Paint mPaintNegativeBorder = new Paint();
-            mPaintNegativeBorder.setStyle(Style.STROKE);
-            mPaintNegativeBorder.setColor(negativeStickBorderColor);
-            
             // stick or line
             if (width() >= 2f) {
                 if (kStyle == K_STYLE_CANDLE) {
-                    canvas.drawRect(left, openY,right, closeY, mPaintNegativeFill);
+                    canvas.drawRect(left, openY , right, closeY, negativeFillPaint);
                 }else if(kStyle == K_STYLE_AMAERICAN){
-                    canvas.drawLine(left, openY, left + width() / 2f, openY, mPaintNegativeBorder);
-                    canvas.drawLine(left + width() / 2f, closeY,right, closeY, mPaintNegativeBorder);
+                    canvas.drawLine(left, openY, left + width() / 2f, openY, negativeBorderPaint);
+                    canvas.drawLine(left + width() / 2f, closeY,right, closeY, negativeBorderPaint);
                 }
             }
-            canvas.drawLine(left + width() / 2f, top, left + width() / 2f, bottom, mPaintNegativeBorder);
+            canvas.drawLine(left + width() / 2f, top, left + width() / 2f, bottom, negativeBorderPaint);
         } else {
-            Paint mPaintCrossStar = new Paint();
-            mPaintCrossStar.setStyle(Style.STROKE);
-            mPaintCrossStar.setColor(crossStarColor);
-            
             // line or point
             if (width() >= 2f) {
-                canvas.drawLine(left, openY, right,closeY, mPaintCrossStar);
+                canvas.drawLine(left, openY, right , closeY, crossStarPaint);
             }
-            canvas.drawLine(left + width() / 2f, top, left + width() / 2f, bottom, mPaintCrossStar);
+            canvas.drawLine(left + width() / 2f, top, left + width() / 2f, bottom, crossStarPaint);
         }
     }
 
@@ -283,77 +232,6 @@ public class KShape extends AbstractShape implements Rectangle {
         this.lowY = lowY;
         this.closeY = closeY;
     }
-
-    /**
-     * @return the positiveStickBorderColor
-     */
-    public int getPositiveStickBorderColor() {
-        return positiveStickBorderColor;
-    }
-
-    /**
-     * @param positiveStickBorderColor the positiveStickBorderColor to set
-     */
-    public void setPositiveStickBorderColor(int positiveStickBorderColor) {
-        this.positiveStickBorderColor = positiveStickBorderColor;
-    }
-
-    /**
-     * @return the positiveStickFillColor
-     */
-    public int getPositiveStickFillColor() {
-        return positiveStickFillColor;
-    }
-
-    /**
-     * @param positiveStickFillColor the positiveStickFillColor to set
-     */
-    public void setPositiveStickFillColor(int positiveStickFillColor) {
-        this.positiveStickFillColor = positiveStickFillColor;
-    }
-
-    /**
-     * @return the negativeStickBorderColor
-     */
-    public int getNegativeStickBorderColor() {
-        return negativeStickBorderColor;
-    }
-
-    /**
-     * @param negativeStickBorderColor the negativeStickBorderColor to set
-     */
-    public void setNegativeStickBorderColor(int negativeStickBorderColor) {
-        this.negativeStickBorderColor = negativeStickBorderColor;
-    }
-
-    /**
-     * @return the negativeStickFillColor
-     */
-    public int getNegativeStickFillColor() {
-        return negativeStickFillColor;
-    }
-
-    /**
-     * @param negativeStickFillColor the negativeStickFillColor to set
-     */
-    public void setNegativeStickFillColor(int negativeStickFillColor) {
-        this.negativeStickFillColor = negativeStickFillColor;
-    }
-
-    /**
-     * @return the crossStarColor
-     */
-    public int getCrossStarColor() {
-        return crossStarColor;
-    }
-
-    /**
-     * @param crossStarColor the crossStarColor to set
-     */
-    public void setCrossStarColor(int crossStarColor) {
-        this.crossStarColor = crossStarColor;
-    }
-
     /**
      * @return the openY
      */

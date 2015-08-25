@@ -71,39 +71,30 @@ public class Bar extends AbstractShape implements Rectangle{
 	 */
 	public static final int DEFAULT_BAR_FILL_COLOR = Color.YELLOW;
 
-	/**
-	 * <p>
-	 * Color for display stick border
-	 * </p>
-	 * <p>
-	 * 表示スティックのボーダーの色
-	 * </p>
-	 * <p>
-	 * 表示柱条的边框颜色
-	 * </p>
-	 */
-	protected int barBorderColor = DEFAULT_BAR_BORDER_COLOR;
-
-	/**
-	 * <p>
-	 * Color for display stick
-	 * </p>
-	 * <p>
-	 * 表示スティックの色
-	 * </p>
-	 * <p>
-	 * 表示柱条的填充颜色
-	 * </p>
-	 */
-	protected int barFillColor = DEFAULT_BAR_FILL_COLOR;
-	
-	protected int barStrokeWidth = DEFAULT_BAR_STROKE_WIDTH;
 	protected int barSpacing = DEFAULT_BAR_SPACING;
-    private int barBorderStyle = DEFAULT_BAR_BORDER_STYLE;
-    private int barStyle = DEFAULT_BAR_STYLE;
-    
-	private IMeasurable barData;
+	protected int barBorderStyle = DEFAULT_BAR_BORDER_STYLE;
+	protected int barStyle = DEFAULT_BAR_STYLE;
 	
+	protected Paint barFillPaint;
+	protected Paint barStrokePaint;    
+    
+	protected IMeasurable barData;
+	
+    /**
+     * 
+     */
+    public Bar() {
+        super();
+        barFillPaint = new Paint();
+        barFillPaint.setStyle(Style.FILL);
+        barFillPaint.setColor(DEFAULT_BAR_FILL_COLOR);
+        
+        barStrokePaint = new Paint();
+        barStrokePaint.setStyle(Style.STROKE);
+        barStrokePaint.setStrokeWidth(DEFAULT_BAR_STROKE_WIDTH);
+        barStrokePaint.setColor(DEFAULT_BAR_BORDER_COLOR);
+    }
+
     /* (non-Javadoc)
      * @see cn.limc.androidcharts.shape.Rectangle#setUp(cn.limc.androidcharts.common.IChart, float, float)
      */
@@ -125,35 +116,23 @@ public class Bar extends AbstractShape implements Rectangle{
 	 * @param canvase 
 	 * @see cn.limc.androidcharts.shape.Shape#draw(android.graphics.Canvas) 
 	 */
-	public void draw(Canvas canvas) {	
-		Paint mPaintFill = new Paint();
-		mPaintFill.setStyle(Style.FILL);
-		mPaintFill.setColor(barFillColor);
-		
+	public void draw(Canvas canvas) {
+	    
+	    float barStrokeWidth = barStrokePaint.getStrokeWidth();
 		if (width() >= 2f && width() >= 2 * barStrokeWidth) {
 		    if (barStyle == BAR_STYLE_STICK) {
-		        if (barStrokeWidth  > 0) {
-	                Paint mPaintBorder = new Paint();
-	                mPaintBorder.setStyle(Style.STROKE);
-	                mPaintBorder.setStrokeWidth(barStrokeWidth);
-	                mPaintBorder.setColor(barBorderColor);
-	                
-	                canvas.drawRect(left + barStrokeWidth, top + barStrokeWidth, right - barStrokeWidth, bottom - barStrokeWidth, mPaintFill);
-	                canvas.drawRect(left + barStrokeWidth, top + barStrokeWidth, right - barStrokeWidth, bottom - barStrokeWidth, mPaintBorder);
+		        if (barStrokeWidth  > 0) {             
+	                canvas.drawRect(left + barStrokeWidth, top + barStrokeWidth, right - barStrokeWidth, bottom - barStrokeWidth, barFillPaint);
+	                canvas.drawRect(left + barStrokeWidth, top + barStrokeWidth, right - barStrokeWidth, bottom - barStrokeWidth, barStrokePaint);
 	            }else{
-	                canvas.drawRect(left, top, right, bottom, mPaintFill);
+	                canvas.drawRect(left, top, right, bottom, barFillPaint);
 	            }
             }else if(barStyle == BAR_STYLE_LINE){
-                Paint mPaintBorder = new Paint();
-                mPaintBorder.setStyle(Style.STROKE);
-                mPaintBorder.setStrokeWidth(barStrokeWidth);
-                mPaintBorder.setColor(barFillColor);
-                
-                canvas.drawLine(left + width() /2 , top, left + width() / 2, bottom, mPaintFill);
+                canvas.drawLine(left + width() /2 , top, left + width() / 2, bottom, barFillPaint);
             }
 			
 		} else {
-			canvas.drawLine(left, top, left, bottom, mPaintFill);	
+			canvas.drawLine(left, top, left, bottom, barFillPaint);	
 		}
 	}
 
@@ -173,8 +152,9 @@ public class Bar extends AbstractShape implements Rectangle{
 		float lowY = (float)component.heightForRate(stickData.getLow());
 		
 		if (stickData instanceof IHasColor) {
-	        this.barFillColor = ((IHasColor)stickData).getColor();
-	        this.barBorderColor = ((IHasColor)stickData).getColor();
+	        this.barFillPaint.setColor(((IHasColor)stickData).getColor());
+	        
+	        this.barStrokePaint.setColor(((IHasColor)stickData).getColor());
         }
 		
 		top = highY;
@@ -194,48 +174,6 @@ public class Bar extends AbstractShape implements Rectangle{
      */
     public void setColoredStickStyle(int coloredStickStyle) {
         this.barStyle = coloredStickStyle;
-    }
-
-    /**
-     * @return the barBorderColor
-     */
-    public int getBarBorderColor() {
-        return barBorderColor;
-    }
-
-    /**
-     * @param barBorderColor the barBorderColor to set
-     */
-    public void setBarBorderColor(int barBorderColor) {
-        this.barBorderColor = barBorderColor;
-    }
-
-    /**
-     * @return the barFillColor
-     */
-    public int getBarFillColor() {
-        return barFillColor;
-    }
-
-    /**
-     * @param barFillColor the barFillColor to set
-     */
-    public void setBarFillColor(int barFillColor) {
-        this.barFillColor = barFillColor;
-    }
-
-    /**
-     * @return the barStrokeWidth
-     */
-    public int getBarStrokeWidth() {
-        return barStrokeWidth;
-    }
-
-    /**
-     * @param barStrokeWidth the barStrokeWidth to set
-     */
-    public void setBarStrokeWidth(int barStrokeWidth) {
-        this.barStrokeWidth = barStrokeWidth;
     }
 
     /**
@@ -292,5 +230,33 @@ public class Bar extends AbstractShape implements Rectangle{
      */
     public void setBarData(IMeasurable barData) {
         this.barData = barData;
+    }
+
+    /**
+     * @return the barFillPaint
+     */
+    public Paint getBarFillPaint() {
+        return barFillPaint;
+    }
+
+    /**
+     * @param barFillPaint the barFillPaint to set
+     */
+    public void setBarFillPaint(Paint barFillPaint) {
+        this.barFillPaint = barFillPaint;
+    }
+
+    /**
+     * @return the barStrokePaint
+     */
+    public Paint getBarStrokePaint() {
+        return barStrokePaint;
+    }
+
+    /**
+     * @param barStrokePaint the barStrokePaint to set
+     */
+    public void setBarStrokePaint(Paint barStrokePaint) {
+        this.barStrokePaint = barStrokePaint;
     }
 }

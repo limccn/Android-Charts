@@ -33,7 +33,7 @@ import cn.limc.androidcharts.event.Slipable;
  * @version v1.0 2014/06/18 16:58:21 
  *  
  */
-public class SectionDataCursor extends AbstractDataCursor implements DataCursor,Slipable{
+public abstract class SectionDataCursor extends AbstractDataCursor implements DataCursor,Slipable{
     
     public static final int DEFAULT_ZOOM_BASE_LINE = ZOOM_BASE_LINE_CENTER;
 
@@ -156,7 +156,7 @@ public class SectionDataCursor extends AbstractDataCursor implements DataCursor,
                 setDisplayNumber(getMinDisplayNumber());
             }
 
-            int dataSize = mData.getChartTable().size();
+            int dataSize = dataSizeForCursor(this) ;
             // 处理displayFrom越界
             if (getDisplayTo() >= dataSize) {
                 setDisplayFrom(dataSize - getDisplayNumber());
@@ -169,7 +169,7 @@ public class SectionDataCursor extends AbstractDataCursor implements DataCursor,
      */
     @Override
     public void zoomOut() {
-        int dataSize = mData.getChartTable().size();
+        int dataSize = dataSizeForCursor(this);
         if (getDisplayNumber() < dataSize - 1) {
             if (getDisplayNumber() + ZOOM_STEP > dataSize - 1) {
                 setDisplayNumber(dataSize - 1);
@@ -205,7 +205,7 @@ public class SectionDataCursor extends AbstractDataCursor implements DataCursor,
      */
     @Override
     public void moveLeft() {
-        int dataSize = mData.getChartTable().size();
+        int dataSize =dataSizeForCursor(this);
 
         if (getDisplayFrom() <= SLIP_STEP) {
             setDisplayFrom(0);
@@ -226,7 +226,7 @@ public class SectionDataCursor extends AbstractDataCursor implements DataCursor,
      */
     @Override
     public void moveRight() {
-        int dataSize = mData.getChartTable().size();
+        int dataSize = dataSizeForCursor(this);
         if (getDisplayTo() < dataSize - SLIP_STEP) {
             setDisplayFrom(getDisplayFrom() + SLIP_STEP);
         } else {

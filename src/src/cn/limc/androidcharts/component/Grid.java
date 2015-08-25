@@ -37,36 +37,6 @@ import android.graphics.PathEffect;
  */
 public interface Grid {
     
-    
-    static final int ALIGN_TYPE_CENTER = 0;
-    static final int ALIGN_TYPE_JUSTIFY = 1;
-    
-	/**
-	 * <p>
-	 * default numbers of grid‘s latitude line
-	 * </p>
-	 * <p>
-	 * 緯線の数量のデフォルト値
-	 * </p>
-	 * <p>
-	 * 网格纬线的数量
-	 * </p>
-	 */
-	public static final int DEFAULT_LATITUDE_NUM = 4;
-
-	/**
-	 * <p>
-	 * default numbers of grid‘s longitude line
-	 * </p>
-	 * <p>
-	 * 経線の数量のデフォルト値
-	 * </p>
-	 * <p>
-	 * 网格经线的数量
-	 * </p>
-	 */
-	public static final int DEFAULT_LONGITUDE_NUM = 3;
-
 	/**
 	 * <p>
 	 * Should display longitude line?
@@ -242,16 +212,14 @@ public interface Grid {
     public static final PathEffect DEFAULT_DASH_EFFECT = new DashPathEffect(
             new float[] { 6, 3, 6, 3 }, 1);
     
-   
-    public static final int DEFAULT_ALIGN_TYPE = ALIGN_TYPE_CENTER;
     
-    float longitudePostOffset();
-    float longitudeOffset();
-    
-    float latitudePostOffset();
-    float latitudeOffset();
-    
-    float longitudePostForIndex(int index);
-    float latitudePostForIndex(int index);
+//    float longitudePostOffset();
+//    float longitudeOffset();
+//    
+//    float latitudePostOffset();
+//    float latitudeOffset();
+//    
+//    float longitudePostForIndex(int index);
+//    float latitudePostForIndex(int index);
     
 }

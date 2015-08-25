@@ -25,19 +25,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.DividedLayout;
 import cn.limc.androidcharts.component.HorizontalIndicator;
-import cn.limc.androidcharts.component.Indicator;
-import cn.limc.androidcharts.component.DataComponent;
 import cn.limc.androidcharts.component.Grid;
-import cn.limc.androidcharts.component.Layer;
 import cn.limc.androidcharts.component.HorizontalAxis;
 import cn.limc.androidcharts.component.Component;
-import cn.limc.androidcharts.component.DividedLayer;
 import cn.limc.androidcharts.component.SimpleGrid;
 import cn.limc.androidcharts.component.VerticalAxis;
 import cn.limc.androidcharts.component.VerticalIndicator;
+import cn.limc.androidcharts.controller.DiagramController;
 import cn.limc.androidcharts.event.GestureDetector;
-import cn.limc.androidcharts.event.IDisplayCursorListener;
 import cn.limc.androidcharts.event.Slipable;
 import cn.limc.androidcharts.event.Zoomable;
 import cn.limc.androidcharts.event.SlipGestureDetector;
@@ -46,14 +43,10 @@ import cn.limc.androidcharts.event.SlipGestureDetector.OnSlipGestureListener;
 import cn.limc.androidcharts.event.TouchGestureDetector.OnTouchGestureListener;
 import cn.limc.androidcharts.event.ZoomGestureDetector.OnZoomGestureListener;
 import cn.limc.androidcharts.event.TouchGestureDetector;
-import cn.limc.androidcharts.model.DateTimeDegree;
-import cn.limc.androidcharts.model.DecimalDegree;
-import cn.limc.androidcharts.model.DataCursor;
-import cn.limc.androidcharts.model.Degree;
-import cn.limc.androidcharts.model.DataRange;
-import cn.limc.androidcharts.model.SectionDataCursor;
-import cn.limc.androidcharts.model.SimpleDataCursor;
-import cn.limc.androidcharts.model.AbstractDataRange;
+import cn.limc.androidcharts.handler.ComponentHandler;
+import cn.limc.androidcharts.handler.ComponentGroupHandler;
+import cn.limc.androidcharts.handler.DataComponetHandler;
+import cn.limc.androidcharts.model.DataCursorChangedListener;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -80,7 +73,7 @@ import android.view.MotionEvent;
  * @version v1.0 2011/05/30 14:19:50
  * 
  */
-public class GridChart extends AbstractBaseChart  {
+public class GridChart extends AbstractChart  {
     
     
 	/**
@@ -102,29 +95,22 @@ public class GridChart extends AbstractBaseChart  {
 	protected GestureDetector zoomGestureDetector = new ZoomGestureDetector(this, onZoomListener);
     protected OnSlipGestureListener onSlipListener = new OnSlipListener(){};
     protected GestureDetector slipGestureDetector = new SlipGestureDetector(this,onSlipListener);
-    protected IDisplayCursorListener onDisplayCursorListener;
+    protected DataCursorChangedListener onDisplayCursorListener;
 	
 	protected HorizontalAxis topAxis;
 	protected HorizontalAxis bottomAxis;
 	protected VerticalAxis leftAxis;
 	protected VerticalAxis rightAxis;
 	
-	protected Layer topAxisLayer;
-	protected Layer bottomAxisLayer;
-	protected Layer leftAxisLayer;
-	protected Layer rightAxisLayer;
-	protected Layer gridLayer;
-	
-	protected Layer vIndicatorLayer;
-	protected Layer hIndicatorLayer;
-   
-	protected List<Layer> dataLayers = new ArrayList<Layer>();
-	protected List<Layer> userLayers = new ArrayList<Layer>();
+	protected DividedLayout layout = new DividedLayout(this);
     
-    
-	protected Indicator vIndicator;
-	protected Indicator hIndicator;
+	protected VerticalIndicator vIndicator;
+	protected HorizontalIndicator hIndicator;
 	protected SimpleGrid dataGrid;
+	
+	protected List<ComponentHandler> controllerList = new ArrayList<ComponentHandler>();
+	
+	protected DiagramController diagramController;
 	
 //	protected DataCursor dataCursor = new SimpleDataCursor();
 //	protected Degree axisYDegree = new DecimalDegree();
@@ -138,148 +124,127 @@ public class GridChart extends AbstractBaseChart  {
         axis.setParent(this);
         axis.setPosition(Axis.AXIS_X_POSITION_TOP);
         this.topAxis = axis;
-        topAxisLayer = new DividedLayer();
-        topAxisLayer.setParent(this);
-        topAxisLayer.FillComponent(axis,DividedLayer.TOP_MIDDLE);
+        layout.ResizeComponent(axis,DividedLayout.TOP_MIDDLE);
     }
     public void setTopAxis(HorizontalAxis axis,int divide){
         axis.setParent(this);
         axis.setPosition(Axis.AXIS_X_POSITION_TOP);
         this.topAxis = axis;
-        topAxisLayer = new DividedLayer();
-        topAxisLayer.setParent(this);
-        topAxisLayer.FillComponent(axis, divide);
+        layout.ResizeComponent(axis, divide);
     }
     public void setBottomAxis(HorizontalAxis axis){
         axis.setParent(this);
         axis.setPosition(Axis.AXIS_X_POSITION_BOTTOM);
         this.bottomAxis = axis;
-        bottomAxisLayer = new DividedLayer();
-        bottomAxisLayer.setParent(this);
-        bottomAxisLayer.FillComponent(axis,DividedLayer.BOTTOM_MIDDLE);
+        layout.ResizeComponent(axis,DividedLayout.BOTTOM_MIDDLE);
     }
     public void setBottomAxis(HorizontalAxis axis,int divide){
         axis.setParent(this);
         axis.setPosition(Axis.AXIS_X_POSITION_BOTTOM);
         this.bottomAxis = axis;
-        bottomAxisLayer = new DividedLayer();
-        bottomAxisLayer.setParent(this);
-        bottomAxisLayer.FillComponent(axis,divide);
+        layout.ResizeComponent(axis,divide);
     }
     public void setLeftAxis(VerticalAxis axis){ 
         axis.setParent(this);
         axis.setPosition(Axis.AXIS_Y_POSITION_LEFT);
         this.leftAxis = axis;
-        leftAxisLayer = new DividedLayer();
-        leftAxisLayer.setParent(this);
-        leftAxisLayer.FillComponent(axis,DividedLayer.CENTER_LEFT);
+        layout.ResizeComponent(axis,DividedLayout.CENTER_LEFT);
     }
     
     public void setLeftAxis(VerticalAxis axis,int divide){
         axis.setParent(this);
         axis.setPosition(Axis.AXIS_Y_POSITION_LEFT);
         this.leftAxis = axis;
-        leftAxisLayer = new DividedLayer();
-        leftAxisLayer.setParent(this);
-        leftAxisLayer.FillComponent(axis,divide);
+        layout.ResizeComponent(axis,divide);
     }
     
     public void setRightAxis(VerticalAxis axis){
         axis.setParent(this);
         axis.setPosition(Axis.AXIS_Y_POSITION_RIGHT);
         this.rightAxis = axis;
-        rightAxisLayer = new DividedLayer();
-        rightAxisLayer.setParent(this);
-        rightAxisLayer.FillComponent(axis,DividedLayer.CENTER_RIGHT);
+        layout.ResizeComponent(axis,DividedLayout.CENTER_RIGHT);
     }
     
     public void setRightAxis(VerticalAxis axis,int divide){
         axis.setParent(this);
         axis.setPosition(Axis.AXIS_Y_POSITION_RIGHT);
         this.rightAxis = axis;
-        rightAxisLayer = new DividedLayer();
-        rightAxisLayer.setParent(this);
-        rightAxisLayer.FillComponent(axis,divide);
+        layout.ResizeComponent(axis,divide);
     }
     
     public void setDataGrid(SimpleGrid grid){
         grid.setParent(this);
         this.dataGrid = grid;
-        gridLayer = new DividedLayer();
-        gridLayer.setParent(this);
-        gridLayer.FillComponent(grid,DividedLayer.CENTER_MIDDLE);
+        layout.ResizeComponent(grid,DividedLayout.CENTER_MIDDLE);
     }
     
     public void setDataGrid(SimpleGrid grid, int divide){
         grid.setParent(this);
         this.dataGrid = grid;
-        gridLayer = new DividedLayer();
-        gridLayer.setParent(this);
-        gridLayer.FillComponent(grid,divide);
+        layout.ResizeComponent(grid,divide);
     }
     
     public void setVerticalIndicator(VerticalIndicator indicator){
         indicator.setParent(this);
         this.vIndicator = indicator;
-        vIndicatorLayer = new DividedLayer();
-        vIndicatorLayer.setParent(this);
-        vIndicatorLayer.FillComponent(indicator,DividedLayer.CENTER_MIDDLE);
+        layout.ResizeComponent(indicator,DividedLayout.CENTER_MIDDLE);
     }
     
     public void setVerticalIndicator(VerticalIndicator indicator,int divide){
         indicator.setParent(this);
         this.vIndicator = indicator;
-        vIndicatorLayer = new DividedLayer();
-        vIndicatorLayer.setParent(this);
-        vIndicatorLayer.FillComponent(indicator,divide);
+        layout.ResizeComponent(indicator,divide);
     }
     
     public void setHorizontalIndicator(HorizontalIndicator indicator){
         indicator.setParent(this);
         this.hIndicator = indicator;
-        hIndicatorLayer = new DividedLayer();
-        hIndicatorLayer.setParent(this);
-        hIndicatorLayer.FillComponent(indicator,DividedLayer.CENTER_MIDDLE);
+        layout.ResizeComponent(indicator,DividedLayout.CENTER_MIDDLE);
     }
     
     public void setHorizontalIndicator(HorizontalIndicator indicator,int divide){
         indicator.setParent(this);
         this.hIndicator = indicator;
-        hIndicatorLayer = new DividedLayer();
-        hIndicatorLayer.setParent(this);
-        hIndicatorLayer.FillComponent(indicator,divide);
-    }
-    
-    public void addLayer(Layer layer){
-        if (layer != null) {
-            layer.setParent(this);
-            this.userLayers.add(layer);
-        }
+        layout.ResizeComponent(indicator,divide);
     }
     
     public void addComponent(Component component){
-        Layer layer = new DividedLayer();
-        layer.setParent(this);
+        if(component == null){
+            return;
+        }
         component.setParent(this);
-        layer.FillComponent(component, DividedLayer.CENTER_MIDDLE);
-        this.dataLayers.add(layer);
+        layout.ResizeComponent(component, DividedLayout.CENTER_MIDDLE);
     }
     
     public void addComponent(Component component, int divide){
-        Layer layer = new DividedLayer();
-        layer.setParent(this);
+        if(component == null){
+            return;
+        }
         component.setParent(this);
-        layer.FillComponent(component, divide);
-        this.dataLayers.add(layer);
+        layout.ResizeComponent(component, divide);
     }
     
+    public void addController(ComponentHandler controller){
+        if (controller == null) {
+            return;
+        }
+        controller.setParent(this);
+        controllerList.add(controller);
+        if(controller instanceof ComponentGroupHandler){
+            for (Component component : ((ComponentGroupHandler)controller).getComponentList()) {
+                addComponent(component);
+            }
+        }else{
+            addComponent(controller.getComponent());
+        }
+    }
     
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @param context
 	 * 
-	 * @see cn.limc.androidcharts.diagram.AbstractBaseChart#BaseChart(Context)
+	 * @see cn.limc.androidcharts.diagram.AbstractChart#BaseChart(Context)
 	 */
 	public GridChart(Context context) {
 		super(context);
@@ -294,7 +259,7 @@ public class GridChart extends AbstractBaseChart  {
 	 * 
 	 * @param defStyle
 	 * 
-	 * @see cn.limc.androidcharts.diagram.AbstractBaseChart#BaseChart(Context,
+	 * @see cn.limc.androidcharts.diagram.AbstractChart#BaseChart(Context,
 	 * AttributeSet, int)
 	 */
 	public GridChart(Context context, AttributeSet attrs, int defStyle) {
@@ -308,14 +273,90 @@ public class GridChart extends AbstractBaseChart  {
 	 * 
 	 * @param attrs
 	 * 
-	 * @see cn.limc.androidcharts.diagram.AbstractBaseChart#BaseChart(Context,
+	 * @see cn.limc.androidcharts.diagram.AbstractChart#BaseChart(Context,
 	 * AttributeSet)
 	 */
 	public GridChart(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
+	
+	
+	/* (non-Javadoc)
+     * @see android.view.View#onSizeChanged(int, int, int, int)
+     */
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        
+        //TODO some codes
+        
+        if (diagramController != null) {
+            diagramController.didSizeChanged();
+        }
+    }
+    
 
-	/*
+	
+	/* (non-Javadoc)
+     * @see android.view.View#onLayout(boolean, int, int, int, int)
+     */
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        
+        if (dataGrid != null) {
+            layout.ResizeComponent(dataGrid,DividedLayout.CENTER_MIDDLE);
+        }
+        if (leftAxis != null) {
+            layout.ResizeComponent(leftAxis,DividedLayout.CENTER_LEFT);
+        }
+        if (topAxis != null) {
+            layout.ResizeComponent(topAxis,DividedLayout.TOP_MIDDLE);
+        }
+        if (rightAxis != null) {
+            layout.ResizeComponent(rightAxis,DividedLayout.CENTER_RIGHT);
+        }
+        if (bottomAxis != null) {
+            layout.ResizeComponent(bottomAxis,DividedLayout.BOTTOM_MIDDLE);
+        }
+        if(vIndicator != null){
+            layout.ResizeComponent(vIndicator,DividedLayout.CENTER_MIDDLE);
+        }
+        if(hIndicator != null){
+            layout.ResizeComponent(hIndicator,DividedLayout.CENTER_MIDDLE);
+        }
+        for (ComponentHandler ctrl:controllerList) {
+            
+            if(ctrl instanceof ComponentGroupHandler){
+                for (Component component : ((ComponentGroupHandler)ctrl).getComponentList()) {
+                    if (component != null) {
+                        layout.ResizeComponent(component,DividedLayout.CENTER_MIDDLE);
+                    }
+                }
+            }else{
+                if (ctrl.getComponent() !=null) {
+                    layout.ResizeComponent(ctrl.getComponent(),DividedLayout.CENTER_MIDDLE);
+                }
+            } 
+        }
+        
+        if (diagramController != null && changed) {
+            diagramController.didLayoutChanged();
+        }
+    }
+    /**
+     * @return the diagramController
+     */
+    public DiagramController getDiagramController() {
+        return diagramController;
+    }
+    /**
+     * @param diagramController the diagramController to set
+     */
+    public void setDiagramController(DiagramController diagramController) {
+        this.diagramController = diagramController;
+    }
+    /*
 	 * (non-Javadoc)
 	 * 
 	 * <p>Called when is going to draw this chart<p> <p>チャートを書く前、メソッドを呼ぶ<p>
@@ -328,44 +369,50 @@ public class GridChart extends AbstractBaseChart  {
 	@Override
 	protected void onDraw(Canvas canvas) {
 	    
-		super.onDraw(canvas);  
+	    if (diagramController != null) {
+            diagramController.willDraw();
+        }
+		super.onDraw(canvas);
 		
-        for (Layer mlayer : this.dataLayers) {
-            if (mlayer != null) {
-                ((DataComponent) mlayer.getComponent()).getDataRange().calcValueRange();
-            }
-        }
 	      
-	    if (gridLayer != null) {
-	        gridLayer.draw(canvas);
+	    if (dataGrid != null) {
+	        dataGrid.draw(canvas);
 	    }
-		if (leftAxisLayer != null) {
-            leftAxisLayer.draw(canvas);
+		if (leftAxis != null) {
+            leftAxis.draw(canvas);
         }
-		if (topAxisLayer != null) {
-		    topAxisLayer.draw(canvas);
+		if (topAxis != null) {
+		    topAxis.draw(canvas);
         }
-		if (rightAxisLayer != null) {
-		    rightAxisLayer.draw(canvas);
+		if (rightAxis != null) {
+		    rightAxis.draw(canvas);
         }
-		if (bottomAxisLayer != null) {
-		    bottomAxisLayer.draw(canvas);
+		if (bottomAxis != null) {
+		    bottomAxis.draw(canvas);
         }
-		for(Layer mlayer : this.dataLayers){
-		    if (mlayer != null) {
-                mlayer.draw(canvas);
-            }
+       for (ComponentHandler ctrl:controllerList) {
+            
+            if(ctrl instanceof ComponentGroupHandler){
+                for (Component component : ((ComponentGroupHandler)ctrl).getComponentList()) {
+                    if (component != null) {
+                        component.draw(canvas);
+                    }
+                }
+            }else{
+                if (ctrl.getComponent() !=null) {
+                    ctrl.getComponent().draw(canvas);
+                }
+            } 
+        }
+		if(vIndicator != null){
+		    vIndicator.draw(canvas);
 		}
-		for(Layer mlayer : this.userLayers){
-            if (mlayer != null) {
-                mlayer.draw(canvas);
-            }
+        if(hIndicator != null){
+            hIndicator.draw(canvas);
         }
-		if(vIndicatorLayer != null){
-		    vIndicatorLayer.draw(canvas);
-		}
-        if(hIndicatorLayer != null){
-            hIndicatorLayer.draw(canvas);
+        
+        if (diagramController != null) {
+            diagramController.didDrawn();
         }
 	}
 	
@@ -444,7 +491,7 @@ public class GridChart extends AbstractBaseChart  {
 //	 * @return the axisXColor
 //	 */
 //	public int getAxisXColor() {
-//		return axisX.getLineColor();
+//		return axisBottom.getLineColor();
 //	}
 //
 //	/**
@@ -459,7 +506,7 @@ public class GridChart extends AbstractBaseChart  {
 //	 * @return the axisYColor
 //	 */
 //	public int getAxisYColor() {
-//		return axisY.getLineColor();
+//		return axisRight.getLineColor();
 //	}
 //
 //	/**
@@ -473,7 +520,7 @@ public class GridChart extends AbstractBaseChart  {
 //	 * @return the axisWidth
 //	 */
 //	public float getAxisXWidth() {
-//		return axisX.getLineWidth();
+//		return axisBottom.getLineWidth();
 //	}
 //
 //	/**
@@ -613,7 +660,7 @@ public class GridChart extends AbstractBaseChart  {
 //	 * @return the axisXPosition
 //	 */
 //	public int getAxisXPosition() {
-//		return axisX.getPosition();
+//		return axisBottom.getPosition();
 //	}
 //
 //	/**
@@ -628,7 +675,7 @@ public class GridChart extends AbstractBaseChart  {
 //	 * @return the axisYPosition
 //	 */
 //	public int getAxisYPosition() {
-//		return axisY.getPosition();
+//		return axisRight.getPosition();
 //	}
 //
 //	/**
@@ -714,31 +761,31 @@ public class GridChart extends AbstractBaseChart  {
 //	}
 
 //    /**
-//     * @return the axisX
+//     * @return the axisBottom
 //     */
 //    public HorizontalAxis getAxisX() {
-//        return axisX;
+//        return axisBottom;
 //    }
 //
 //    /**
-//     * @param axisX the axisX to set
+//     * @param axisBottom the axisBottom to set
 //     */
-//    public void setAxisX(HorizontalAxis axisX) {
-//        this.axisX = axisX;
+//    public void setAxisX(HorizontalAxis axisBottom) {
+//        this.axisX = axisBottom;
 //    }
 //
 //    /**
-//     * @return the axisY
+//     * @return the axisRight
 //     */
 //    public VerticalAxis getAxisY() {
-//        return axisY;
+//        return axisRight;
 //    }
 //
 //    /**
-//     * @param axisY the axisY to set
+//     * @param axisRight the axisRight to set
 //     */
-//    public void setAxisY(VerticalAxis axisY) {
-//        this.axisY = axisY;
+//    public void setAxisY(VerticalAxis axisRight) {
+//        this.axisY = axisRight;
 //    }
 
 //    /**
@@ -823,58 +870,58 @@ public class GridChart extends AbstractBaseChart  {
         return this.dataGrid.isDisplayLongitude();
     }
 
-    /**
-     * @param displayLongitudeTitle
-     *            the displayLongitudeTitle to set
-     */
-    public void setDisplayLongitudeTitle(boolean displayLongitudeTitle) {
-        this.dataGrid.setDisplayLongitudeTitle(displayLongitudeTitle);
-    }
-
-    /**
-     * @return the displayAxisYTitle
-     */
-    public boolean isDisplayLatitudeTitle() {
-        return this.dataGrid.isDisplayLatitudeTitle();
-    }
-
-    /**
-     * @param displayLatitudeTitle
-     *            the displayLatitudeTitle to set
-     */
-    public void setDisplayLatitudeTitle(boolean displayLatitudeTitle) {
-        this.dataGrid.setDisplayLatitudeTitle(displayLatitudeTitle);
-    }
-
-    /**
-     * @return the latitudeNum
-     */
-    public int getLatitudeNum() {
-        return this.dataGrid.getLatitudeNum();
-    }
-
-    /**
-     * @param latitudeNum
-     *            the latitudeNum to set
-     */
-    public void setLatitudeNum(int latitudeNum) {
-        this.dataGrid.setLatitudeNum(latitudeNum);
-    }
-
-    /**
-     * @return the longitudeNum
-     */
-    public int getLongitudeNum() {
-        return this.dataGrid.getLongitudeNum();
-    }
-
-    /**
-     * @param longitudeNum
-     *            the longitudeNum to set
-     */
-    public void setLongitudeNum(int longitudeNum) {
-        this.dataGrid.setLongitudeNum(longitudeNum);
-    }
+//    /**
+//     * @param displayLongitudeTitle
+//     *            the displayLongitudeTitle to set
+//     */
+//    public void setDisplayLongitudeTitle(boolean displayLongitudeTitle) {
+//        this.dataGrid.setDisplayLongitudeTitle(displayLongitudeTitle);
+//    }
+//
+//    /**
+//     * @return the displayAxisYTitle
+//     */
+//    public boolean isDisplayLatitudeTitle() {
+//        return this.dataGrid.isDisplayLatitudeTitle();
+//    }
+//
+//    /**
+//     * @param displayLatitudeTitle
+//     *            the displayLatitudeTitle to set
+//     */
+//    public void setDisplayLatitudeTitle(boolean displayLatitudeTitle) {
+//        this.dataGrid.setDisplayLatitudeTitle(displayLatitudeTitle);
+//    }
+//
+//    /**
+//     * @return the latitudeNum
+//     */
+//    public int getLatitudeNum() {
+//        return this.dataGrid.getLatitudeNum();
+//    }
+//
+//    /**
+//     * @param latitudeNum
+//     *            the latitudeNum to set
+//     */
+//    public void setLatitudeNum(int latitudeNum) {
+//        this.dataGrid.setLatitudeNum(latitudeNum);
+//    }
+//
+//    /**
+//     * @return the longitudeNum
+//     */
+//    public int getLongitudeNum() {
+//        return this.dataGrid.getLongitudeNum();
+//    }
+//
+//    /**
+//     * @param longitudeNum
+//     *            the longitudeNum to set
+//     */
+//    public void setLongitudeNum(int longitudeNum) {
+//        this.dataGrid.setLongitudeNum(longitudeNum);
+//    }
 
     /**
      * @return the displayLongitude
@@ -1456,18 +1503,15 @@ public class GridChart extends AbstractBaseChart  {
          */
         @Override
         public void onZoomIn(MotionEvent event) {
-//            Zoomable dataCursor = (Zoomable) GridChart.this.getDataCursor();
-//            if (dataCursor != null) {
-//                dataCursor.zoomIn();
-//            }
-            for(Layer layer:dataLayers){
-                DataCursor dataCursor = ((DataComponent)layer.getComponent()).getDataCursor();
-                if (dataCursor != null) {
-                    if (dataCursor instanceof Zoomable) {
-                        ((Zoomable)dataCursor).zoomIn();
+            for (ComponentHandler ctrl:controllerList) {
+                if (ctrl != null && ctrl instanceof DataComponetHandler) {
+                    Zoomable dataCursor = (Zoomable) ((DataComponetHandler)ctrl).getDataCursor();
+                    if (dataCursor != null) {
+                        dataCursor.zoomIn();
                     }
                 }
             }
+            
             GridChart.this.postInvalidate();
         }
 
@@ -1476,16 +1520,11 @@ public class GridChart extends AbstractBaseChart  {
          */
         @Override
         public void onZoomOut(MotionEvent event) {
-           
-//            Zoomable dataCursor = (Zoomable) GridChart.this.getDataCursor();
-//            if (dataCursor != null) {
-//                dataCursor.zoomOut();
-//            }
-            for(Layer layer:dataLayers){
-                DataCursor dataCursor = ((DataComponent)layer.getComponent()).getDataCursor();
-                if (dataCursor != null) {
-                    if (dataCursor instanceof Zoomable) {
-                        ((Zoomable)dataCursor).zoomOut();
+            for (ComponentHandler ctrl:controllerList) {
+                if (ctrl != null && ctrl instanceof DataComponetHandler) {
+                    Zoomable dataCursor = (Zoomable) ((DataComponetHandler)ctrl).getDataCursor();
+                    if (dataCursor != null) {
+                        dataCursor.zoomOut();
                     }
                 }
             }
@@ -1504,15 +1543,11 @@ public class GridChart extends AbstractBaseChart  {
          */
         @Override
         public void onMoveLeft(MotionEvent event) {
-//            Slipable dataCursor = (Slipable) GridChart.this.getDataCursor();
-//            if (dataCursor != null) {
-//                dataCursor.moveLeft();
-//            }
-            for(Layer layer:dataLayers){
-                DataCursor dataCursor = ((DataComponent)layer.getComponent()).getDataCursor();
-                if (dataCursor != null) {
-                    if (dataCursor instanceof Slipable) {
-                        ((Slipable)dataCursor).moveLeft();
+            for (ComponentHandler ctrl:controllerList) {
+                if (ctrl != null && ctrl instanceof DataComponetHandler) {
+                    Slipable dataCursor = (Slipable) ((DataComponetHandler)ctrl).getDataCursor();
+                    if (dataCursor != null) {
+                        dataCursor.moveLeft();
                     }
                 }
             }
@@ -1528,15 +1563,19 @@ public class GridChart extends AbstractBaseChart  {
          */
         @Override
         public void onMoveRight(MotionEvent event) {
-            for(Layer layer:dataLayers){
-                DataCursor dataCursor = ((DataComponent)layer.getComponent()).getDataCursor();
-                if (dataCursor != null) {
-                    if (dataCursor instanceof Slipable) {
-                        ((Slipable)dataCursor).moveRight();
+            for (ComponentHandler ctrl:controllerList) {
+                if (ctrl != null && ctrl instanceof DataComponetHandler) {
+                    Slipable dataCursor = (Slipable) ((DataComponetHandler)ctrl).getDataCursor();
+                    if (dataCursor != null) {
+                        dataCursor.moveRight();
                     }
                 }
             }
             GridChart.this.postInvalidate();
         }
+    }
+    
+    public interface Layout {
+        void ResizeComponent(Component component, int divide);
     }
 }

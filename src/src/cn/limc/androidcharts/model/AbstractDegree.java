@@ -1,7 +1,6 @@
 
 package cn.limc.androidcharts.model;
 
-import cn.limc.androidcharts.component.Axis;
 
 public abstract class AbstractDegree implements Degree {
 
@@ -11,8 +10,7 @@ public abstract class AbstractDegree implements Degree {
     
     protected String sourceFormat;
     protected String targetFormat;
-    
-    protected Axis axis; 
+
 
     /**
      * @return the autoFormatDegree
@@ -54,19 +52,5 @@ public abstract class AbstractDegree implements Degree {
      */
     public void setTargetFormat(String targetFormat) {
         this.targetFormat = targetFormat;
-    }
-
-    /**
-     * @return the axis
-     */
-    public Axis getAxis() {
-        return axis;
-    }
-
-    /**
-     * @param axis the axis to set
-     */
-    public void setAxis(Axis axis) {
-        this.axis = axis;
     }
 }

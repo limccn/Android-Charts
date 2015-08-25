@@ -62,6 +62,28 @@ public interface Axis {
      * </p>
      */
     static final int DEFAULT_DEGREE_FONT_COLOR = Color.WHITE;
+    
+    
+    
+    static final int ALIGN_TYPE_CENTER = 0;
+    static final int ALIGN_TYPE_JUSTIFY = 1;
+    
+    
+    public static final int DEFAULT_ALIGN_TYPE = ALIGN_TYPE_CENTER;
+    
+    /**
+     * <p>
+     * default numbers of grid‘s latitude line
+     * </p>
+     * <p>
+     * 緯線の数量のデフォルト値
+     * </p>
+     * <p>
+     * 网格纬线的数量
+     * </p>
+     */
+    public static final int DEFAULT_TITLES_NUM = 4;
+
 
     /**
      * <p>
@@ -90,7 +112,10 @@ public interface Axis {
     int getDegreeFontSize();
     void setDegreeFontSize(int size);
     Degree getDegree();
-    void setDegree(Degree degree);
+   // void setDegree(Degree degree);
     DataComponent getBindComponent();
-    void setBindComponent(DataComponent component);
+   // void setBindComponent(DataComponent component);
+    
+    float postForIndex(int index);
+    int titlesNum();
 }

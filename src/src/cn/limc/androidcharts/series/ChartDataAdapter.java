@@ -8,8 +8,6 @@
 //
 package cn.limc.androidcharts.series;
 
-import cn.limc.androidcharts.diagram.GridChart;
-
 /**
  * ChartDataAdapter
  * Description: <br>
@@ -24,13 +22,6 @@ import cn.limc.androidcharts.diagram.GridChart;
  * 2015-7-29 limc create v1.0 <br>
  *
  */
-public class ChartDataAdapter implements IChartDataAdapter {
-
-    public ChartDataAdapter(Object data, GridChart chart) {
-    }
-
-    @Override
-    public void Fill(ChartDataSet dataSet) {
-        
-    }
+public interface ChartDataAdapter {
+    void fill(ChartDataSet dataSet);
 }

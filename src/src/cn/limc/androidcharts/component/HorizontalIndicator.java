@@ -26,7 +26,7 @@ import android.graphics.PointF;
  * 2015-8-10 limc create v1.0 <br>
  *
  */
-public class HorizontalIndicator extends AbstractIndicator{
+public abstract class HorizontalIndicator extends AbstractIndicator{
 
     /**
      * 
@@ -44,6 +44,7 @@ public class HorizontalIndicator extends AbstractIndicator{
     }
     
     protected void drawLine(Canvas canvas) {
+        DataComponent bindComponent = componentForIndicator(this);
 
         if (bindComponent == null) {
             return;

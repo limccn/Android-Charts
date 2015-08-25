@@ -26,6 +26,7 @@ import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import cn.limc.androidcharts.diagram.GridChart;
+import cn.limc.androidcharts.handler.ComponentHandler;
 import cn.limc.androidcharts.model.DataCursor;
 import cn.limc.androidcharts.series.ChartDataRow;
 import cn.limc.androidcharts.series.ChartDataSet;
@@ -45,7 +46,8 @@ import cn.limc.androidcharts.shape.Shape;
  */
 public abstract class AbstractComponent implements Component{
     
-    protected RectF frame;
+    protected RectF frame = new RectF(0,0,0,0);
+	protected ComponentHandler componentController;
 	protected GridChart parent;
 	
 	/**
@@ -53,7 +55,6 @@ public abstract class AbstractComponent implements Component{
      */
     public AbstractComponent(GridChart parent) {
         super();
-        this.parent = parent;
     }
 
     public AbstractComponent() {
@@ -520,13 +521,37 @@ public abstract class AbstractComponent implements Component{
      * @return the parent
      */
     public GridChart getParent() {
-        return parent;
+        //TODO All components must have a controller?
+        if (componentController != null) {
+            return componentController.getParent();
+        }else{
+            return parent;
+        }
     }
-
+    
     /**
      * @param parent the parent to set
      */
     public void setParent(GridChart parent) {
-        this.parent = parent;
+        //TODO All components must have a controller?
+        if (componentController != null) {
+            componentController.setParent(parent);
+        }else{
+            this.parent=parent;
+        }
+    }
+
+    /**
+     * @return the componentController
+     */
+    public ComponentHandler getComponentController() {
+        return componentController;
+    }
+
+    /**
+     * @param componentController the componentController to set
+     */
+    public void setComponentHandler(ComponentHandler componentController) {
+        this.componentController = componentController;
     }
 }

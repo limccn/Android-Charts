@@ -3,11 +3,10 @@ package cn.limc.androidcharts.model;
 import cn.limc.androidcharts.model.AbstractRangeCalculator;
 import cn.limc.androidcharts.series.IMeasurable;
 
-public class MeasuableRangeCalculator extends AbstractRangeCalculator {
+public abstract class MeasuableRangeCalculator extends AbstractRangeCalculator {
 
     @Override
     public void initRange(DataRange dataRange) {
-        
         dataRange.setMaxValue(-Double.MAX_VALUE);
         dataRange.setMinValue(Double.MAX_VALUE);
     }

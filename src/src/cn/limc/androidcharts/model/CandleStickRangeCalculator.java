@@ -25,7 +25,7 @@ import cn.limc.androidcharts.series.OHLCEntity;
  * 2015-7-22 limc create v1.0 <br>
  *
  */
-public class CandleStickRangeCalculator extends MeasuableRangeCalculator {
+public abstract class CandleStickRangeCalculator extends MeasuableRangeCalculator {
  
 
     public void compareValue(DataRange dataRange,IMeasurable ohlc) {

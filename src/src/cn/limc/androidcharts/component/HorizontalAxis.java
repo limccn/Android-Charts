@@ -27,6 +27,7 @@ import java.util.List;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import cn.limc.androidcharts.model.Degree;
 import cn.limc.androidcharts.series.IHasDate;
 
 /** 
@@ -38,7 +39,7 @@ import cn.limc.androidcharts.series.IHasDate;
  * @version v1.0 2014/06/24 19:58:57 
  *  
  */
-public class HorizontalAxis extends AbstractAxis {
+public abstract class HorizontalAxis extends AbstractAxis {
 
     public void drawLine(Canvas canvas) { 
         float postY;
@@ -57,11 +58,13 @@ public class HorizontalAxis extends AbstractAxis {
     
     public void drawDegrees(Canvas canvas) {
 
+        Degree degree = getDegree();
+        
         if (degree == null) {
             return;
         }
         
-        List<String> degrees = degree.getDegrees();
+        List<String> degrees = degree.getDegrees(this);
 
         if (degrees == null) {
             return;
@@ -83,7 +86,6 @@ public class HorizontalAxis extends AbstractAxis {
             postY = getEndY()  - 2;
         }
 
-        Grid grid = bindComponent.getDataGrid();
         for (int i = 0; i < degrees.size(); i++) {
             String mDegree = degrees.get(i);
             if (0 == i) {
@@ -94,11 +96,41 @@ public class HorizontalAxis extends AbstractAxis {
                 mPaintFont.setTextAlign(Align.CENTER);
             }
             
-            canvas.drawText(mDegree, grid.longitudePostForIndex(i) , postY, mPaintFont);
+            canvas.drawText(mDegree, postForIndex(i) , postY, mPaintFont);
         }
     }
     
-
+    
+    public float longitudePostOffset(){
+        DataComponent bindComponent = getBindComponent();
+        if (bindComponent != null) {
+            return bindComponent.getPaddingWidth() / (titlesNum() - 1);
+        }else{
+            return getPaddingWidth()/(titlesNum() - 1);
+        }
+        
+    }
+    
+    public float longitudeOffset(){
+        DataComponent bindComponent = getBindComponent();
+        if (bindComponent != null) {
+            return bindComponent.getPaddingStartX();
+        }else{
+            return getPaddingStartX();
+        }
+    }
+    
+    
+    /* (non-Javadoc)
+     * @see cn.limc.androidcharts.component.Axis#postForIndex(int)
+     */
+    @Override
+    public float postForIndex(int index) {
+        float postOffset = longitudePostOffset();
+        float offset = longitudeOffset();
+        return offset + index * postOffset;
+    }
+    
     
     /**
      * <p>
@@ -134,6 +166,9 @@ public class HorizontalAxis extends AbstractAxis {
      *         </p>
      */
     public String getWidthDegree(float value) {
+        DataComponent bindComponent = getBindComponent();
+        Degree degree = getDegree();
+        
         float graduate = bindComponent.getWidthRate(value);
         int index = (int) Math.floor(graduate * bindComponent.getDataCursor().getDisplayNumber());
 
@@ -144,6 +179,6 @@ public class HorizontalAxis extends AbstractAxis {
         }
 
         IHasDate dataRow= (IHasDate)bindComponent.getChartData().getChartTable().get(index);
-        return degree.valueForDegree(dataRow.getDate());
+        return degree.valueForDegree(this,dataRow.getDate());
     }
 }

@@ -19,9 +19,6 @@
  * limitations under the License.
  */
 
-/**
- * 
- */
 package cn.limc.androidcharts.diagram;
 
 import java.util.List;
@@ -75,7 +72,7 @@ public class PieChart extends RoundChart {
 	 * 
 	 * @param context
 	 * 
-	 * @see cn.limc.androidcharts.diagram.AbstractBaseChart#BaseChart(Context)
+	 * @see cn.limc.androidcharts.diagram.AbstractChart#BaseChart(Context)
 	 */
 	public PieChart(Context context) {
 		super(context);
@@ -90,7 +87,7 @@ public class PieChart extends RoundChart {
 	 * 
 	 * @param defStyle
 	 * 
-	 * @see cn.limc.androidcharts.diagram.AbstractBaseChart#BaseChart(Context,
+	 * @see cn.limc.androidcharts.diagram.AbstractChart#BaseChart(Context,
 	 * AttributeSet, int)
 	 */
 	public PieChart(Context context, AttributeSet attrs, int defStyle) {
@@ -104,7 +101,7 @@ public class PieChart extends RoundChart {
 	 * 
 	 * @param attrs
 	 * 
-	 * @see cn.limc.androidcharts.diagram.AbstractBaseChart#BaseChart(Context,
+	 * @see cn.limc.androidcharts.diagram.AbstractChart#BaseChart(Context,
 	 * AttributeSet)
 	 */
 	public PieChart(Context context, AttributeSet attrs) {

@@ -21,30 +21,27 @@
 
 package cn.limc.demo.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.AbstractAxis;
 import cn.limc.androidcharts.component.AreaChartComponent;
 import cn.limc.androidcharts.component.Axis;
+import cn.limc.androidcharts.component.Grid;
 import cn.limc.androidcharts.component.HorizontalIndicator;
 import cn.limc.androidcharts.component.Indicator;
 import cn.limc.androidcharts.component.DataComponent;
-import cn.limc.androidcharts.component.DividedLayer;
 import cn.limc.androidcharts.component.HorizontalAxis;
 import cn.limc.androidcharts.component.KChartComponent;
-import cn.limc.androidcharts.component.Layer;
 import cn.limc.androidcharts.component.LineChartComponent;
 import cn.limc.androidcharts.component.SimpleGrid;
-import cn.limc.androidcharts.component.StickChartComponent;
 import cn.limc.androidcharts.component.VerticalAxis;
 import cn.limc.androidcharts.component.VerticalIndicator;
 import cn.limc.androidcharts.diagram.GridChart;
+import cn.limc.androidcharts.handler.ComponentGroupHandler;
 import cn.limc.androidcharts.model.DataCursor;
 import cn.limc.androidcharts.model.DateTimeDegree;
 import cn.limc.androidcharts.model.DecimalDegree;
+import cn.limc.androidcharts.model.Degree;
 import cn.limc.androidcharts.model.MeasuableRangeCalculator;
+import cn.limc.androidcharts.model.RangeCalculator;
 import cn.limc.androidcharts.model.SectionDataCursor;
 import cn.limc.androidcharts.model.SimpleDataRange;
 import cn.limc.androidcharts.series.ChartDataSet;
@@ -52,8 +49,6 @@ import cn.limc.androidcharts.series.ChartDataTable;
 import cn.limc.androidcharts.series.LineEntity;
 import cn.limc.demo.common.BaseActivity;
 import android.os.Bundle;
-import android.app.Activity;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.view.Menu;
 
@@ -119,7 +114,7 @@ public class GridChartActivity extends BaseActivity {
 //        gridchart.setCrossLinesFontColor(Color.GREEN);
 //        gridchart.setBorderWidth(1);
         
-        ChartDataSet lines = new ChartDataSet();
+        final ChartDataSet lines = new ChartDataSet();
         // 计算5日均线
         LineEntity ma5 = new LineEntity();
         ma5.setTitle("MA5");
@@ -141,7 +136,7 @@ public class GridChartActivity extends BaseActivity {
         ma25.setTableData(initMA(25));
         lines.add(ma25);
 
-        ChartDataSet band = new ChartDataSet();
+        final ChartDataSet band = new ChartDataSet();
         LineEntity lower = new LineEntity();
         lower.setTitle("LOWER");
         lower.setLineColor(Color.YELLOW);
@@ -154,80 +149,174 @@ public class GridChartActivity extends BaseActivity {
         upper.setTableData(dv2);
         band.add(upper);
         
-        SimpleGrid grid= new SimpleGrid();
-        gridchart.setDataGrid(grid);
+        final SimpleDataRange dataRange;
+        final SectionDataCursor dataCursor;
+        final SimpleGrid grid;
+        final DataComponent stickChartComponent;
+        final DataComponent lineChartComponent;
+        final DataComponent bandChartComponent;
         
-        SimpleDataRange dataRange1 = new SimpleDataRange();
-        dataRange1.setRangeCalculator(new MeasuableRangeCalculator());
+        final HorizontalAxis axisX;
+        final VerticalAxis axisY;
+        final HorizontalAxis axisXLine;
+        final VerticalAxis axisYLine;
+             
+        dataCursor = new SectionDataCursor() {
+            @Override
+            public int dataSizeForCursor(DataCursor dataCursor) {
+                return vol.size();
+            }
+        };
         
-        SimpleDataRange dataRange2 = new SimpleDataRange();
-        dataRange2.setRangeCalculator(new MeasuableRangeCalculator());
+        stickChartComponent = new KChartComponent();
+        lineChartComponent = new LineChartComponent();
+        bandChartComponent = new AreaChartComponent();
+
+        axisX = new HorizontalAxis() {
+            
+            @Override
+            public Degree degreeForAxis(Axis axis) {
+                return new DateTimeDegree();
+            }
+            
+            @Override
+            public DataComponent componentForAxis(Axis axis) {
+                return stickChartComponent;
+            }
+        };
         
-        SimpleDataRange dataRange3 = new SimpleDataRange();
-        dataRange3.setRangeCalculator(new MeasuableRangeCalculator());
+        axisY = new VerticalAxis() {
+            
+            @Override
+            public Degree degreeForAxis(Axis axis) {
+                return new DecimalDegree();
+            }
+            
+            @Override
+            public DataComponent componentForAxis(Axis axis) {
+                return stickChartComponent;
+            }
+        };
         
-        SimpleDataRange dataRange4 = new SimpleDataRange();
-        dataRange4.setRangeCalculator(new MeasuableRangeCalculator());
+        axisXLine = new HorizontalAxis() {
+            
+            @Override
+            public Degree degreeForAxis(Axis axis) {
+                return new DateTimeDegree();
+            }
+            
+            @Override
+            public DataComponent componentForAxis(Axis axis) {
+                return lineChartComponent;
+            }
+        };
+      
+        axisYLine = new VerticalAxis() {
+            
+            @Override
+            public Degree degreeForAxis(Axis axis) {
+                return new DecimalDegree();
+            }
+            
+            @Override
+            public DataComponent componentForAxis(Axis axis) {
+                return lineChartComponent;
+            }
+        };
         
-        DataComponent kChartComponent = new StickChartComponent();
-        kChartComponent.setChartData(new ChartDataSet(new ChartDataTable(vol)));
-        kChartComponent.setDataCursor(new SectionDataCursor());
-        kChartComponent.setDataGrid(grid);
-        kChartComponent.setDataRange(dataRange1);
+        grid= new SimpleGrid() {
+            
+            @Override
+            public VerticalAxis verticalAxisForGrid(Grid grid) {
+                return axisY;
+            }
+            
+            @Override
+            public HorizontalAxis horizontalAxisForGrid(Grid grid) {
+                return axisX;
+            }
+        };
         
-//        DataComponent kChartComponent = new KChartComponent();
-//        kChartComponent.setChartData(new ChartDataSet(new ChartDataTable(ohlc)));
-//        kChartComponent.setDataCursor(new SectionDataCursor());
-//        kChartComponent.setDataGrid(grid);
-//        kChartComponent.setDataRange(dataRange1);
+        VerticalIndicator vIndicator = new VerticalIndicator() {
+            
+            @Override
+            public DataCursor dataCursorForIndicator(Indicator indicator) {
+                return dataCursor;
+            }
+
+            @Override
+            public DataComponent componentForIndicator(Indicator indicator) {
+                return stickChartComponent;
+            }
+            
+        };
         
-        DataComponent lineDataComponent = new LineChartComponent();
-        lineDataComponent.setChartData(lines);
-        lineDataComponent.setDataCursor(new SectionDataCursor());
-        lineDataComponent.setDataGrid(grid);
-        lineDataComponent.setDataRange(dataRange2);
-        
-        DataComponent bandDataComponent = new LineChartComponent();
-        bandDataComponent.setChartData(band);
-        bandDataComponent.setDataCursor(new SectionDataCursor());
-        bandDataComponent.setDataGrid(grid);
-        bandDataComponent.setDataRange(dataRange3);
-        
-        DataComponent bandChartComponent = new AreaChartComponent();
-        bandChartComponent.setChartData(band);
-        bandChartComponent.setDataCursor(new SectionDataCursor());
-        bandChartComponent.setDataGrid(grid);
-        bandChartComponent.setDataRange(dataRange4);
-        
-        gridchart.addComponent(kChartComponent);
-        gridchart.addComponent(lineDataComponent);
-        gridchart.addComponent(bandDataComponent);     
-        gridchart.addComponent(bandChartComponent);     
-        
-        HorizontalAxis axisX = new HorizontalAxis();
-        axisX.setBindComponent(kChartComponent);
-        axisX.setDegree(new DateTimeDegree());
-        
-        VerticalAxis axisY = new VerticalAxis();
-        axisY.setBindComponent(kChartComponent);
-        axisY.setDegree(new DecimalDegree());
-        
-        VerticalAxis axisYLine = new VerticalAxis();
-        axisYLine.setBindComponent(lineDataComponent);
-        axisYLine.setDegree(new DecimalDegree());
-        
-        HorizontalAxis axisXLine = new HorizontalAxis();
-        axisXLine.setBindComponent(lineDataComponent);
-        axisXLine.setDegree(new DateTimeDegree());
-        
-        VerticalIndicator vIndicator = new VerticalIndicator();
-        vIndicator.setBindComponent(lineDataComponent);
         vIndicator.setBindToStyle(Indicator.BIND_TO_TYPE_NONE);
+
         
-        HorizontalIndicator hIndicator = new HorizontalIndicator();
-        hIndicator.setBindComponent(lineDataComponent);
+        HorizontalIndicator hIndicator = new HorizontalIndicator() {
+            
+            @Override
+            public DataCursor dataCursorForIndicator(Indicator indicator) {
+                return dataCursor;
+            }
+            
+            @Override
+            public DataComponent componentForIndicator(Indicator indicator) {
+                return stickChartComponent;
+            }
+        };
+        
         hIndicator.setBindToStyle(Indicator.BIND_TO_TYPE_NONE);
+        
+        dataRange = new SimpleDataRange();
+        dataRange.setRangeCalculator(new MeasuableRangeCalculator() {
+            
+            @Override
+            public int startCalcPost(RangeCalculator calc) {
+                return dataCursor.getDisplayFrom();
+            }
+            
+            @Override
+            public int endCalcPost(RangeCalculator calc) {
+                // TODO Auto-generated method stub
+                return dataCursor.getDisplayTo();
+            }
+            
+            @Override
+            public int rangeDivide(RangeCalculator calc) {
+                return axisY.titlesNum();
+            }
+        });
        
+        ComponentGroupHandler groupController = new ComponentGroupHandler() {
+            /* (non-Javadoc)
+             * @see cn.limc.androidcharts.component.DataComponent.DataComponentDataSource#dataForComponent(cn.limc.androidcharts.component.DataComponent)
+             */
+            @Override
+            public ChartDataSet dataForComponent(DataComponent component) {
+                if (component == stickChartComponent) {
+                    return new ChartDataSet(new ChartDataTable(ohlc));
+                }else if(component == lineChartComponent){
+                    return lines;
+                }else if(component == bandChartComponent){
+                    return band;
+                }else{
+                    return null;
+                }
+            }
+        };
+        groupController.setDataGrid(grid);
+        groupController.setDataRange(dataRange);
+        groupController.setDataCursor(dataCursor);
+        groupController.addComponent(bandChartComponent);
+        groupController.addComponent(lineChartComponent);
+        groupController.addComponent(stickChartComponent);
+
+        
+        gridchart.addController(groupController);
+        
+        gridchart.setDataGrid(grid);
         gridchart.setBottomAxis(axisX);
         gridchart.setRightAxis(axisY);
         gridchart.setLeftAxis(axisYLine);

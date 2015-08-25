@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class ChartDataSet {
 
-    List<ChartDataTable> tables;
+    protected List<ChartDataTable> tables;
     
     /**
      * 

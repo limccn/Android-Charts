@@ -26,26 +26,4 @@ import cn.limc.androidcharts.series.ChartDataSet;
  */
 public abstract class AbstractDataCursor implements DataCursor{
 
-    protected ChartDataSet mData;
-    /**
-     * 
-     */
-    public AbstractDataCursor() {
-        // TODO Auto-generated constructor stub
-    }
-    
-    /**
-     * @return the mData
-     */
-    public ChartDataSet getData() {
-        return mData;
-    }
-
-    /**
-     * @param mData the mData to set
-     */
-    public void setData(ChartDataSet data) {
-        this.mData = data;
-    }
-
 }

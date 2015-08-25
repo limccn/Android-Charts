@@ -21,6 +21,8 @@
 
 package cn.limc.androidcharts.series;
 
+import java.util.List;
+
 /**
  * <p>
  * Entity mData which is use for display a single line in LineChart
@@ -92,8 +94,17 @@ public class LineEntity extends ChartDataTable {
 	public LineEntity() {
 		super();
 	}
+	
+
 
 	/**
+     * @param tableData
+     */
+    public LineEntity(List<ChartDataRow> tableData) {
+        super(tableData);
+    }
+
+    /**
 	 * <p>
 	 * Constructor of LineEntity
 	 * </p>

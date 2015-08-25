@@ -8,7 +8,7 @@
 //
 package cn.limc.androidcharts.model;
 
-import cn.limc.androidcharts.component.DataComponent;
+import cn.limc.androidcharts.series.ChartDataSet;
 
 /**
  * DataRange
@@ -39,10 +39,9 @@ public interface DataRange {
     double valueForRate(double rate);
     
     boolean isAutoCalcValueRange();
-    void calcValueRange();
+    void calcValueRange(ChartDataSet data);
+    void optimizeValueRange();
     
-    DataComponent getBindComponent();
-    void setBindComponent(DataComponent bindComponent);
-    
-
+    RangeCalculator getRangeCalculator();
+    void setRangeCalculator(RangeCalculator rangeCalculator);
 }

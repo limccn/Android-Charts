@@ -26,7 +26,7 @@ import android.graphics.PointF;
  * 2015-8-10 limc create v1.0 <br>
  *
  */
-public class VerticalIndicator extends AbstractIndicator{
+public abstract class VerticalIndicator extends AbstractIndicator{
 
     /**
      * 
@@ -58,8 +58,10 @@ public class VerticalIndicator extends AbstractIndicator{
      * @param canvas
      */
     protected void drawLine(Canvas canvas) {
+        
+        DataComponent bindComponent = componentForIndicator(this);
 
-        if(this.bindComponent == null){
+        if(bindComponent == null){
             return;
         }
         if(bindComponent.getParent() == null){

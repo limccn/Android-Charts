@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import cn.limc.androidcharts.component.Axis;
 import cn.limc.androidcharts.component.SimpleGrid;
 import cn.limc.androidcharts.series.ChartDataSet;
 import cn.limc.androidcharts.series.ChartDataTable;
@@ -50,28 +51,27 @@ public class DateTimeDegree extends AbstractDegree {
      * @see cn.limc.androidcharts.degree.IDegree#getDegrees()
      */
     @Override
-    public List<String> getDegrees() {
+    public List<String> getDegrees(Axis axis) {
         List<String> titleX = new ArrayList<String>();
         ChartDataSet chartData = axis.getBindComponent().getChartData();
         DataCursor dataCursor = axis.getBindComponent().getDataCursor();
-        SimpleGrid grid = axis.getBindComponent().getDataGrid();
         if (chartData != null) {
             ChartDataTable table = chartData.getChartTable();
             if (null != table && table.size() > 0) {
                 //TODO How to get grid
-                float average = dataCursor.getDisplayNumber() / grid.getLongitudeNum();
-                for (int i = 0; i < grid.getLongitudeNum(); i++) {
-                    int index = (int) Math.floor(i * average);
-                    if (index > dataCursor.getDisplayNumber() - 1) {
-                        index = dataCursor.getDisplayNumber() - 1;
+                float average = dataCursor.getDisplayNumber() / (axis.titlesNum()-1);
+                for (int i = 0; i < axis.titlesNum(); i++) {
+                    int index = dataCursor.getDisplayFrom() + (int) Math.floor(i * average);
+                    if (index > dataCursor.dataSizeForCursor(dataCursor)- 1) {
+                        index = dataCursor.dataSizeForCursor(dataCursor)- 1;
                     }
 
                     IHasDate rowDate = (IHasDate) table.get(index);
-                    titleX.add(this.valueForDegree(rowDate.getDate()));
+                    titleX.add(valueForDegree(axis,rowDate.getDate()));
                 }
-                IHasDate rowDate = (IHasDate) table
-                        .get(dataCursor.getDisplayNumber() - 1);
-                titleX.add(this.valueForDegree(rowDate.getDate()));
+//                IHasDate rowDate = (IHasDate) table
+//                        .get(dataCursor.getDisplayNumber() - 1);
+//                titleX.add(valueForDegree(axis,rowDate.getDate()));
             }
         }
         return titleX;
@@ -81,7 +81,7 @@ public class DateTimeDegree extends AbstractDegree {
      * @see cn.limc.androidcharts.degree.IDegree#valueForDegree(java.lang.Object)
      */
     @Override
-    public String valueForDegree(Object value) {
+    public String valueForDegree(Axis axis,Object value) {
         //TOOD location
         final SimpleDateFormat sourceFormator = new SimpleDateFormat(sourceFormat,Locale.ENGLISH);
         final SimpleDateFormat targetFormator = new SimpleDateFormat(targetFormat,Locale.ENGLISH);      

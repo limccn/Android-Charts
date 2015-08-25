@@ -22,7 +22,6 @@
 
 package cn.limc.androidcharts.model;
 
-import cn.limc.androidcharts.series.ChartDataSet;
 
 
 /** 
@@ -42,14 +41,11 @@ public interface DataCursor {
 	 int getDisplayNumber();
 	 int getDisplayTo();
 	 int getMinDisplayNumber();
+     
 	
 	 void setDisplayFrom(int displayFrom);
 	 void setDisplayNumber(int displayNumber);
-	 //void setDisplayTo(int displayTo);
 	 void setMinDisplayNumber(int minDisplayNumber);
 	 
-	 ChartDataSet getData();
-	 
-	 void setData(ChartDataSet data);
-	 
+     int dataSizeForCursor(DataCursor dataCursor);
 }

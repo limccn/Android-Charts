@@ -21,105 +21,74 @@
 
 package cn.limc.demo.activity;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.component.AbstractAxis;
-import cn.limc.androidcharts.diagram.MACandleStickChart;
+import cn.limc.androidcharts.diagram.GridChart;
 import cn.limc.androidcharts.series.ChartDataSet;
 import cn.limc.androidcharts.series.ChartDataTable;
-import cn.limc.androidcharts.series.DateValueEntity;
 import cn.limc.androidcharts.series.LineEntity;
 import cn.limc.demo.common.BaseActivity;
+import cn.limc.demo.controller.MACandleStickChartController;
 import android.os.Bundle;
 import android.graphics.Color;
 import android.view.Menu;
 
 public class MACandleStickChartActivity extends BaseActivity {
 
-    MACandleStickChart macandlestickchart;
+    GridChart macandlestickchart;
+    MACandleStickChartController stickChartController;
+    ChartDataSet stickData;
+    ChartDataSet lineData;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_macandle_stick_chart);
+        setContentView(R.layout.activity_maslip_candle_stick_chart);
+        initData();
         initMACandleStickChart();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.macandle_stick_chart, menu);
+        getMenuInflater().inflate(R.menu.maslip_candle_stick_chart, menu);
         return true;
     }
     
-    private void initMACandleStickChart() {
-        this.macandlestickchart = (MACandleStickChart) findViewById(R.id.macandlestickchart);
-        ChartDataSet lines = new ChartDataSet();
+    private void initData() {
+        lineData = new ChartDataSet();
 
         // 计算5日均线
         LineEntity ma5 = new LineEntity();
         ma5.setTitle("MA5");
         ma5.setLineColor(Color.WHITE);
         ma5.setTableData(initMA(5));
-        lines.add(ma5);
+        lineData.add(ma5);
 
         // 计算10日均线
         LineEntity ma10 = new LineEntity();
         ma10.setTitle("MA10");
         ma10.setLineColor(Color.CYAN);
         ma10.setTableData(initMA(10));
-        lines.add(ma10);
+        lineData.add(ma10);
 
         // 计算25日均线
         LineEntity ma25 = new LineEntity();
         ma25.setTitle("MA25");
         ma25.setLineColor(Color.BLUE);
         ma25.setTableData(initMA(25));
-        lines.add(ma25);
-//
-////        macandlestickchart.setAxisXColor(Color.LTGRAY);
-////        macandlestickchart.setAxisYColor(Color.LTGRAY);
-//        macandlestickchart.setLatitudeColor(Color.GRAY);
-//        macandlestickchart.setLongitudeColor(Color.GRAY);
-//        macandlestickchart.setBorderColor(Color.LTGRAY);
-//        macandlestickchart.setLongitudeFontColor(Color.WHITE);
-//        macandlestickchart.setLatitudeFontColor(Color.WHITE);
-//
-//        // 最大显示足数
-//        //macandlestickchart.setMaxSticksNum(52);
-//        macandlestickchart.setDisplayNumber(52);
-//        // 最大纬线数
-//        macandlestickchart.setLatitudeNum(5);
-//        // 最大经线数
-//        macandlestickchart.setLongitudeNum(3);
-//        // 最大价格
-//        macandlestickchart.setMaxValue(1200);
-//        // 最小价格
-//        macandlestickchart.setMinValue(200);
-//
-//        macandlestickchart.setDisplayLongitudeTitle(true);
-//        macandlestickchart.setDisplayLatitudeTitle(true);
-//        macandlestickchart.setDisplayLatitude(true);
-//        macandlestickchart.setDisplayLongitude(true);
-//        macandlestickchart.setBackgroundColor(Color.BLACK);
-//
-//        macandlestickchart.setDataQuadrantPaddingTop(5);
-//        macandlestickchart.setDataQuadrantPaddingBottom(5);
-//        macandlestickchart.setDataQuadrantPaddingLeft(5);
-//        macandlestickchart.setDataQuadrantPaddingRight(5);
-//      macandlestickchart.setAxisYTitleQuadrantWidth(50);
-//      macandlestickchart.setAxisXTitleQuadrantHeight(20);
-//        macandlestickchart.setAxisXPosition(AbstractAxis.AXIS_X_POSITION_BOTTOM);
-//        macandlestickchart.setAxisYPosition(AbstractAxis.AXIS_Y_POSITION_RIGHT);
-
-        // 为chart2增加均线
-        macandlestickchart.setLinesData(lines);
-
-        // 为chart2增加均线
-   //     macandlestickchart.setChartData(new ChartDataSet(new ChartDataTable(ohlc)));
-
+        lineData.add(ma25);
+        
+        stickData = new ChartDataSet(new ChartDataTable(ohlc));
+        
+    }
+    
+    private void initMACandleStickChart() {
+        this.macandlestickchart = (GridChart) findViewById(R.id.maslipcandlestickchart);
+        stickChartController = new MACandleStickChartController();
+        stickChartController.setStickData(stickData);
+        stickChartController.setLineData(lineData);
+        stickChartController.applyController(macandlestickchart);
     }
 
 }

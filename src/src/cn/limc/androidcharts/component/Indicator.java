@@ -22,6 +22,7 @@
 
 package cn.limc.androidcharts.component;
 
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PointF;
 
@@ -55,13 +56,13 @@ public interface Indicator {
     
     public static final int DEFAULT_BIND_TO_STYLE = BIND_TO_TYPE_NONE;
 
+    
+    void draw(Canvas canvas);
+    
     int calcSelectedIndex(float x, float y);
     int calcSelectedIndex(PointF pt);
     PointF calcTouchedPoint(float x, float y);
     PointF calcBindPoint(float x, float y);
-    
-    DataComponent getBindComponent();
-    void setBindComponent(DataComponent component);
     
     int getLineColor();
     void setLineColor(int color);

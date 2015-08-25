@@ -12,7 +12,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.limc.androidcharts.component.SimpleGrid;
+import cn.limc.androidcharts.component.Axis;
 
 /**
  * DecimalDegree
@@ -45,23 +45,21 @@ public class DecimalDegree extends AbstractDegree {
      * @see cn.limc.androidcharts.degree.IDegree#getDegrees()
      */
     @Override
-    public List<String> getDegrees() {
+    public List<String> getDegrees(Axis axis) {
         List<String> titleY = new ArrayList<String>();
         DataRange dataRange = axis.getBindComponent().getDataRange();
-        if (dataRange.isAutoCalcValueRange()) {
-            dataRange.calcValueRange();
-        }
-        SimpleGrid grid = axis.getBindComponent().getDataGrid();
-        double average = dataRange.getValueRange() / grid.getLatitudeNum();
+//        if (dataRange.isAutoCalcValueRange()) {
+//            dataRange.calcValueRange(axis.getBindComponent().getChartData());
+//        }
+        double average = dataRange.getValueRange() / (axis.titlesNum() - 1);
         // calculate degrees on Y axis
-        for (int i = 0; i < grid.getLatitudeNum(); i++) {
-            String value = valueForDegree(dataRange.getMinValue() + i * average);
-
+        for (int i = 0; i < axis.titlesNum(); i++) {
+            String value = valueForDegree(axis ,dataRange.getMinValue() + i * average);
             titleY.add(value);
         }
         // calculate last degrees by use max value
-        String value = valueForDegree(dataRange.getMaxValue());
-        titleY.add(value);
+//        String value = valueForDegree(axis, dataRange.getMaxValue());
+//        titleY.add(value);
         return titleY;
     }
 
@@ -69,7 +67,7 @@ public class DecimalDegree extends AbstractDegree {
      * @see cn.limc.androidcharts.degree.IDegree#valueForDegree(java.lang.Object)
      */
     @Override
-    public String valueForDegree(Object value) {
+    public String valueForDegree(Axis axis , Object value) {
         DecimalFormat formator = new DecimalFormat(targetFormat);
         DataRange dataRange = axis.getBindComponent().getDataRange();
         if (value instanceof Integer) {

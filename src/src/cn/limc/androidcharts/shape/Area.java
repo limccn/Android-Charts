@@ -11,6 +11,7 @@ package cn.limc.androidcharts.shape;
 import cn.limc.androidcharts.component.DataComponent;
 import cn.limc.androidcharts.series.IMeasurable;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Paint.Style;
@@ -30,19 +31,28 @@ import android.graphics.Paint.Style;
  *
  */
 public class Area extends AbstractShape implements Rectangle {
-
-    private Paint areaPaint = new Paint();
     
-    private double currentHigh;
-    private double currentLow;
-    private double nextHigh;
-    private double nextLow;
+    public static final int DEFAULT_AREA_STROKE_WIDTH = 0;
+    public static final int DEFAULT_AREA_FILL_COLOR = Color.CYAN;
+    public static final int DEFAULT_AREA_FILL_ALPHA = 62;
+
+    protected double currentHigh;
+    protected double currentLow;
+    protected double nextHigh;
+    protected double nextLow;
+    
+    protected Paint areaPaint;
     
     /**
      * 
      */
     public Area() {
-        // TODO Auto-generated constructor stub
+        super();
+        areaPaint = new Paint();
+        areaPaint.setStrokeWidth(DEFAULT_AREA_STROKE_WIDTH);
+        areaPaint.setColor(DEFAULT_AREA_FILL_COLOR);
+        areaPaint.setStyle(Style.FILL_AND_STROKE);
+        areaPaint.setAlpha(DEFAULT_AREA_FILL_ALPHA);
     }
 
     /* (non-Javadoc)
@@ -50,7 +60,10 @@ public class Area extends AbstractShape implements Rectangle {
      */
     @Override
     public void draw(Canvas canvas) {
-
+        drawArea(canvas);
+    }
+    
+    public void drawArea(Canvas canvas){
         // calculate Y
         float currentHighY = (float)component.heightForRate(currentHigh);
         float currentLowY = (float)component.heightForRate(currentLow);
@@ -63,9 +76,7 @@ public class Area extends AbstractShape implements Rectangle {
         areaPath.lineTo(right, nextLowY);
         areaPath.lineTo(right, nextHighY);
         areaPath.close();
-
-        areaPaint.setStyle(Style.FILL_AND_STROKE);
-        areaPaint.setAlpha(62);
+        
         canvas.drawPath(areaPath, areaPaint);
     }
 
@@ -92,20 +103,6 @@ public class Area extends AbstractShape implements Rectangle {
     public void setUp(DataComponent component, IMeasurable current, IMeasurable next, float from, float width) {
         this.setUp(component, current.getHigh(), current.getLow(), next.getHigh(), next.getLow(), from,
                 width);
-    }
-
-    /**
-     * @return the areaPaint
-     */
-    public Paint getAreaPaint() {
-        return areaPaint;
-    }
-
-    /**
-     * @param areaPaint the areaPaint to set
-     */
-    public void setAreaPaint(Paint areaPaint) {
-        this.areaPaint = areaPaint;
     }
 
     /**
@@ -164,5 +161,17 @@ public class Area extends AbstractShape implements Rectangle {
         this.nextLow = nextLow;
     }
     
-    
+    /**
+     * @return the areaPaint
+     */
+    public Paint getAreaPaint() {
+        return areaPaint;
+    }
+
+    /**
+     * @param areaPaint the areaPaint to set
+     */
+    public void setAreaPaint(Paint areaPaint) {
+        this.areaPaint = areaPaint;
+    }
 }
