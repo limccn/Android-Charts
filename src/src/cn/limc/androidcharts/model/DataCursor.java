@@ -48,4 +48,7 @@ public interface DataCursor {
 	 void setMinDisplayNumber(int minDisplayNumber);
 	 
      int dataSizeForCursor(DataCursor dataCursor);
+     
+     DataCursorChangedListener getDataCursorChangedListener();
+     void setDataCursorChangedListener(DataCursorChangedListener dataCursorChangedListener);
 }

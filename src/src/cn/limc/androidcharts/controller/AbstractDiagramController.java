@@ -111,6 +111,141 @@ public class AbstractDiagramController implements DiagramController {
     }
     
     public class DiagramConfig{
+         public int diagramBorderWidth;
+         public int diagramBorderColor;
+        
+         public int axisLineIsHide;
+         public int axisLineWidth;
+         public int axisLineColor;
+         public int axisTitleIsHide;
+         public int axisTitleFontSize;
+         public int axisTitleColor;
+         public int axisDegreeNum;
+         public int axisDegreeIsHide;
+         public int axisDegreeFontSize;
+         public int axisDegreeColor;
          
+         public int verticalAxisWidth;
+         public int verticalAxisType;
+         public int horizontalAxisHeight;
+         public int horizontalAxisType;
+         
+         public int leftAxisLineIsHide;
+         public int leftAxisLineWidth;
+         public int leftAxisLineColor;
+         public int leftAxisTitleIsHide;
+         public int leftAxisTitleFontSize;
+         public int leftAxisTitleColor;
+         public int leftAxisDegreeNum;
+         public int leftAxisDegreeIsHide;
+         public int leftAxisDegreeFontSize;
+         public int leftAxisDegreeColor;
+         
+         public int bottomAxisLineIsHide;
+         public int bottomAxisLineWidth;
+         public int bottomAxisLineColor;
+         public int bottomAxisTitleIsHide;
+         public int bottomAxisTitleFontSize;
+         public int bottomAxisTitleColor;
+         public int bottomAxisDegreeNum;
+         public int bottomAxisDegreeIsHide;
+         public int bottomAxisDegreeFontSize;
+         public int bottomAxisDegreeColor;
+         
+         public int topAxisLineIsHide;
+         public int topAxisLineWidth;
+         public int topAxisLineColor;
+         public int topAxisTitleIsHide;
+         public int topAxisTitleFontSize;
+         public int topAxisTitleColor;
+         public int topAxisDegreeNum;
+         public int topAxisDegreeIsHide;
+         public int topAxisDegreeFontSize;
+         public int topAxisDegreeColor;
+         
+         public int rightAxisLineIsHide;
+         public int rightAxisLineWidth;
+         public int rightAxisLineColor;
+         public int rightAxisTitleIsHide;
+         public int rightAxisTitleFontSize;
+         public int rightAxisTitleColor;
+         public int rightAxisTilteNum;
+         
+         public int gridIsHide;
+         public int gridLineStyle;
+         public int gridLineWidth;
+         public int gridLineColor;
+         
+         public int longitudeIsHide;
+         public int longitudeLineStyle;
+         public int longitudeLineWidth;
+         public int longitudeLineColor;
+         
+         public int latitudeIsHide;
+         public int latitudeLineStyle;
+         public int latitudeLineWidth;
+         public int latitudeLineColor;
+         
+         public int indicatorIsHide;
+         public int indicatorLineStyle;
+         public int indicatorLineWidth;
+         public int indicatorLineColor;
+         public int indicatorTitleFontSize;
+         public int indicatorTitleColor;
+         
+         public int verticalIndicatorIsHide;
+         public int verticalIndicatorLineStyle;
+         public int verticalIndicatorLineWidth;
+         public int verticalIndicatorLineColor;
+         public int verticalIndicatorTitleFontSize;
+         public int verticalIndicatorTitleColor;
+         
+         public int horizontalIndicatorIsHide;
+         public int horizontalIndicatorLineStyle;
+         public int horizontalIndicatorLineWidth;
+         public int horizontalIndicatorLineColor;
+         public int horizontalIndicatorTitleFontSize;
+         public int horizontalIndicatorTitleColor;
+         
+         public int dividedLayoutToLeft;
+         public int dividedLayoutToRight;
+         public int dividedLayoutToBottom;
+         public int dividedLayoutToTop;
+         public int dividedLayoutPosition;
+         
+         public int kShapeSpacing;
+         public int kShapeType;
+         public int kShapeBorderColor;
+         public int kShapeBorderWidth;
+         public int kShapeBorderType;
+         public int kShapeFillColor;
+         public int kShapePositiveBorderColor;
+         public int kShapePositiveFillColor;
+         public int kShapeNagativeBorderColor;
+         public int kShapeNagativeFillColor;
+         public int kShapeCrossStarColor;
+         
+         public int barShapeSpacing;
+         public int barShapeType;
+         public int barShapeBorderColor;
+         public int barShapeBorderWidth;
+         public int barShapeBorderType;
+         public int barShapeFillColor;
+         
+         public int pointsShapeType;
+         public int pointsShapeLineColor;
+         public int pointsShapeLineWidth;
+         public int pointsShapeLineType;
+         
+         public int scatterShapeType;
+         public int scatterShapeLineColor;
+         public int scatterShapeLineWidth;
+         public int scatterShapeLineType;
+         
+         public int areaShapeType;
+         public int areaShapeBorderColor;
+         public int areaShapeBorderWidth;
+         public int areaShapeBorderType;
+         public int areaShapeFillColor;
     }
 }

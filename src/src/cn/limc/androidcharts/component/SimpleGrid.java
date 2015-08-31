@@ -145,57 +145,57 @@ public abstract class SimpleGrid extends AbstractComponent implements Grid {
      */
     private PathEffect dashEffect = DEFAULT_DASH_EFFECT;
 
-    /**
-     * <p>
-     * Color of text for the longitude　degrees display
-     * </p>
-     * <p>
-     * 経度のタイトルの色
-     * </p>
-     * <p>
-     * 经线刻度字体颜色
-     * </p>
-     */
-    private int longitudeFontColor = DEFAULT_LONGITUDE_FONT_COLOR;
-
-    /**
-     * <p>
-     * Font size of text for the longitude　degrees display
-     * </p>
-     * <p>
-     * 経度のタイトルのフォントサイズ
-     * </p>
-     * <p>
-     * 经线刻度字体大小
-     * </p>
-     */
-    private int longitudeFontSize = DEFAULT_LONGITUDE_FONT_SIZE;
-
-    /**
-     * <p>
-     * Color of text for the latitude　degrees display
-     * </p>
-     * <p>
-     * 緯度のタイトルの色
-     * </p>
-     * <p>
-     * 纬线刻度字体颜色
-     * </p>
-     */
-    private int latitudeFontColor = DEFAULT_LATITUDE_FONT_COLOR;
-
-    /**
-     * <p>
-     * Font size of text for the latitude　degrees display
-     * </p>
-     * <p>
-     * 緯度のタイトルのフォントサイズ
-     * </p>
-     * <p>
-     * 纬线刻度字体大小
-     * </p>
-     */
-    private int latitudeFontSize = DEFAULT_LATITUDE_FONT_SIZE;
+//    /**
+//     * <p>
+//     * Color of text for the longitude　degrees display
+//     * </p>
+//     * <p>
+//     * 経度のタイトルの色
+//     * </p>
+//     * <p>
+//     * 经线刻度字体颜色
+//     * </p>
+//     */
+//    private int longitudeFontColor = DEFAULT_LONGITUDE_FONT_COLOR;
+//
+//    /**
+//     * <p>
+//     * Font size of text for the longitude　degrees display
+//     * </p>
+//     * <p>
+//     * 経度のタイトルのフォントサイズ
+//     * </p>
+//     * <p>
+//     * 经线刻度字体大小
+//     * </p>
+//     */
+//    private int longitudeFontSize = DEFAULT_LONGITUDE_FONT_SIZE;
+//
+//    /**
+//     * <p>
+//     * Color of text for the latitude　degrees display
+//     * </p>
+//     * <p>
+//     * 緯度のタイトルの色
+//     * </p>
+//     * <p>
+//     * 纬线刻度字体颜色
+//     * </p>
+//     */
+//    private int latitudeFontColor = DEFAULT_LATITUDE_FONT_COLOR;
+//
+//    /**
+//     * <p>
+//     * Font size of text for the latitude　degrees display
+//     * </p>
+//     * <p>
+//     * 緯度のタイトルのフォントサイズ
+//     * </p>
+//     * <p>
+//     * 纬线刻度字体大小
+//     * </p>
+//     */
+//    private int latitudeFontSize = DEFAULT_LATITUDE_FONT_SIZE;
     
     
 //    /**
@@ -346,10 +346,10 @@ public abstract class SimpleGrid extends AbstractComponent implements Grid {
         if (dashLatitude) {
             mPaintLine.setPathEffect(dashEffect);
         }
-        Paint mPaintFont = new Paint();
-        mPaintFont.setColor(latitudeFontColor);
-        mPaintFont.setTextSize(latitudeFontSize);
-        mPaintFont.setAntiAlias(true);
+//        Paint mPaintFont = new Paint();
+//        mPaintFont.setColor(latitudeFontColor);
+//        mPaintFont.setTextSize(latitudeFontSize);
+//        mPaintFont.setAntiAlias(true);
 
         VerticalAxis mAxis = verticalAxisForGrid(this);
         for (int i = 0; i < mAxis.titlesNum(); i++) {
@@ -523,66 +523,66 @@ public abstract class SimpleGrid extends AbstractComponent implements Grid {
         this.latitudeWidth = latitudeWidth;
     }
 
-    /**
-     * @return the longitudeFontColor
-     */
-    public int getLongitudeFontColor() {
-        return longitudeFontColor;
-    }
+//    /**
+//     * @return the longitudeFontColor
+//     */
+//    public int getLongitudeFontColor() {
+//        return longitudeFontColor;
+//    }
+//
+//    /**
+//     * @param longitudeFontColor
+//     *            the longitudeFontColor to set
+//     */
+//    public void setLongitudeFontColor(int longitudeFontColor) {
+//        this.longitudeFontColor = longitudeFontColor;
+//    }
+//
+//    /**
+//     * @return the longitudeFontSize
+//     */
+//    public int getLongitudeFontSize() {
+//        return longitudeFontSize;
+//    }
+//
+//    /**
+//     * @param longitudeFontSize
+//     *            the longitudeFontSize to set
+//     */
+//    public void setLongitudeFontSize(int longitudeFontSize) {
+//        this.longitudeFontSize = longitudeFontSize;
+//    }
 
-    /**
-     * @param longitudeFontColor
-     *            the longitudeFontColor to set
-     */
-    public void setLongitudeFontColor(int longitudeFontColor) {
-        this.longitudeFontColor = longitudeFontColor;
-    }
-
-    /**
-     * @return the longitudeFontSize
-     */
-    public int getLongitudeFontSize() {
-        return longitudeFontSize;
-    }
-
-    /**
-     * @param longitudeFontSize
-     *            the longitudeFontSize to set
-     */
-    public void setLongitudeFontSize(int longitudeFontSize) {
-        this.longitudeFontSize = longitudeFontSize;
-    }
-
-    /**
-     * @return the latitudeFontColor
-     */
-    public int getLatitudeFontColor() {
-        return latitudeFontColor;
-    }
-
-    /**
-     * @param latitudeFontColor
-     *            the latitudeFontColor to set
-     */
-    public void setLatitudeFontColor(int latitudeFontColor) {
-        this.latitudeFontColor = latitudeFontColor;
-    }
-
-    /**
-     * @return the latitudeFontSize
-     */
-    public int getLatitudeFontSize() {
-        return latitudeFontSize;
-    }
-
-    /**
-     * @param latitudeFontSize
-     *            the latitudeFontSize to set
-     */
-    public void setLatitudeFontSize(int latitudeFontSize) {
-        this.latitudeFontSize = latitudeFontSize;
-    }
-    
+//    /**
+//     * @return the latitudeFontColor
+//     */
+//    public int getLatitudeFontColor() {
+//        return latitudeFontColor;
+//    }
+//
+//    /**
+//     * @param latitudeFontColor
+//     *            the latitudeFontColor to set
+//     */
+//    public void setLatitudeFontColor(int latitudeFontColor) {
+//        this.latitudeFontColor = latitudeFontColor;
+//    }
+//
+//    /**
+//     * @return the latitudeFontSize
+//     */
+//    public int getLatitudeFontSize() {
+//        return latitudeFontSize;
+//    }
+//
+//    /**
+//     * @param latitudeFontSize
+//     *            the latitudeFontSize to set
+//     */
+//    public void setLatitudeFontSize(int latitudeFontSize) {
+//        this.latitudeFontSize = latitudeFontSize;
+//    }
+//    
     /**
      * @return the longitudeColor
      */

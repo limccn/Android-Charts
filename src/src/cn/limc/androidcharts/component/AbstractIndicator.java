@@ -9,9 +9,6 @@
 package cn.limc.androidcharts.component;
 
 import cn.limc.androidcharts.model.DataCursor;
-import cn.limc.androidcharts.model.Degree;
-import cn.limc.androidcharts.series.IMeasurable;
-import android.R.integer;
 import android.graphics.Canvas;
 import android.graphics.PointF;
 

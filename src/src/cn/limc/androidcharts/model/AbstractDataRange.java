@@ -9,6 +9,8 @@ public abstract class AbstractDataRange implements DataRange{
     protected double minValue = Double.MAX_VALUE;
     protected boolean autoCalcValueRange = DEFAULT_AUTO_CALC_VALUE_RANGE;
     
+    protected DataRangeChangedListener dataRangeChangedListener;
+    
     protected RangeCalculator rangeCalculator;
    
     public double valueForRate(double rate){
@@ -68,7 +70,14 @@ public abstract class AbstractDataRange implements DataRange{
      * @param maxValue the maxValue to set
      */
     public void setMaxValue(double maxValue) {
-        this.maxValue = maxValue;
+        
+        if (this.maxValue != maxValue) {
+            this.maxValue = maxValue;
+            if (dataRangeChangedListener != null) {
+                dataRangeChangedListener.onRangeChanged(this, this.minValue, this.maxValue);
+            }
+        }
+
     }
 
     /**
@@ -82,7 +91,12 @@ public abstract class AbstractDataRange implements DataRange{
      * @param minValue the minValue to set
      */
     public void setMinValue(double minValue) {
-        this.minValue = minValue;
+        if (this.minValue != minValue) {
+            this.minValue = minValue;
+            if (dataRangeChangedListener != null) {
+                dataRangeChangedListener.onRangeChanged(this, this.minValue, this.maxValue);
+            }
+        }
     }
 
     /**

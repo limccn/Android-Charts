@@ -14,6 +14,7 @@ import cn.limc.androidcharts.component.DataComponent.DataComponentDataSource;
 import cn.limc.androidcharts.component.DataComponent.DataComponentDelegate;
 import cn.limc.androidcharts.component.SimpleGrid;
 import cn.limc.androidcharts.model.DataCursor;
+import cn.limc.androidcharts.model.DataCursorChangedListener;
 import cn.limc.androidcharts.model.DataRange;
 import cn.limc.androidcharts.series.ChartDataSet;
 
@@ -33,16 +34,6 @@ import cn.limc.androidcharts.series.ChartDataSet;
  */
 public abstract class DataComponetHandler extends AbstractComponetHandler implements DataComponentDelegate, DataComponentDataSource{
 
-    /* (non-Javadoc)
-     * @see cn.limc.androidcharts.component.DataComponent.DataComponentDataSource#dataForComponent(cn.limc.androidcharts.component.DataComponent)
-     */
-    @Override
-    public ChartDataSet dataForComponent(DataComponent component) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-
     protected DataCursor dataCursor;
     protected DataRange dataRange;
     protected SimpleGrid dataGrid;
@@ -53,7 +44,9 @@ public abstract class DataComponetHandler extends AbstractComponetHandler implem
     
     public DataComponetHandler(DataComponent component) {
         super(component);
-        dataRange.calcValueRange(component.getChartData());
+        if (dataRange != null) {
+            dataRange.calcValueRange(component.getChartData());
+        }
     }
 
     @Override
@@ -68,7 +61,9 @@ public abstract class DataComponetHandler extends AbstractComponetHandler implem
     public void setComponent(Component component) {
         // TODO Auto-generated method stub
         super.setComponent(component);
-        dataRange.calcValueRange(((DataComponent)component).getChartData());
+        if (dataRange != null) {
+            dataRange.calcValueRange(((DataComponent)component).getChartData());
+        }
     }
 
     /* (non-Javadoc)
@@ -94,6 +89,15 @@ public abstract class DataComponetHandler extends AbstractComponetHandler implem
     public SimpleGrid dataGridForComponent(DataComponent component) {
          return dataGrid;
     }
+    
+    /* (non-Javadoc)
+     * @see cn.limc.androidcharts.component.DataComponent.DataComponentDataSource#dataForComponent(cn.limc.androidcharts.component.DataComponent)
+     */
+    @Override
+    public ChartDataSet dataForComponent(DataComponent component) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     /**
      * @return the dataCursor
@@ -107,6 +111,14 @@ public abstract class DataComponetHandler extends AbstractComponetHandler implem
      */
     public void setDataCursor(DataCursor dataCursor) {
         this.dataCursor = dataCursor;
+        if (this.dataCursor != null && this.dataRange != null && dataCursor.getDataCursorChangedListener() == null) {
+            dataCursor.setDataCursorChangedListener(new DataCursorChangedListener() {
+                @Override
+                public void onCursorChanged(DataCursor dataCursor, int displayFrom, int displayNumber) {
+                    dataRange.calcValueRange(((DataComponent)getComponent()).getChartData());
+                }
+            });
+        }
     }
 
     /**

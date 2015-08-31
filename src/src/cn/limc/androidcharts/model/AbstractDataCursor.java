@@ -8,8 +8,6 @@
 //
 package cn.limc.androidcharts.model;
 
-import cn.limc.androidcharts.series.ChartDataSet;
-
 /**
  * AbstractDataCursor
  * Description: <br>
@@ -25,5 +23,19 @@ import cn.limc.androidcharts.series.ChartDataSet;
  *
  */
 public abstract class AbstractDataCursor implements DataCursor{
+    protected DataCursorChangedListener dataCursorChangedListener;
 
+    /**
+     * @return the dataCursorChangedListener
+     */
+    public DataCursorChangedListener getDataCursorChangedListener() {
+        return dataCursorChangedListener;
+    }
+
+    /**
+     * @param dataCursorChangedListener the dataCursorChangedListener to set
+     */
+    public void setDataCursorChangedListener(DataCursorChangedListener dataCursorChangedListener) {
+        this.dataCursorChangedListener = dataCursorChangedListener;
+    }
 }

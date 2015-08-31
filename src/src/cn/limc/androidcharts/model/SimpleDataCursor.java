@@ -101,9 +101,13 @@ public abstract class SimpleDataCursor extends AbstractDataCursor implements Dat
 	 * @param displayNumber 
 	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayNumber(int) 
 	 */
-	public void setDisplayNumber(int displayNumber) {
-		// TODO Auto-generated method stub
-		this.maxDisplayNum = displayNumber;
+	public void setDisplayNumber(int displayNumber) {		
+		if (this.maxDisplayNum != displayNumber) {
+	        this.maxDisplayNum = displayNumber;
+            if(this.dataCursorChangedListener != null){
+                this.dataCursorChangedListener.onCursorChanged(this, 0, this.maxDisplayNum);
+            }
+        }
 	}
 
 	/* (non-Javadoc)

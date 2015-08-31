@@ -75,7 +75,12 @@ public abstract class SectionDataCursor extends AbstractDataCursor implements Da
      */
     @Override
     public void setDisplayFrom(int displayFrom) {
-        this.displayFrom = displayFrom;
+        if (this.displayFrom != displayFrom) {
+            this.displayFrom = displayFrom;
+            if(this.dataCursorChangedListener != null){
+                this.dataCursorChangedListener.onCursorChanged(this, this.displayFrom, this.displayNumber);
+            }
+        }
     }
 
 
@@ -108,8 +113,13 @@ public abstract class SectionDataCursor extends AbstractDataCursor implements Da
      * @see cn.limc.androidcharts.diagram.StickChart#setDisplayNumber(int)
      */
     @Override
-    public void setDisplayNumber(int displayNumber) {
-        this.displayNumber = displayNumber;
+    public void setDisplayNumber(int displayNumber) {        
+        if (this.displayNumber != displayNumber) {
+            this.displayNumber = displayNumber;
+            if(this.dataCursorChangedListener != null){
+                this.dataCursorChangedListener.onCursorChanged(this, this.displayFrom, this.displayNumber);
+            }
+        }
     }
 
     /*

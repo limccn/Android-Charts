@@ -1026,66 +1026,66 @@ public class GridChart extends AbstractChart  {
         this.dataGrid.setLatitudeWidth(latitudeWidth);
     }
 
-    /**
-     * @return the longitudeFontColor
-     */
-    public int getLongitudeFontColor() {
-        return this.dataGrid.getLongitudeFontColor();
-    }
-
-    /**
-     * @param longitudeFontColor
-     *            the longitudeFontColor to set
-     */
-    public void setLongitudeFontColor(int longitudeFontColor) {
-        this.dataGrid.setLongitudeFontColor(longitudeFontColor);
-    }
-
-    /**
-     * @return the longitudeFontSize
-     */
-    public int getLongitudeFontSize() {
-        return this.dataGrid.getLongitudeFontSize();
-    }
-
-    /**
-     * @param longitudeFontSize
-     *            the longitudeFontSize to set
-     */
-    public void setLongitudeFontSize(int longitudeFontSize) {
-        this.dataGrid.setLongitudeFontSize(longitudeFontSize);
-    }
-
-    /**
-     * @return the latitudeFontColor
-     */
-    public int getLatitudeFontColor() {
-        return this.dataGrid.getLatitudeFontColor();
-    }
-
-    /**
-     * @param latitudeFontColor
-     *            the latitudeFontColor to set
-     */
-    public void setLatitudeFontColor(int latitudeFontColor) {
-        this.dataGrid.setLatitudeFontColor(latitudeFontColor);
-    }
-
-    /**
-     * @return the latitudeFontSize
-     */
-    public int getLatitudeFontSize() {
-        return this.dataGrid.getLatitudeFontSize();
-    }
-
-    /**
-     * @param latitudeFontSize
-     *            the latitudeFontSize to set
-     */
-    public void setLatitudeFontSize(int latitudeFontSize) {
-        this.dataGrid.setLatitudeFontSize(latitudeFontSize);
-    }
-    
+//    /**
+//     * @return the longitudeFontColor
+//     */
+//    public int getLongitudeFontColor() {
+//        return this.dataGrid.getLongitudeFontColor();
+//    }
+//
+//    /**
+//     * @param longitudeFontColor
+//     *            the longitudeFontColor to set
+//     */
+//    public void setLongitudeFontColor(int longitudeFontColor) {
+//        this.dataGrid.setLongitudeFontColor(longitudeFontColor);
+//    }
+//
+//    /**
+//     * @return the longitudeFontSize
+//     */
+//    public int getLongitudeFontSize() {
+//        return this.dataGrid.getLongitudeFontSize();
+//    }
+//
+//    /**
+//     * @param longitudeFontSize
+//     *            the longitudeFontSize to set
+//     */
+//    public void setLongitudeFontSize(int longitudeFontSize) {
+//        this.dataGrid.setLongitudeFontSize(longitudeFontSize);
+//    }
+//
+//    /**
+//     * @return the latitudeFontColor
+//     */
+//    public int getLatitudeFontColor() {
+//        return this.dataGrid.getLatitudeFontColor();
+//    }
+//
+//    /**
+//     * @param latitudeFontColor
+//     *            the latitudeFontColor to set
+//     */
+//    public void setLatitudeFontColor(int latitudeFontColor) {
+//        this.dataGrid.setLatitudeFontColor(latitudeFontColor);
+//    }
+//
+//    /**
+//     * @return the latitudeFontSize
+//     */
+//    public int getLatitudeFontSize() {
+//        return this.dataGrid.getLatitudeFontSize();
+//    }
+//
+//    /**
+//     * @param latitudeFontSize
+//     *            the latitudeFontSize to set
+//     */
+//    public void setLatitudeFontSize(int latitudeFontSize) {
+//        this.dataGrid.setLatitudeFontSize(latitudeFontSize);
+//    }
+//    
     /**
      * @return the longitudeColor
      */
