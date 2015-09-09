@@ -22,27 +22,12 @@ package cn.limc.androidcharts.common;
 
 import android.content.Context;
 
-/**
- * DisplayUtil
- * Description: <br>
- *   <p>add description here </p>
- * Tags: <br>
- *   <p> </p>
- *
- * @author limc
- * @version v1.0 
- * 
- * History: <br>
- * 2015-8-18 limc create v1.0 <br>
- *
- */
 public class DisplayUtil { 
     /**
-     * 将px值转换为dip或dp值，保证尺寸大小不变
+     * convert px value to dip／dp value
      * 
      * @param pxValue
      * @param scale
-     *            （DisplayMetrics类中属性density）
      * @return
      */ 
     public static int px2dip(Context context, float pxValue) { 
@@ -51,11 +36,10 @@ public class DisplayUtil {
     } 
    
     /**
-     * 将dip或dp值转换为px值，保证尺寸大小不变
+     * convert dip／dp value to dp value
      * 
      * @param dipValue
      * @param scale
-     *            （DisplayMetrics类中属性density）
      * @return
      */ 
     public static int dip2px(Context context, float dipValue) { 
@@ -64,11 +48,10 @@ public class DisplayUtil {
     } 
    
     /**
-     * 将px值转换为sp值，保证文字大小不变
+     * convert px value to sp value
      * 
      * @param pxValue
      * @param fontScale
-     *            （DisplayMetrics类中属性scaledDensity）
      * @return
      */ 
     public static int px2sp(Context context, float pxValue) { 
@@ -77,11 +60,10 @@ public class DisplayUtil {
     } 
    
     /**
-     * 将sp值转换为px值，保证文字大小不变
+     * convert sp value to px value
      * 
      * @param spValue
      * @param fontScale
-     *            （DisplayMetrics类中属性scaledDensity）
      * @return
      */ 
     public static int sp2px(Context context, float spValue) { 

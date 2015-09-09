@@ -33,7 +33,6 @@ import cn.limc.androidcharts.component.VerticalIndicator;
 import cn.limc.androidcharts.controller.AbstractDiagramController;
 import cn.limc.androidcharts.handler.DataComponetHandler;
 import cn.limc.androidcharts.model.DataCursor;
-import cn.limc.androidcharts.model.DataCursorChangedListener;
 import cn.limc.androidcharts.model.DateTimeDegree;
 import cn.limc.androidcharts.model.DecimalDegree;
 import cn.limc.androidcharts.model.Degree;

@@ -19,7 +19,6 @@
  * limitations under the License.
  */
 
-
 package cn.limc.androidcharts.event;
 
 /** 

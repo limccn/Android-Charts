@@ -1,29 +1,27 @@
-//
-// AbstractDiagramController.java
-// cn.limc.androidcharts.controller
-//
-// Created by limc on 2015-8-19.
-//
-// Copyright 2015 Shanghai Okasan-Huada Computer System Co. Ltd., All rights reserved.
-//
+/*
+ * AbstractDiagramController.java
+ * Android-Charts
+ *
+ * Created by limc on 2014/04/29.
+ *
+ * Copyright 2014 limc.cn All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package cn.limc.androidcharts.controller;
 
 import cn.limc.androidcharts.diagram.GridChart;
 
-/**
- * AbstractDiagramController
- * Description: <br>
- *   <p>add description here </p>
- * Tags: <br>
- *   <p> </p>
- *
- * @author limc
- * @version v1.0 
- * 
- * History: <br>
- * 2015-8-19 limc create v1.0 <br>
- *
- */
 public class AbstractDiagramController implements DiagramController {
     
     protected GridChart gridChart;
@@ -108,144 +106,5 @@ public class AbstractDiagramController implements DiagramController {
      */
     public void setDiagramConfig(DiagramConfig diagramConfig) {
         this.diagramConfig = diagramConfig;
-    }
-    
-    public class DiagramConfig{
-         public int diagramBorderWidth;
-         public int diagramBorderColor;
-        
-         public int axisLineIsHide;
-         public int axisLineWidth;
-         public int axisLineColor;
-         public int axisTitleIsHide;
-         public int axisTitleFontSize;
-         public int axisTitleColor;
-         public int axisDegreeNum;
-         public int axisDegreeIsHide;
-         public int axisDegreeFontSize;
-         public int axisDegreeColor;
-         
-         public int verticalAxisWidth;
-         public int verticalAxisType;
-         public int horizontalAxisHeight;
-         public int horizontalAxisType;
-         
-         public int leftAxisLineIsHide;
-         public int leftAxisLineWidth;
-         public int leftAxisLineColor;
-         public int leftAxisTitleIsHide;
-         public int leftAxisTitleFontSize;
-         public int leftAxisTitleColor;
-         public int leftAxisDegreeNum;
-         public int leftAxisDegreeIsHide;
-         public int leftAxisDegreeFontSize;
-         public int leftAxisDegreeColor;
-         
-         public int bottomAxisLineIsHide;
-         public int bottomAxisLineWidth;
-         public int bottomAxisLineColor;
-         public int bottomAxisTitleIsHide;
-         public int bottomAxisTitleFontSize;
-         public int bottomAxisTitleColor;
-         public int bottomAxisDegreeNum;
-         public int bottomAxisDegreeIsHide;
-         public int bottomAxisDegreeFontSize;
-         public int bottomAxisDegreeColor;
-         
-         public int topAxisLineIsHide;
-         public int topAxisLineWidth;
-         public int topAxisLineColor;
-         public int topAxisTitleIsHide;
-         public int topAxisTitleFontSize;
-         public int topAxisTitleColor;
-         public int topAxisDegreeNum;
-         public int topAxisDegreeIsHide;
-         public int topAxisDegreeFontSize;
-         public int topAxisDegreeColor;
-         
-         public int rightAxisLineIsHide;
-         public int rightAxisLineWidth;
-         public int rightAxisLineColor;
-         public int rightAxisTitleIsHide;
-         public int rightAxisTitleFontSize;
-         public int rightAxisTitleColor;
-         public int rightAxisTilteNum;
-         
-         public int gridIsHide;
-         public int gridLineStyle;
-         public int gridLineWidth;
-         public int gridLineColor;
-         
-         public int longitudeIsHide;
-         public int longitudeLineStyle;
-         public int longitudeLineWidth;
-         public int longitudeLineColor;
-         
-         public int latitudeIsHide;
-         public int latitudeLineStyle;
-         public int latitudeLineWidth;
-         public int latitudeLineColor;
-         
-         public int indicatorIsHide;
-         public int indicatorLineStyle;
-         public int indicatorLineWidth;
-         public int indicatorLineColor;
-         public int indicatorTitleFontSize;
-         public int indicatorTitleColor;
-         
-         public int verticalIndicatorIsHide;
-         public int verticalIndicatorLineStyle;
-         public int verticalIndicatorLineWidth;
-         public int verticalIndicatorLineColor;
-         public int verticalIndicatorTitleFontSize;
-         public int verticalIndicatorTitleColor;
-         
-         public int horizontalIndicatorIsHide;
-         public int horizontalIndicatorLineStyle;
-         public int horizontalIndicatorLineWidth;
-         public int horizontalIndicatorLineColor;
-         public int horizontalIndicatorTitleFontSize;
-         public int horizontalIndicatorTitleColor;
-         
-         public int dividedLayoutToLeft;
-         public int dividedLayoutToRight;
-         public int dividedLayoutToBottom;
-         public int dividedLayoutToTop;
-         public int dividedLayoutPosition;
-         
-         public int kShapeSpacing;
-         public int kShapeType;
-         public int kShapeBorderColor;
-         public int kShapeBorderWidth;
-         public int kShapeBorderType;
-         public int kShapeFillColor;
-         public int kShapePositiveBorderColor;
-         public int kShapePositiveFillColor;
-         public int kShapeNagativeBorderColor;
-         public int kShapeNagativeFillColor;
-         public int kShapeCrossStarColor;
-         
-         public int barShapeSpacing;
-         public int barShapeType;
-         public int barShapeBorderColor;
-         public int barShapeBorderWidth;
-         public int barShapeBorderType;
-         public int barShapeFillColor;
-         
-         public int pointsShapeType;
-         public int pointsShapeLineColor;
-         public int pointsShapeLineWidth;
-         public int pointsShapeLineType;
-         
-         public int scatterShapeType;
-         public int scatterShapeLineColor;
-         public int scatterShapeLineWidth;
-         public int scatterShapeLineType;
-         
-         public int areaShapeType;
-         public int areaShapeBorderColor;
-         public int areaShapeBorderWidth;
-         public int areaShapeBorderType;
-         public int areaShapeFillColor;
     }
 }
