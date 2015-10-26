@@ -108,13 +108,13 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 		if (null != stickData && stickData.size() > 0) {
 			float average = getDisplayNumber() / simpleGrid.getLongitudeNum();
 			for (int i = 0; i < simpleGrid.getLongitudeNum(); i++) {
-				int index = (int) Math.floor(i * average);
-				if (index > getDisplayNumber() - 1) {
-					index = getDisplayNumber() - 1;
+				int index = getDisplayFrom() + (int) Math.floor(i * average);
+				if (index > getDisplayFrom()  + getDisplayNumber() - 1) {
+					index = getDisplayFrom()  + getDisplayNumber() - 1;
 				}
 				titleX.add(formatAxisXDegree(stickData.get(index).getDate()));
 			}
-			titleX.add(formatAxisXDegree(stickData.get(getDisplayNumber() - 1).getDate()));
+			titleX.add(formatAxisXDegree(stickData.get(getDisplayFrom()  + getDisplayNumber() - 1).getDate()));
 		}
 		simpleGrid.setLongitudeTitles(titleX);
 	}
