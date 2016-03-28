@@ -93,20 +93,20 @@ public class VerticalAxis extends Axis {
      * @param canvas
      */
     public void draw(Canvas canvas) {
-        float length = inChart.getHeight() - inChart.getAxisX().getHeight()
-                - inChart.getBorderWidth();
-        float postX;
-        if (position == AXIS_Y_POSITION_LEFT) {
-            postX = inChart.getBorderWidth() + width + lineWidth / 2;
-        } else {
-            postX = inChart.getWidth() - inChart.getBorderWidth() - width
-                    - lineWidth / 2;
-        }
-
-        Paint mPaint = new Paint();
-        mPaint.setColor(lineColor);
-        mPaint.setStrokeWidth(lineWidth);
-
-        canvas.drawLine(postX, inChart.getBorderWidth(), postX, length, mPaint);
+//        float length = inChart.getHeight() - inChart.getAxisX().getHeight()
+//                - inChart.getBorderWidth();
+//        float postX;
+//        if (position == AXIS_Y_POSITION_LEFT) {
+//            postX = inChart.getBorderWidth() + width + lineWidth / 2;
+//        } else {
+//            postX = inChart.getWidth() - inChart.getBorderWidth() - width
+//                    - lineWidth / 2;
+//        }
+//
+//        Paint mPaint = new Paint();
+//        mPaint.setColor(lineColor);
+//        mPaint.setStrokeWidth(lineWidth);
+//
+//        canvas.drawLine(postX, inChart.getBorderWidth(), postX, length, mPaint);
     }
 }

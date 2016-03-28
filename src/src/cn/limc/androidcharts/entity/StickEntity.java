@@ -77,7 +77,7 @@ public class StickEntity implements IStickEntity {
 	 * </p>
 	 * 
 	 */
-	private int date;
+	private long date;
 
 	/**
 	 * 
@@ -122,7 +122,7 @@ public class StickEntity implements IStickEntity {
 	 *            日期
 	 *            </p>
 	 */
-	public StickEntity(double high, double low, int date) {
+	public StickEntity(double high, double low, long date) {
 		super();
 		this.high = high;
 		this.low = low;
@@ -179,7 +179,7 @@ public class StickEntity implements IStickEntity {
 	/**
 	 * @return the date
 	 */
-	public int getDate() {
+	public long getDate() {
 		return date;
 	}
 
@@ -187,7 +187,7 @@ public class StickEntity implements IStickEntity {
 	 * @param date
 	 *            the date to set
 	 */
-	public void setDate(int date) {
+	public void setDate(long date) {
 		this.date = date;
 	}
 }

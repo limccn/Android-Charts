@@ -93,10 +93,10 @@ public class SlipBandAreaChartActivity extends BaseActivity {
         slipbandchart.setDisplayLatitudeTitle(true);
         slipbandchart.setDisplayLatitude(true);
         slipbandchart.setDisplayLongitude(true);
-        slipbandchart.setDataQuadrantPaddingTop(5);
-        slipbandchart.setDataQuadrantPaddingBottom(5);
-        slipbandchart.setDataQuadrantPaddingLeft(5);
-        slipbandchart.setDataQuadrantPaddingRight(5);
+//        slipbandchart.setDataQuadrantPaddingTop(5);
+//        slipbandchart.setDataQuadrantPaddingBottom(5);
+//        slipbandchart.setDataQuadrantPaddingLeft(5);
+//        slipbandchart.setDataQuadrantPaddingRight(5);
         // slipbandchart.setAxisYTitleQuadrantWidth(50);
         // slipbandchart.setAxisXTitleQuadrantHeight(20);
         slipbandchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);

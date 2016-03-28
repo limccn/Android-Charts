@@ -176,7 +176,73 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 			return dataQuadrant.getPaddingStartX();
 		}
 	}
-	
+
+
+	/* (non-Javadoc)
+	 *
+	 * @see cn.limc.androidcharts.event.ITouchable#touchDown()
+	 */
+	@Override
+	public void touchDown(PointF pt) {
+		this.touchPoint = pt;
+		this.postInvalidate();
+	}
+
+	/* (non-Javadoc)
+	 *
+	 * @see cn.limc.androidcharts.event.ITouchable#touchMoved()
+	 */
+	@Override
+	public void touchMoved(PointF pt) {
+		this.touchPoint = pt;
+		this.postInvalidate();
+	}
+
+	/* (non-Javadoc)
+	 *
+	 * @see cn.limc.androidcharts.event.ITouchable#touchUp()
+	 */
+	@Override
+	public void touchUp(PointF pt) {
+		this.touchPoint = pt;
+		this.postInvalidate();
+	}
+
+	/* (non-Javadoc)
+	 *
+	 * @see cn.limc.androidcharts.event.ITouchable#touchDown()
+	 */
+	@Override
+	public void longPressDown(PointF pt) {
+		this.touchPoint = pt;
+		this.touchPoint = calcTouchedPoint(pt.x,pt.y);
+
+		this.crossLines.setDisplayCrossXOnTouch(true);
+		this.crossLines.setDisplayCrossYOnTouch(true);
+		this.postInvalidate();
+	}
+
+	/* (non-Javadoc)
+	 *
+	 * @see cn.limc.androidcharts.event.ITouchable#touchMoved()
+	 */
+	@Override
+	public void longPressMoved(PointF pt) {
+		this.touchPoint = calcTouchedPoint(pt.x,pt.y);
+		this.postInvalidate();
+	}
+
+	/* (non-Javadoc)
+	 *
+	 * @see cn.limc.androidcharts.event.ITouchable#touchUp()
+	 */
+	@Override
+	public void longPressUp(PointF pt) {
+		this.touchPoint = pt;
+		this.crossLines.setDisplayCrossXOnTouch(false);
+		this.crossLines.setDisplayCrossYOnTouch(false);
+		this.postInvalidate();
+	}
 	
 	protected PointF calcTouchedPoint(float x ,float y) {
 		if (!isValidTouchPoint(x,y)) {

@@ -84,10 +84,10 @@ public class SlipCandleStickChartActivity extends BaseActivity {
         slipcandlestickchart.setDisplayLongitude(true);
         slipcandlestickchart.setBackgroundColor(Color.BLACK);
 
-        slipcandlestickchart.setDataQuadrantPaddingTop(5);
-        slipcandlestickchart.setDataQuadrantPaddingBottom(5);
-        slipcandlestickchart.setDataQuadrantPaddingLeft(5);
-        slipcandlestickchart.setDataQuadrantPaddingRight(5);
+//        slipcandlestickchart.setDataQuadrantPaddingTop(5);
+//        slipcandlestickchart.setDataQuadrantPaddingBottom(5);
+//        slipcandlestickchart.setDataQuadrantPaddingLeft(5);
+//        slipcandlestickchart.setDataQuadrantPaddingRight(5);
 //      slipcandlestickchart.setAxisYTitleQuadrantWidth(50);
 //      slipcandlestickchart.setAxisXTitleQuadrantHeight(20);
         slipcandlestickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);

@@ -90,9 +90,9 @@ public class MASlipCandleStickChartActivity extends BaseActivity {
         maslipcandlestickchart.setLatitudeFontColor(Color.WHITE);
 
         // 最大纬线数
-        maslipcandlestickchart.setLatitudeNum(5);
-        // 最大经线数
-        maslipcandlestickchart.setLongitudeNum(3);
+//        maslipcandlestickchart.setLatitudeNum(5);
+//        // 最大经线数
+//        maslipcandlestickchart.setLongitudeNum(3);
         // 最大价格
         maslipcandlestickchart.setMaxValue(1200);
         // 最小价格
@@ -112,10 +112,10 @@ public class MASlipCandleStickChartActivity extends BaseActivity {
         maslipcandlestickchart.setDisplayLongitude(true);
         maslipcandlestickchart.setBackgroundColor(Color.BLACK);
 
-        maslipcandlestickchart.setDataQuadrantPaddingTop(5);
-        maslipcandlestickchart.setDataQuadrantPaddingBottom(5);
-        maslipcandlestickchart.setDataQuadrantPaddingLeft(5);
-        maslipcandlestickchart.setDataQuadrantPaddingRight(5);
+//        maslipcandlestickchart.setDataQuadrantPaddingTop(5);
+//        maslipcandlestickchart.setDataQuadrantPaddingBottom(5);
+//        maslipcandlestickchart.setDataQuadrantPaddingLeft(5);
+//        maslipcandlestickchart.setDataQuadrantPaddingRight(5);
 //      maslipcandlestickchart.setAxisYTitleQuadrantWidth(50);
 //      maslipcandlestickchart.setAxisXTitleQuadrantHeight(20);
         maslipcandlestickchart

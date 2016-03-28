@@ -74,7 +74,7 @@ public class SectionDataCursor implements IDataCursor {
 	 * @see cn.limc.androidcharts.view.IDataCursor#displayTo() 
 	 */
 	public int getDisplayTo() {
-		return displayFrom + displayNumber;
+		return displayFrom + displayNumber - 1;
 	}
 
 	/* (non-Javadoc)

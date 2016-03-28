@@ -39,7 +39,7 @@ public class ZoomGestureDetector<T extends IZoomable> extends TouchGestureDetect
 	public static final int TOUCH_MODE_SINGLE = 1;
 	public static final int TOUCH_MODE_MULTI = 2;
 	
-	public static final int MIN_DISTANCE = 5;
+	public static final int MIN_DISTANCE = 12;
 	
 	protected int touchMode = TOUCH_MODE_NONE;
 

@@ -114,10 +114,10 @@ public class MASlipStickChartActivity extends BaseActivity {
         maslipstickchart.setDisplayLongitude(true);
         maslipstickchart.setBackgroundColor(Color.BLACK);
 
-        maslipstickchart.setDataQuadrantPaddingTop(5);
-        maslipstickchart.setDataQuadrantPaddingBottom(5);
-        maslipstickchart.setDataQuadrantPaddingLeft(5);
-        maslipstickchart.setDataQuadrantPaddingRight(5);
+//        maslipstickchart.setDataQuadrantPaddingTop(5);
+//        maslipstickchart.setDataQuadrantPaddingBottom(5);
+//        maslipstickchart.setDataQuadrantPaddingLeft(5);
+//        maslipstickchart.setDataQuadrantPaddingRight(5);
 //      maslipstickchart.setAxisYTitleQuadrantWidth(50);
 //      maslipstickchart.setAxisXTitleQuadrantHeight(20);
         maslipstickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);

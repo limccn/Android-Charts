@@ -103,7 +103,7 @@ public class BOLLMASlipCandleStickChartActivity extends BaseActivity {
         bollmaslipcandlestickchart.setLatitudeFontColor(Color.WHITE);
 
         // 最大纬线数
-        bollmaslipcandlestickchart.setLatitudeNum(5);
+        bollmaslipcandlestickchart.setLatitudeNum(3);
         // 最大经线数
         bollmaslipcandlestickchart.setLongitudeNum(3);
         // 最大价格
@@ -126,10 +126,10 @@ public class BOLLMASlipCandleStickChartActivity extends BaseActivity {
         bollmaslipcandlestickchart.setDisplayLongitude(true);
         bollmaslipcandlestickchart.setBackgroundColor(Color.BLACK);
 
-        bollmaslipcandlestickchart.setDataQuadrantPaddingTop(5);
-        bollmaslipcandlestickchart.setDataQuadrantPaddingBottom(5);
-        bollmaslipcandlestickchart.setDataQuadrantPaddingLeft(5);
-        bollmaslipcandlestickchart.setDataQuadrantPaddingRight(5);
+//        bollmaslipcandlestickchart.setDataQuadrantPaddingTop(5);
+//        bollmaslipcandlestickchart.setDataQuadrantPaddingBottom(5);
+//        bollmaslipcandlestickchart.setDataQuadrantPaddingLeft(5);
+//        bollmaslipcandlestickchart.setDataQuadrantPaddingRight(5);
 //      bollmaslipcandlestickchart.setAxisYTitleQuadrantWidth(50);
 //      bollmaslipcandlestickchart.setAxisXTitleQuadrantHeight(20);
         bollmaslipcandlestickchart

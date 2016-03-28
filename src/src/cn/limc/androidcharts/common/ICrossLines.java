@@ -58,7 +58,7 @@ public interface ICrossLines {
 	 * 默认在控件被点击时，显示十字竖线线
 	 * </p>
 	 */
-	public static final boolean DEFAULT_DISPLAY_CROSS_X_ON_TOUCH = true;
+	public static final boolean DEFAULT_DISPLAY_CROSS_X_ON_TOUCH = false;
 
 	/**
 	 * <p>
@@ -71,7 +71,7 @@ public interface ICrossLines {
 	 * 默认在控件被点击时，显示十字横线线
 	 * </p>
 	 */
-	public static final boolean DEFAULT_DISPLAY_CROSS_Y_ON_TOUCH = true;
+	public static final boolean DEFAULT_DISPLAY_CROSS_Y_ON_TOUCH = false;
 	
 	
 	public static final int DEFAULT_BIND_CROSS_LINES_TO_STICK = BIND_TO_TYPE_BOTH;

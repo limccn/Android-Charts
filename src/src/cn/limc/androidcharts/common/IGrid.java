@@ -47,7 +47,7 @@ public interface IGrid {
 	 * 网格纬线的数量
 	 * </p>
 	 */
-	public static final int DEFAULT_LATITUDE_NUM = 4;
+	public static final int DEFAULT_LATITUDE_NUM = 2;
 
 	/**
 	 * <p>
@@ -169,7 +169,7 @@ public interface IGrid {
 	 * 经线刻度字体大小
 	 * </p>
 	 */
-	public static final int DEFAULT_LONGITUDE_FONT_SIZE = 12;
+	public static final int DEFAULT_LONGITUDE_FONT_SIZE = 18;
 
 	/**
 	 * <p>
@@ -195,7 +195,7 @@ public interface IGrid {
 	 * 默认纬线刻度字体大小
 	 * </p>
 	 */
-	public static final int DEFAULT_LATITUDE_FONT_SIZE = 12;
+	public static final int DEFAULT_LATITUDE_FONT_SIZE = 18;
 	
 	   /**
      * <p>

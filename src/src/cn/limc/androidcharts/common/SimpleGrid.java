@@ -766,15 +766,15 @@ public class SimpleGrid implements IFlexableGrid {
                 - inChart.getAxisX().getHeight() - inChart.getAxisX().getLineWidth()
                 - inChart.getDataQuadrant().getPaddingBottom();
 
-        if (inChart.getAxisY().getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
-            float startFrom = inChart.getBorderWidth() + inChart.getAxisY().getWidth()  + inChart.getAxisY().getLineWidth();
-            for (int i = 0; i < latitudeTitles.size(); i++) {
-                Path path = new Path();
-                path.moveTo(startFrom, offset - i * postOffset);
-                path.lineTo(startFrom + length, offset - i * postOffset);
-                canvas.drawPath(path, mPaintLine);
-            }
-        } else {
+//        if (inChart.getAxisY().getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+//            float startFrom = inChart.getBorderWidth() + inChart.getAxisY().getWidth()  + inChart.getAxisY().getLineWidth();
+//            for (int i = 0; i < latitudeTitles.size(); i++) {
+//                Path path = new Path();
+//                path.moveTo(startFrom, offset - i * postOffset);
+//                path.lineTo(startFrom + length, offset - i * postOffset);
+//                canvas.drawPath(path, mPaintLine);
+//            }
+//        } else {
             float startFrom = inChart.getBorderWidth();
             for (int i = 0; i < latitudeTitles.size(); i++) {
                 Path path = new Path();
@@ -782,7 +782,7 @@ public class SimpleGrid implements IFlexableGrid {
                 path.lineTo(startFrom + length, offset - i * postOffset);
                 canvas.drawPath(path, mPaintLine);
             }
-        }
+//        }
     }
 
     /**
@@ -812,6 +812,7 @@ public class SimpleGrid implements IFlexableGrid {
         mPaintFont.setColor(latitudeFontColor);
         mPaintFont.setTextSize(latitudeFontSize);
         mPaintFont.setAntiAlias(true);
+        mPaintFont.setTextAlign(Paint.Align.LEFT);
 
         float postOffset = inChart.getDataQuadrant().getPaddingHeight()
                 / (latitudeTitles.size() - 1);
@@ -820,34 +821,41 @@ public class SimpleGrid implements IFlexableGrid {
                 - inChart.getAxisX().getHeight() - inChart.getAxisX().getLineWidth()
                 - inChart.getDataQuadrant().getPaddingBottom();
 
-        if (inChart.getAxisY().getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
-            float startFrom = inChart.getBorderWidth();
+//        if (inChart.getAxisY().getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+            float startFromLeft = inChart.getBorderWidth();
             for (int i = 0; i < latitudeTitles.size(); i++) {
-                if (0 == i) {
-                    canvas.drawText(latitudeTitles.get(i), startFrom,
-                            inChart.getHeight() - - inChart.getAxisX().getHeight() - inChart.getAxisX().getLineWidth()
-                                    - inChart.getBorderWidth() - 2f, mPaintFont);
+                if (latitudeTitles.size() - 1 == i) {
+                    canvas.drawText(latitudeTitles.get(i), startFromLeft, offset
+                                    - i * postOffset + latitudeFontSize + 2,
+                            mPaintFont);
                 } else {
-                    canvas.drawText(latitudeTitles.get(i), startFrom, offset
-                            - i * postOffset + latitudeFontSize / 2f,
+                    canvas.drawText(latitudeTitles.get(i), startFromLeft, offset
+                            - i * postOffset - 2,
                             mPaintFont);
                 }
             }
-        } else {
-            float startFrom = inChart.getWidth() - inChart.getBorderWidth()
-                    - inChart.getAxisY().getWidth();
+//        } else {
+
+
+        mPaintFont.setTextAlign(Paint.Align.RIGHT);
+
+            float startFromRight = inChart.getWidth() - inChart.getBorderWidth() ;
+
             for (int i = 0; i < latitudeTitles.size(); i++) {
 
-                if (0 == i) {
-                    canvas.drawText(latitudeTitles.get(i), startFrom,
-                            inChart.getHeight() - - inChart.getAxisX().getHeight() - inChart.getAxisX().getLineWidth()
-                            - inChart.getBorderWidth() - 2f, mPaintFont);
+                if (latitudeTitles.size() - 1 == i) {
+//                    canvas.drawText(latitudeTitles.get(i), startFromRight,
+//                            inChart.getHeight() - - inChart.getAxisX().getHeight() - inChart.getAxisX().getLineWidth()
+//                            - inChart.getBorderWidth() - 2f, mPaintFont);
+                    canvas.drawText(latitudeTitles.get(i), startFromRight, offset
+                                    - i * postOffset + latitudeFontSize + 2,
+                            mPaintFont);
                 } else {
-                    canvas.drawText(latitudeTitles.get(i), startFrom, offset
-                            - i * postOffset + latitudeFontSize / 2f,
+                    canvas.drawText(latitudeTitles.get(i), startFromRight, offset
+                            - i * postOffset - 2,
                             mPaintFont);
                 }
             }
-        }
+//        }
     }
 }

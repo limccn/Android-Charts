@@ -47,6 +47,10 @@ public interface ITouchable {
 	void touchMoved(PointF pt);
 	void touchUp(PointF pt);
 
+	void longPressDown(PointF pt);
+	void longPressMoved(PointF pt);
+	void longPressUp(PointF pt);
+
 	void setOnTouchGestureListener(OnTouchGestureListener listener);
 	OnTouchGestureListener getOnTouchGestureListener();
 }

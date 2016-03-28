@@ -41,7 +41,7 @@ public class MACDEntity implements IStickEntity {
 	private double dea;
 	private double diff;
 	private double macd;
-	private int date;
+	private long date;
 
 	/**
 	 * <p>
@@ -75,7 +75,7 @@ public class MACDEntity implements IStickEntity {
 	 * @param macd
 	 * @param date
 	 */
-	public MACDEntity(double dea, double diff, double macd, int date) {
+	public MACDEntity(double dea, double diff, double macd, long date) {
 		super();
 		this.dea = dea;
 		this.diff = diff;
@@ -131,7 +131,7 @@ public class MACDEntity implements IStickEntity {
 	/**
 	 * @return the date
 	 */
-	public int getDate() {
+	public long getDate() {
 		return date;
 	}
 
@@ -139,7 +139,7 @@ public class MACDEntity implements IStickEntity {
 	 * @param date
 	 *            the date to set
 	 */
-	public void setDate(int date) {
+	public void setDate(long date) {
 		this.date = date;
 	}
 

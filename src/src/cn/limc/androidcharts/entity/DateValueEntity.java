@@ -38,7 +38,7 @@ package cn.limc.androidcharts.entity;
  */
 public class DateValueEntity implements IHasDate {
 
-	private int date;
+	private long date;
 	private float value;
 
 	/**
@@ -55,7 +55,7 @@ public class DateValueEntity implements IHasDate {
 	 * @param date
 	 * @param value
 	 */
-	public DateValueEntity(float value, int date) {
+	public DateValueEntity(float value, long date) {
 		super();
 		this.value = value;
 		this.date = date;
@@ -64,7 +64,7 @@ public class DateValueEntity implements IHasDate {
 	/**
 	 * @return the date
 	 */
-	public int getDate() {
+	public long getDate() {
 		return date;
 	}
 
@@ -72,7 +72,7 @@ public class DateValueEntity implements IHasDate {
 	 * @param date
 	 *            the date to set
 	 */
-	public void setDate(int date) {
+	public void setDate(long date) {
 		this.date = date;
 	}
 

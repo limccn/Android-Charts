@@ -49,24 +49,29 @@ public class DataQuadrant extends Quadrant {
     }
 
     public float getWidth() {
-        return inChart.getWidth() - inChart.getAxisY().getWidth() - 2 * inChart.getBorderWidth()
-                - inChart.getAxisY().getLineWidth();
+//        return inChart.getWidth() - inChart.getAxisY().getWidth() - 2 * inChart.getBorderWidth()
+//                - inChart.getAxisY().getLineWidth();
+        return inChart.getWidth() - 2 * inChart.getBorderWidth();
+
     }
 
     public float getHeight() {
         return inChart.getHeight() - inChart.getAxisX().getHeight() - 2 * inChart.getBorderWidth()
                 - inChart.getAxisX().getLineWidth();
+
+//        return inChart.getHeight() - 2 * inChart.getBorderWidth() - inChart.getAxisX().getLineWidth();
+
     }
 
     public float getStartX() {
-        if (inChart.getAxisY().getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
-            return 2 * inChart.getBorderWidth() + inChart.getAxisY().getWidth() + inChart.getAxisY().getLineWidth();
-        } else {
+//        if (inChart.getAxisY().getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+//            return 2 * inChart.getBorderWidth() + inChart.getAxisY().getWidth() + inChart.getAxisY().getLineWidth();
+//        } else {
             return 2 * inChart.getBorderWidth();
-        }
+//        }
     }
     
     public float getStartY() {
-        return inChart.getBorderWidth();
+        return 2 * inChart.getBorderWidth();
     }
 }

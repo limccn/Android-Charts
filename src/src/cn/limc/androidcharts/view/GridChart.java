@@ -507,6 +507,37 @@ public class GridChart extends AbstractBaseChart implements ITouchable {
 	}
 
 	/* (non-Javadoc)
+	 *
+	 * @see cn.limc.androidcharts.event.ITouchable#touchDown()
+	 */
+	public void longPressDown(PointF pt) {
+		this.touchPoint = pt;
+		this.crossLines.setDisplayCrossXOnTouch(true);
+		this.crossLines.setDisplayCrossYOnTouch(true);
+		this.postInvalidate();
+	}
+
+	/* (non-Javadoc)
+	 *
+	 * @see cn.limc.androidcharts.event.ITouchable#touchMoved()
+	 */
+	public void longPressMoved(PointF pt) {
+		this.touchPoint = pt;
+		this.postInvalidate();
+	}
+
+	/* (non-Javadoc)
+	 *
+	 * @see cn.limc.androidcharts.event.ITouchable#touchUp()
+	 */
+	public void longPressUp(PointF pt) {
+		this.touchPoint = pt;
+		this.crossLines.setDisplayCrossXOnTouch(false);
+		this.crossLines.setDisplayCrossYOnTouch(false);
+		this.postInvalidate();
+	}
+
+	/* (non-Javadoc)
 	 * 
 	 * @param listener 
 	 * @see cn.limc.androidcharts.event.ITouchable#setOnTouchGestureListener(cn.limc.androidcharts.event.OnTouchGestureListener) 

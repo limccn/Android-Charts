@@ -25,7 +25,7 @@ import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.event.IGestureDetector;
 import cn.limc.androidcharts.event.ISlipable;
 import cn.limc.androidcharts.event.OnSlipGestureListener;
-import cn.limc.androidcharts.event.SlipGestureDetector;
+import cn.limc.androidcharts.event.LongPressSlipGestureDetector;
 import cn.limc.androidcharts.mole.StickMole;
 
 import android.content.Context;
@@ -62,7 +62,7 @@ public class SlipStickChart extends StickChart implements ISlipable {
 	protected int zoomBaseLine = DEFAULT_ZOOM_BASE_LINE;
 	
 	protected OnSlipGestureListener onSlipGestureListener = new OnSlipGestureListener();
-	protected IGestureDetector slipGestureDetector = new SlipGestureDetector<ISlipable>(this);
+	protected IGestureDetector slipGestureDetector = new LongPressSlipGestureDetector<ISlipable>(this);
 
 	/**
 	 * <p>

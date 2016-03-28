@@ -90,10 +90,10 @@ public class SlipLineChartActivity extends BaseActivity {
         sliplinechart.setDisplayLatitudeTitle(true);
         sliplinechart.setDisplayLatitude(true);
         sliplinechart.setDisplayLongitude(true);
-        sliplinechart.setDataQuadrantPaddingTop(5);
-        sliplinechart.setDataQuadrantPaddingBottom(5);
-        sliplinechart.setDataQuadrantPaddingLeft(5);
-        sliplinechart.setDataQuadrantPaddingRight(5);
+//        sliplinechart.setDataQuadrantPaddingTop(5);
+//        sliplinechart.setDataQuadrantPaddingBottom(5);
+//        sliplinechart.setDataQuadrantPaddingLeft(5);
+//        sliplinechart.setDataQuadrantPaddingRight(5);
         // sliplinechart.setAxisYTitleQuadrantWidth(50);
         // sliplinechart.setAxisXTitleQuadrantHeight(20);
         sliplinechart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);

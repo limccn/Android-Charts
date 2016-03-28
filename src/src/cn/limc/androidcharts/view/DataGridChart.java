@@ -301,7 +301,7 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 		return new DecimalFormat(axisYDecimalFormat).format(Math.floor(value)/dataMultiple);
 	}
 	
-	public String formatAxisXDegree(int date) {
+	public String formatAxisXDegree(long date) {
 		try {
 			Date dt = new SimpleDateFormat(axisXDateSourceFormat).parse(String.valueOf(date));
 			return new SimpleDateFormat(axisXDateTargetFormat).format(dt);
