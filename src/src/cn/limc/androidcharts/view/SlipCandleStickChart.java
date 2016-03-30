@@ -71,7 +71,7 @@ public class SlipCandleStickChart extends SlipStickChart {
 	 * 默认阳线的填充颜色
 	 * </p>
 	 */
-	public static final int DEFAULT_POSITIVE_STICK_FILL_COLOR = Color.RED;
+	public static final int DEFAULT_POSITIVE_STICK_FILL_COLOR = Color.TRANSPARENT;
 
 	/**
 	 * <p>
@@ -277,11 +277,21 @@ public class SlipCandleStickChart extends SlipStickChart {
 				- stickSpacing;
 		float stickX = dataQuadrant.getPaddingStartX();
 
-		Paint mPaintPositive = new Paint();
-		mPaintPositive.setColor(positiveStickFillColor);
+		Paint mPaintPositiveFill = new Paint();
+		mPaintPositiveFill.setColor(positiveStickFillColor);
+		mPaintPositiveFill.setStyle(Paint.Style.FILL);
 
-		Paint mPaintNegative = new Paint();
-		mPaintNegative.setColor(negativeStickFillColor);
+		Paint mPaintPositiveBorder = new Paint();
+		mPaintPositiveBorder.setColor(positiveStickBorderColor);
+		mPaintPositiveBorder.setStyle(Paint.Style.STROKE);
+
+		Paint mPaintNegativeFill = new Paint();
+		mPaintNegativeFill.setColor(negativeStickFillColor);
+		mPaintNegativeFill.setStyle(Paint.Style.FILL);
+
+		Paint mPaintNegativeBorder = new Paint();
+		mPaintNegativeBorder.setColor(negativeStickBorderColor);
+		mPaintNegativeBorder.setStyle(Paint.Style.STROKE);
 
 		Paint mPaintCross = new Paint();
 		mPaintCross.setColor(crossStarColor);
@@ -305,18 +315,26 @@ public class SlipCandleStickChart extends SlipStickChart {
 				// stick or line
 				if (stickWidth >= 2f) {
 					canvas.drawRect(stickX, closeY, stickX + stickWidth, openY,
-							mPaintPositive);
+							mPaintPositiveFill);
+					canvas.drawRect(stickX, closeY, stickX + stickWidth, openY,
+							mPaintPositiveBorder);
 				}
 				canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
-						+ stickWidth / 2f, lowY, mPaintPositive);
+						+ stickWidth / 2f, closeY, mPaintPositiveBorder);
+				canvas.drawLine(stickX + stickWidth / 2f, openY, stickX
+						+ stickWidth / 2f, lowY, mPaintPositiveBorder);
 			} else if (ohlc.getOpen() > ohlc.getClose()) {
 				// stick or line
 				if (stickWidth >= 2f) {
 					canvas.drawRect(stickX, openY, stickX + stickWidth, closeY,
-							mPaintNegative);
+							mPaintNegativeFill);
+					canvas.drawRect(stickX, openY, stickX + stickWidth, closeY,
+							mPaintNegativeBorder);
 				}
 				canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
-						+ stickWidth / 2f, lowY, mPaintNegative);
+						+ stickWidth / 2f, openY, mPaintNegativeBorder);
+				canvas.drawLine(stickX + stickWidth / 2f, closeY, stickX
+						+ stickWidth / 2f, lowY, mPaintNegativeBorder);
 			} else {
 				// line or point
 				if (stickWidth >= 2f) {

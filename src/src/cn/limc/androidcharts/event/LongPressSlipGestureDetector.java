@@ -139,15 +139,12 @@ public class LongPressSlipGestureDetector<T extends ISlipable> extends ZoomGestu
 					}
 				}
 				if(isLongPressed){
-					Log.e("===========","LongPressed");
 					touchPoint = new PointF(event.getX(),event.getY());
 					// call back to listener
 					if (onTouchGestureListener != null) {
 						onTouchGestureListener.onLongPressMoved(instance,event);
 					}
 				}else{
-
-					Log.e("===========","Moved");
 					if (currentPoint.x > lastPoint.x + 80 ){
 						if (onSlipGestureListener != null) {
 							onSlipGestureListener.onMoveLeft((ISlipable) instance,event);
