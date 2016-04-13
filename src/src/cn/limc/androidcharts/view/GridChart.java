@@ -135,6 +135,10 @@ public class GridChart extends AbstractBaseChart implements ITouchable {
 		super(context, attrs);
 	}
 
+
+	public void drawData(Canvas canvas){
+
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -151,7 +155,11 @@ public class GridChart extends AbstractBaseChart implements ITouchable {
 		
 		axisX.draw(canvas);
 		axisY.draw(canvas);
-		simpleGrid.draw(canvas);
+		simpleGrid.drawGrid(canvas);
+
+		this.drawData(canvas);
+
+		simpleGrid.drawTitles(canvas);
 		crossLines.draw(canvas);
 	}
 

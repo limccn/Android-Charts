@@ -77,7 +77,7 @@ public class ColoredSlipStickChartActivity extends BaseActivity {
 
         coloredslipstickchart.setMinDisplayNumber(5);
 
-        coloredslipstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+//        coloredslipstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 
         coloredslipstickchart.setDisplayLongitudeTitle(true);
         coloredslipstickchart.setDisplayLatitudeTitle(true);

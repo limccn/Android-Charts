@@ -22,7 +22,9 @@
 
 package cn.limc.androidcharts.common;
 
-/** 
+import cn.limc.androidcharts.entity.IChartData;
+
+/**
  * <p>en</p>
  * <p>jp</p>
  * <p>cn</p>
@@ -31,14 +33,15 @@ package cn.limc.androidcharts.common;
  * @version v1.0 2014/06/18 16:58:21 
  *  
  */
-public class SectionDataCursor implements IDataCursor {
+public class SectionDataCursor extends SimpleDataCursor {
 	
 	public static final int DISPLAY_FROM = 0;
-	public static final int DISPLAY_NUMBER = 20;	
+	public static final int DISPLAY_NUMBER = 20;
 
 	private int displayFrom = DISPLAY_FROM;
 	private int displayNumber = DISPLAY_NUMBER;
-	private int minDisplayNumber = MINI_DISPLAY_NUM;
+
+	private byte[] synlock = new byte[]{};
 	
 	/** 
 	 * <p>Constructor of SectionDataCursor</p>
@@ -47,13 +50,13 @@ public class SectionDataCursor implements IDataCursor {
 	 * 
 	 */
 	public SectionDataCursor() {
-		// TODO Auto-generated constructor stub
+
 	}
 
 	/* (non-Javadoc)
 	 * 
 	 * @return 
-	 * @see cn.limc.androidcharts.view.IDataCursor#displayFrom() 
+	 * @see cn.limc.androidcharts.view.IDataCursor#getDisplayFrom()
 	 */
 	public int getDisplayFrom() {
 		return displayFrom;
@@ -68,13 +71,15 @@ public class SectionDataCursor implements IDataCursor {
 		return displayNumber;
 	}
 
+	public int getDataDisplayNumber(){return displayNumber > minDisplayNumber?displayNumber:minDisplayNumber;};
+
 	/* (non-Javadoc)
 	 * 
 	 * @return 
 	 * @see cn.limc.androidcharts.view.IDataCursor#displayTo() 
 	 */
 	public int getDisplayTo() {
-		return displayFrom + displayNumber - 1;
+		return displayFrom + displayNumber;
 	}
 
 	/* (non-Javadoc)
@@ -83,8 +88,18 @@ public class SectionDataCursor implements IDataCursor {
 	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayFrom(int) 
 	 */
 	public void setDisplayFrom(int displayFrom) {
-		// TODO Auto-generated method stub
-		this.displayFrom = displayFrom;
+		synchronized (synlock) {
+//			if (displayFrom > 0 && displayFrom < this.maxDisplayNumber - this.minDisplayNumber) {
+//				if (displayFrom + this.displayNumber <= this.maxDisplayNumber) {
+//					this.displayFrom = displayFrom;
+//				}
+//			}
+			if (displayFrom >=0) {
+//				if (displayFrom + this.displayNumber <= this.maxDisplayNumber) {
+					this.displayFrom = displayFrom;
+//				}
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -93,8 +108,18 @@ public class SectionDataCursor implements IDataCursor {
 	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayNumber(int) 
 	 */
 	public void setDisplayNumber(int displayNumber) {
-		// TODO Auto-generated method stub
-		this.displayNumber = displayNumber;
+		synchronized (synlock) {
+//			if (displayNumber >= minDisplayNumber && displayNumber <= maxDisplayNumber) {
+//				if (this.displayFrom + displayNumber <= this.maxDisplayNumber) {
+//					this.displayNumber = displayNumber;
+//				}
+//			}
+			if (displayNumber >=0) {
+//				if (this.displayFrom + displayNumber <= this.maxDisplayNumber) {
+					this.displayNumber = displayNumber;
+//				}
+			}
+		}
 	}
 
 //	/* (non-Javadoc)
@@ -107,22 +132,106 @@ public class SectionDataCursor implements IDataCursor {
 //		
 //	}
 
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber() 
-	 */
-	public int getMinDisplayNumber() {
-		return minDisplayNumber;
+	public boolean forward(int step){
+		if (this.displayNumber < this.minDisplayNumber){
+			return false;
+		}
+		if (step <= 2){
+			return false;
+		}
+		if (this.displayFrom + this.displayNumber + step > this.maxDisplayNumber) {
+			if(this.displayFrom == this.maxDisplayNumber - this.displayNumber){
+				return false;
+			}else{
+				this.displayFrom = this.maxDisplayNumber - this.displayNumber;
+				return true;
+			}
+		}else{
+			this.displayFrom = this.displayFrom + step;
+			return true;
+		}
 	}
 
-	/* (non-Javadoc)
-	 * 
-	 * @param minDisplayNumber 
-	 * @see cn.limc.androidcharts.common.IDataCursor#setMinDisplayNumber(int) 
-	 */
-	public void setMinDisplayNumber(int minDisplayNumber) {
-		this.minDisplayNumber = minDisplayNumber;
+	public boolean backward(int step){
+		if (this.displayNumber < this.minDisplayNumber){
+			return false;
+		}
+		if (step <= 2){
+			return false;
+		}
+		if (this.displayFrom - step < 0) {
+			this.displayFrom = 0;
+			return true;
+		}else{
+			this.displayFrom = this.displayFrom - step;
+			return true;
+		}
 	}
 
+	public boolean stretch(int step){
+		if (this.displayNumber < this.minDisplayNumber){
+			return false;
+		}
+		if (step <= 2){
+			return false;
+		}
+		if (this.displayNumber == this.minDisplayNumber){
+			return false;
+		}else {
+			int resultDisplayNumber = this.displayNumber - step;
+			int resultDisplayFrom = this.displayFrom + step / 2;
+
+			if (resultDisplayNumber <= minDisplayNumber) {
+				this.displayNumber = minDisplayNumber;
+			} else {
+				this.displayNumber = resultDisplayNumber;
+			}
+
+			if (resultDisplayFrom >= maxDisplayNumber - minDisplayNumber){
+				this.displayFrom = maxDisplayNumber - minDisplayNumber;
+			}else{
+				this.displayFrom = resultDisplayFrom;
+			}
+
+			return true;
+		}
+	}
+
+	public boolean shrink(int step){
+		if (this.displayNumber < this.minDisplayNumber){
+			return false;
+		}
+		if (step <= 2){
+			return false;
+		}
+		if (this.displayFrom ==0 && this.displayNumber == this.maxDisplayNumber){
+			return false;
+		}else {
+			int resultDisplayNumber = this.displayNumber + step;
+			int resultDisplayFrom = this.displayFrom - step / 2;
+
+			if (resultDisplayFrom <= 0) {
+				this.displayFrom = 0;
+				if (resultDisplayNumber >= maxDisplayNumber) {
+					this.displayNumber = maxDisplayNumber;
+				} else {
+					this.displayNumber = resultDisplayNumber;
+				}
+			} else {
+				this.displayFrom = resultDisplayFrom;
+				if (resultDisplayNumber >= maxDisplayNumber) {
+					this.displayNumber = maxDisplayNumber;
+					this.displayFrom = 0;
+				} else{
+					if(resultDisplayFrom + resultDisplayNumber >= maxDisplayNumber){
+						this.displayNumber = resultDisplayNumber;
+						this.displayFrom = maxDisplayNumber - resultDisplayNumber;
+					} else{
+						this.displayNumber = resultDisplayNumber;
+					}
+				}
+			}
+			return true;
+		}
+	}
 }

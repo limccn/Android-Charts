@@ -118,7 +118,7 @@ public class SlipMinusStickChartActivity extends BaseActivity {
         slipminusstickchart.setDisplayNumber(10);
         slipminusstickchart.setMinDisplayNumber(5);
 
-        slipminusstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+//        slipminusstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
         slipminusstickchart.setDisplayLongitudeTitle(true);
         slipminusstickchart.setDisplayLatitudeTitle(true);
         // slipminusstickchart.setDisplayCrossXOnTouch(false);
@@ -127,10 +127,10 @@ public class SlipMinusStickChartActivity extends BaseActivity {
         slipminusstickchart.setDisplayLongitude(true);
         slipminusstickchart.setStickSpacing(10);
 
-//        slipminusstickchart.setDataQuadrantPaddingTop(5);
-//        slipminusstickchart.setDataQuadrantPaddingBottom(5);
-//        slipminusstickchart.setDataQuadrantPaddingLeft(5);
-//        slipminusstickchart.setDataQuadrantPaddingRight(5);
+        slipminusstickchart.setDataQuadrantPaddingTop(5);
+        slipminusstickchart.setDataQuadrantPaddingBottom(5);
+        slipminusstickchart.setDataQuadrantPaddingLeft(5);
+        slipminusstickchart.setDataQuadrantPaddingRight(5);
         // slipminusstickchart.setAxisYTitleQuadrantWidth(50);
         // slipminusstickchart.setAxisXTitleQuadrantHeight(20);
         slipminusstickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);

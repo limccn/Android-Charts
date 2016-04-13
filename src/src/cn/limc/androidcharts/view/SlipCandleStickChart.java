@@ -21,6 +21,7 @@
 
 package cn.limc.androidcharts.view;
 
+import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.OHLCEntity;
 
 import android.content.Context;
@@ -236,6 +237,50 @@ public class SlipCandleStickChart extends SlipStickChart {
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	protected void calcDataValueRange() {
+		double maxValue = Double.MIN_VALUE;
+		double minValue = Double.MAX_VALUE;
+
+		IMeasurable first = this.stickData.get(getDisplayFrom());
+		// 第一个stick为停盘的情况
+		if (first.getHigh() == 0 && first.getLow() == 0) {
+
+		} else {
+			maxValue = first.getHigh();
+			minValue = first.getLow();
+		}
+		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
+			OHLCEntity stick = (OHLCEntity) this.stickData.get(i);
+
+			if (stick.getOpen() == 0 && stick.getHigh() == 0
+					&& stick.getLow() == 0) {
+				// 停盘期间计算收盘价
+				if (stick.getClose() > 0) {
+					if (stick.getClose() < minValue) {
+						minValue = stick.getClose();
+					}
+
+					if (stick.getClose() > maxValue) {
+						maxValue = stick.getClose();
+					}
+				}
+			} else {
+				if (stick.getLow() < minValue) {
+					minValue = stick.getLow();
+				}
+
+				if (stick.getHigh() > maxValue) {
+					maxValue = stick.getHigh();
+				}
+			}
+		}
+
+		this.maxValue = maxValue;
+		this.minValue = minValue;
+	}
+
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -250,6 +295,16 @@ public class SlipCandleStickChart extends SlipStickChart {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 	}
+
+//	@Override
+//	public void drawData(Canvas canvas){
+//		super.drawData(canvas);
+//		if (getDisplayNumber() > displayStickAsLineNumber){
+//			drawSticksAsLine(canvas);
+//		}else{
+//			drawSticks(canvas);
+//		}
+//	}
 
 	/**
 	 * <p>
@@ -273,7 +328,7 @@ public class SlipCandleStickChart extends SlipStickChart {
 			return;
 		}
 
-		float stickWidth = dataQuadrant.getPaddingWidth() / displayNumber
+		float stickWidth = dataQuadrant.getPaddingWidth() / getDataDisplayNumber()
 				- stickSpacing;
 		float stickX = dataQuadrant.getPaddingStartX();
 
@@ -296,7 +351,7 @@ public class SlipCandleStickChart extends SlipStickChart {
 		Paint mPaintCross = new Paint();
 		mPaintCross.setColor(crossStarColor);
 
-		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
 			OHLCEntity ohlc = (OHLCEntity) stickData.get(i);
 			float openY = (float) ((1f - (ohlc.getOpen() - minValue)
 					/ (maxValue - minValue))
@@ -349,19 +404,71 @@ public class SlipCandleStickChart extends SlipStickChart {
 			stickX = stickX + stickSpacing + stickWidth;
 		}
 	}
+
+	protected void drawSticksAsLine(Canvas canvas) {
+		if (null == stickData) {
+			return;
+		}
+		if (stickData.size() <= 0) {
+			return;
+		}
+
+		float lineLength = dataQuadrant.getPaddingWidth() / getDisplayNumber()
+				- stickSpacing;
+		float startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
+
+		Paint mPaintStroke = new Paint();
+		mPaintStroke.setStyle(Paint.Style.STROKE);
+		mPaintStroke.setStrokeWidth(stickStrokeWidth);
+		mPaintStroke.setColor(displayStickAsLineColor);
+
+		// start point
+		PointF ptFirst = null;
+
+		for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
+
+			OHLCEntity ohlc = (OHLCEntity) stickData.get(j);
+			double value = ohlc.getClose();
+
+			if(isNoneDisplayValue((float)value)){
+
+			}else {
+//				// calculate Y
+//				float valueY = (float) ((1f - (value - minValue)
+//						/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+//						+ dataQuadrant.getPaddingStartY();
+
+				float closeY = (float) ((1f - (ohlc.getClose() - minValue)
+						/ (maxValue - minValue))
+						* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
+
+				// if is not last point connect to previous point
+				if (j > getDisplayFrom() && ptFirst!=null) {
+					canvas.drawLine(ptFirst.x, ptFirst.y, startX, closeY,
+							mPaintStroke);
+				}
+				// reset
+				ptFirst = new PointF(startX, closeY);
+			}
+			startX = startX + stickSpacing + lineLength;
+		}
+	}
 	
 	@Override
 	protected PointF calcBindPoint(float x ,float y) {
 		float calcX = 0;
 		float calcY = 0;
 		int index = calcSelectedIndex(x,y);
-		float stickWidth = dataQuadrant.getPaddingWidth() / displayNumber;
-		OHLCEntity stick = (OHLCEntity)stickData.get(index);
-		calcY = (float) ((1f - (stick.getClose() - minValue)
-				/ (maxValue - minValue))
-				* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
-		calcX = dataQuadrant.getPaddingStartX() + stickWidth * (index - displayFrom) + stickWidth / 2;
-		
+
+		float stickWidth = dataQuadrant.getPaddingWidth() / getDataDisplayNumber();
+
+		if (index >= getDisplayFrom() && index <= getDisplayTo() - 1) {
+			OHLCEntity stick = (OHLCEntity) stickData.get(index);
+			calcY = (float) ((1f - (stick.getClose() - minValue)
+					/ (maxValue - minValue))
+					* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
+			calcX = dataQuadrant.getPaddingStartX() + stickWidth * (index - getDisplayFrom()) + stickWidth / 2;
+		}
 		return new PointF(calcX,calcY);
 	}
 

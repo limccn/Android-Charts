@@ -134,7 +134,7 @@ public class MACandleStickChart extends CandleStickChart {
 			}
 
 			// 判断显示为方柱或显示为线条
-			for (int j = 0; j < this.maxSticksNum; j++) {
+			for (int j = 0; j < getDisplayNumber(); j++) {
 				DateValueEntity entity;
 				if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
 					entity = line.getLineData().get(j);
@@ -192,8 +192,11 @@ public class MACandleStickChart extends CandleStickChart {
 		if (null == this.linesData) {
 			return;
 		}
+		if (linesData.size() <= 0) {
+			return;
+		}
 		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / maxSticksNum - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / getDataDisplayNumber() - stickSpacing;
 		// start point‘s X
 		float startX;
 

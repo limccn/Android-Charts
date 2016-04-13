@@ -39,14 +39,14 @@ import android.widget.SimpleAdapter;
 
 public class ChartListActivity extends Activity {
 
-    private String[] mListTitle = { "GridChart", "LineChart", "SlipLineChart", "SlipAreaChart",
+    private String[] mListTitle = {"SampleDemo", "SampleTickChartDemo", "GridChart", "LineChart", "SlipLineChart", "SlipAreaChart",
             "SlipBandAreaChart", "StickChart", "SlipStickChart", "ColoredSlipStickChart",
             "MAStickChart", "MASlipStickChart", "MinusStickChart", "SlipMinusStickChart",
             "CandleStickChart", "SlipCandleStickChart", "MACandleStickChart",
             "MASlipCandleStickChart", "BOLLMASlipCandleStckChart", "MACDChart", "PieChart",
-            "RoseChart", "SpiderWebChart", "RadarChart", "DonutChart" };
+            "RoseChart", "SpiderWebChart", "RadarChart", "DonutChart"};
 
-    private String[] mListStr = { "cn.limc.androidcharts.view.GridChart",
+    private String[] mListStr = {"sampleDemo", "SampleTickChartDemo", "cn.limc.androidcharts.view.GridChart",
             "cn.limc.androidcharts.view.LineChart", "cn.limc.androidcharts.view.SlipLineChart",
             "cn.limc.androidcharts.view.SlipAreaChart",
             "cn.limc.androidcharts.view.SlipBandAreaChart",
@@ -63,7 +63,7 @@ public class ChartListActivity extends Activity {
             "cn.limc.androidcharts.view.BOLLMASlipCandleStickChart",
             "cn.limc.androidcharts.view.MACDChart", "cn.limc.androidcharts.view.PieChart",
             "cn.limc.androidcharts.view.RoseChart", "cn.limc.androidcharts.view.SpiderWebChart",
-            "cn.limc.androidcharts.view.RadarChart", "cn.limc.androidcharts.view.DonutChart" };
+            "cn.limc.androidcharts.view.RadarChart", "cn.limc.androidcharts.view.DonutChart"};
     ListView mListView = null;
     ArrayList<Map<String, Object>> mData = new ArrayList<Map<String, Object>>();;
 
@@ -91,119 +91,134 @@ public class ChartListActivity extends Activity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Intent intent = new Intent();
                 switch (position) {
-                    case 0:
+                	case 0:
+                    intent.setClass(ChartListActivity.this,
+                            cn.limc.demo.activity.SampleDemoActivity.class);
+                    startActivity(intent);
+                    break;
+                	case 1:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.GridChartActivity.class);
-                        startActivity(intent);
-                        break;
-                    case 1:
-                        intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.LineChartActivity.class);
+                                SampleTickDemoActivity.class);
                         startActivity(intent);
                         break;
                     case 2:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.SlipLineChartActivity.class);
+                                cn.limc.demo.activity.GridChartActivity.class);
                         startActivity(intent);
                         break;
                     case 3:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.SlipAreaChartActivity.class);
+                                cn.limc.demo.activity.LineChartActivity.class);
                         startActivity(intent);
                         break;
                     case 4:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.SlipBandAreaChartActivity.class);
+                                cn.limc.demo.activity.SlipLineChartActivity.class);
                         startActivity(intent);
                         break;
                     case 5:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.StickChartActivity.class);
+                                cn.limc.demo.activity.SlipAreaChartActivity.class);
                         startActivity(intent);
                         break;
                     case 6:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.SlipStickChartActivity.class);
+                                cn.limc.demo.activity.SlipBandAreaChartActivity.class);
                         startActivity(intent);
                         break;
                     case 7:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.ColoredSlipStickChartActivity.class);
+                                cn.limc.demo.activity.StickChartActivity.class);
                         startActivity(intent);
                         break;
                     case 8:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.MAStickChartActivity.class);
+                                cn.limc.demo.activity.SlipStickChartActivity.class);
                         startActivity(intent);
                         break;
                     case 9:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.MASlipStickChartActivity.class);
+                                cn.limc.demo.activity.ColoredSlipStickChartActivity.class);
                         startActivity(intent);
                         break;
                     case 10:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.MinusStickChartActivity.class);
+                                cn.limc.demo.activity.MAStickChartActivity.class);
                         startActivity(intent);
                         break;
                     case 11:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.SlipMinusStickChartActivity.class);
+                                cn.limc.demo.activity.MASlipStickChartActivity.class);
                         startActivity(intent);
                         break;
                     case 12:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.CandleStickChartActivity.class);
+                                cn.limc.demo.activity.MinusStickChartActivity.class);
                         startActivity(intent);
                         break;
                     case 13:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.SlipCandleStickChartActivity.class);
+                                cn.limc.demo.activity.SlipMinusStickChartActivity.class);
                         startActivity(intent);
                         break;
                     case 14:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.MACandleStickChartActivity.class);
+                                cn.limc.demo.activity.CandleStickChartActivity.class);
                         startActivity(intent);
                         break;
                     case 15:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.MASlipCandleStickChartActivity.class);
+                                cn.limc.demo.activity.SlipCandleStickChartActivity.class);
                         startActivity(intent);
                         break;
                     case 16:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.BOLLMASlipCandleStickChartActivity.class);
+                                cn.limc.demo.activity.MACandleStickChartActivity.class);
                         startActivity(intent);
                         break;
                     case 17:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.MACDChartActivity.class);
+                                cn.limc.demo.activity.MASlipCandleStickChartActivity.class);
                         startActivity(intent);
                         break;
                     case 18:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.PieChartActivity.class);
+                                cn.limc.demo.activity.BOLLMASlipCandleStickChartActivity.class);
                         startActivity(intent);
                         break;
                     case 19:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.RoseChartActivity.class);
+                                cn.limc.demo.activity.MACDChartActivity.class);
                         startActivity(intent);
                         break;
                     case 20:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.SpiderWebChartActivity.class);
+                                cn.limc.demo.activity.PieChartActivity.class);
                         startActivity(intent);
                         break;
                     case 21:
                         intent.setClass(ChartListActivity.this,
-                                cn.limc.demo.activity.RadarChartActivity.class);
+                                cn.limc.demo.activity.RoseChartActivity.class);
                         startActivity(intent);
                         break;
                     case 22:
                         intent.setClass(ChartListActivity.this,
+                                cn.limc.demo.activity.SpiderWebChartActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 23:
+                        intent.setClass(ChartListActivity.this,
+                                cn.limc.demo.activity.RadarChartActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 24:
+                        intent.setClass(ChartListActivity.this,
                                 cn.limc.demo.activity.DonutChartActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 25:
+                        intent.setClass(ChartListActivity.this,
+                                cn.limc.demo.activity.SampleDemoActivity.class);
                         startActivity(intent);
                         break;
                     default:

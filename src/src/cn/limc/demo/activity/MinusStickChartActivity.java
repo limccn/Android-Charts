@@ -72,7 +72,7 @@ public class MinusStickChartActivity extends BaseActivity {
         data.add(new StickEntity(46000, 0, 20120303));
         minusstickchart.setStickData(new ListChartData<IStickEntity>(data));
 
-        minusstickchart.setMaxSticksNum(data.size());
+//        minusstickchart.setMaxSticksNum(data.size());
         minusstickchart.setMaxValue(50000);
         minusstickchart.setMinValue(-50000);
 

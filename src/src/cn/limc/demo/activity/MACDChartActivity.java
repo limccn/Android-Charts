@@ -63,7 +63,7 @@ public class MACDChartActivity extends BaseActivity {
         macdChart.setDisplayFrom(0);
         macdChart.setDisplayNumber(10);
         macdChart.setMinDisplayNumber(5);
-        macdChart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+//        macdChart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
         macdChart.setAxisXColor(Color.LTGRAY);
         macdChart.setAxisYColor(Color.LTGRAY);
         macdChart.setLatitudeColor(Color.GRAY);
@@ -72,8 +72,8 @@ public class MACDChartActivity extends BaseActivity {
         macdChart.setLongitudeFontColor(Color.WHITE);
         macdChart.setLatitudeFontColor(Color.WHITE);
         macdChart.setMacdDisplayType(MACDChart.MACD_DISPLAY_TYPE_STICK);
-        macdChart.setPositiveStickColor(Color.RED);
-        macdChart.setNegativeStickColor(Color.CYAN);
+//        macdChart.setPositiveStickColor(Color.RED);
+//        macdChart.setNegativeStickColor(Color.CYAN);
         macdChart.setMacdLineColor(Color.CYAN);
         macdChart.setDeaLineColor(Color.YELLOW);
         macdChart.setDiffLineColor(Color.WHITE);

@@ -129,18 +129,20 @@ public class MASlipCandleStickChart extends SlipCandleStickChart {
 		// 逐条输出MA线
 		for (int i = 0; i < this.linesData.size(); i++) {
 			LineEntity<DateValueEntity> line = this.linesData.get(i);
-			if (line != null && line.getLineData().size() > 0) {
+			if (line != null && line.getLineData() != null &&line.getLineData().size() > 0) {
 				// 判断显示为方柱或显示为线条
-				for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+				for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
 					DateValueEntity lineData = line.getLineData().get(j);
-					if (lineData.getValue() < minValue) {
-						minValue = lineData.getValue();
-					}
+					if(isNoneDisplayValue(lineData.getValue())){
+					}else{
+						if (lineData.getValue() < minValue) {
+							minValue = lineData.getValue();
+						}
 
-					if (lineData.getValue() > maxValue) {
-						maxValue = lineData.getValue();
+						if (lineData.getValue() > maxValue) {
+							maxValue = lineData.getValue();
+						}
 					}
-
 				}
 			}
 		}
@@ -161,14 +163,18 @@ public class MASlipCandleStickChart extends SlipCandleStickChart {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
+	}
 
-		// draw lines
-		if (null != this.linesData) {
-			if (0 != this.linesData.size()) {
-				drawLines(canvas);
-			}
+	@Override
+	public void drawData(Canvas canvas){
+		super.drawData(canvas);
+		if (getDisplayNumber() > displayStickAsLineNumber){
+
+		}else{
+			drawLines(canvas);
 		}
 	}
+
 
 	/**
 	 * <p>
@@ -184,14 +190,14 @@ public class MASlipCandleStickChart extends SlipCandleStickChart {
 	 * @param canvas
 	 */
 	protected void drawLines(Canvas canvas) {
-		if (null == stickData) {
+		if (null == linesData) {
 			return;
 		}
-		if (stickData.size() <= 0) {
+		if (linesData.size() <= 0) {
 			return;
 		}
 		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / getDataDisplayNumber() - stickSpacing;
 		// start point‘s X
 		float startX;
 

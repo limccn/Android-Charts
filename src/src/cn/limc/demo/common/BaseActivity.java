@@ -21,8 +21,11 @@
 
 package cn.limc.demo.common;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.http.util.EncodingUtils;
 
 import cn.limc.androidcharts.entity.ColoredStickEntity;
 import cn.limc.androidcharts.entity.DateValueEntity;
@@ -30,28 +33,60 @@ import cn.limc.androidcharts.entity.IStickEntity;
 import cn.limc.androidcharts.entity.MACDEntity;
 import cn.limc.androidcharts.entity.OHLCEntity;
 import cn.limc.androidcharts.entity.StickEntity;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 public class BaseActivity extends Activity {
     
+	public enum IndicatorType {  
+		IndicatorMACD,
+		IndicatorMA,
+		IndicatorKDJ,
+		IndicatorRSI,
+		IndicatorWR,
+		IndicatorCCI,
+		IndicatorBOLL
+	}
+	
+	public boolean isHorizontal;
+	
+	public int screenWidth;
+	public int screenHeight;
+	
+	public static final String ENCODING = "UTF-8";
+
     protected List<IStickEntity> ohlc;
     protected List<IStickEntity> vol;
     protected List<IStickEntity> volc;
     protected List<DateValueEntity> dv1;
     protected List<DateValueEntity> dv2;
+    protected List<DateValueEntity> dv3;
     protected List<IStickEntity> macd;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        
+        
+        WindowManager wm = this.getWindowManager();
+      	 
+        screenWidth = wm.getDefaultDisplay().getWidth();
+        screenHeight = wm.getDefaultDisplay().getHeight();
+        
+        if (isHorizontal) {
+        	screenWidth -= DipUtils.dip2px(this, 60);
+		}
+        
         initVOL();
         initOHLC();
         initVOLC();
         initDV1();
         initDV2();
+        dv3 = new ArrayList<DateValueEntity>();
         initMACD();
     }
     
@@ -853,4 +888,28 @@ public class BaseActivity extends Activity {
         this.macd = macd;
     }
 
+    public String getStringFromAssets(String fileName) {
+    	String strData = "";
+    	try {
+    		InputStream in = getResources().getAssets().open(fileName);
+    		//获取文件的字节数
+    		int lenght = in.available();
+    		//创建byte数组
+    		byte[]  buffer = new byte[lenght];
+    		//将文件中的数据读到byte数组中
+    		in.read(buffer);
+    		strData = EncodingUtils.getString(buffer, ENCODING);
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    	
+    	return strData;
+	}
+    
+    @SuppressLint("SimpleDateFormat")
+    public String TimeStamp2Date(String timestampString, String formats){    
+    	  Long timestamp = Long.parseLong(timestampString)*1000;    
+    	  String date = new java.text.SimpleDateFormat(formats).format(new java.util.Date(timestamp));    
+    	  return date;    
+    	} 
 }

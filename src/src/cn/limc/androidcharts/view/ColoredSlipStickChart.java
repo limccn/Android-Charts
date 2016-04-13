@@ -22,10 +22,14 @@
 package cn.limc.androidcharts.view;
 
 import cn.limc.androidcharts.entity.ColoredStickEntity;
+import cn.limc.androidcharts.entity.IMeasurable;
+import cn.limc.androidcharts.entity.OHLCEntity;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.util.AttributeSet;
 
 /**
@@ -47,6 +51,7 @@ public class ColoredSlipStickChart extends SlipStickChart {
 
 	public static final int DEFAULT_COLORED_STICK_STYLE_WITH_BORDER = 0;
 	public static final int DEFAULT_COLORED_STICK_STYLE_NO_BORDER = 1;
+
 	public static final int DEFAULT_COLORED_STICK_STYLE = DEFAULT_COLORED_STICK_STYLE_NO_BORDER;
 
 	private int coloredStickStyle = DEFAULT_COLORED_STICK_STYLE_NO_BORDER;
@@ -122,12 +127,13 @@ public class ColoredSlipStickChart extends SlipStickChart {
 			return;
 		}
 
-		float stickWidth = dataQuadrant.getPaddingWidth() / displayNumber
+		float stickWidth = dataQuadrant.getPaddingWidth() / getDataDisplayNumber()
 				- stickSpacing;
 		float stickX = dataQuadrant.getPaddingStartX();
 
 		Paint mPaintStick = new Paint();
-		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+
+		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
 			ColoredStickEntity entity = (ColoredStickEntity) stickData.get(i);
 
 			float highY = (float) ((1f - (entity.getHigh() - minValue)
@@ -140,9 +146,15 @@ public class ColoredSlipStickChart extends SlipStickChart {
 			mPaintStick.setColor(entity.getColor());
 			// stick or line?
 			if (stickWidth >= 2f) {
+				if (entity.getColor() == Color.RED) {
+					mPaintStick.setStyle(Paint.Style.STROKE);
+				}else{
+					mPaintStick.setStyle(Paint.Style.FILL);
+				}
 				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
 						mPaintStick);
 			} else {
+				mPaintStick.setStyle(Paint.Style.STROKE);
 				canvas.drawLine(stickX, highY, stickX, lowY, mPaintStick);
 			}
 
@@ -151,6 +163,23 @@ public class ColoredSlipStickChart extends SlipStickChart {
 		}
 	}
 
+	@Override
+	protected PointF calcBindPoint(float x ,float y) {
+		float calcX = 0;
+		float calcY = 0;
+		int index = calcSelectedIndex(x,y);
+
+		float stickWidth = dataQuadrant.getPaddingWidth() / getDataDisplayNumber();
+
+		if (index >= getDisplayFrom() && index <= getDisplayTo() - 1) {
+			IMeasurable stick = (IMeasurable) stickData.get(index);
+			calcY = (float) ((1f - (stick.getHigh() - minValue)
+					/ (maxValue - minValue))
+					* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
+			calcX = dataQuadrant.getPaddingStartX() + stickWidth * (index - getDisplayFrom()) + stickWidth / 2;
+		}
+		return new PointF(calcX,calcY);
+	}
 	/**
 	 * @return the coloredStickStyle
 	 */

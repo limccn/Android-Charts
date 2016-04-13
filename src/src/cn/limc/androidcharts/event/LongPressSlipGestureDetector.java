@@ -76,7 +76,7 @@ public class LongPressSlipGestureDetector<T extends ISlipable> extends ZoomGestu
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		// 设置拖拉模式
 		case MotionEvent.ACTION_DOWN:
-
+			lastPoint = null;
 			if (event.getPointerCount() == 1) {
 				lastPoint = new PointF(event.getX(0), event.getY(0));
 				pressStartTime = System.currentTimeMillis();
@@ -149,7 +149,7 @@ public class LongPressSlipGestureDetector<T extends ISlipable> extends ZoomGestu
 						if (onSlipGestureListener != null) {
 							onSlipGestureListener.onMoveLeft((ISlipable) instance,event);
 						}
-					}else{
+					}else if (currentPoint.x < lastPoint.x - 80 ){
 						if (onSlipGestureListener != null) {
 							onSlipGestureListener.onMoveRight((ISlipable)instance,event);
 						}

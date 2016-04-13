@@ -73,4 +73,49 @@
     <string name="title_activity_chart_list">Chart List</string>
     <string name="title_activity_donut_chart">Donut Chart</string>
 
+    <string name="chart_type_vol">VOL</string>
+    <string name="chart_type_macd">MACD</string>
+    <string name="chart_type_kdj">KDJ</string>
+    <string name="chart_type_rsi">RSI</string>
+    <string name="chart_type_wr">WR</string>
+    <string name="chart_type_cci">CCI</string>
+    <string name="chart_type_boll">BOLL</string>
+    <string name="chart_type_setting">设置</string>
+    <string name="chart_type_handicap">盘口</string>
+    <string name="chart_type_1min">分时</string>
+    <string name="chart_type_detail">明细</string>
+    <string name="chart_type_day">日</string>
+    <string name="chart_type_week">周</string>
+    <string name="chart_type_month">月</string>
+    <string name="chart_type_minute">分钟</string>
+    <string name="chart_type_1minute">1分</string>
+    <string name="chart_type_5minute">5分</string>
+    <string name="chart_type_15minute">15分</string>
+    <string name="chart_type_30minute">30分</string>
+    <string name="chart_type_1hour">1小时</string>
+    <string name="chart_type_2hour">2小时</string>
+    <string name="chart_type_4hour">4小时 </string>
+    
+    <string name="buy_price_label">买价</string>
+    <string name="high_label">最高</string>
+    <string name="sell_price_label">卖价</string>
+    <string name="low_label">最低</string>
+    
+    <string name="detail_time">时间</string>
+    <string name="detail_price">价格</string>
+    <string name="detail_count">数量</string>
+    
+    <string name="now_buy">订立买</string>
+    <string name="now_sell">订立卖</string>
+    <string name="term_buy">调期买</string>
+    <string name="term_sell">调期卖</string>
+    <string name="go_trade">去交易下单</string>
+    <string name="horizontal">横屏</string>
+    
+    <string name="buy_label">买:</string>
+    <string name="sell_label">卖:</string>
+    <string name="horzizontal_high_label">高:</string>
+    <string name="horzizontal_low_label">低:</string>
+    
+    <string name="setting">设置</string>
 </resources>

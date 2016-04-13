@@ -130,7 +130,7 @@ public class MAStickChart extends StickChart {
 			}
 
 			// 判断显示为方柱或显示为线条
-			for (int j = 0; j < this.maxSticksNum; j++) {
+			for (int j = 0; j < getDisplayNumber(); j++) {
 				DateValueEntity entity;
 				if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
 					entity = line.getLineData().get(j);
@@ -163,13 +163,15 @@ public class MAStickChart extends StickChart {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 
-		// draw lines
-		if (null != this.linesData) {
-			if (0 != this.linesData.size()) {
-				drawLines(canvas);
-			}
-		}
+
 	}
+
+	@Override
+	public void drawData(Canvas canvas){
+		super.drawData(canvas);
+		drawLines(canvas);
+	}
+
 
 	/**
 	 * <p>
@@ -188,8 +190,12 @@ public class MAStickChart extends StickChart {
 		if (null == this.linesData) {
 			return;
 		}
+
+		if (0 != this.linesData.size()) {
+			return;
+		}
 		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / maxSticksNum - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / getDisplayNumber() - stickSpacing;
 		// start point‘s X
 		float startX;
 
@@ -214,46 +220,49 @@ public class MAStickChart extends StickChart {
 			// start point
 			PointF ptFirst = null;
 
-			if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+//			if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
 				// set start point’s X
 				startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
-
-				for (int j = 0; j < lineData.size(); j++) {
+				for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
 					float value = lineData.get(j).getValue();
-					// calculate Y
-					float valueY = (float) ((1f - (value - minValue)
-							/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
-							+ dataQuadrant.getPaddingStartY();
+					if(isNoneDisplayValue(value)){
 
-					// if is not last point connect to previous point
-					if (j > 0) {
-						canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
-								mPaint);
+					}else {
+						// calculate Y
+						float valueY = (float) ((1f - (value - minValue)
+								/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+								+ dataQuadrant.getPaddingStartY();
+
+						// if is not last point connect to previous point
+						if (j > getDisplayFrom() && ptFirst!=null) {
+							canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+									mPaint);
+						}
+						// reset
+						ptFirst = new PointF(startX, valueY);
 					}
-					// reset
-					ptFirst = new PointF(startX, valueY);
 					startX = startX + stickSpacing + lineLength;
 				}
-			} else {
-				// set start point’s X
-				startX = dataQuadrant.getPaddingEndX() - lineLength / 2;
-				for (int j = lineData.size() - 1; j >= 0; j--) {
-					float value = lineData.get(j).getValue();
-					// calculate Y
-					float valueY = (float) ((1f - (value - minValue)
-							/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
-							+ dataQuadrant.getPaddingStartY();
-
-					// if is not last point connect to previous point
-					if (j < lineData.size() - 1) {
-						canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
-								mPaint);
-					}
-					// reset
-					ptFirst = new PointF(startX, valueY);
-					startX = startX - stickSpacing - lineLength;
-				}
-			}
+//			} else {
+//				// set start point’s X
+//				startX = dataQuadrant.getPaddingEndX() - lineLength / 2;
+//				for (int j = lineData.size() - 1; j >= 0; j--) {
+//					float value = lineData.get(j).getValue();
+//					// calculate Y
+//					float valueY = (float) ((1f - (value - minValue)
+//							/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+//							+ dataQuadrant.getPaddingStartY();
+//
+//					// if is not last point connect to previous point
+//					if (j < lineData.size() - 1) {
+//						canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+//								mPaint);
+//					}
+//					// reset
+//					ptFirst = new PointF(startX, valueY);
+//					startX = startX - stickSpacing - lineLength;
+//				}
+//			}
 		}
 	}
 

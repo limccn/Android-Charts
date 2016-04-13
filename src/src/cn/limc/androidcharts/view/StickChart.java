@@ -22,6 +22,8 @@
 package cn.limc.androidcharts.view;
 
 import cn.limc.androidcharts.axis.IAxis;
+import cn.limc.androidcharts.common.IDataCursor;
+import cn.limc.androidcharts.common.SectionDataCursor;
 import cn.limc.androidcharts.entity.IChartData;
 import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.IStickEntity;
@@ -30,14 +32,14 @@ import cn.limc.androidcharts.event.IZoomable;
 import cn.limc.androidcharts.event.IDisplayCursorListener;
 import cn.limc.androidcharts.event.OnZoomGestureListener;
 import cn.limc.androidcharts.event.ZoomGestureDetector;
-import cn.limc.androidcharts.mole.IMole;
-import cn.limc.androidcharts.mole.IMoleProvider;
-import cn.limc.androidcharts.mole.StickMole;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PointF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 
 /**
@@ -58,45 +60,82 @@ import android.view.MotionEvent;
  * @version v1.0 2011/05/30 14:58:59
  * 
  */
-public class StickChart extends PeriodDataGridChart implements IZoomable{		
-	
-	protected IMoleProvider provider = new IMoleProvider() {
-		public IMole getMole() {
-			return new StickMole() {
-				@Override
-				public void setPro() {
-					stickFillColor = Color.BLUE;
-					stickBorderColor = Color.WHITE;
-					stickStrokeWidth = 1;
-					stickSpacing = 1;
-				}
-			};
-		}
-	};
-	
-	public static final int DEFAULT_STICK_SPACING = 1;
-	
+public class StickChart extends PeriodDataGridChart implements IZoomable{
 
 	/**
 	 * <p>
-	 * max number of sticks
+	 * data to draw sticks
 	 * </p>
 	 * <p>
-	 * スティックの最大表示数
+	 * スティックを書く用データ
 	 * </p>
 	 * <p>
-	 * 柱条的最大表示数
+	 * 绘制柱条用的数据
 	 * </p>
 	 */
-	protected int maxSticksNum;
-	
-	protected int minDisplayNum = MINI_DISPLAY_NUM;
+	protected IChartData<IStickEntity> stickData;
 
+	protected IDataCursor dataCursor = new SectionDataCursor();
+
+	public static final int DEFAULT_STICK_SPACING = 1;
+
+
+	public static final int DEFAULT_STICK_STROKE_WIDTH = 1;
+
+	/**
+	 * <p>
+	 * default color for display stick border
+	 * </p>
+	 * <p>
+	 * 表示スティックのボーダーの色のデフォルト値
+	 * </p>
+	 * <p>
+	 * 默认表示柱条的边框颜色
+	 * </p>
+	 */
+	public static final int DEFAULT_STICK_STROKE_COLOR = Color.WHITE;
+
+	/**
+	 * <p>
+	 * default color for display stick
+	 * </p>
+	 * <p>
+	 * 表示スティックの色のデフォルト値
+	 * </p>
+	 * <p>
+	 * 默认表示柱条的填充颜色
+	 * </p>
+	 */
+	public static final int DEFAULT_STICK_FILL_COLOR = Color.BLUE;
+
+
+	public static final int DEFAULT_DISPLAY_STICK_AS_LINE_NUMBER = 120;
+	public static final int DEFAULT_DISPLAY_STICK_AS_LINE_COLOR = Color.WHITE;
+
+
+	/**
+	 * <p>
+	 * Color for display stick border
+	 * </p>
+	 * <p>
+	 * 表示スティックのボーダーの色
+	 * </p>
+	 * <p>
+	 * 表示柱条的边框颜色
+	 * </p>
+	 */
+	protected int stickStrokeColor = DEFAULT_STICK_STROKE_COLOR;
+	protected int stickFillColor = DEFAULT_STICK_FILL_COLOR;
+	protected int stickStrokeWidth = DEFAULT_STICK_STROKE_WIDTH;
 	protected int stickSpacing = DEFAULT_STICK_SPACING;
 	
 	protected OnZoomGestureListener onZoomGestureListener = new OnZoomGestureListener();
 	protected IGestureDetector zoomGestureDetector = new ZoomGestureDetector<IZoomable>(this);
-	
+	protected boolean detectZoomEvent = true;
+	protected int displayStickAsLineNumber = DEFAULT_DISPLAY_STICK_AS_LINE_NUMBER;
+	protected int displayStickAsLineColor = DEFAULT_DISPLAY_STICK_AS_LINE_COLOR;
+
+
 	protected IDisplayCursorListener onDisplayCursorListener;
 	
 	/*
@@ -152,13 +191,74 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
+
+		if (null != stickData) {
+			if (stickData.size() > 0) {
+				dataCursor.setMaxDisplayNumber(stickData.size());
+			}
+		}
+
 		if (this.autoCalcValueRange) {
 			calcValueRange();
 		}
 		initAxisY();
 		initAxisX();
 		super.onDraw(canvas);
-		drawSticks(canvas);
+
+	}
+
+	@Override
+	public void drawData(Canvas canvas){
+		super.drawData(canvas);
+		if (getDisplayNumber() > displayStickAsLineNumber){
+			drawSticksAsLine(canvas);
+		}else{
+			drawSticks(canvas);
+		}
+	}
+
+	protected void drawSticksAsLine(Canvas canvas) {
+		if (null == stickData) {
+			return;
+		}
+		if (stickData.size() <= 0) {
+			return;
+		}
+
+
+
+		float lineLength = dataQuadrant.getPaddingWidth() / getDisplayNumber()
+				- stickSpacing;
+		float startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
+
+		Paint mPaintStroke = new Paint();
+		mPaintStroke.setStyle(Paint.Style.STROKE);
+		mPaintStroke.setStrokeWidth(stickStrokeWidth);
+		mPaintStroke.setColor(displayStickAsLineColor);
+
+		// start point
+		PointF ptFirst = null;
+
+		for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
+			double value = stickData.get(j).getHigh();
+			if(isNoneDisplayValue((float)value)){
+
+			}else {
+				// calculate Y
+				float valueY = (float) ((1f - (value - minValue)
+						/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+						+ dataQuadrant.getPaddingStartY();
+
+				// if is not last point connect to previous point
+				if (j > getDisplayFrom() && ptFirst!=null) {
+					canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+							mPaintStroke);
+				}
+				// reset
+				ptFirst = new PointF(startX, valueY);
+			}
+			startX = startX + stickSpacing + lineLength;
+		}
 	}
 
 	/**
@@ -182,31 +282,81 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 			return;
 		}
 
-		float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+//		float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+//
+//		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+//
+//			float stickX = dataQuadrant.getPaddingStartX();
+//
+//			for (int i = 0; i < stickData.size(); i++) {
+//				IMeasurable stick = stickData.get(i);
+//				StickMole mole = (StickMole)provider.getMole();
+//				mole.setUp(this,stick,stickX,stickWidth);
+//				mole.draw(canvas);
+//				// next x
+//				stickX = stickX + stickWidth;
+//			}
+//		} else {
+//			float stickX = dataQuadrant.getPaddingEndX() - stickWidth;
+//			for (int i = stickData.size() - 1; i >= 0; i--) {
+//				IMeasurable stick = stickData.get(i);
+//				StickMole mole = (StickMole)provider.getMole();
+//				mole.setUp(this,stick,stickX,stickWidth);
+//				mole.draw(canvas);
+//				// next x
+//				stickX = stickX - stickWidth;
+//			}
+//		}
 
-		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+		float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber()
+				- stickSpacing;
+		float stickX = dataQuadrant.getPaddingStartX();
 
-			float stickX = dataQuadrant.getPaddingStartX();
 
-			for (int i = 0; i < stickData.size(); i++) {
-				IMeasurable stick = stickData.get(i);
-				StickMole mole = (StickMole)provider.getMole();
-				mole.setUp(this,stick,stickX,stickWidth);
-				mole.draw(canvas);
-				// next x
-				stickX = stickX + stickWidth;
+		Paint mPaintFill = new Paint();
+		mPaintFill.setStyle(Paint.Style.FILL);
+		mPaintFill.setColor(stickFillColor);
+
+		Paint mPaintStroke = new Paint();
+		mPaintStroke.setStyle(Paint.Style.STROKE);
+		mPaintStroke.setStrokeWidth(stickStrokeWidth);
+		mPaintStroke.setColor(stickStrokeColor);
+
+		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
+			IMeasurable entity = stickData.get(i);
+
+			float highY = (float) ((1f - (entity.getHigh() - minValue)
+					/ (maxValue - minValue))
+					* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
+			float lowY = (float) ((1f - (entity.getLow() - minValue)
+					/ (maxValue - minValue))
+					* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
+
+			// stick or line?
+			if (stickWidth >= 2f) {
+				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
+						mPaintFill);
+				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
+						mPaintStroke);
+			} else {
+				canvas.drawLine(stickX, highY, stickX, lowY, mPaintStroke);
 			}
-		} else {
-			float stickX = dataQuadrant.getPaddingEndX() - stickWidth;
-			for (int i = stickData.size() - 1; i >= 0; i--) {
-				IMeasurable stick = stickData.get(i);
-				StickMole mole = (StickMole)provider.getMole();
-				mole.setUp(this,stick,stickX,stickWidth);
-				mole.draw(canvas);
-				// next x
-				stickX = stickX - stickWidth;
-			}
+
+			// next x
+			stickX = stickX + stickSpacing + stickWidth;
 		}
+
+
+//		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
+//			IMeasurable stick = stickData.get(i);
+//
+////			StickMole mole = (StickMole)provider.getMole();
+////			mole.setUp(this,stick,stickX,stickWidth);
+////			mole.draw(canvas);
+//
+//			// next x
+//			stickX = stickX + stickSpacing + stickWidth;
+//		}
 
 	}
 
@@ -232,8 +382,11 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 		if (null == stickData || stickData.size() == 0) {
 			return false;
 		}
-		
-		return zoomGestureDetector.onTouchEvent(event);
+		if (detectZoomEvent) {
+			return zoomGestureDetector.onTouchEvent(event);
+		}else{
+			return true;
+		}
 	}
 
 	/**
@@ -248,11 +401,10 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	 * </p>
 	 */
 	public void zoomIn() {
-		if (getDisplayNumber() > getMinDisplayNumber()) {
-			setDisplayNumber(getDisplayNumber() - ZOOM_STEP);
+		if(this.stretch(ZOOM_STEP)) {
 			this.postInvalidate();
 		}
-		
+//
 		//Listener
 		if (onDisplayCursorListener != null) {
 			onDisplayCursorListener.onCursorChanged(this,getDisplayFrom(), getDisplayNumber());
@@ -270,12 +422,15 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	 * 缩小
 	 * </p>
 	 */
-	public void zoomOut() {		
-		if (getDisplayNumber() < stickData.size() - 1 - ZOOM_STEP) {
-			setDisplayNumber(getDisplayNumber() + ZOOM_STEP);
+	public void zoomOut() {
+		if(this.shrink(ZOOM_STEP)) {
 			this.postInvalidate();
 		}
-		
+//		if (getDisplayNumber() < stickData.size() - 1 - ZOOM_STEP) {
+//			setgetDisplayNumber()(getDisplayNumber() + ZOOM_STEP);
+//			this.postInvalidate();
+//		}
+//
 		//Listener
 		if (onDisplayCursorListener != null) {
 			onDisplayCursorListener.onCursorChanged(this,getDisplayFrom(), getDisplayNumber());
@@ -288,31 +443,64 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	public IChartData<IStickEntity> getStickData() {
 		return stickData;
 	}
-
 	/**
 	 * @param stickData
 	 *            the stickData to set
 	 */
 	public void setStickData(IChartData<IStickEntity> stickData) {
+
+		if (stickData == null) {
+			Log.e("","Stick data is nil");
+			return;
+		}
+		int datasize = stickData.size();
+		if (datasize == 0) {
+			Log.e("","Stick data size is Zero");
+			return;
+		}
+
 		this.stickData = stickData;
+
+		if (dataCursor.getMinDisplayNumber() > datasize) {
+			dataCursor.setMaxDisplayNumber(datasize);
+			dataCursor.setDisplayFrom(0);
+			dataCursor.setDisplayNumber(datasize);
+
+		}else{
+			dataCursor.setMaxDisplayNumber(datasize);
+			//右侧显示
+			dataCursor.setDisplayFrom(datasize - getDisplayNumber());
+		}
+
+		this.maxValue = Integer.MIN_VALUE;
+		this.minValue = Integer.MAX_VALUE;
 	}
 
-	/**
-	 * @return the maxSticksNum
-	 */
-	@Deprecated
-	public int getMaxSticksNum() {
-		return maxSticksNum;
+
+	public IChartData<IStickEntity> getChartData() {
+		return this.stickData;
 	}
 
-	/**
-	 * @param maxSticksNum
-	 *            the maxSticksNum to set
-	 */
-	@Deprecated
-	public void setMaxSticksNum(int maxSticksNum) {
-		this.maxSticksNum = maxSticksNum;
+	public IDataCursor getDataCursor(){
+		return this.dataCursor;
 	}
+
+//	/**
+//	 * @return the maxSticksNum
+//	 */
+//	@Deprecated
+//	public int getMaxSticksNum() {
+//		return maxSticksNum;
+//	}
+//
+//	/**
+//	 * @param maxSticksNum
+//	 *            the maxSticksNum to set
+//	 */
+//	@Deprecated
+//	public void setMaxSticksNum(int maxSticksNum) {
+//		this.maxSticksNum = maxSticksNum;
+//	}
 
 	/**
 	 * @return the stickSpacing
@@ -328,91 +516,101 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 		this.stickSpacing = stickSpacing;
 	}
 
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.common.IDataCursor#displayFrom() 
-	 */
-	public int getDisplayFrom() {
-		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
-			return 0;
-		}else{
-			return stickData.size() - maxSticksNum;
-		}
+//	/* (non-Javadoc)
+//	 *
+//	 * @return
+//	 * @see cn.limc.androidcharts.common.IDataCursor#getDisplayFrom()
+//	 */
+//	public int getDisplayFrom() {
+//		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+//			return 0;
+//		}else{
+//			return stickData.size() - maxSticksNum;
+//		}
+//	}
+//
+//	/* (non-Javadoc)
+//	 *
+//	 * @return
+//	 * @see cn.limc.androidcharts.common.IDataCursor#getDisplayNumber()
+//	 */
+//	public int getDisplayNumber() {
+//		return maxSticksNum;
+//	}
+//
+//	/* (non-Javadoc)
+//	 *
+//	 * @return
+//	 * @see cn.limc.androidcharts.common.IDataCursor#displayTo()
+//	 */
+//	public int getDisplayTo() {
+//		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
+//			return maxSticksNum;
+//		}else{
+//			return stickData.size() - 1;
+//		}
+//	}
+//
+//	/* (non-Javadoc)
+//	 *
+//	 * @param getDisplayFrom()
+//	 * @see cn.limc.androidcharts.common.IDataCursor#setgetDisplayFrom()(int)
+//	 */
+//	public void setgetDisplayFrom()(int getDisplayFrom()) {
+//		//TODO
+//	}
+//
+//	/* (non-Javadoc)
+//	 *
+//	 * @param getDisplayNumber()
+//	 * @see cn.limc.androidcharts.common.IDataCursor#setgetDisplayNumber()(int)
+//	 */
+//	public void setgetDisplayNumber()(int getDisplayNumber()) {
+//		maxSticksNum = getDisplayNumber();
+//	}
+//
+//	/* (non-Javadoc)
+//	 *
+//	 * @param displayTo
+//	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayTo(int)
+//	 */
+//	public void setDisplayTo(int displayTo) {
+//		//TODO
+//	}
+//
+//	/* (non-Javadoc)
+//	 *
+//	 * @return
+//	 * @see cn.limc.androidcharts.common.IDataCursor#getMingetDisplayNumber()
+//	 */
+//	public int getMingetDisplayNumber() {
+//		return minDisplayNum;
+//	}
+//
+//	/* (non-Javadoc)
+//	 *
+//	 * @param mingetDisplayNumber()
+//	 * @see cn.limc.androidcharts.common.IDataCursor#getMingetDisplayNumber()(int)
+//	 */
+//	public void setMingetDisplayNumber()(int mingetDisplayNumber()) {
+//		this.minDisplayNum = mingetDisplayNumber();
+//	}
+//
+
+
+	public boolean isDetectZoomEvent() {
+		return detectZoomEvent;
+	}
+
+	public void setDetectZoomEvent(boolean detectZoomEvent) {
+		this.detectZoomEvent = detectZoomEvent;
 	}
 
 	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.common.IDataCursor#displayNumber() 
-	 */
-	public int getDisplayNumber() {
-		return maxSticksNum;
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.common.IDataCursor#displayTo() 
-	 */
-	public int getDisplayTo() {
-		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
-			return maxSticksNum;
-		}else{
-			return stickData.size() - 1;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @param displayFrom 
-	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayFrom(int) 
-	 */
-	public void setDisplayFrom(int displayFrom) {
-		//TODO
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @param displayNumber 
-	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayNumber(int) 
-	 */
-	public void setDisplayNumber(int displayNumber) {
-		maxSticksNum = displayNumber;
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @param displayTo 
-	 * @see cn.limc.androidcharts.common.IDataCursor#setDisplayTo(int) 
-	 */
-	public void setDisplayTo(int displayTo) {
-		//TODO
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber() 
-	 */
-	public int getMinDisplayNumber() {
-		return minDisplayNum;
-	}
-
-	/* (non-Javadoc)
-	 * 
-	 * @param minDisplayNumber 
-	 * @see cn.limc.androidcharts.common.IDataCursor#getMinDisplayNumber(int) 
-	 */
-	public void setMinDisplayNumber(int minDisplayNumber) {
-		this.minDisplayNum = minDisplayNumber;
-	}
-	
-	/* (non-Javadoc)
-	 * 
-	 * @return 
-	 * @see cn.limc.androidcharts.event.IZoomable#getOnZoomGestureListener() 
-	 */
+         *
+         * @return
+         * @see cn.limc.androidcharts.event.IZoomable#getOnZoomGestureListener()
+         */
 	public OnZoomGestureListener getOnZoomGestureListener() {
 		return onZoomGestureListener;
 	}

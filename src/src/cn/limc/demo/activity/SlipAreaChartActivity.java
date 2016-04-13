@@ -85,7 +85,7 @@ public class SlipAreaChartActivity extends BaseActivity {
         slipareachart.setDisplayFrom(10);
         slipareachart.setDisplayNumber(30);
         slipareachart.setMinDisplayNumber(5);
-        slipareachart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+//        slipareachart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
         slipareachart.setDisplayLongitudeTitle(true);
         slipareachart.setDisplayLatitudeTitle(true);
         slipareachart.setDisplayLatitude(true);

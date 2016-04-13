@@ -26,7 +26,6 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 
 import cn.limc.androidcharts.entity.IMeasurable;
-import cn.limc.androidcharts.mole.StickMole;
 
 /**
  * <p>
@@ -102,7 +101,7 @@ public class SlipMinusStickChart extends SlipStickChart {
 		}
 
 		// 判断显示为方柱或显示为线条
-		for (int i = getDisplayFrom(); i < getDisplayFrom() + getDisplayNumber(); i++) {
+		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
 			IMeasurable stick = this.stickData.get(i);
 			if (stick.getLow() < minValue) {
 				minValue = stick.getLow();
@@ -128,33 +127,33 @@ public class SlipMinusStickChart extends SlipStickChart {
 		
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @param canvas
-	 * 
-	 * 
-	 * 
-	 * @see cn.limc.androidcharts.view.StickChart#drawSticks(Canvas)
-	 */
-	@Override
-	protected void drawSticks(Canvas canvas) {
-		float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
-		float stickX = dataQuadrant.getPaddingStartX();
-
-		if (null != stickData) {
-			// display as stick or line
-			for (int i = super.getDisplayFrom(); i < super.getDisplayFrom()
-					+ super.getDisplayNumber(); i++) {
-				IMeasurable stick = stickData.get(i);
-
-				StickMole mole = (StickMole)provider.getMole();
-				mole.setUp(this,stick,stickX,stickWidth);
-				mole.draw(canvas);
-
-				// next x
-				stickX = stickX + stickWidth;
-			}
-		}
-	}
+//	/*
+//	 * (non-Javadoc)
+//	 *
+//	 * @param canvas
+//	 *
+//	 *
+//	 *
+//	 * @see cn.limc.androidcharts.view.StickChart#drawSticks(Canvas)
+//	 */
+//	@Override
+//	protected void drawSticks(Canvas canvas) {
+//		float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
+//		float stickX = dataQuadrant.getPaddingStartX();
+//
+//		if (null != stickData) {
+//			// display as stick or line
+//			for (int i = super.getDisplayFrom(); i < super.getDisplayFrom()
+//					+ super.getDisplayNumber(); i++) {
+//				IMeasurable stick = stickData.get(i);
+//
+//				StickMole mole = (StickMole)provider.getMole();
+//				mole.setUp(this,stick,stickX,stickWidth);
+//				mole.draw(canvas);
+//
+//				// next x
+//				stickX = stickX + stickWidth;
+//			}
+//		}
+//	}
 }

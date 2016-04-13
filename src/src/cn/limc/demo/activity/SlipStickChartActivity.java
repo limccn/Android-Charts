@@ -86,7 +86,7 @@ public class SlipStickChartActivity extends BaseActivity {
 
         slipstickchart.setMinDisplayNumber(5);
 
-        slipstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+//        slipstickchart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
 
         slipstickchart.setDisplayLongitudeTitle(true);
         slipstickchart.setDisplayLatitudeTitle(true);

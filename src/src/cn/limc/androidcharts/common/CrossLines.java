@@ -25,7 +25,9 @@ package cn.limc.androidcharts.common;
 import android.R.color;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Paint.Style;
 import cn.limc.androidcharts.axis.Axis;
@@ -210,6 +212,10 @@ public class CrossLines implements ICrossLines {
 
         Paint mPaint = new Paint();
         mPaint.setColor(crossLinesColor);
+        mPaint.setStyle(Style.STROKE);
+        mPaint.setStrokeWidth(1.0f);
+        mPaint.setPathEffect(new DashPathEffect(
+                new float[]{6, 3, 6, 3}, 1));
 
         float lineVLength = inChart.getDataQuadrant().getHeight() 
                 + inChart.getAxisX().getLineWidth();
@@ -224,8 +230,13 @@ public class CrossLines implements ICrossLines {
 //        drawAlphaTextBox(boxVS, boxVE, getAxisXGraduate(touchPoint.x),
 //                longitudeFontSize, canvas);
 
-        canvas.drawLine(touchPoint.x, inChart.getBorderWidth(), touchPoint.x, lineVLength,
-                mPaint);
+//        canvas.drawLine(touchPoint.x, inChart.getBorderWidth(), touchPoint.x, lineVLength,
+//                mPaint);
+
+        Path path = new Path();
+        path.moveTo(touchPoint.x, inChart.getBorderWidth());
+        path.lineTo(touchPoint.x, lineVLength);
+        canvas.drawPath(path, mPaint);
     }
 
     protected void drawHorizontalLine(Canvas canvas) {
@@ -248,6 +259,10 @@ public class CrossLines implements ICrossLines {
 
         Paint mPaint = new Paint();
         mPaint.setColor(crossLinesColor);
+        mPaint.setStyle(Style.STROKE);
+        mPaint.setStrokeWidth(1.0f);
+        mPaint.setPathEffect(new DashPathEffect(
+                new float[] { 6, 3, 6, 3 }, 1));
 
         float lineHLength = inChart.getDataQuadrant().getWidth() + inChart.getAxisY().getLineWidth();
 
@@ -261,9 +276,15 @@ public class CrossLines implements ICrossLines {
 //            drawAlphaTextBox(boxHS, boxHE, getAxisYGraduate(touchPoint.y),
 //                    latitudeFontSize, canvas);
 
-            canvas.drawLine(inChart.getBorderWidth() + inChart.getAxisY().getWidth(), touchPoint.y,
-                    inChart.getBorderWidth() + inChart.getAxisY().getWidth() + lineHLength,
-                    touchPoint.y, mPaint);
+            Path path = new Path();
+            path.moveTo(inChart.getBorderWidth() + inChart.getAxisY().getWidth(), touchPoint.y);
+            path.lineTo(inChart.getBorderWidth() + inChart.getAxisY().getWidth() + lineHLength,
+                    touchPoint.y);
+            canvas.drawPath(path, mPaint);
+
+//            canvas.drawLine(inChart.getBorderWidth() + inChart.getAxisY().getWidth(), touchPoint.y,
+//                    inChart.getBorderWidth() + inChart.getAxisY().getWidth() + lineHLength,
+//                    touchPoint.y, mPaint);
         } else {
 //            PointF boxHS = new PointF(super.getWidth() - borderWidth
 //                    - axisYTitleQuadrantWidth, touchPoint.y - latitudeFontSize
@@ -275,9 +296,14 @@ public class CrossLines implements ICrossLines {
 //            drawAlphaTextBox(boxHS, boxHE, getAxisYGraduate(touchPoint.y),
 //                    latitudeFontSize, canvas);
 
+            Path path = new Path();
+            path.moveTo(inChart.getBorderWidth(), inChart.getTouchPoint().y );
+            path.lineTo(inChart.getBorderWidth() + lineHLength,
+                    inChart.getTouchPoint().y);
+            canvas.drawPath(path, mPaint);
             
-            canvas.drawLine(inChart.getBorderWidth(), inChart.getTouchPoint().y , inChart.getBorderWidth() + lineHLength,
-                    inChart.getTouchPoint().y , mPaint);
+//            canvas.drawLine(inChart.getBorderWidth(), inChart.getTouchPoint().y , inChart.getBorderWidth() + lineHLength,
+//                    inChart.getTouchPoint().y , mPaint);
         }
 
     }

@@ -92,12 +92,12 @@ public class LineChartActivity extends BaseActivity {
         linechart.setDisplayLatitudeTitle(true);
         linechart.setDisplayLatitude(true);
         linechart.setDisplayLongitude(true);
-//        linechart.setLatitudeNum(5);
-//        linechart.setLongitudeNum(6);
-//        linechart.setDataQuadrantPaddingTop(5);
-//        linechart.setDataQuadrantPaddingBottom(5);
-//        linechart.setDataQuadrantPaddingLeft(5);
-//        linechart.setDataQuadrantPaddingRight(5);
+        linechart.setLatitudeNum(5);
+        linechart.setLongitudeNum(6);
+        linechart.setDataQuadrantPaddingTop(5);
+        linechart.setDataQuadrantPaddingBottom(5);
+        linechart.setDataQuadrantPaddingLeft(5);
+        linechart.setDataQuadrantPaddingRight(5);
         // linechart.setAxisYTitleQuadrantWidth(50);
         // linechart.setAxisXTitleQuadrantHeight(20);
         linechart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);

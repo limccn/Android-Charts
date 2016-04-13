@@ -231,12 +231,8 @@ public class CandleStickChart extends StickChart {
 	protected void calcDataValueRange() {
 		double maxValue = Double.MIN_VALUE;
 		double minValue = Double.MAX_VALUE;
-		IMeasurable first;
-		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
-			first = this.stickData.get(0);
-		} else {
-			first = this.stickData.get(this.stickData.size() - 1);
-		}
+
+		IMeasurable first = this.stickData.get(getDisplayFrom());
 		// 第一个stick为停盘的情况
 		if (first.getHigh() == 0 && first.getLow() == 0) {
 
@@ -244,14 +240,8 @@ public class CandleStickChart extends StickChart {
 			maxValue = first.getHigh();
 			minValue = first.getLow();
 		}
-		for (int i = 0; i < this.maxSticksNum; i++) {
-			OHLCEntity stick;
-			if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
-				stick = (OHLCEntity) this.stickData.get(i);
-			} else {
-				stick = (OHLCEntity) this.stickData.get(this.stickData.size()
-						- 1 - i);
-			}
+		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
+			OHLCEntity stick = (OHLCEntity) this.stickData.get(i);
 
 			if (stick.getOpen() == 0 && stick.getHigh() == 0
 					&& stick.getLow() == 0) {
@@ -326,7 +316,7 @@ public class CandleStickChart extends StickChart {
 		Paint mPaintCross = new Paint();
 		mPaintCross.setColor(crossStarColor);
 
-		float stickWidth = dataQuadrant.getPaddingWidth() / maxSticksNum
+		float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber()
 				- stickSpacing;
 
 		if (axisY.getPosition() == IAxis.AXIS_Y_POSITION_LEFT) {
@@ -431,7 +421,7 @@ public class CandleStickChart extends StickChart {
 		
 		int index = calcSelectedIndex(x,y);
 		
-		float stickWidth = dataQuadrant.getPaddingWidth() / maxSticksNum;
+		float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber();
 		OHLCEntity stick = (OHLCEntity)stickData.get(index);
 		calcY = (float) ((1f - (stick.getClose() - minValue)
 				/ (maxValue - minValue))
@@ -439,7 +429,7 @@ public class CandleStickChart extends StickChart {
 		if (axisY.getPosition() == Axis.AXIS_Y_POSITION_LEFT) {
 			calcX = dataQuadrant.getPaddingStartX() + stickWidth * index + stickWidth / 2;
 		}else{
-			if(stickData.size() - index <= maxSticksNum){
+			if(stickData.size() - index <=  getDisplayNumber()){
 				calcX = dataQuadrant.getPaddingEndX() - stickWidth * (stickData.size() - index) + stickWidth /2 ;
 			}else{
 				calcX = x;

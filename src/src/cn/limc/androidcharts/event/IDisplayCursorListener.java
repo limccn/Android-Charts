@@ -33,5 +33,5 @@ import cn.limc.androidcharts.common.IDataCursor;
  *  
  */
 public interface IDisplayCursorListener {
-	void onCursorChanged(IDataCursor dataCursor,int displayFrom, int displayNumber);
+	void onCursorChanged(IDataCursor cursor,int displayFrom, int displayNumber);
 }

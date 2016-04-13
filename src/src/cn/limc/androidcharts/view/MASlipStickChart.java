@@ -130,16 +130,19 @@ public class MASlipStickChart extends SlipStickChart {
 			LineEntity<DateValueEntity> line = this.linesData.get(i);
 			if (line != null && line.getLineData().size() > 0) {
 				// 判断显示为方柱或显示为线条
-				for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+				for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
 					DateValueEntity lineData = line.getLineData().get(j);
-					if (lineData.getValue() < minValue) {
-						minValue = lineData.getValue();
-					}
+                    if (isNoneDisplayValue(lineData.getValue())){
 
-					if (lineData.getValue() > maxValue) {
-						maxValue = lineData.getValue();
-					}
+                    }else {
+                        if (lineData.getValue() < minValue) {
+                            minValue = lineData.getValue();
+                        }
 
+                        if (lineData.getValue() > maxValue) {
+                            maxValue = lineData.getValue();
+                        }
+                    }
 				}
 			}
 		}
@@ -160,13 +163,12 @@ public class MASlipStickChart extends SlipStickChart {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
+	}
 
-		// draw lines
-		if (null != this.linesData) {
-			if (0 != this.linesData.size()) {
-				drawLines(canvas);
-			}
-		}
+	@Override
+	public void drawData(Canvas canvas){
+		super.drawData(canvas);
+		drawLines(canvas);
 	}
 
 	/**
@@ -183,14 +185,14 @@ public class MASlipStickChart extends SlipStickChart {
 	 * @param canvas
 	 */
 	protected void drawLines(Canvas canvas) {
-		if (null == stickData) {
+		if (null == linesData) {
 			return;
 		}
-		if (stickData.size() <= 0) {
+		if (linesData.size() <= 0) {
 			return;
 		}
 		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / getDisplayNumber() - stickSpacing;
 		// start point‘s X
 		float startX;
 
@@ -219,18 +221,21 @@ public class MASlipStickChart extends SlipStickChart {
 			for (int j = super.getDisplayFrom(); j < super.getDisplayFrom()
 					+ super.getDisplayNumber(); j++) {
 				float value = lineData.get(j).getValue();
-				// calculate Y
-				float valueY = (float) ((1f - (value - minValue)
-						/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
-						+ dataQuadrant.getPaddingStartY();
+                if(isNoneDisplayValue(value)){
+                }else{
+                    // calculate Y
+                    float valueY = (float) ((1f - (value - minValue)
+                            / (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+                            + dataQuadrant.getPaddingStartY();
 
-				// if is not last point connect to previous point
-				if (j > super.getDisplayFrom()) {
-					canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
-							mPaint);
-				}
-				// reset
-				ptFirst = new PointF(startX, valueY);
+                    // if is not last point connect to previous point
+                    if (j > super.getDisplayFrom() && ptFirst != null) {
+                        canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+                                mPaint);
+                    }
+                    // reset
+                    ptFirst = new PointF(startX, valueY);
+                }
 				startX = startX + stickSpacing + lineLength;
 			}
 		}

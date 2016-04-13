@@ -74,6 +74,6 @@ public interface ICrossLines {
 	public static final boolean DEFAULT_DISPLAY_CROSS_Y_ON_TOUCH = false;
 	
 	
-	public static final int DEFAULT_BIND_CROSS_LINES_TO_STICK = BIND_TO_TYPE_BOTH;
+	public static final int DEFAULT_BIND_CROSS_LINES_TO_STICK = BIND_TO_TYPE_HIRIZIONAL;
 	
 }

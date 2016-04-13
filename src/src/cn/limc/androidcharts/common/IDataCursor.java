@@ -33,16 +33,27 @@ package cn.limc.androidcharts.common;
  *  
  */
 public interface IDataCursor {
-	
-	static final int MINI_DISPLAY_NUM = 10;
-	
-	 int getDisplayFrom();
-	 int getDisplayNumber();
-	 int getDisplayTo();
-	 int getMinDisplayNumber();
-	
-	 void setDisplayFrom(int displayFrom);
-	 void setDisplayNumber(int displayNumber);
+
+	static final int MIN_DISPLAY_NUM = 20;
+	static final int MAX_DISPLAY_NUM = 20;
+
+	int getDisplayFrom();
+	int getDisplayNumber();
+	int getDisplayTo();
+	int getMinDisplayNumber();
+	int getMaxDisplayNumber();
+
+	int getDataDisplayNumber();
+
+	void setDisplayFrom(int displayFrom);
+	void setDisplayNumber(int displayNumber);
 	 //void setDisplayTo(int displayTo);
-	 void setMinDisplayNumber(int minDisplayNumber);
+
+	void setMinDisplayNumber(int minDisplayNumber);
+	void setMaxDisplayNumber(int maxDisplayNumber);
+
+	boolean forward(int step);
+	boolean backward(int step);
+	boolean stretch(int step);
+	boolean shrink(int step);
 }

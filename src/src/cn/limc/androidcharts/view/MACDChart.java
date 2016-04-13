@@ -52,15 +52,19 @@ public class MACDChart extends SlipStickChart {
 	public static final int MACD_DISPLAY_TYPE_LINE = 1 << 1;
 	public static final int MACD_DISPLAY_TYPE_LINE_STICK = 1 << 2;
 
-	public static final int DEFAULT_POSITIVE_STICK_COLOR = Color.RED;
-	public static final int DEFAULT_NEGATIVE_STICK_COLOR = Color.BLUE;
+	public static final int DEFAULT_POSITIVE_STICK_FILL_COLOR = Color.TRANSPARENT;
+	public static final int DEFAULT_NEGATIVE_STICK_FILL_COLOR = Color.GREEN;
+	public static final int DEFAULT_POSITIVE_STICK_STROKE_COLOR = Color.RED;
+	public static final int DEFAULT_NEGATIVE_STICK_STROKE_COLOR = Color.GREEN;
 	public static final int DEFAULT_MACD_LINE_COLOR = Color.RED;
 	public static final int DEFAULT_DIFF_LINE_COLOR = Color.WHITE;
 	public static final int DEFAULT_DEA_LINE_COLOR = Color.YELLOW;
 	public static final int DEFAULT_MACD_DISPLAY_TYPE = MACD_DISPLAY_TYPE_LINE_STICK;
 
-	private int positiveStickColor = DEFAULT_POSITIVE_STICK_COLOR;
-	private int negativeStickColor = DEFAULT_NEGATIVE_STICK_COLOR;
+	private int positiveStickFillColor = DEFAULT_POSITIVE_STICK_FILL_COLOR;
+	private int negativeStickFillColor = DEFAULT_NEGATIVE_STICK_FILL_COLOR;
+	private int positiveStickStrokeColor = DEFAULT_POSITIVE_STICK_STROKE_COLOR;
+	private int negativeStickStrokeColor = DEFAULT_NEGATIVE_STICK_STROKE_COLOR;
 	private int macdLineColor = DEFAULT_MACD_LINE_COLOR;
 	private int diffLineColor = DEFAULT_DIFF_LINE_COLOR;
 	private int deaLineColor = DEFAULT_DEA_LINE_COLOR;
@@ -132,23 +136,37 @@ public class MACDChart extends SlipStickChart {
 		double maxValue = Double.MIN_VALUE;
 		double minValue = Double.MAX_VALUE;
 
-		IMeasurable first = stickData.get(displayFrom);
-		maxValue = Math.max(first.getHigh(), maxValue);
-		minValue = Math.min(first.getLow(), minValue);
 		// 判断显示为方柱或显示为线条
-		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
-			IMeasurable macd = stickData.get(i);
-			maxValue = Math.max(macd.getHigh(), maxValue);
-			minValue = Math.min(macd.getLow(), minValue);
+		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
+			MACDEntity macd = (MACDEntity)stickData.get(i);
+			if (isNoneDisplayValue((float)macd.getDea()) && isNoneDisplayValue((float)macd.getDiff())){
+
+			}else {
+				maxValue = Math.max(macd.getHigh(), maxValue);
+				minValue = Math.min(macd.getLow(), minValue);
+			}
 		}
-		this.maxValue = maxValue;
-		this.minValue = minValue;
+
+		if (maxValue < minValue ){
+			maxValue = 0;
+			minValue = 0;
+		}
+		// auto balance
+		this.maxValue = Math.max(Math.abs(maxValue),Math.abs(minValue));
+		this.minValue = -Math.max(Math.abs(maxValue),Math.abs(minValue));
 	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 
+
+	}
+
+	@Override
+	public void drawData(Canvas canvas){
+//		super.drawData(canvas);
+		drawSticks(canvas);
 		// 在K线图上增加均线
 		drawLinesData(canvas);
 	}
@@ -168,56 +186,64 @@ public class MACDChart extends SlipStickChart {
 			return;
 		}
 
-		Paint mPaintStick = new Paint();
-		mPaintStick.setAntiAlias(true);
+		Paint mPaintStickFill = new Paint();
+		mPaintStickFill.setAntiAlias(true);
+		mPaintStickFill.setStyle(Paint.Style.FILL);
 
-		float stickWidth = dataQuadrant.getPaddingWidth() / displayNumber
+		Paint mPaintStickStroke = new Paint();
+		mPaintStickStroke.setAntiAlias(true);
+		mPaintStickStroke.setStrokeWidth(0.5f);
+		mPaintStickStroke.setStyle(Paint.Style.STROKE);
+
+
+		float stickWidth = dataQuadrant.getPaddingWidth() / getDisplayNumber()
 				- stickSpacing;
 		float stickX = dataQuadrant.getPaddingStartX();
 
 		// 判断显示为方柱或显示为线条
-		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
 			MACDEntity stick = (MACDEntity) stickData.get(i);
-
 			float highY;
 			float lowY;
-			if (stick.getMacd() == 0) {
-				// 没有值的情况下不绘制
-				continue;
-			}
-			// 柱状线颜色设定
-			if (stick.getMacd() > 0) {
-				mPaintStick.setColor(positiveStickColor);
-				highY = (float) ((1 - (stick.getMacd() - minValue)
-						/ (maxValue - minValue))
-						* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
-				lowY = (float) ((1 - (0 - minValue) / (maxValue - minValue))
-						* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
+			if (stick.getMacd() == 0 && isNoneDisplayValue((float)stick.getDea()) && isNoneDisplayValue((float)stick.getDiff())) {
+			}else {
+				// 柱状线颜色设定
+				if (stick.getMacd() > 0) {
+					mPaintStickFill.setColor(positiveStickFillColor);
+					mPaintStickStroke.setColor(positiveStickStrokeColor);
+					highY = (float) ((1 - (stick.getMacd() - minValue)
+							/ (maxValue - minValue))
+							* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
+					lowY = (float) ((1 - (0 - minValue) / (maxValue - minValue))
+							* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
 
-			} else {
-				mPaintStick.setColor(negativeStickColor);
-				highY = (float) ((1 - (0 - minValue) / (maxValue - minValue))
-						* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
-
-				lowY = (float) ((1 - (stick.getMacd() - minValue)
-						/ (maxValue - minValue))
-						* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
-
-			}
-
-			if (macdDisplayType == MACD_DISPLAY_TYPE_STICK) {
-				// 绘制数据，根据宽度判断绘制直线或方柱
-				if (stickWidth >= 2) {
-					canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
-							mPaintStick);
 				} else {
-					canvas.drawLine(stickX, highY, stickX, lowY, mPaintStick);
-				}
-			} else if (macdDisplayType == MACD_DISPLAY_TYPE_LINE_STICK) {
-				canvas.drawLine(stickX + stickWidth / 2, highY, stickX
-						+ stickWidth / 2, lowY, mPaintStick);
-			}
+					mPaintStickFill.setColor(negativeStickFillColor);
+					mPaintStickFill.setColor(negativeStickStrokeColor);
+					highY = (float) ((1 - (0 - minValue) / (maxValue - minValue))
+							* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
 
+					lowY = (float) ((1 - (stick.getMacd() - minValue)
+							/ (maxValue - minValue))
+							* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
+
+				}
+
+				if (macdDisplayType == MACD_DISPLAY_TYPE_STICK) {
+					// 绘制数据，根据宽度判断绘制直线或方柱
+					if (stickWidth >= 2) {
+						canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
+								mPaintStickStroke);
+						canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
+								mPaintStickFill);
+					} else {
+						canvas.drawLine(stickX, highY, stickX, lowY, mPaintStickStroke);
+					}
+				} else if (macdDisplayType == MACD_DISPLAY_TYPE_LINE_STICK) {
+					canvas.drawLine(stickX + stickWidth / 2, highY, stickX
+							+ stickWidth / 2, lowY, mPaintStickStroke);
+				}
+			}
 			// X位移
 			stickX = stickX + stickSpacing + stickWidth;
 		}
@@ -233,25 +259,28 @@ public class MACDChart extends SlipStickChart {
 		mPaintStick.setColor(diffLineColor);
 
 		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / getDisplayNumber() - stickSpacing;
 		// start point‘s X
 		float startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 		// start point
 		PointF ptFirst = null;
-		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
 			MACDEntity entity = (MACDEntity) stickData.get(i);
-			// calculate Y
-			float valueY = (float) ((1f - (entity.getDiff() - minValue)
-					/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
-					+ dataQuadrant.getPaddingStartY();
+			if (isNoneDisplayValue((float)entity.getDiff())){
+			}else {
+				// calculate Y
+				float valueY = (float) ((1f - (entity.getDiff() - minValue)
+						/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+						+ dataQuadrant.getPaddingStartY();
 
-			// if is not last point connect to previous point
-			if (i > displayFrom) {
-				canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
-						mPaintStick);
+				// if is not last point connect to previous point
+				if (i > getDisplayFrom() && ptFirst != null) {
+					canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+							mPaintStick);
+				}
+				// reset
+				ptFirst = new PointF(startX, valueY);
 			}
-			// reset
-			ptFirst = new PointF(startX, valueY);
 			startX = startX + stickSpacing + lineLength;
 		}
 	}
@@ -262,25 +291,29 @@ public class MACDChart extends SlipStickChart {
 		mPaintStick.setAntiAlias(true);
 		mPaintStick.setColor(deaLineColor);
 		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / getDisplayNumber() - stickSpacing;
 		// set start point’s X
 		float startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 		// start point
 		PointF ptFirst = null;
-		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
 			MACDEntity entity = (MACDEntity) stickData.get(i);
-			// calculate Y
-			float valueY = (float) ((1f - (entity.getDea() - minValue)
-					/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
-					+ dataQuadrant.getPaddingStartY();
+			if (isNoneDisplayValue((float)entity.getDea())){
 
-			// if is not last point connect to previous point
-			if (i > displayFrom) {
-				canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
-						mPaintStick);
+			}else {
+				// calculate Y
+				float valueY = (float) ((1f - (entity.getDea() - minValue)
+						/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+						+ dataQuadrant.getPaddingStartY();
+
+				// if is not last point connect to previous point
+				if (i > getDisplayFrom() && ptFirst != null) {
+					canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+							mPaintStick);
+				}
+				// reset
+				ptFirst = new PointF(startX, valueY);
 			}
-			// reset
-			ptFirst = new PointF(startX, valueY);
 			startX = startX + stickSpacing + lineLength;
 		}
 	}
@@ -291,25 +324,28 @@ public class MACDChart extends SlipStickChart {
 		mPaintStick.setColor(macdLineColor);
 
 		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / getDisplayNumber() - stickSpacing;
 		// set start point’s X
 		float startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 		// start point
 		PointF ptFirst = null;
-		for (int i = displayFrom; i < displayFrom + displayNumber; i++) {
+		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
 			MACDEntity entity = (MACDEntity) stickData.get(i);
-			// calculate Y
-			float valueY = (float) ((1f - (entity.getMacd() - minValue)
-					/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
-					+ dataQuadrant.getPaddingStartY();
+			if (isNoneDisplayValue((float)entity.getMacd())){
+			}else{
+				// calculate Y
+				float valueY = (float) ((1f - (entity.getMacd() - minValue)
+						/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+						+ dataQuadrant.getPaddingStartY();
 
-			// if is not last point connect to previous point
-			if (i > displayFrom) {
-				canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
-						mPaintStick);
+				// if is not last point connect to previous point
+				if (i > getDisplayFrom() && ptFirst != null) {
+					canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+							mPaintStick);
+				}
+				// reset
+				ptFirst = new PointF(startX, valueY);
 			}
-			// reset
-			ptFirst = new PointF(startX, valueY);
 			startX = startX + stickSpacing + lineLength;
 		}
 	}
@@ -327,34 +363,36 @@ public class MACDChart extends SlipStickChart {
 		drawDiffLine(canvas);
 	}
 
-	/**
-	 * @return the positiveStickColor
-	 */
-	public int getPositiveStickColor() {
-		return positiveStickColor;
+	public int getPositiveStickFillColor() {
+		return positiveStickFillColor;
 	}
 
-	/**
-	 * @param positiveStickColor
-	 *            the positiveStickColor to set
-	 */
-	public void setPositiveStickColor(int positiveStickColor) {
-		this.positiveStickColor = positiveStickColor;
+	public void setPositiveStickFillColor(int positiveStickFillColor) {
+		this.positiveStickFillColor = positiveStickFillColor;
 	}
 
-	/**
-	 * @return the negativeStickColor
-	 */
-	public int getNegativeStickColor() {
-		return negativeStickColor;
+	public int getNegativeStickFillColor() {
+		return negativeStickFillColor;
 	}
 
-	/**
-	 * @param negativeStickColor
-	 *            the negativeStickColor to set
-	 */
-	public void setNegativeStickColor(int negativeStickColor) {
-		this.negativeStickColor = negativeStickColor;
+	public void setNegativeStickFillColor(int negativeStickFillColor) {
+		this.negativeStickFillColor = negativeStickFillColor;
+	}
+
+	public int getPositiveStickStrokeColor() {
+		return positiveStickStrokeColor;
+	}
+
+	public void setPositiveStickStrokeColor(int positiveStickStrokeColor) {
+		this.positiveStickStrokeColor = positiveStickStrokeColor;
+	}
+
+	public int getNegativeStickStrokeColor() {
+		return negativeStickStrokeColor;
+	}
+
+	public void setNegativeStickStrokeColor(int negativeStickStrokeColor) {
+		this.negativeStickStrokeColor = negativeStickStrokeColor;
 	}
 
 	/**

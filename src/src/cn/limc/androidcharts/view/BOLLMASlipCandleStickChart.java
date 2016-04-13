@@ -51,6 +51,7 @@ import android.util.AttributeSet;
 public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 
 	private List<LineEntity<DateValueEntity>> bandData;
+	private boolean displayBollBand = false;
 
 	/**
 	 * <p>
@@ -119,18 +120,20 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 		// 逐条输出MA线
 		for (int i = 0; i < this.bandData.size(); i++) {
 			LineEntity<DateValueEntity> line = this.bandData.get(i);
-			if (line != null && line.getLineData().size() > 0) {
+			if (line != null && line.getLineData() != null &&line.getLineData().size() > 0) {
 				// 判断显示为方柱或显示为线条
-				for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+				for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
 					DateValueEntity lineData = line.getLineData().get(j);
-					if (lineData.getValue() < minValue) {
-						minValue = lineData.getValue();
-					}
+					if(isNoneDisplayValue(lineData.getValue())) {
+					}else {
+						if (lineData.getValue() < minValue) {
+							minValue = lineData.getValue();
+						}
 
-					if (lineData.getValue() > maxValue) {
-						maxValue = lineData.getValue();
+						if (lineData.getValue() > maxValue) {
+							maxValue = lineData.getValue();
+						}
 					}
-
 				}
 			}
 		}
@@ -151,13 +154,20 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		// draw lines
-		if (null != bandData && bandData.size() >= 2) {
-			drawAreas(canvas);
-			drawBandBorder(canvas);
-		}
 	}
 
+	@Override
+	public void drawData(Canvas canvas){
+		super.drawData(canvas);
+		if (getDisplayNumber() > displayStickAsLineNumber){
+
+		}else{
+			if (displayBollBand) {
+				drawAreas(canvas);
+				drawBandBorder(canvas);
+			}
+		}
+	}
 	/**
 	 * <p>
 	 * draw lines
@@ -173,6 +183,9 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 	 */
 	protected void drawAreas(Canvas canvas) {
 		if (null == bandData) {
+			return;
+		}
+		if(bandData.size() < 2){
 			return;
 		}
 		// distance between two points
@@ -202,41 +215,46 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 		mPaint.setAntiAlias(true);
 		// set start point’s X
 		if (gridAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
-            lineLength= (dataQuadrant.getPaddingWidth() / displayNumber) - stickSpacing;
+            lineLength= (dataQuadrant.getPaddingWidth() / getDataDisplayNumber()) - stickSpacing;
             startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
         }else {
-            lineLength= (dataQuadrant.getPaddingWidth() / (displayNumber - 1)) - stickSpacing;
+            lineLength= (dataQuadrant.getPaddingWidth() / (getDataDisplayNumber() - 1)) - stickSpacing;
             startX = dataQuadrant.getPaddingStartX();
         }
 		Path areaPath = new Path();
-		for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+		PointF ptFirst = null;
+		for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
 			float value1 = line1Data.get(j).getValue();
 			float value2 = line2Data.get(j).getValue();
+			if (isNoneDisplayValue(value1) && isNoneDisplayValue(value2)){
+			}else{
+				// calculate Y
+				float valueY1 = (float) ((1f - (value1 - minValue)
+						/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+						+ dataQuadrant.getPaddingStartY();
+				float valueY2 = (float) ((1f - (value2 - minValue)
+						/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+						+ dataQuadrant.getPaddingStartY();
 
-			// calculate Y
-			float valueY1 = (float) ((1f - (value1 - minValue)
-					/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
-					+ dataQuadrant.getPaddingStartY();
-			float valueY2 = (float) ((1f - (value2 - minValue)
-					/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
-					+ dataQuadrant.getPaddingStartY();
+				// 绘制线条路径
+				if (j > getDisplayFrom() && ptFirst != null) {
+					areaPath.lineTo(startX, valueY1);
+					areaPath.lineTo(startX, valueY2);
+					areaPath.lineTo(ptFirst.x, ptFirst.y);
 
-			// 绘制线条路径
-			if (j == displayFrom) {
-				areaPath.moveTo(startX, valueY1);
-				areaPath.lineTo(startX, valueY2);
-				areaPath.moveTo(startX, valueY1);
-			} else {
-				areaPath.lineTo(startX, valueY1);
-				areaPath.lineTo(startX, valueY2);
-				areaPath.lineTo(lastX, lastY);
+					areaPath.close();
+					areaPath.moveTo(startX, valueY1);
+				} else {
+					areaPath.moveTo(startX, valueY1);
+					areaPath.lineTo(startX, valueY2);
+					areaPath.moveTo(startX, valueY1);
+				}
 
-				areaPath.close();
-				areaPath.moveTo(startX, valueY1);
+//				lastX = startX;
+//				lastY = valueY2;
+
+				ptFirst = new PointF(startX, valueY2);
 			}
-
-			lastX = startX;
-			lastY = valueY2;
 			startX = startX + stickSpacing + lineLength;
 		}
 		areaPath.close();
@@ -258,15 +276,16 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 	 */
 	protected void drawBandBorder(Canvas canvas) {
 
-		if (null == this.bandData) {
+		if (null == bandData) {
 			return;
 		}
 
-		if (bandData.size() <= 0) {
+		if(bandData.size() < 2){
 			return;
 		}
+
 		// distance between two points
-		float lineLength = dataQuadrant.getPaddingWidth() / displayNumber - stickSpacing;
+		float lineLength = dataQuadrant.getPaddingWidth() / getDataDisplayNumber() - stickSpacing;
 		// start point‘s X
 		float startX;
 
@@ -291,20 +310,22 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 			startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
 			// start point
 			PointF ptFirst = null;
-			for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+			for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
 				float value = lineData.get(j).getValue();
-				// calculate Y
-				float valueY = (float) ((1f - (value - minValue)
-						/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
-						+ dataQuadrant.getPaddingStartY();
-
-				// if is not last point connect to previous point
-				if (j > displayFrom) {
-					canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
-							mPaint);
+				if (isNoneDisplayValue(value)) {
+				}else{
+					// calculate Y
+					float valueY = (float) ((1f - (value - minValue)
+							/ (maxValue - minValue)) * dataQuadrant.getPaddingHeight())
+							+ dataQuadrant.getPaddingStartY();
+					// if is not last point connect to previous point
+					if (j > getDisplayFrom() && ptFirst != null) {
+						canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY,
+								mPaint);
+					}
+					// reset
+					ptFirst = new PointF(startX, valueY);
 				}
-				// reset
-				ptFirst = new PointF(startX, valueY);
 				startX = startX + stickSpacing + lineLength;
 			}
 		}
@@ -325,4 +346,11 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 		this.bandData = bandData;
 	}
 
+	public boolean isDisplayBollBand() {
+		return displayBollBand;
+	}
+
+	public void setDisplayBollBand(boolean displayBollBand) {
+		this.displayBollBand = displayBollBand;
+	}
 }

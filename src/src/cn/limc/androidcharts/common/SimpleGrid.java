@@ -60,7 +60,7 @@ public class SimpleGrid implements IFlexableGrid {
      * 网格经线的显示颜色
      * </p>
      */
-    private int longitudeColor = DEFAULT_LONGITUDE_COLOR;
+    protected int longitudeColor = DEFAULT_LONGITUDE_COLOR;
 
     /**
      * <p>
@@ -73,7 +73,7 @@ public class SimpleGrid implements IFlexableGrid {
      * 网格纬线的显示颜色
      * </p>
      */
-    private int latitudeColor = DEFAULT_LAITUDE_COLOR;
+    protected int latitudeColor = DEFAULT_LAITUDE_COLOR;
     
     
     /**
@@ -87,9 +87,9 @@ public class SimpleGrid implements IFlexableGrid {
      * X轴上的标题是否显示
      * </p>
      */
-    private boolean displayLongitudeTitle = DEFAULT_DISPLAY_LONGITUDE_TITLE;
-    
-    private float longitudeWidth = DEFAULT_LONGITUDE_WIDTH;
+    protected boolean displayLongitudeTitle = DEFAULT_DISPLAY_LONGITUDE_TITLE;
+
+    protected float longitudeWidth = DEFAULT_LONGITUDE_WIDTH;
     
     
     /**
@@ -103,9 +103,9 @@ public class SimpleGrid implements IFlexableGrid {
      * Y轴上的标题是否显示
      * </p>
      */
-    private boolean displayLatitudeTitle = DEFAULT_DISPLAY_LATITUDE_TITLE;
-    
-    private float latitudeWidth = DEFAULT_LATITUDE_WIDTH;
+    protected boolean displayLatitudeTitle = DEFAULT_DISPLAY_LATITUDE_TITLE;
+
+    protected float latitudeWidth = DEFAULT_LATITUDE_WIDTH;
     
     
 
@@ -146,7 +146,7 @@ public class SimpleGrid implements IFlexableGrid {
      * 经线是否显示
      * </p>
      */
-    private boolean displayLongitude = DEFAULT_DISPLAY_LONGITUDE;
+    protected boolean displayLongitude = DEFAULT_DISPLAY_LONGITUDE;
 
     /**
      * <p>
@@ -159,7 +159,7 @@ public class SimpleGrid implements IFlexableGrid {
      * 经线是否显示为虚线
      * </p>
      */
-    private boolean dashLongitude = DEFAULT_DASH_LONGITUDE;
+    protected boolean dashLongitude = DEFAULT_DASH_LONGITUDE;
 
     /**
      * <p>
@@ -172,7 +172,7 @@ public class SimpleGrid implements IFlexableGrid {
      * 纬线是否显示
      * </p>
      */
-    private boolean displayLatitude = DEFAULT_DISPLAY_LATITUDE;
+    protected boolean displayLatitude = DEFAULT_DISPLAY_LATITUDE;
 
     /**
      * <p>
@@ -185,7 +185,7 @@ public class SimpleGrid implements IFlexableGrid {
      * 纬线是否显示为虚线
      * </p>
      */
-    private boolean dashLatitude = DEFAULT_DASH_LATITUDE;
+    protected boolean dashLatitude = DEFAULT_DASH_LATITUDE;
 
     /**
      * <p>
@@ -198,7 +198,7 @@ public class SimpleGrid implements IFlexableGrid {
      * 虚线效果
      * </p>
      */
-    private PathEffect dashEffect = DEFAULT_DASH_EFFECT;
+    protected PathEffect dashEffect = DEFAULT_DASH_EFFECT;
 
     /**
      * <p>
@@ -211,7 +211,7 @@ public class SimpleGrid implements IFlexableGrid {
      * 经线刻度字体颜色
      * </p>
      */
-    private int longitudeFontColor = DEFAULT_LONGITUDE_FONT_COLOR;
+    protected int longitudeFontColor = DEFAULT_LONGITUDE_FONT_COLOR;
 
     /**
      * <p>
@@ -224,7 +224,7 @@ public class SimpleGrid implements IFlexableGrid {
      * 经线刻度字体大小
      * </p>
      */
-    private int longitudeFontSize = DEFAULT_LONGITUDE_FONT_SIZE;
+    protected int longitudeFontSize = DEFAULT_LONGITUDE_FONT_SIZE;
 
     /**
      * <p>
@@ -237,7 +237,7 @@ public class SimpleGrid implements IFlexableGrid {
      * 纬线刻度字体颜色
      * </p>
      */
-    private int latitudeFontColor = DEFAULT_LATITUDE_FONT_COLOR;
+    protected int latitudeFontColor = DEFAULT_LATITUDE_FONT_COLOR;
 
     /**
      * <p>
@@ -250,7 +250,7 @@ public class SimpleGrid implements IFlexableGrid {
      * 纬线刻度字体大小
      * </p>
      */
-    private int latitudeFontSize = DEFAULT_LATITUDE_FONT_SIZE;
+    protected int latitudeFontSize = DEFAULT_LATITUDE_FONT_SIZE;
     
     
     /**
@@ -300,14 +300,22 @@ public class SimpleGrid implements IFlexableGrid {
         this.inChart = inChart;
     }
     
-    public void draw(Canvas canvas){
-        if (displayLongitude || displayLongitudeTitle) {
+    public void drawGrid(Canvas canvas){
+        if (displayLongitude) {
             drawLongitudeLine(canvas);
+        }
+
+        if (displayLatitude) {
+            drawLatitudeLine(canvas);
+        }
+    }
+
+    public void drawTitles(Canvas canvas){
+        if (displayLongitudeTitle) {
             drawLongitudeTitle(canvas);
         }
-        
-        if (displayLatitude || displayLatitudeTitle) {
-            drawLatitudeLine(canvas);
+
+        if (displayLatitudeTitle) {
             drawLatitudeTitle(canvas);
         }
     }

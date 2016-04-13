@@ -119,6 +119,11 @@ public class SlipBandAreaChart extends SlipLineChart {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
+	}
+
+	@Override
+	public void drawData(Canvas canvas){
+		super.drawData(canvas);
 		// draw lines
 		drawAreas(canvas);
 	}
@@ -169,10 +174,10 @@ public class SlipBandAreaChart extends SlipLineChart {
 		float startX;
 		
 		if (lineAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
-            lineLength= (dataQuadrant.getPaddingWidth() / displayNumber);
+            lineLength= (dataQuadrant.getPaddingWidth() / getDisplayNumber());
             startX = dataQuadrant.getPaddingStartX() + lineLength / 2;
         }else {
-            lineLength= (dataQuadrant.getPaddingWidth() / (displayNumber - 1));
+            lineLength= (dataQuadrant.getPaddingWidth() / (getDisplayNumber() - 1));
             startX = dataQuadrant.getPaddingStartX();
         }
 		
@@ -181,7 +186,7 @@ public class SlipBandAreaChart extends SlipLineChart {
 
 		Path areaPath = new Path();
 
-		for (int j = displayFrom; j < displayFrom + displayNumber; j++) {
+		for (int j = getDisplayFrom(); j < getDisplayTo(); j++) {
 			float value1 = line1Data.get(j).getValue();
 			float value2 = line2Data.get(j).getValue();
 
@@ -194,7 +199,7 @@ public class SlipBandAreaChart extends SlipLineChart {
 					+ dataQuadrant.getPaddingStartY();
 
 			// 绘制线条路径
-			if (j == displayFrom) {
+			if (j == getDisplayFrom()) {
 				areaPath.moveTo(startX, valueY1);
 				areaPath.lineTo(startX, valueY2);
 				areaPath.moveTo(startX, valueY1);
