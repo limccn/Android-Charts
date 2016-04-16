@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.diagram.RadarChart;
-import cn.limc.androidcharts.series.*;
+import cn.limc.androidcharts.view.RadarChart;
+import cn.limc.androidcharts.entity.*;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;

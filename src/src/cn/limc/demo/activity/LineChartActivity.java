@@ -21,61 +21,89 @@
 
 package cn.limc.demo.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.diagram.GridChart;
-import cn.limc.androidcharts.series.ChartDataSet;
-import cn.limc.androidcharts.series.LineEntity;
+import cn.limc.androidcharts.axis.Axis;
+import cn.limc.androidcharts.entity.DateValueEntity;
+import cn.limc.androidcharts.entity.LineEntity;
+import cn.limc.androidcharts.view.LineChart;
 import cn.limc.demo.common.BaseActivity;
-import cn.limc.demo.controller.LineChartController;
 import android.os.Bundle;
 import android.graphics.Color;
 import android.view.Menu;
 
 public class LineChartActivity extends BaseActivity {
 
-    GridChart linechart;
-    
-    LineChartController lineChartController;
-    ChartDataSet lineData;
+    LineChart linechart;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_slip_line_chart);
-        initData();
+        setContentView(R.layout.activity_line_chart);
         initLineChart();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.slip_line_chart, menu);
+        getMenuInflater().inflate(R.menu.line_chart, menu);
         return true;
     }
 
-    private void initData(){
-        
-        lineData = new ChartDataSet();
+    private void initLineChart() {
+        this.linechart = (LineChart) findViewById(R.id.linechart);
+        List<LineEntity<DateValueEntity>> lines = new ArrayList<LineEntity<DateValueEntity>>();
 
         // 计算5日均线
-        LineEntity ma5 = new LineEntity();
-        ma5.setTitle("HIGH");
-        ma5.setLineColor(Color.WHITE);
-        ma5.setTableData(dv1);
-        lineData.add(ma5);
+        LineEntity<DateValueEntity> MA5 = new LineEntity<DateValueEntity>();
+        MA5.setTitle("MA5");
+        MA5.setLineColor(Color.WHITE);
+        MA5.setLineData(initMA(5));
+        lines.add(MA5);
 
         // 计算10日均线
-        LineEntity ma10 = new LineEntity();
-        ma10.setTitle("LOW");
-        ma10.setLineColor(Color.RED);
-        ma10.setTableData(dv2);
-        lineData.add(ma10);
-    }
-    
-    private void initLineChart(){
-        this.linechart = (GridChart) findViewById(R.id.sliplinechart);
-        lineChartController = new LineChartController();
-        lineChartController.setLineData(lineData);
-        lineChartController.applyController(linechart);
+        LineEntity<DateValueEntity> MA10 = new LineEntity<DateValueEntity>();
+        MA10.setTitle("MA10");
+        MA10.setLineColor(Color.RED);
+        MA10.setLineData(initMA(10));
+        lines.add(MA10);
+
+        // 计算25日均线
+        LineEntity<DateValueEntity> MA25 = new LineEntity<DateValueEntity>();
+        MA25.setTitle("MA25");
+        MA25.setLineColor(Color.GREEN);
+        MA25.setLineData(initMA(25));
+        lines.add(MA25);
+
+        linechart.setAxisXColor(Color.LTGRAY);
+        linechart.setAxisYColor(Color.LTGRAY);
+        linechart.setBorderColor(Color.LTGRAY);
+        linechart.setLongitudeFontSize(14);
+        linechart.setLongitudeFontColor(Color.WHITE);
+        linechart.setLatitudeColor(Color.GRAY);
+        linechart.setLatitudeFontColor(Color.WHITE);
+        linechart.setLongitudeColor(Color.GRAY);
+        linechart.setMaxValue(280);
+        linechart.setMinValue(240);
+        linechart.setMaxPointNum(36);
+        linechart.setDisplayLongitudeTitle(true);
+        linechart.setDisplayLatitudeTitle(true);
+        linechart.setDisplayLatitude(true);
+        linechart.setDisplayLongitude(true);
+        linechart.setLatitudeNum(5);
+        linechart.setLongitudeNum(6);
+        linechart.setDataQuadrantPaddingTop(5);
+        linechart.setDataQuadrantPaddingBottom(5);
+        linechart.setDataQuadrantPaddingLeft(5);
+        linechart.setDataQuadrantPaddingRight(5);
+        // linechart.setAxisYTitleQuadrantWidth(50);
+        // linechart.setAxisXTitleQuadrantHeight(20);
+        linechart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
+        linechart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+
+        // 为chart1增加均线
+        linechart.setLinesData(lines);
     }
 }

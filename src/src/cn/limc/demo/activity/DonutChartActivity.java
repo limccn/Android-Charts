@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.diagram.DonutChart;
-import cn.limc.androidcharts.series.TitleValueColorEntity;
+import cn.limc.androidcharts.entity.TitleValueColorEntity;
+import cn.limc.androidcharts.view.DonutChart;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;

@@ -22,43 +22,77 @@
 package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.diagram.GridChart;
-import cn.limc.androidcharts.series.ChartDataSet;
-import cn.limc.androidcharts.series.ChartDataTable;
+import cn.limc.androidcharts.axis.Axis;
+import cn.limc.androidcharts.entity.IStickEntity;
+import cn.limc.androidcharts.entity.ListChartData;
+import cn.limc.androidcharts.view.StickChart;
 import cn.limc.demo.common.BaseActivity;
-import cn.limc.demo.controller.StickChartController;
 import android.os.Bundle;
+import android.graphics.Color;
 import android.view.Menu;
 
 public class StickChartActivity extends BaseActivity {
 
-    GridChart stickchart;
-    StickChartController stickChartController;
-    ChartDataSet stickData;
+    StickChart stickchart;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_slip_stick_chart);
-        initDatas();
+        setContentView(R.layout.activity_stick_chart);
+
         initStickChart();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.slip_stick_chart, menu);
+        getMenuInflater().inflate(R.menu.stick_chart, menu);
         return true;
-    }
-    
-    private void initDatas(){
-        stickData = new ChartDataSet(new ChartDataTable(vol));
     }
 
     private void initStickChart() {
-        this.stickchart = (GridChart) findViewById(R.id.slipstickchart);
-        stickChartController = new StickChartController();
-        stickChartController.setStickData(stickData);
-        stickChartController.applyController(stickchart);
+        this.stickchart = (StickChart) findViewById(R.id.stickchart);
+
+        stickchart.setAxisXColor(Color.LTGRAY);
+        stickchart.setAxisYColor(Color.LTGRAY);
+        stickchart.setLatitudeColor(Color.GRAY);
+        stickchart.setLongitudeColor(Color.GRAY);
+        stickchart.setBorderColor(Color.LTGRAY);
+        stickchart.setLongitudeFontColor(Color.WHITE);
+        stickchart.setLatitudeFontColor(Color.WHITE);
+        stickchart.setDataQuadrantPaddingTop(6);
+        stickchart.setDataQuadrantPaddingBottom(1);
+        stickchart.setDataQuadrantPaddingLeft(1);
+        stickchart.setDataQuadrantPaddingRight(1);
+        // stickchart.setAxisYTitleQuadrantWidth(50);
+        // stickchart.setAxisXTitleQuadrantHeight(20);
+        stickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
+        stickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+
+        // 最大显示足数
+        // stickchart.setMaxSticksNum(52);
+        // 最大纬线数
+        // stickchart.setLatitudeNum(2);
+        // 最大经线数
+        // stickchart.setLongitudeNum(3);
+        // 最大价格
+        stickchart.setMaxValue(10000);
+        // 最小价格
+        stickchart.setMinValue(100);
+
+        stickchart.setDisplayLongitudeTitle(true);
+        stickchart.setDisplayLatitudeTitle(true);
+        stickchart.setDisplayLatitude(true);
+        stickchart.setDisplayLongitude(true);
+        stickchart.setBackgroundColor(Color.BLACK);
+
+        stickchart.setDataMultiple(100);
+        stickchart.setAxisYDecimalFormat("#,##0.00");
+        stickchart.setAxisXDateTargetFormat("yyyy/MM/dd");
+        stickchart.setAxisXDateSourceFormat("yyyyMMdd");
+
+        // 为chart1增加均线
+        stickchart.setStickData(new ListChartData<IStickEntity>(vol));
     }
+
 }

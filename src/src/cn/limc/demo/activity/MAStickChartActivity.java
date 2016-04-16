@@ -18,80 +18,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package cn.limc.demo.activity;
 
-
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.diagram.GridChart;
-import cn.limc.androidcharts.series.ChartDataSet;
-import cn.limc.androidcharts.series.ChartDataTable;
-import cn.limc.androidcharts.series.LineEntity;
-import cn.limc.demo.common.BaseActivity;
-import cn.limc.demo.controller.MAStickChartController;
+import cn.limc.androidcharts.R.layout;
+import cn.limc.androidcharts.R.menu;
 import android.os.Bundle;
-import android.graphics.Color;
+import android.app.Activity;
 import android.view.Menu;
 
-public class MAStickChartActivity extends BaseActivity {
+public class MAStickChartActivity extends Activity {
 
-    GridChart maslipstickchart;
-    
-    MAStickChartController stickChartController;
-    ChartDataSet stickData;
-    ChartDataSet lineData;
-    
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maslip_stick_chart);
-        initDatas();
-        initMAStickChart();
+        setContentView(R.layout.activity_mastick_chart);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.maslip_stick_chart, menu);
+        getMenuInflater().inflate(R.menu.mastick_chart, menu);
         return true;
     }
-    
-    private void initDatas(){
-        
 
-        // 以下计算VOL
-        lineData = new ChartDataSet();
-
-        // 计算5日均线
-        LineEntity vma5 = new LineEntity();
-        vma5.setTitle("MA5");
-        vma5.setLineColor(Color.WHITE);
-        vma5.setTableData(initVMA(5));
-        lineData.add(vma5);
-
-        // 计算10日均线
-        LineEntity vma10 = new LineEntity();
-        vma10.setTitle("MA10");
-        vma10.setLineColor(Color.CYAN);
-        vma10.setTableData(initVMA(10));
-        lineData.add(vma10);
-
-        
-        // 计算25日均线
-        LineEntity vma25 = new LineEntity();
-        vma25.setTitle("MA25");
-        vma25.setLineColor(Color.BLUE);
-        vma25.setTableData(initVMA(25));
-        lineData.add(vma25);
-        
-        stickData = new ChartDataSet(new ChartDataTable(vol));
-    }
-
-    private void initMAStickChart() {
-        this.maslipstickchart = (GridChart) findViewById(R.id.maslipstickchart);
-        stickChartController = new MAStickChartController();
-        stickChartController.setStickData(stickData);
-        stickChartController.setLineData(lineData);
-        stickChartController.applyController(maslipstickchart);
-    }
 }

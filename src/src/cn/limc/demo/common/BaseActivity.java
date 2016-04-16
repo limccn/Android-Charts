@@ -24,26 +24,24 @@ package cn.limc.demo.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.limc.androidcharts.series.ChartDataRow;
-import cn.limc.androidcharts.series.ColoredStickEntity;
-import cn.limc.androidcharts.series.DateValueEntity;
-import cn.limc.androidcharts.series.IHasDate;
-import cn.limc.androidcharts.series.IMeasurable;
-import cn.limc.androidcharts.series.MACDEntity;
-import cn.limc.androidcharts.series.OHLCEntity;
-import cn.limc.androidcharts.series.StickEntity;
+import cn.limc.androidcharts.entity.ColoredStickEntity;
+import cn.limc.androidcharts.entity.DateValueEntity;
+import cn.limc.androidcharts.entity.IStickEntity;
+import cn.limc.androidcharts.entity.MACDEntity;
+import cn.limc.androidcharts.entity.OHLCEntity;
+import cn.limc.androidcharts.entity.StickEntity;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 
 public class BaseActivity extends Activity {
     
-    protected List<ChartDataRow> ohlc;
-    protected List<ChartDataRow> vol;
-    protected List<ChartDataRow> volc;
-    protected List<ChartDataRow> dv1;
-    protected List<ChartDataRow> dv2;
-    protected List<ChartDataRow> macd;
+    protected List<IStickEntity> ohlc;
+    protected List<IStickEntity> vol;
+    protected List<IStickEntity> volc;
+    protected List<DateValueEntity> dv1;
+    protected List<DateValueEntity> dv2;
+    protected List<IStickEntity> macd;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,8 +56,8 @@ public class BaseActivity extends Activity {
     }
     
     protected void initVOLC() {
-        List<ChartDataRow> stick = new ArrayList<ChartDataRow>();
-        this.volc = new ArrayList<ChartDataRow>();
+        List<IStickEntity> stick = new ArrayList<IStickEntity>();
+        this.volc = new ArrayList<IStickEntity>();
 
         stick.add(new ColoredStickEntity(406000, 0, 20110825, Color.RED));
         stick.add(new ColoredStickEntity(232000, 0, 20110824, Color.RED));
@@ -172,7 +170,7 @@ public class BaseActivity extends Activity {
     }
 
     protected void initVOL() {
-        List<ChartDataRow> stick = new ArrayList<ChartDataRow>();
+        List<IStickEntity> stick = new ArrayList<IStickEntity>();
 
         stick.add(new StickEntity(406000, 0, 20110825));
         stick.add(new StickEntity(232000, 0, 20110824));
@@ -277,7 +275,7 @@ public class BaseActivity extends Activity {
         // stick.add(new StickEntity(344000,0,20110404));
         // stick.add(new StickEntity(525000,0,20110401));
 
-        this.vol = new ArrayList<ChartDataRow>();
+        this.vol = new ArrayList<IStickEntity>();
         for (int i = stick.size(); i > 0; i--) {
             this.vol.add(stick.get(i - 1));
         }
@@ -285,34 +283,34 @@ public class BaseActivity extends Activity {
         // this.vol.addAll(stick);
     }
 
-    protected List<ChartDataRow> initVMA(int days) {
+    protected List<DateValueEntity> initVMA(int days) {
         if (days < 2) {
             return null;
         }
 
-        List<ChartDataRow> MA5Values = new ArrayList<ChartDataRow>();
+        List<DateValueEntity> MA5Values = new ArrayList<DateValueEntity>();
 
-        double sum = 0;
-        double avg = 0;
+        float sum = 0;
+        float avg = 0;
         for (int i = 0; i < this.vol.size(); i++) {
-            double close = ((IMeasurable) vol.get(i)).getHigh();
+            float close = (float) vol.get(i).getHigh();
             if (i < days) {
                 sum = sum + close;
                 avg = sum / (i + 1f);
             } else {
-                sum = sum + close -  ((IMeasurable)vol.get(i - days)).getHigh();
+                sum = sum + close - (float) vol.get(i - days).getHigh();
                 avg = sum / days;
             }
-            MA5Values.add(new DateValueEntity(avg, ((IHasDate) (vol.get(i))).getDate()));
+            MA5Values.add(new DateValueEntity(avg, vol.get(i).getDate()));
         }
 
         return MA5Values;
     }
 
     protected void initDV1() {
-        List<ChartDataRow> dv = new ArrayList<ChartDataRow>();
+        List<DateValueEntity> dv = new ArrayList<DateValueEntity>();
 
-        this.dv1 = new ArrayList<ChartDataRow>();
+        this.dv1 = new ArrayList<DateValueEntity>();
         dv.add(new DateValueEntity(947.3056f, 20130424));
         dv.add(new DateValueEntity(952.2242f, 20130425));
         dv.add(new DateValueEntity(963.2635f, 20130426));
@@ -448,9 +446,9 @@ public class BaseActivity extends Activity {
     }
 
     protected void initDV2() {
-        List<ChartDataRow> dv = new ArrayList<ChartDataRow>();
+        List<DateValueEntity> dv = new ArrayList<DateValueEntity>();
 
-        this.dv2 = new ArrayList<ChartDataRow>();
+        this.dv2 = new ArrayList<DateValueEntity>();
         dv.add(new DateValueEntity(1059.5943f, 20130424));
         dv.add(new DateValueEntity(1046.7757f, 20130425));
         dv.add(new DateValueEntity(1026.9364f, 20130426));
@@ -586,9 +584,9 @@ public class BaseActivity extends Activity {
     }
 
     protected void initOHLC() {
-        List<ChartDataRow> ohlc = new ArrayList<ChartDataRow>();
+        List<IStickEntity> ohlc = new ArrayList<IStickEntity>();
 
-        this.ohlc = new ArrayList<ChartDataRow>();
+        this.ohlc = new ArrayList<IStickEntity>();
         ohlc.add(new OHLCEntity(986, 1015, 977, 1003, 20130424));
         ohlc.add(new OHLCEntity(1000, 1007, 982, 991, 20130425));
         ohlc.add(new OHLCEntity(996, 1001, 985, 988, 20130426));
@@ -723,13 +721,13 @@ public class BaseActivity extends Activity {
         this.ohlc.addAll(ohlc);
     }
 
-    protected List<ChartDataRow> initMA(int days) {
+    protected List<DateValueEntity> initMA(int days) {
 
         if (days < 2) {
             return null;
         }
 
-        List<ChartDataRow> MA5Values = new ArrayList<ChartDataRow>();
+        List<DateValueEntity> MA5Values = new ArrayList<DateValueEntity>();
 
         float sum = 0;
         float avg = 0;
@@ -743,14 +741,14 @@ public class BaseActivity extends Activity {
                         - (float) ((OHLCEntity) ohlc.get(i - days)).getClose();
                 avg = sum / days;
             }
-            MA5Values.add(new DateValueEntity(avg, ((IHasDate)ohlc.get(i)).getDate()));
+            MA5Values.add(new DateValueEntity(avg, ohlc.get(i).getDate()));
         }
 
         return MA5Values;
     }
 
     protected void initMACD() {
-        List<ChartDataRow> macd = new ArrayList<ChartDataRow>();
+        List<IStickEntity> macd = new ArrayList<IStickEntity>();
         macd.add(new MACDEntity(46934, 7297, -79272, 20130604));
         macd.add(new MACDEntity(30276, -36354, -133260, 20130605));
         macd.add(new MACDEntity(7002, -86094, -186192, 20130606));

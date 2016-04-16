@@ -5,7 +5,7 @@
 	<target name="javadoc">
 		<javadoc additionalparam="-locale en_US -encoding utf-8 -charset utf-8"
 			classpath="${android_sdk_home}/tools/support/annotations.jar;${android_sdk_home}/platforms/android-7/android.jar"
-			packagenames="cn.limc.androidcharts.event,cn.limc.androidcharts.series,cn.limc.androidcharts.diagram"
+			packagenames="cn.limc.androidcharts.event,cn.limc.androidcharts.entity,cn.limc.androidcharts.view"
 			destdir="${javadoc_dest_dir}"
 			nodeprecated="false" access="public" author="true"
 			nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false"

@@ -22,46 +22,23 @@
 package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.diagram.GridChart;
-import cn.limc.androidcharts.series.ChartDataSet;
-import cn.limc.androidcharts.series.ChartDataTable;
-import cn.limc.demo.common.BaseActivity;
-import cn.limc.demo.controller.CandleStickChartController;
 import android.os.Bundle;
+import android.app.Activity;
 import android.view.Menu;
 
-public class CandleStickChartActivity extends BaseActivity {
+public class CandleStickChartActivity extends Activity {
 
-    GridChart candlestickchart;
-    CandleStickChartController candleStickChartController;
-    ChartDataSet stickData;
-    
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_slip_candle_stick_chart);
-        
-        initDatas();
-        initCandleStickChart();
+        setContentView(R.layout.activity_candle_stick_chart);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.slip_candle_stick_chart, menu);
+        getMenuInflater().inflate(R.menu.candle_stick_chart, menu);
         return true;
-    }
- 
-    
-    private void initDatas(){
-        stickData = new ChartDataSet(new ChartDataTable(ohlc));
-    }
-
-    private void initCandleStickChart() {
-        this.candlestickchart = (GridChart) findViewById(R.id.slipcandlestickchart);
-        candleStickChartController = new CandleStickChartController();
-        candleStickChartController.setStickData(stickData);
-        candleStickChartController.applyController(candlestickchart);
     }
 
 }

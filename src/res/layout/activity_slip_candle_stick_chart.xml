@@ -6,9 +6,9 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".CandleStickChartActivity" >
+    tools:context=".SlipCandleStickChartActivity" >
 
-        <cn.limc.androidcharts.diagram.GridChart
+        <cn.limc.androidcharts.view.SlipCandleStickChart
             android:id="@+id/slipcandlestickchart"
             android:layout_width="match_parent"
             android:layout_height="@dimen/single_chart_height" />

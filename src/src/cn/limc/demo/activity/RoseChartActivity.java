@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.diagram.RoseChart;
-import cn.limc.androidcharts.series.*;
+import cn.limc.androidcharts.entity.*;
+import cn.limc.androidcharts.view.RoseChart;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;

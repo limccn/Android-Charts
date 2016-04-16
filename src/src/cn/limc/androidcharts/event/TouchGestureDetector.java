@@ -21,7 +21,6 @@
 
 
 package cn.limc.androidcharts.event;
-import cn.limc.androidcharts.diagram.GridChart;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 
@@ -34,11 +33,27 @@ import android.view.MotionEvent;
  * @version v1.0 2014/06/23 16:37:37 
  *  
  */
-public class TouchGestureDetector extends GestureDetector{
+public class TouchGestureDetector<T extends ITouchable> implements IGestureDetector{
 	
 	protected PointF touchPoint;
 	static final int TOUCH_MOVE_MIN_DISTANCE = 6;
 	
+	protected T instance;
+	protected OnTouchGestureListener onTouchGestureListener;
+	
+	/**
+	 * <p>Constructor of TouchGestureDetector</p>
+	 * <p>TouchGestureDetector类对象的构造函数</p>
+	 * <p>TouchGestureDetectorのコンストラクター</p>
+	 *
+	 */
+	public TouchGestureDetector(T touchable) {
+		instance = touchable;
+		if (touchable != null) {
+			this.onTouchGestureListener = touchable.getOnTouchGestureListener();
+		}
+	}
+
 	/**
 	 * 
 	 * <p>Constructor of TouchGestureDetector</p>
@@ -47,8 +62,9 @@ public class TouchGestureDetector extends GestureDetector{
 	 *
 	 * @param touchGestureListener
 	 */
-	public TouchGestureDetector(GridChart inChart, OnTouchGestureListener listener) {
-		super(inChart,listener);
+	public TouchGestureDetector(OnTouchGestureListener touchListener) {
+		super();
+		this.onTouchGestureListener = touchListener;
 	}
 
 	public boolean onTouchEvent(MotionEvent event) {
@@ -56,16 +72,16 @@ public class TouchGestureDetector extends GestureDetector{
 		case MotionEvent.ACTION_DOWN:
 			if (event.getPointerCount() == 1) {
 				touchPoint = new PointF(event.getX(),event.getY());
-				if (onGestureListener != null) {
-				    ((OnTouchGestureListener)onGestureListener).onTouchDown(event ,touchPoint);
+				if (onTouchGestureListener != null) {
+					onTouchGestureListener.onTouchDown(instance,event);
 				}
 			}
 			break;
 		case MotionEvent.ACTION_UP:
 			if (event.getPointerCount() == 1) {
 				touchPoint = new PointF(event.getX(),event.getY());
-				if (onGestureListener != null) {
-				    ((OnTouchGestureListener)onGestureListener).onTouchUp(event , touchPoint);
+				if (onTouchGestureListener != null) {
+					onTouchGestureListener.onTouchUp(instance,event);
 				}
 			}
 			break;
@@ -83,8 +99,8 @@ public class TouchGestureDetector extends GestureDetector{
 					//reset touchPoint
 					touchPoint = new PointF(event.getX(),event.getY());
 					// call back to listener
-					if (onGestureListener != null) {
-					    ((OnTouchGestureListener)onGestureListener).onTouchMoved(event , touchPoint);
+					if (onTouchGestureListener != null) {
+						onTouchGestureListener.onTouchMoved(instance,event);
 					}
 				}
 			}
@@ -97,7 +113,7 @@ public class TouchGestureDetector extends GestureDetector{
 	 * @return the onTouchGestureListener
 	 */
 	public OnTouchGestureListener getOnTouchGestureListener() {
-		return (OnTouchGestureListener)onGestureListener;
+		return onTouchGestureListener;
 	}
 
 	/**
@@ -105,12 +121,6 @@ public class TouchGestureDetector extends GestureDetector{
 	 */
 	public void setOnTouchGestureListener(
 			OnTouchGestureListener onTouchGestureListener) {
-		this.onGestureListener = onTouchGestureListener;
-	}
-	
-	public interface OnTouchGestureListener extends GestureDetector.OnGestureListener{
-	    public void onTouchDown(MotionEvent event, PointF pt);
-	    public void onTouchMoved(MotionEvent event, PointF pt);
-	    public void onTouchUp(MotionEvent event, PointF pt);
+		this.onTouchGestureListener = onTouchGestureListener;
 	}
 }

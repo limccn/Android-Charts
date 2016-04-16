@@ -21,7 +21,6 @@
 
 
 package cn.limc.androidcharts.event;
-import cn.limc.androidcharts.diagram.GridChart;
 import android.view.MotionEvent;
 
 
@@ -34,9 +33,8 @@ import android.view.MotionEvent;
  * @version v1.0 2014/06/20 17:33:01 
  *  
  */
-public class ZoomGestureDetector extends GestureDetector{
+public class ZoomGestureDetector<T extends IZoomable> extends TouchGestureDetector<ITouchable>{
 	
-    
 	public static final int TOUCH_MODE_NONE = 0;
 	public static final int TOUCH_MODE_SINGLE = 1;
 	public static final int TOUCH_MODE_MULTI = 2;
@@ -47,12 +45,27 @@ public class ZoomGestureDetector extends GestureDetector{
 
 	protected float olddistance;
 	protected float newdistance;
-
 	
-	public ZoomGestureDetector(GridChart inChart, OnZoomGestureListener listener){
-	    super(inChart,listener);
+	protected OnZoomGestureListener onZoomGestureListener;
+	
+	public ZoomGestureDetector(IZoomable zoomable){
+		super(zoomable);
+		if (zoomable != null) {
+			onZoomGestureListener = zoomable.getOnZoomGestureListener();
+		}
 	}
 	
+	protected float calcDistance(MotionEvent event) {
+		if(event.getPointerCount() <= 1) {
+			return 0f;
+		}else{
+			float x = event.getX(0) - event.getX(1);
+			float y = event.getY(0) - event.getY(1);
+			return (float) Math.sqrt(x * x + y * y);
+		}
+	}
+	
+	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
@@ -79,11 +92,11 @@ public class ZoomGestureDetector extends GestureDetector{
 				newdistance = calcDistance(event);
 				if (newdistance > MIN_DISTANCE
 						&& Math.abs(newdistance - olddistance) > MIN_DISTANCE) {
-					if (onGestureListener != null) {
+					if (onZoomGestureListener != null) {
 						if (newdistance > olddistance) {
-							((OnZoomGestureListener)onGestureListener).onZoomIn(event);
+							onZoomGestureListener.onZoomIn((IZoomable)instance,event);
 						} else {
-						    ((OnZoomGestureListener)onGestureListener).onZoomOut(event);
+							onZoomGestureListener.onZoomOut((IZoomable)instance,event);
 						}
 					}
 					olddistance = newdistance;
@@ -93,25 +106,20 @@ public class ZoomGestureDetector extends GestureDetector{
 			}
 			break;
 		}
-		return true;
+		return super.onTouchEvent(event);
 	}
 
 	/**
 	 * @return the onZoomGestureListener
 	 */
 	public OnZoomGestureListener getOnZoomGestureListener() {
-		return (OnZoomGestureListener)onGestureListener;
+		return onZoomGestureListener;
 	}
 
 	/**
 	 * @param onZoomGestureListener the onZoomGestureListener to set
 	 */
 	public void setOnZoomGestureListener(OnZoomGestureListener onZoomGestureListener) {
-		this.onGestureListener = onZoomGestureListener;
-	}
-	
-	public interface OnZoomGestureListener extends GestureDetector.OnGestureListener{ 
-	    void onZoomIn(MotionEvent event);
-	    void onZoomOut(MotionEvent event);
+		this.onZoomGestureListener = onZoomGestureListener;
 	}
 }

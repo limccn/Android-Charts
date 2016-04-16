@@ -21,7 +21,6 @@
 
 package cn.limc.androidcharts.event;
 
-import cn.limc.androidcharts.diagram.GridChart;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 
@@ -40,38 +39,19 @@ import android.view.MotionEvent;
  * @version v1.0 2014/06/23 16:48:07
  * 
  */
-public class SlipGestureDetector extends GestureDetector{
-    
-    
-    public static final int TOUCH_MODE_NONE = 0;
-    public static final int TOUCH_MODE_SINGLE = 1;
-    public static final int TOUCH_MODE_MULTI = 2;
-    
-    public static final int MIN_DISTANCE = 5;
-    
-    protected int touchMode = TOUCH_MODE_NONE;
-    
-    protected float olddistance;
-    protected float newdistance;
-    
+public class SlipGestureDetector<T extends ISlipable> extends ZoomGestureDetector<IZoomable> {
 	protected PointF startPointA;
 	protected PointF startPointB;
 	
-	OnSlipGestureListener onSlipGestureListener;
+	private OnSlipGestureListener onSlipGestureListener;
 
-	public SlipGestureDetector(GridChart inChart,OnSlipGestureListener listener){
-	    super(inChart, listener);
+	public SlipGestureDetector(ISlipable slipable){
+		super(slipable);
+		if (slipable != null) {
+			this.onSlipGestureListener = slipable.getOnSlipGestureListener();
+		}
 	}
 
-    protected float calcDistance(MotionEvent event) {
-        if(event.getPointerCount() <= 1) {
-            return 0f;
-        }else{
-            float x = event.getX(0) - event.getX(1);
-            float y = event.getY(0) - event.getY(1);
-            return (float) Math.sqrt(x * x + y * y);
-        }
-    }
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -110,26 +90,26 @@ public class SlipGestureDetector extends GestureDetector{
 				if (newdistance > MIN_DISTANCE) {
 					if (startPointA.x >= event.getX(0)
 							&& startPointB.x >= event.getX(1)) {
-						if (onGestureListener != null) {
-						    ((OnSlipGestureListener)onGestureListener).onMoveRight(event);
+						if (onSlipGestureListener != null) {
+							onSlipGestureListener.onMoveRight((ISlipable)instance,event);
 						}
 					} else if (startPointA.x <= event.getX(0)
 							&& startPointB.x <= event.getX(1)) {
-						if (onGestureListener != null) {
-						    ((OnSlipGestureListener)onGestureListener).onMoveLeft(event);
+						if (onSlipGestureListener != null) {
+							onSlipGestureListener.onMoveLeft((ISlipable)instance,event);
 						}
 					} else {
-//						if (Math.abs(newdistance - olddistance) > MIN_DISTANCE) {
-//							if (onZoomGestureListener != null) {
-//								if (newdistance > olddistance) {
-//									onZoomGestureListener.onZoomIn((Zoomable)instance,event);
-//								} else {
-//									onZoomGestureListener.onZoomOut((Zoomable)instance,event);
-//								}
-//							}
-//							// reset distance
-//							olddistance = newdistance;
-//						}
+						if (Math.abs(newdistance - olddistance) > MIN_DISTANCE) {
+							if (onZoomGestureListener != null) {
+								if (newdistance > olddistance) {
+									onZoomGestureListener.onZoomIn((IZoomable)instance,event);
+								} else {
+									onZoomGestureListener.onZoomOut((IZoomable)instance,event);
+								}
+							}
+							// reset distance
+							olddistance = newdistance;
+						}
 					}
 					startPointA = new PointF(event.getX(0), event.getY(0));
 					startPointB = new PointF(event.getX(1), event.getY(1));
@@ -139,25 +119,7 @@ public class SlipGestureDetector extends GestureDetector{
 			}
 			break;
 		}
-		return true;
+		return super.onTouchEvent(event);
 	}
 
-    /**
-     * @return the onSlipGestureListener
-     */
-    public OnSlipGestureListener getOnSlipGestureListener() {
-        return onSlipGestureListener;
-    }
-
-    /**
-     * @param onSlipGestureListener the onSlipGestureListener to set
-     */
-    public void setOnSlipGestureListener(OnSlipGestureListener onSlipGestureListener) {
-        this.onSlipGestureListener = onSlipGestureListener;
-    }
-    
-    public interface OnSlipGestureListener extends GestureDetector.OnGestureListener {
-        public void onMoveLeft(MotionEvent event) ;
-        public void onMoveRight(MotionEvent event) ;
-    }
 }

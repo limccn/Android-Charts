@@ -22,26 +22,25 @@
 package cn.limc.demo.activity;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.diagram.GridChart;
-import cn.limc.androidcharts.series.ChartDataSet;
-import cn.limc.androidcharts.series.ChartDataTable;
+import cn.limc.androidcharts.axis.Axis;
+import cn.limc.androidcharts.entity.IStickEntity;
+import cn.limc.androidcharts.entity.ListChartData;
+import cn.limc.androidcharts.event.IZoomable;
+import cn.limc.androidcharts.view.MACDChart;
 import cn.limc.demo.common.BaseActivity;
-import cn.limc.demo.controller.MACDChartController;
 import android.os.Bundle;
+import android.graphics.Color;
 import android.view.Menu;
 
 public class MACDChartActivity extends BaseActivity {
 
-    GridChart macdChart;
-    MACDChartController stickChartController;
-    ChartDataSet stickData;
-    ChartDataSet lineData;
+    MACDChart macdChart;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_macdchart);
-        initData();
+
         initMACDChart();
     }
 
@@ -51,15 +50,44 @@ public class MACDChartActivity extends BaseActivity {
         getMenuInflater().inflate(R.menu.macdchart, menu);
         return true;
     }
-    
-    private void initData(){
-        stickData = new ChartDataSet(new ChartDataTable(macd));
-    }
 
     private void initMACDChart() {
-        this.macdChart = (GridChart) findViewById(R.id.macdchart);
-        stickChartController = new MACDChartController();
-        stickChartController.setMacdData(stickData);
-        stickChartController.applyController(macdChart);
+
+        macdChart = (MACDChart) findViewById(R.id.macdchart);
+        macdChart.setMaxValue(300000);
+        macdChart.setMinValue(-300000);
+        // macdChart.setDisplayCrossXOnTouch(true);
+        // macdChart.setDisplayCrossYOnTouch(true);
+        macdChart.setLatitudeNum(4);
+        macdChart.setLongitudeNum(3);
+        macdChart.setDisplayFrom(0);
+        macdChart.setDisplayNumber(10);
+        macdChart.setMinDisplayNumber(5);
+        macdChart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+        macdChart.setAxisXColor(Color.LTGRAY);
+        macdChart.setAxisYColor(Color.LTGRAY);
+        macdChart.setLatitudeColor(Color.GRAY);
+        macdChart.setLongitudeColor(Color.GRAY);
+        macdChart.setBorderColor(Color.LTGRAY);
+        macdChart.setLongitudeFontColor(Color.WHITE);
+        macdChart.setLatitudeFontColor(Color.WHITE);
+        macdChart.setMacdDisplayType(MACDChart.MACD_DISPLAY_TYPE_STICK);
+        macdChart.setPositiveStickColor(Color.RED);
+        macdChart.setNegativeStickColor(Color.CYAN);
+        macdChart.setMacdLineColor(Color.CYAN);
+        macdChart.setDeaLineColor(Color.YELLOW);
+        macdChart.setDiffLineColor(Color.WHITE);
+        macdChart.setDataQuadrantPaddingTop(5);
+        macdChart.setDataQuadrantPaddingBottom(5);
+        macdChart.setDataQuadrantPaddingLeft(5);
+        macdChart.setDataQuadrantPaddingRight(5);
+        // macdChart.setAxisYTitleQuadrantWidth(50);
+        // macdChart.setAxisXTitleQuadrantHeight(20);
+        macdChart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
+        macdChart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+
+        // 设置stickData
+        macdChart.setStickData(new ListChartData<IStickEntity>(macd));
     }
+
 }

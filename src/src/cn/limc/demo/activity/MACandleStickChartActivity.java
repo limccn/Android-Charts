@@ -21,74 +21,24 @@
 
 package cn.limc.demo.activity;
 
-
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.diagram.GridChart;
-import cn.limc.androidcharts.series.ChartDataSet;
-import cn.limc.androidcharts.series.ChartDataTable;
-import cn.limc.androidcharts.series.LineEntity;
-import cn.limc.demo.common.BaseActivity;
-import cn.limc.demo.controller.MACandleStickChartController;
 import android.os.Bundle;
-import android.graphics.Color;
+import android.app.Activity;
 import android.view.Menu;
 
-public class MACandleStickChartActivity extends BaseActivity {
+public class MACandleStickChartActivity extends Activity {
 
-    GridChart macandlestickchart;
-    MACandleStickChartController stickChartController;
-    ChartDataSet stickData;
-    ChartDataSet lineData;
-    
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maslip_candle_stick_chart);
-        initData();
-        initMACandleStickChart();
+        setContentView(R.layout.activity_macandle_stick_chart);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.maslip_candle_stick_chart, menu);
+        getMenuInflater().inflate(R.menu.macandle_stick_chart, menu);
         return true;
-    }
-    
-    private void initData() {
-        lineData = new ChartDataSet();
-
-        // 计算5日均线
-        LineEntity ma5 = new LineEntity();
-        ma5.setTitle("MA5");
-        ma5.setLineColor(Color.WHITE);
-        ma5.setTableData(initMA(5));
-        lineData.add(ma5);
-
-        // 计算10日均线
-        LineEntity ma10 = new LineEntity();
-        ma10.setTitle("MA10");
-        ma10.setLineColor(Color.CYAN);
-        ma10.setTableData(initMA(10));
-        lineData.add(ma10);
-
-        // 计算25日均线
-        LineEntity ma25 = new LineEntity();
-        ma25.setTitle("MA25");
-        ma25.setLineColor(Color.BLUE);
-        ma25.setTableData(initMA(25));
-        lineData.add(ma25);
-        
-        stickData = new ChartDataSet(new ChartDataTable(ohlc));
-        
-    }
-    
-    private void initMACandleStickChart() {
-        this.macandlestickchart = (GridChart) findViewById(R.id.maslipcandlestickchart);
-        stickChartController = new MACandleStickChartController();
-        stickChartController.setStickData(stickData);
-        stickChartController.setLineData(lineData);
-        stickChartController.applyController(macandlestickchart);
     }
 
 }

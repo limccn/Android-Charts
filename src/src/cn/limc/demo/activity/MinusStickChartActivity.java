@@ -25,66 +25,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.R;
-import cn.limc.androidcharts.diagram.GridChart;
-import cn.limc.androidcharts.series.ChartDataRow;
-import cn.limc.androidcharts.series.ChartDataSet;
-import cn.limc.androidcharts.series.ChartDataTable;
-import cn.limc.androidcharts.series.StickEntity;
+import cn.limc.androidcharts.axis.Axis;
+import cn.limc.androidcharts.entity.IStickEntity;
+import cn.limc.androidcharts.entity.ListChartData;
+import cn.limc.androidcharts.entity.StickEntity;
+import cn.limc.androidcharts.view.MinusStickChart;
 import cn.limc.demo.common.BaseActivity;
-import cn.limc.demo.controller.StickChartController;
 import android.os.Bundle;
+import android.graphics.Color;
 import android.view.Menu;
 
-public class MinusStickChartActivity extends BaseActivity {    
-    GridChart minusstickchart;
-    StickChartController stickChartController;
-    ChartDataSet stickData;
+public class MinusStickChartActivity extends BaseActivity {
+
+    MinusStickChart minusstickchart;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_slip_minus_stick_chart);
-
-        initData();
-        initStickChart();
+        setContentView(R.layout.activity_minus_stick_chart);
+        initMinusStickChart();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.slip_minus_stick_chart, menu);
+        getMenuInflater().inflate(R.menu.minus_stick_chart, menu);
         return true;
     }
 
-    private void initData() {
+    private void initMinusStickChart() {
+        this.minusstickchart = (MinusStickChart) findViewById(R.id.minusstickchart);
 
-        List<ChartDataRow> data = new ArrayList<ChartDataRow>();
-        data.add(new StickEntity(50000, 0, 20110603));
-        data.add(new StickEntity(42000, 0, 20110703));
-        data.add(new StickEntity(32000, 0, 20110803));
-        data.add(new StickEntity(21000, 0, 20110903));
-        data.add(new StickEntity(0, -12000, 20111003));
-        data.add(new StickEntity(0, -28000, 20111103));
-        data.add(new StickEntity(0, -41000, 20111203));
-        data.add(new StickEntity(0, -25000, 20120103));
-        data.add(new StickEntity(0, -18000, 20120203));
-        data.add(new StickEntity(14000, 0, 20120303));
-        data.add(new StickEntity(24000, 0, 20120403));
-        data.add(new StickEntity(36000, 0, 20120503));
-        data.add(new StickEntity(46000, 0, 20120603));
-        data.add(new StickEntity(50000, 0, 20110703));
-        data.add(new StickEntity(42000, 0, 20110803));
-        data.add(new StickEntity(32000, 0, 20110903));
-        data.add(new StickEntity(21000, 0, 20111003));
-        data.add(new StickEntity(0, -12000, 20111003));
-        data.add(new StickEntity(0, -28000, 20111103));
-        data.add(new StickEntity(0, -41000, 20111203));
-        data.add(new StickEntity(0, -25000, 20120103));
-        data.add(new StickEntity(0, -18000, 20120203));
-        data.add(new StickEntity(14000, 0, 20120303));
-        data.add(new StickEntity(24000, 0, 20120303));
-        data.add(new StickEntity(36000, 0, 20120303));
-        data.add(new StickEntity(46000, 0, 20120303));
+        List<IStickEntity> data = new ArrayList<IStickEntity>();
         data.add(new StickEntity(50000, 0, 20110603));
         data.add(new StickEntity(42000, 0, 20110703));
         data.add(new StickEntity(32000, 0, 20110803));
@@ -98,33 +70,39 @@ public class MinusStickChartActivity extends BaseActivity {
         data.add(new StickEntity(24000, 0, 20120303));
         data.add(new StickEntity(36000, 0, 20120303));
         data.add(new StickEntity(46000, 0, 20120303));
-        data.add(new StickEntity(0, -12000, 20111003));
-        data.add(new StickEntity(0, -28000, 20111103));
-        data.add(new StickEntity(0, -41000, 20111203));
-        data.add(new StickEntity(0, -25000, 20120103));
-        data.add(new StickEntity(0, -18000, 20120203));
-        data.add(new StickEntity(14000, 0, 20120303));
-        data.add(new StickEntity(24000, 0, 20120303));
-        data.add(new StickEntity(36000, 0, 20120303));
-        data.add(new StickEntity(46000, 0, 20120303));
-        data.add(new StickEntity(0, -12000, 20111003));
-        data.add(new StickEntity(0, -28000, 20111103));
-        data.add(new StickEntity(0, -41000, 20111203));
-        data.add(new StickEntity(0, -25000, 20120103));
-        data.add(new StickEntity(0, -18000, 20120203));
-        data.add(new StickEntity(14000, 0, 20120303));
-        data.add(new StickEntity(24000, 0, 20120303));
-        data.add(new StickEntity(36000, 0, 20120303));
-        data.add(new StickEntity(46000, 0, 20120303));
+        minusstickchart.setStickData(new ListChartData<IStickEntity>(data));
 
-        stickData = new ChartDataSet(new ChartDataTable(data));
-    }
-    
-    private void initStickChart() {
-        this.minusstickchart = (GridChart) findViewById(R.id.slipminusstickchart);
-        stickChartController = new StickChartController();
-        stickChartController.setStickData(stickData);
-        stickChartController.applyController(minusstickchart);
+        minusstickchart.setMaxSticksNum(data.size());
+        minusstickchart.setMaxValue(50000);
+        minusstickchart.setMinValue(-50000);
+
+        minusstickchart.setBorderColor(Color.GRAY);
+        minusstickchart.setAxisXColor(Color.WHITE);
+        minusstickchart.setAxisYColor(Color.WHITE);
+        minusstickchart.setLatitudeFontColor(Color.WHITE);
+        minusstickchart.setLatitudeColor(Color.GRAY);
+        minusstickchart.setLongitudeFontColor(Color.WHITE);
+        minusstickchart.setLongitudeColor(Color.GRAY);
+        // 最大纬线数
+        minusstickchart.setLatitudeNum(3);
+        // 最大经线数
+        minusstickchart.setLongitudeNum(2);
+        minusstickchart.setDisplayLongitudeTitle(true);
+        minusstickchart.setDisplayLatitudeTitle(true);
+        // minusstickchart.setDisplayCrossXOnTouch(false);
+        // minusstickchart.setDisplayCrossYOnTouch(false);
+        minusstickchart.setDisplayLatitude(true);
+        minusstickchart.setDisplayLongitude(true);
+
+        minusstickchart.setDataQuadrantPaddingTop(5);
+        minusstickchart.setDataQuadrantPaddingBottom(5);
+        minusstickchart.setDataQuadrantPaddingLeft(5);
+        minusstickchart.setDataQuadrantPaddingRight(5);
+        // minusstickchart.setAxisYTitleQuadrantWidth(50);
+        // minusstickchart.setAxisXTitleQuadrantHeight(20);
+        minusstickchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
+        minusstickchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+
     }
 
 }
