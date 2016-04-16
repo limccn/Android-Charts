@@ -859,7 +859,7 @@ public class LineChart extends PeriodDataGridChart implements IZoomable {
 
 		this.linesData = linesData;
 
-		if (dataCursor.getMinDisplayNumber() > datasize) {
+		if (dataCursor.getMinDisplayNumber() >= datasize) {
 			dataCursor.setMaxDisplayNumber(datasize);
 			dataCursor.setDisplayFrom(0);
 			dataCursor.setDisplayNumber(datasize);

@@ -461,7 +461,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 
 		this.stickData = stickData;
 
-		if (dataCursor.getMinDisplayNumber() > datasize) {
+		if (dataCursor.getMinDisplayNumber() >= datasize) {
 			dataCursor.setMaxDisplayNumber(datasize);
 			dataCursor.setDisplayFrom(0);
 			dataCursor.setDisplayNumber(datasize);

@@ -132,6 +132,7 @@ public class ColoredSlipStickChart extends SlipStickChart {
 		float stickX = dataQuadrant.getPaddingStartX();
 
 		Paint mPaintStick = new Paint();
+		mPaintStick.setStyle(Paint.Style.FILL_AND_STROKE);
 
 		for (int i = getDisplayFrom(); i < getDisplayTo(); i++) {
 			ColoredStickEntity entity = (ColoredStickEntity) stickData.get(i);
@@ -146,11 +147,11 @@ public class ColoredSlipStickChart extends SlipStickChart {
 			mPaintStick.setColor(entity.getColor());
 			// stick or line?
 			if (stickWidth >= 2f) {
-				if (entity.getColor() == Color.RED) {
-					mPaintStick.setStyle(Paint.Style.STROKE);
-				}else{
-					mPaintStick.setStyle(Paint.Style.FILL);
-				}
+//				if (entity.getColor() == Color.RED) {
+//					mPaintStick.setStyle(Paint.Style.STROKE);
+//				}else{
+//					mPaintStick.setStyle(Paint.Style.FILL);
+//				}
 				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
 						mPaintStick);
 			} else {

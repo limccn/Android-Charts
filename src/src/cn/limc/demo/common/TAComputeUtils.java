@@ -387,7 +387,7 @@ public class TAComputeUtils {
     	return bollData;
     }
 	
-	public static List<DateValueEntity> initMA(List<IStickEntity> candleStickData, int days) {
+	public static List<DateValueEntity> computeMA(List<IStickEntity> candleStickData, int days) {
 
         if (days < 2) {
             return null;
@@ -462,21 +462,21 @@ public class TAComputeUtils {
         LineEntity<DateValueEntity> MA5 = new LineEntity<DateValueEntity>();
         MA5.setTitle("MA5");
         MA5.setLineColor(Color.WHITE);
-        MA5.setLineData(initMA(candleStickData, ma1));
+        MA5.setLineData(computeMA(candleStickData, ma1));
         candleStickLines.add(MA5);
 
         // 计算10日均线
         LineEntity<DateValueEntity> MA10 = new LineEntity<DateValueEntity>();
         MA10.setTitle("MA10");
         MA10.setLineColor(Color.RED);
-        MA10.setLineData(initMA(candleStickData, ma2));
+        MA10.setLineData(computeMA(candleStickData, ma2));
         candleStickLines.add(MA10);
 
         // 计算25日均线
         LineEntity<DateValueEntity> MA25 = new LineEntity<DateValueEntity>();
         MA25.setTitle("MA25");
         MA25.setLineColor(Color.GREEN);
-        MA25.setLineData(initMA(candleStickData, ma3));
+        MA25.setLineData(computeMA(candleStickData, ma3));
         candleStickLines.add(MA25);
 
         return candleStickLines;
@@ -531,6 +531,52 @@ public class TAComputeUtils {
 		}
         
         return new ListChartData<IStickEntity>(stick);
+	}
+	
+	public static List<LineEntity<DateValueEntity>> convertVOLMAData(List<OHLCVData> ohlcData,int ma1, int ma2, int ma3){
+		List<IStickEntity> candleStickData = new ArrayList<IStickEntity>();
+		
+        SimpleDateFormat df = new SimpleDateFormat(SourceDateformatString);
+        SimpleDateFormat dt = new SimpleDateFormat("yyyyMMdd");
+        for (OHLCVData data : ohlcData) {
+			try {
+				candleStickData.add(new OHLCEntity(Double.parseDouble(data.getOpen()), Double.parseDouble(data.getHigh()), Double.parseDouble(data.getLow()),Double.parseDouble(data.getVol()), Integer.parseInt(dt.format(df.parse(data.getDate())))));
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+				continue;
+			} catch (ParseException e) {
+				e.printStackTrace();
+				continue;
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		List<LineEntity<DateValueEntity>> candleStickLines = new ArrayList<LineEntity<DateValueEntity>>();
+
+        // 计算5日均线
+        LineEntity<DateValueEntity> MA5 = new LineEntity<DateValueEntity>();
+        MA5.setTitle("MA5");
+        MA5.setLineColor(Color.WHITE);
+        MA5.setLineData(computeMA(candleStickData, ma1));
+        candleStickLines.add(MA5);
+
+        // 计算10日均线
+        LineEntity<DateValueEntity> MA10 = new LineEntity<DateValueEntity>();
+        MA10.setTitle("MA10");
+        MA10.setLineColor(Color.RED);
+        MA10.setLineData(computeMA(candleStickData, ma2));
+        candleStickLines.add(MA10);
+
+        // 计算25日均线
+        LineEntity<DateValueEntity> MA25 = new LineEntity<DateValueEntity>();
+        MA25.setTitle("MA25");
+        MA25.setLineColor(Color.GREEN);
+        MA25.setLineData(computeMA(candleStickData, ma3));
+        candleStickLines.add(MA25);
+
+        return candleStickLines;
 	}
 	
 	public static ListChartData<IStickEntity> convertMACDData(List<OHLCVData> ohlcData, Context context){

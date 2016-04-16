@@ -324,7 +324,16 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 	
 	
 	public String formatAxisYDegree(double value) {
-		return new DecimalFormat(axisYDecimalFormat).format(Math.floor(value) / dataMultiple);
+		//TODO:格式改成属性
+		//数据
+		double displayValue = Math.floor(value) / dataMultiple;
+		if(displayValue < 10000){
+			return new DecimalFormat(axisYDecimalFormat).format(displayValue);
+		}else if(displayValue < 100000000){
+			return new DecimalFormat("#,##0.00").format(displayValue/10000) + "万";
+		}else {
+			return new DecimalFormat("#,##0.00").format(displayValue/100000000) + "亿";
+		}
 	}
 	
 	public String formatAxisXDegree(long date) {

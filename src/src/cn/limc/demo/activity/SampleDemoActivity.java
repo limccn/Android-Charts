@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +36,7 @@ import cn.limc.androidcharts.event.IDisplayCursorListener;
 import cn.limc.androidcharts.view.BOLLMASlipCandleStickChart;
 import cn.limc.androidcharts.view.ColoredSlipStickChart;
 import cn.limc.androidcharts.view.MACDChart;
+import cn.limc.androidcharts.view.MAColoredSlipStickChart;
 import cn.limc.androidcharts.view.SlipLineChart;
 import cn.limc.androidcharts.view.TickChart;
 import cn.limc.demo.common.BaseActivity;
@@ -44,13 +44,26 @@ import cn.limc.demo.common.BaseLvAdapter;
 import cn.limc.demo.common.DipUtils;
 import cn.limc.demo.common.FastJsonPaser;
 import cn.limc.demo.common.GroupChartData;
-import cn.limc.demo.common.JSONBean;
+import cn.limc.demo.common.HandicapData;
 import cn.limc.demo.common.OHLCVData;
+import cn.limc.demo.common.ProductData;
+import cn.limc.demo.common.ResponseBodyData;
+import cn.limc.demo.common.ResponseData;
+import cn.limc.demo.common.TickData;
 
 @SuppressLint("SimpleDateFormat")
 public class SampleDemoActivity extends BaseActivity {
 	
-	private static final int REFRESH_SECOND = 5;
+	private static final int REFRESH_SECOND = 10;
+	
+	/** 商品数据 */
+	public static final String PRODUCT_DATA = "PRODUCT_DATA";
+	/** 盘口数据 */
+	public static final String HANDICAP_DATA = "HANDICAP_DATA";
+	/** 分时数据 */
+	public static final String TICK_DATA = "TICK_DATA";
+	/** 明细数据 */
+	public static final String DETAIL_DATA = "DETAIL_DATA";
 	
 	/**
 	 * 自动刷新
@@ -63,7 +76,7 @@ public class SampleDemoActivity extends BaseActivity {
         }
         void update() {
         	isRefresh = true;
-            loadJSONData(mDisplayDataType);
+            loadKLineData(mDisplayDataType);
         }
     }; 
     
@@ -130,6 +143,11 @@ public class SampleDemoActivity extends BaseActivity {
 	GroupChartData m2HourData;
 	GroupChartData m4HourData;
 	
+	ProductData mProductData;
+	HandicapData mHandicapData;
+	TickData mTickData;
+	List<TickData> mDetailData;
+	
 	ChartViewType mDisplayChart;
 	
 	TextView mTvCurrentPrice;
@@ -160,7 +178,7 @@ public class SampleDemoActivity extends BaseActivity {
 	LinearLayout[] mLinOrders;
 	
 	LinearLayout mLinBottomChartContainer;
-	ColoredSlipStickChart mVOLchart;
+	MAColoredSlipStickChart mVOLchart;
 	MACDChart mMacdChart;
 	SlipLineChart mKDJchart;
 	SlipLineChart mRSIchart;
@@ -207,22 +225,25 @@ public class SampleDemoActivity extends BaseActivity {
         initCCIChart();
         initBOLLChart();
         
+        initProductInfo();
+        
         initHandicap();
         
         initDetail();
         
-        initProductInfo();
         initTopViews();
         initPopupWindow();
         initBottomViews();
         
         mDisplayDataType = ChartDataType.DAY;
-//        loadJSONData(ChartDataType.DAY);
-        loadTickJSONData();
+        loadKLineData(ChartDataType.DAY);
+        loadTickData();
+        loadHandicapData();
+        loadDetailData();
         
         registerReceiver();
         
-        mRefreshHandler.postDelayed(mRefreshRunnable, 1000 * REFRESH_SECOND);
+        mRefreshHandler.postDelayed(mRefreshRunnable, (long) (1000 * 1));
 	}
     
     @Override
@@ -269,17 +290,26 @@ public class SampleDemoActivity extends BaseActivity {
     	mTvSellPrice = (TextView) findViewById(R.id.tv_sell_price);
     	mTvLow = (TextView) findViewById(R.id.tv_low);
     	
-    	mTvCurrentPrice.setText("3500");
-    	mTvCurrentPercent.setText("-29.25");
-    	mTvNewestPercent.setText("-1.25%");
+    	try {
+    		mProductData = (ProductData) getIntent().getExtras().getSerializable(PRODUCT_DATA);
+		} catch (NullPointerException e) {
+		}
+    	
+    	if (mProductData == null) {
+    		mProductData = new ProductData();
+		}
+    	
+    	mTvCurrentPrice.setText(mProductData.getCurrentPrice());
+    	mTvCurrentPercent.setText(mProductData.getChangePrice());
+    	mTvNewestPercent.setText(mProductData.getChangePercent());
     	
     	SimpleDateFormat dt = new SimpleDateFormat("MM月dd HH:mm:ss");
     	mTvDateTime.setText(dt.format(new Date()));
 
-    	mTvBuyPrice.setText("3499");
-    	mTvHigh.setText("3559");
-    	mTvSellPrice.setText("3554");
-    	mTvLow.setText("3444");
+    	mTvBuyPrice.setText(mProductData.getBuyPrice());
+    	mTvHigh.setText(mProductData.getHighPrice());
+    	mTvSellPrice.setText(mProductData.getSellPrice());
+    	mTvLow.setText(mProductData.getLowPrice());
     }
     
     public void initTopViews(){
@@ -351,7 +381,7 @@ public class SampleDemoActivity extends BaseActivity {
             public void onClick(View v) {
             	changeTopButtonsColor((TextView) v);
             	
-                loadJSONData(ChartDataType.DAY);
+            	loadKLineData(ChartDataType.DAY);
             	mLinHandicap.setVisibility(View.INVISIBLE);
                 mTickChart.setVisibility(View.INVISIBLE);
                 mLinOrderContainer.setVisibility(View.INVISIBLE);
@@ -368,7 +398,7 @@ public class SampleDemoActivity extends BaseActivity {
             public void onClick(View v) {
             	changeTopButtonsColor((TextView) v);
             	
-                loadJSONData(ChartDataType.WEEK);
+            	loadKLineData(ChartDataType.WEEK);
             	mLinHandicap.setVisibility(View.INVISIBLE);
                 mTickChart.setVisibility(View.INVISIBLE);
                 mLinOrderContainer.setVisibility(View.INVISIBLE);
@@ -385,7 +415,7 @@ public class SampleDemoActivity extends BaseActivity {
             public void onClick(View v) {
             	changeTopButtonsColor((TextView) v);
             	
-                loadJSONData(ChartDataType.MONTH);
+            	loadKLineData(ChartDataType.MONTH);
             	mLinHandicap.setVisibility(View.INVISIBLE);
                 mTickChart.setVisibility(View.INVISIBLE);
                 mLinOrderContainer.setVisibility(View.INVISIBLE);
@@ -687,11 +717,11 @@ public class SampleDemoActivity extends BaseActivity {
         // 最小价格
         mBollmaslipcandlestickchart.setMinValue(200);
 
-//		mBollmaslipcandlestickchart.setDisplayFrom(10);
+		mBollmaslipcandlestickchart.setDisplayFrom(10);
 
-//		mBollmaslipcandlestickchart.setDisplayNumber(30);
+		mBollmaslipcandlestickchart.setDisplayNumber(30);
 
-//		mBollmaslipcandlestickchart.setMinDisplayNumber(10);
+		mBollmaslipcandlestickchart.setMinDisplayNumber(10);
 
 //        mBollmaslipcandlestickchart
 //                .setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
@@ -714,7 +744,7 @@ public class SampleDemoActivity extends BaseActivity {
                 .setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
 
         mBollmaslipcandlestickchart.setOnDisplayCursorListener(displayCursorListener);
-        mBollmaslipcandlestickchart.setNoneDisplayValue(new float[]{0,Float.MAX_VALUE});
+        mBollmaslipcandlestickchart.setNoneDisplayValue(new float[]{Float.MAX_VALUE});
     }
 
     final IDisplayCursorListener displayCursorListener =  new IDisplayCursorListener() {
@@ -785,9 +815,9 @@ public class SampleDemoActivity extends BaseActivity {
         mTickChart.setLongitudeColor(Color.GRAY);
         mTickChart.setMaxValue(1300);
         mTickChart.setMinValue(700);
-//        mTickChart.setDisplayFrom(10);
-//        mTickChart.setDisplayNumber(30);
-//        mTickChart.setMinDisplayNumber(5);
+        mTickChart.setDisplayFrom(10);
+        mTickChart.setDisplayNumber(30);
+        mTickChart.setMinDisplayNumber(5);
 //        mTickChart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
         mTickChart.setDisplayLongitudeTitle(true);
         mTickChart.setDisplayLatitudeTitle(true);
@@ -836,7 +866,7 @@ public class SampleDemoActivity extends BaseActivity {
     }
     
     private void initVOLChart() {
-        this.mVOLchart = (ColoredSlipStickChart) findViewById(R.id.slipstickchart);
+        this.mVOLchart = (MAColoredSlipStickChart) findViewById(R.id.slipstickchart);
 
         mVOLchart.setAxisXColor(Color.LTGRAY);
         mVOLchart.setAxisYColor(Color.LTGRAY);
@@ -876,8 +906,8 @@ public class SampleDemoActivity extends BaseActivity {
         mVOLchart.setDisplayLongitude(true);
         mVOLchart.setBackgroundColor(Color.BLACK);
 
-        mVOLchart.setDataMultiple(100);
-        mVOLchart.setAxisYDecimalFormat("#,##0.00");
+//        mVOLchart.setDataMultiple(100);
+//        mVOLchart.setAxisYDecimalFormat("#,##0");
         mVOLchart.setAxisXDateTargetFormat("yyyy/MM/dd");
         mVOLchart.setAxisXDateSourceFormat("yyyyMMdd");
         mVOLchart.setOnDisplayCursorListener(displayCursorListener);
@@ -1093,6 +1123,15 @@ public class SampleDemoActivity extends BaseActivity {
     public void initHandicap() {
 		this.mLinHandicap = (LinearLayout) findViewById(R.id.lin_handicap);
 		
+		try {
+			mHandicapData = (HandicapData) getIntent().getExtras().getSerializable(HANDICAP_DATA);
+		} catch (NullPointerException e) {
+		}
+		
+		if (mHandicapData == null) {
+			mHandicapData = new HandicapData();
+		}
+		
 		for (int i = 0; i < 7; i++) {
 			LinearLayout linHandicap = new LinearLayout(this);
 			linHandicap.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 0));
@@ -1139,45 +1178,45 @@ public class SampleDemoActivity extends BaseActivity {
         	switch (i) {
 			case 0:
 				tvLeftLabel.setText("卖价:");
-				tvLeftValue.setText("3559");
+				tvLeftValue.setText(mHandicapData.getSellPrice());
 				tvRightLabel.setText("卖量:");
-				tvRightValue.setText("2");
+				tvRightValue.setText(mHandicapData.getSellCount());
 				break;
 			case 1:
 				tvLeftLabel.setText("买价:");
-				tvLeftValue.setText("3559");
+				tvLeftValue.setText(mHandicapData.getBuyPrice());
 				tvRightLabel.setText("买量:");
-				tvRightValue.setText("1");
+				tvRightValue.setText(mHandicapData.getBuyCount());
 				break;
 			case 2:
 				tvLeftLabel.setText("最新:");
-				tvLeftValue.setText("3559");
+				tvLeftValue.setText(mHandicapData.getCurrentPrice());
 				tvRightLabel.setText("涨跌:");
-				tvRightValue.setText("2");
+				tvRightValue.setText(mHandicapData.getChangePrice());
 				break;
 			case 3:
 				tvLeftLabel.setText("最高:");
-				tvLeftValue.setText("3559");
+				tvLeftValue.setText(mHandicapData.getHighPrice());
 				tvRightLabel.setText("最低:");
-				tvRightValue.setText("3559");
+				tvRightValue.setText(mHandicapData.getLowPrice());
 				break;
 			case 4:
 				tvLeftLabel.setText("开盘:");
-				tvLeftValue.setText("3559");
+				tvLeftValue.setText(mHandicapData.getOpenPrice());
 				tvRightLabel.setText("总量:");
-				tvRightValue.setText("3559");
+				tvRightValue.setText(mHandicapData.getOpenSumCount());
 				break;
 			case 5:
 				tvLeftLabel.setText("昨收:");
-				tvLeftValue.setText("3559");
+				tvLeftValue.setText(mHandicapData.getClosePrice());
 				tvRightLabel.setText("总额:");
-				tvRightValue.setText("3559");
+				tvRightValue.setText(mHandicapData.getCloseSumCount());
 				break;
 			case 6:
 				tvLeftLabel.setText("昨结:");
-				tvLeftValue.setText("3559");
+				tvLeftValue.setText(mHandicapData.getYesterdayClosePrice());
 				tvRightLabel.setText("持货:");
-				tvRightValue.setText("3559");
+				tvRightValue.setText(mHandicapData.getHoldSumCount());
 				break;
 			default:
 				break;
@@ -1185,68 +1224,28 @@ public class SampleDemoActivity extends BaseActivity {
 		}
 	}
     
-    private void initDetail() {
+    @SuppressWarnings("unchecked")
+	private void initDetail() {
     	this.mLinDetailTop = (LinearLayout) findViewById(R.id.lin_detail_top);
     	this.mLvDetail = (ListView) findViewById(R.id.lv_detail);
     	
-    	List<Map<String, String>> detailData = new ArrayList<Map<String, String>>();
+    	try {
+        	mDetailData = (List<TickData>) getIntent().getExtras().getSerializable(DETAIL_DATA);
+		} catch (NullPointerException e) {
+		}
     	
-    	Map<String, String> detail1 = new HashMap<String, String>();
-    	detail1.put("time", "14:02:53");
-    	detail1.put("price", "2742");
-    	detail1.put("count", "10");
-    	detailData.add(detail1);
+    	if (mDetailData == null) {
+    		mDetailData = new ArrayList<TickData>();
+		}
     	
-    	Map<String, String> detail2 = new HashMap<String, String>();
-    	detail2.put("time", "14:02:53");
-    	detail2.put("price", "2742");
-    	detail2.put("count", "10");
-    	detailData.add(detail2);
-    	
-    	Map<String, String> detail3 = new HashMap<String, String>();
-    	detail3.put("time", "14:02:53");
-    	detail3.put("price", "2742");
-    	detail3.put("count", "10");
-    	detailData.add(detail3);
-    	
-    	Map<String, String> detail4 = new HashMap<String, String>();
-    	detail4.put("time", "14:02:53");
-    	detail4.put("price", "2742");
-    	detail4.put("count", "10");
-    	detailData.add(detail4);
-    	
-    	Map<String, String> detail5 = new HashMap<String, String>();
-    	detail5.put("time", "14:02:53");
-    	detail5.put("price", "2742");
-    	detail5.put("count", "10");
-    	detailData.add(detail5);
-    	
-    	Map<String, String> detail6 = new HashMap<String, String>();
-    	detail6.put("time", "14:02:53");
-    	detail6.put("price", "2742");
-    	detail6.put("count", "10");
-    	detailData.add(detail6);
-    	
-    	Map<String, String> detail7 = new HashMap<String, String>();
-    	detail7.put("time", "14:02:53");
-    	detail7.put("price", "2742");
-    	detail7.put("count", "10");
-    	detailData.add(detail7);
-    	
-    	Map<String, String> detail8 = new HashMap<String, String>();
-    	detail8.put("time", "14:02:53");
-    	detail8.put("price", "2742");
-    	detail8.put("count", "10");
-    	detailData.add(detail8);
-    	
-    	mLvAdapter = new LvAdapter(this, detailData, mLvDetail);
+    	mLvAdapter = new LvAdapter(this, mDetailData, mLvDetail);
 	}
     
     /**
-     * 加载JSON
+     * 请求K线数据
      * @return
      */
-    public void loadJSONData(ChartDataType dataType){
+    public void loadKLineData(ChartDataType dataType){
     	GroupChartData currentChartData = dataType == ChartDataType.DAY?mDayData:dataType == ChartDataType.WEEK?mWeekData:dataType == ChartDataType.MONTH?mMonthData:dataType == ChartDataType.ONE_MINUTE?m1MinuteData:dataType == ChartDataType.FIVE_MINUTE?m5MinuteData:dataType == ChartDataType.FIFTEEN_MINUTE?m15MinuteData:dataType == ChartDataType.THIRTY_MINUTE?m30MinuteData:dataType == ChartDataType.ONE_HOUR?m1HourData:dataType == ChartDataType.TWO_HOUR?m2HourData:m4HourData;
     	
     	if (currentChartData == null || isRefresh) {
@@ -1255,10 +1254,12 @@ public class SampleDemoActivity extends BaseActivity {
     		isRefresh = false;
     		
     		String strFileNm = dataType == ChartDataType.DAY?"15min.txt":dataType == ChartDataType.WEEK?"1min.txt":"time.txt";
-        	String strData = getStringFromAssets(strFileNm);
         	
-        	JSONBean bean = (JSONBean)FastJsonPaser.parse(strData, JSONBean.class);
-        	List<Map<String, String>> arrayData = bean.getKqn() != null ? bean.getKqn():bean.getCt() != null?bean.getCt():bean.getCtt() != null? bean.getCtt():null;
+    		String strData = getStringFromAssets(strFileNm);
+        	// TODO 请求K线数据
+        	
+        	ResponseData bean = (ResponseData)FastJsonPaser.parse(strData, ResponseData.class);
+        	List<Map<String, String>> arrayData = bean.getBd().getKqn() != null ? bean.getBd().getKqn():bean.getBd().getCt() != null?bean.getBd().getCt():bean.getBd() != null? bean.getBd().getCtt():null;
         	
         	if (chartData == null) {
         		chartData = new ArrayList<OHLCVData>();
@@ -1323,6 +1324,7 @@ public class SampleDemoActivity extends BaseActivity {
 
         // 为chart1增加均线
         mVOLchart.setStickData(currentChartData.getVolData());
+        mVOLchart.setLineData(currentChartData.getVolMAData());
         
         // 设置stickData
         mMacdChart.setStickData(currentChartData.getMacdData());
@@ -1336,14 +1338,16 @@ public class SampleDemoActivity extends BaseActivity {
     }
     
     /**
-     * 加载JSON
+     * 请求分时数据
      * @return
      */
-    public void loadTickJSONData(){
+    public void loadTickData(){
     	String strFileNm = "time.txt";
-    	String strData = getStringFromAssets(strFileNm);
     	
-    	JSONBean bean = (JSONBean)FastJsonPaser.parse(strData, JSONBean.class);
+    	String strData = getStringFromAssets(strFileNm);
+    	// TODO 请求分时数据
+    	
+    	ResponseBodyData bean = (ResponseBodyData)FastJsonPaser.parse(strData, ResponseBodyData.class);
     	List<Map<String, String>> arrayData = bean.getKqn() != null ? bean.getKqn():bean.getCt() != null?bean.getCt():bean.getCtt() != null? bean.getCtt():null;
     	
     	List<OHLCVData> timesData = new ArrayList<OHLCVData>();
@@ -1364,6 +1368,77 @@ public class SampleDemoActivity extends BaseActivity {
 		}
     	
     	mTickChart.setLinesData(initTickLines(timesData));
+    }
+    
+    /**
+     * 请求盘口数据
+     * @return
+     */
+    public void loadHandicapData(){
+    	// TODO 请求盘口数据
+    	mHandicapData = new HandicapData();
+    	
+    	updateHandicap();
+    }
+    
+    /**
+     * 请求明细数据
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+	public void loadDetailData(){
+    	// TODO 请求明细数据
+    	mDetailData = new ArrayList<TickData>();
+    	    	
+    	TickData detail1 = new TickData();
+    	detail1.setTime("14:02:53");
+    	detail1.setPrice("2742");
+    	detail1.setCount("10");
+    	mDetailData.add(detail1);
+    	
+    	TickData detail2 = new TickData();
+    	detail2.setTime("14:02:53");
+    	detail2.setPrice("2742");
+    	detail2.setCount("10");
+    	mDetailData.add(detail2);
+    	
+    	TickData detail3 = new TickData();
+    	detail3.setTime("14:02:53");
+    	detail3.setPrice("2742");
+    	detail3.setCount("10");
+    	mDetailData.add(detail3);
+    	
+    	TickData detail4 = new TickData();
+    	detail4.setTime("14:02:53");
+    	detail4.setPrice("2742");
+    	detail4.setCount("10");
+    	mDetailData.add(detail4);
+    	
+    	TickData detail5 = new TickData();
+    	detail5.setTime("14:02:53");
+    	detail5.setPrice("2742");
+    	detail5.setCount("10");
+    	mDetailData.add(detail5);
+    	
+    	TickData detail6 = new TickData();
+    	detail6.setTime("14:02:53");
+    	detail6.setPrice("2742");
+    	detail6.setCount("10");
+    	mDetailData.add(detail6);
+    	
+    	TickData detail7 = new TickData();
+    	detail7.setTime("14:02:53");
+    	detail7.setPrice("2742");
+    	detail7.setCount("10");
+    	mDetailData.add(detail7);
+    	
+    	TickData detail8 = new TickData();
+    	detail8.setTime("14:02:53");
+    	detail8.setPrice("2742");
+    	detail8.setCount("10");
+    	mDetailData.add(detail8);
+    	
+    	mLvAdapter.reSet(mDetailData);
     }
     
     protected void updateCharts() {
@@ -1417,6 +1492,61 @@ public class SampleDemoActivity extends BaseActivity {
 			this.registerReceiver(mBroadcastReciver, intentFilter);
 		}
 	}
+	
+	public void updateProductInfo(){    	
+    	mTvCurrentPrice.setText(mProductData.getCurrentPrice());
+    	mTvCurrentPercent.setText(mProductData.getChangePrice());
+    	mTvNewestPercent.setText(mProductData.getChangePercent());
+    	
+    	SimpleDateFormat dt = new SimpleDateFormat("MM月dd HH:mm:ss");
+    	mTvDateTime.setText(dt.format(new Date()));
+
+    	mTvBuyPrice.setText(mProductData.getBuyPrice());
+    	mTvHigh.setText(mProductData.getHighPrice());
+    	mTvSellPrice.setText(mProductData.getSellPrice());
+    	mTvLow.setText(mProductData.getLowPrice());
+    }
+	
+	public void updateHandicap(){    	
+    	for (int i = 0; i < mLinHandicap.getChildCount(); i++) {
+			LinearLayout linHandicap = (LinearLayout) mLinHandicap.getChildAt(i);
+			TextView tvLeftValue = (TextView) linHandicap.getChildAt(1);
+			TextView tvRightValue = (TextView) linHandicap.getChildAt(3);
+			
+			switch (i) {
+			case 0:
+				tvLeftValue.setText(mHandicapData.getSellPrice());
+				tvRightValue.setText(mHandicapData.getSellCount());
+				break;
+			case 1:
+				tvLeftValue.setText(mHandicapData.getBuyPrice());
+				tvRightValue.setText(mHandicapData.getBuyCount());
+				break;
+			case 2:
+				tvLeftValue.setText(mHandicapData.getCurrentPrice());
+				tvRightValue.setText(mHandicapData.getChangePrice());
+				break;
+			case 3:
+				tvLeftValue.setText(mHandicapData.getHighPrice());
+				tvRightValue.setText(mHandicapData.getLowPrice());
+				break;
+			case 4:
+				tvLeftValue.setText(mHandicapData.getOpenPrice());
+				tvRightValue.setText(mHandicapData.getOpenSumCount());
+				break;
+			case 5:
+				tvLeftValue.setText(mHandicapData.getClosePrice());
+				tvRightValue.setText(mHandicapData.getCloseSumCount());
+				break;
+			case 6:
+				tvLeftValue.setText(mHandicapData.getYesterdayClosePrice());
+				tvRightValue.setText(mHandicapData.getHoldSumCount());
+				break;
+			default:
+				break;
+			}
+		}
+    }
 	
 	private void updateChart(IndicatorType indicatorType, int[] indicators) {
 		if (indicatorType == IndicatorType.IndicatorMACD) {
@@ -1683,7 +1813,7 @@ public class SampleDemoActivity extends BaseActivity {
 	class LvAdapter extends BaseLvAdapter{
  		
  		@SuppressWarnings("unchecked")
-		public LvAdapter(Context context, List<Map<String, String>> data, View viewLv){
+		public LvAdapter(Context context, List<TickData> data, View viewLv){
  			super(context, data, viewLv);
  			res = R.layout.activity_sample_demo_list_item;
  		}
@@ -1700,11 +1830,11 @@ public class SampleDemoActivity extends BaseActivity {
 			}
 			
 			@SuppressWarnings("unchecked")
-			Map<String, String> data = (Map<String, String>) dataList.get(position);
+			TickData data = (TickData) dataList.get(position);
 			
-			viewHolder.tvTime.setText(data.get("time"));
-			viewHolder.tvPrice.setText(data.get("price"));
-			viewHolder.tvCount.setText(data.get("count"));
+			viewHolder.tvTime.setText(data.getTime());
+			viewHolder.tvPrice.setText(data.getPrice());
+			viewHolder.tvCount.setText(data.getCount());
  			
  			return convertView;
  		}

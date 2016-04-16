@@ -354,7 +354,7 @@
 	        android:orientation="horizontal"
 	        android:layout_height="0dip"
 	        android:layout_weight="1" >
-	        <cn.limc.androidcharts.view.ColoredSlipStickChart
+	        <cn.limc.androidcharts.view.MAColoredSlipStickChart
 		        android:id="@+id/slipstickchart"
 		        android:layout_width="match_parent"
 		        android:layout_height="match_parent"

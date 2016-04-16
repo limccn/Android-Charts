@@ -59,7 +59,7 @@ public class SlipCandleStickChart extends SlipStickChart {
 	 * 默认阳线的边框颜色
 	 * </p>
 	 */
-	public static final int DEFAULT_POSITIVE_STICK_BORDER_COLOR = Color.RED;
+	public static final int DEFAULT_POSITIVE_STICK_BORDER_COLOR = Color.parseColor("#ed4d4d");
 
 	/**
 	 * <p>
@@ -72,7 +72,7 @@ public class SlipCandleStickChart extends SlipStickChart {
 	 * 默认阳线的填充颜色
 	 * </p>
 	 */
-	public static final int DEFAULT_POSITIVE_STICK_FILL_COLOR = Color.TRANSPARENT;
+	public static final int DEFAULT_POSITIVE_STICK_FILL_COLOR = Color.parseColor("#ed4d4d");
 
 	/**
 	 * <p>
@@ -85,7 +85,7 @@ public class SlipCandleStickChart extends SlipStickChart {
 	 * 默认阴线的边框颜色
 	 * </p>
 	 */
-	public static final int DEFAULT_NEGATIVE_STICK_BORDER_COLOR = Color.GREEN;
+	public static final int DEFAULT_NEGATIVE_STICK_BORDER_COLOR = Color.parseColor("#52ba27");
 
 	/**
 	 * <p>
@@ -98,7 +98,7 @@ public class SlipCandleStickChart extends SlipStickChart {
 	 * 默认阴线的填充颜色
 	 * </p>
 	 */
-	public static final int DEFAULT_NEGATIVE_STICK_FILL_COLOR = Color.GREEN;
+	public static final int DEFAULT_NEGATIVE_STICK_FILL_COLOR = Color.parseColor("#52ba27");
 
 	/**
 	 * <p>

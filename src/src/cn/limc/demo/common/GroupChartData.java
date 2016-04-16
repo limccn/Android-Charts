@@ -38,12 +38,13 @@ public class GroupChartData implements Serializable {
 	 * VOLChart
 	 */
 	private ListChartData<IStickEntity> volData;
+	private List<LineEntity<DateValueEntity>> volMAData;
 	
 	/**
 	 * macd
 	 */
 	private ListChartData<IStickEntity> macdData;
-	
+
 	/**
 	 * kdj
 	 */
@@ -97,12 +98,13 @@ public class GroupChartData implements Serializable {
 		this.candleStickLinesData = TAComputeUtils.convertCandleStickLinesData(ohlcData,ma1,ma2,ma3);
 		this.candleBandData = TAComputeUtils.convertCandleBandData(ohlcData);
 		this.volData = TAComputeUtils.convertVOLData(ohlcData);
+		this.volMAData = TAComputeUtils.convertVOLMAData(ohlcData,ma1,ma2,ma3);
 		this.macdData = TAComputeUtils.convertMACDData(ohlcData, mContext);
 		this.kdjData = TAComputeUtils.convertKDJData(ohlcData, mContext);
 		this.rsiData = TAComputeUtils.convertRSIData(ohlcData, mContext);
 		this.wrData = TAComputeUtils.convertWRData(ohlcData, mContext);
 		this.cciData = TAComputeUtils.convertCCIData(ohlcData, mContext);
-		this.bollData = TAComputeUtils.convertBOLLData(ohlcData, mContext);
+		this.bollData = this.candleBandData;//TAComputeUtils.convertBOLLData(ohlcData, mContext);
 	}
 	
 	public void updateMAData(int ma1, int ma2, int ma3){
@@ -301,6 +303,14 @@ public class GroupChartData implements Serializable {
 		this.volData = volData;
 	}
 
+	public List<LineEntity<DateValueEntity>> getVolMAData() {
+		return volMAData;
+	}
+
+	public void setVolMAData(List<LineEntity<DateValueEntity>> volMAData) {
+		this.volMAData = volMAData;
+	}
+	
 	public ListChartData<IStickEntity> getMacdData() {
 		return macdData;
 	}
