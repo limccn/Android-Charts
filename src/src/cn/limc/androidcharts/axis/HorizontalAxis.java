@@ -47,7 +47,7 @@ public class HorizontalAxis extends Axis {
      * 默认轴线下边距
      * </p>
      */
-    public static final float DEFAULT_HEIGHT = 20f;
+    public static final float DEFAULT_HEIGHT = 28f;
 
 	protected float height = DEFAULT_HEIGHT;
 	/** 

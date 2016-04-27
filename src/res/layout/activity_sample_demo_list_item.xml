@@ -8,17 +8,20 @@
        	android:layout_width="0dip"
        	android:layout_height="match_parent"
        	android:layout_weight="1"
+       	android:textColor="@drawable/lightgray"
        	android:gravity="center" />
     <TextView
         android:id="@+id/tv_price"
        	android:layout_width="0dip"
        	android:layout_height="match_parent"
        	android:layout_weight="1"
+       	android:textColor="@drawable/lightgray"
        	android:gravity="center" />
     <TextView
         android:id="@+id/tv_count"
        	android:layout_width="0dip"
        	android:layout_height="match_parent"
        	android:layout_weight="1"
+       	android:textColor="@drawable/lightgray"
        	android:gravity="center" />
 </LinearLayout>

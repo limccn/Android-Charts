@@ -110,7 +110,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 
 
 	public static final int DEFAULT_DISPLAY_STICK_AS_LINE_NUMBER = 120;
-	public static final int DEFAULT_DISPLAY_STICK_AS_LINE_COLOR = Color.WHITE;
+	public static final int DEFAULT_DISPLAY_STICK_AS_LINE_COLOR = Color.LTGRAY;
 
 
 	/**
@@ -134,6 +134,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 	protected boolean detectZoomEvent = true;
 	protected int displayStickAsLineNumber = DEFAULT_DISPLAY_STICK_AS_LINE_NUMBER;
 	protected int displayStickAsLineColor = DEFAULT_DISPLAY_STICK_AS_LINE_COLOR;
+	
 
 
 	protected IDisplayCursorListener onDisplayCursorListener;
@@ -233,7 +234,7 @@ public class StickChart extends PeriodDataGridChart implements IZoomable{
 
 		Paint mPaintStroke = new Paint();
 		mPaintStroke.setStyle(Paint.Style.STROKE);
-		mPaintStroke.setStrokeWidth(stickStrokeWidth);
+		mPaintStroke.setStrokeWidth(2.0f);
 		mPaintStroke.setColor(displayStickAsLineColor);
 
 		// start point

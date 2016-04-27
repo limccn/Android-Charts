@@ -7,13 +7,21 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import cn.limc.androidcharts.R;
 import cn.limc.demo.common.BaseActivity;
-import cn.limc.demo.common.PreferencesUtils;
+import cn.limc.demo.common.EnumType.IndicatorType;
+import cn.limc.demo.common.EnumType.ThemeModeType;
+import cn.limc.demo.common.utils.PreferencesUtils;
 
 public class SettingDetailActivity extends BaseActivity {
 	
+	/** 主题 */
+	ThemeModeType mThemeMode;
+
+	RelativeLayout mRelBackground;
+
 	LinearLayout mLinFirstContainer;
 	LinearLayout mLinSecondContainer;
 	LinearLayout mLinThirdContainer;
@@ -42,6 +50,11 @@ public class SettingDetailActivity extends BaseActivity {
 	}
 	
 	private void initValues() {
+		int themeMode =  PreferencesUtils.getInt(this, PreferencesUtils.THEME_MODE);
+		mThemeMode = themeMode == -1?ThemeModeType.THEME_DAY:themeMode == 0?ThemeModeType.THEME_DAY:ThemeModeType.THEME_NIGHT;
+
+		mRelBackground = (RelativeLayout) findViewById(R.id.rel_background);
+
 		mLinFirstContainer = (LinearLayout) findViewById(R.id.lin_first_conrainer);
 		mLinSecondContainer = (LinearLayout) findViewById(R.id.lin_second_conrainer);
 		mLinThirdContainer = (LinearLayout) findViewById(R.id.lin_third_conrainer);
@@ -65,6 +78,20 @@ public class SettingDetailActivity extends BaseActivity {
 	private void initWidgets() {
 		initViews(mIndicatorType);
 		
+    	mRelBackground.setBackgroundResource(mThemeMode==ThemeModeType.THEME_DAY?R.color.chart_background_day:R.color.chart_background_night);
+
+    	mLinFirstContainer.setBackgroundResource(mThemeMode==ThemeModeType.THEME_DAY?R.color.cell_background_day:R.color.cell_background_night);
+    	mLinSecondContainer.setBackgroundResource(mThemeMode==ThemeModeType.THEME_DAY?R.color.cell_background_day:R.color.cell_background_night);
+    	mLinThirdContainer.setBackgroundResource(mThemeMode==ThemeModeType.THEME_DAY?R.color.cell_background_day:R.color.cell_background_night);
+    	
+    	mTvFirstIndicator.setTextColor(mThemeMode==ThemeModeType.THEME_DAY?getResources().getColor(R.color.cell_text_day):getResources().getColor(R.color.cell_text_night));
+    	mTvSecondIndicator.setTextColor(mThemeMode==ThemeModeType.THEME_DAY?getResources().getColor(R.color.cell_text_day):getResources().getColor(R.color.cell_text_night));
+    	mTvThirdIndicator.setTextColor(mThemeMode==ThemeModeType.THEME_DAY?getResources().getColor(R.color.cell_text_day):getResources().getColor(R.color.cell_text_night));
+
+		mEtFirstIndicator.setTextColor(mThemeMode==ThemeModeType.THEME_DAY?getResources().getColor(R.color.cell_text_day):getResources().getColor(R.color.cell_text_night));
+		mEtSecondIndicator.setTextColor(mThemeMode==ThemeModeType.THEME_DAY?getResources().getColor(R.color.cell_text_day):getResources().getColor(R.color.cell_text_night));
+		mEtThirdIndicator.setTextColor(mThemeMode==ThemeModeType.THEME_DAY?getResources().getColor(R.color.cell_text_day):getResources().getColor(R.color.cell_text_night));
+
 		mBtnSetting.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -93,6 +120,18 @@ public class SettingDetailActivity extends BaseActivity {
 			mEtFirstIndicator.setText(PreferencesUtils.getInt(this, PreferencesUtils.MACD_S)+"");
 			mEtSecondIndicator.setText(PreferencesUtils.getInt(this, PreferencesUtils.MACD_L)+"");
 			mEtThirdIndicator.setText(PreferencesUtils.getInt(this, PreferencesUtils.MACD_M)+"");
+		}else if (indicatorType == IndicatorType.IndicatorVMA) {
+			mTvFirstIndicator.setText("VMA1:");
+			mTvSecondIndicator.setText("VMA2:");
+			mTvThirdIndicator.setText("VMA3:");
+			
+			mEtFirstIndicator.setHint("VMA1");
+			mEtSecondIndicator.setHint("VMA2");
+			mEtThirdIndicator.setHint("VMA3");
+			
+			mEtFirstIndicator.setText(PreferencesUtils.getInt(this, PreferencesUtils.MA1)+"");
+			mEtSecondIndicator.setText(PreferencesUtils.getInt(this, PreferencesUtils.MA2)+"");
+			mEtThirdIndicator.setText(PreferencesUtils.getInt(this, PreferencesUtils.MA3)+"");
 		}else if (indicatorType == IndicatorType.IndicatorMA) {
 			mTvFirstIndicator.setText("MA1:");
 			mTvSecondIndicator.setText("MA2:");
@@ -165,6 +204,8 @@ public class SettingDetailActivity extends BaseActivity {
 		if (indicatorType == IndicatorType.IndicatorMACD) {
 			indicators = new int[]{Integer.parseInt(mEtFirstIndicator.getEditableText().toString()), Integer.parseInt(mEtSecondIndicator.getEditableText().toString()), Integer.parseInt(mEtThirdIndicator.getEditableText().toString())};
 		}else if (indicatorType == IndicatorType.IndicatorMA) {
+			indicators = new int[]{Integer.parseInt(mEtFirstIndicator.getEditableText().toString()), Integer.parseInt(mEtSecondIndicator.getEditableText().toString()), Integer.parseInt(mEtThirdIndicator.getEditableText().toString())};
+		}else if (indicatorType == IndicatorType.IndicatorVMA) {
 			indicators = new int[]{Integer.parseInt(mEtFirstIndicator.getEditableText().toString()), Integer.parseInt(mEtSecondIndicator.getEditableText().toString()), Integer.parseInt(mEtThirdIndicator.getEditableText().toString())};
 		}else if (indicatorType == IndicatorType.IndicatorKDJ) {
 			indicators = new int[]{Integer.parseInt(mEtFirstIndicator.getEditableText().toString())};

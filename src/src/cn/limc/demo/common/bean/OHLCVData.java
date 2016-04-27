@@ -1,4 +1,4 @@
-package cn.limc.demo.common;
+package cn.limc.demo.common.bean;
 
 import java.io.Serializable;
 

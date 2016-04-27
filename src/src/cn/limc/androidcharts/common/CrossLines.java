@@ -19,7 +19,6 @@
  * limitations under the License.
  */
 
-
 package cn.limc.androidcharts.common;
 
 import android.R.color;
@@ -30,7 +29,10 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Paint.Style;
+import android.util.Log;
+
 import cn.limc.androidcharts.axis.Axis;
+import cn.limc.androidcharts.view.DataGridChart;
 import cn.limc.androidcharts.view.GridChart;
 
 /** 
@@ -84,7 +86,11 @@ public class CrossLines implements ICrossLines {
 	 */
 	private boolean displayCrossXOnTouch = DEFAULT_DISPLAY_CROSS_X_ON_TOUCH;
 
-	/**
+    private boolean displayCrossXDegreeOnTouch = DEFAULT_DISPLAY_CROSS_X_DEGREE_ON_TOUCH;
+
+
+
+    /**
 	 * <p>
 	 * Should display the Y cross line if grid is touched?
 	 * </p>
@@ -96,9 +102,10 @@ public class CrossLines implements ICrossLines {
 	 * </p>
 	 */
 	private boolean displayCrossYOnTouch = DEFAULT_DISPLAY_CROSS_Y_ON_TOUCH;
-	
-	
-	protected int bindCrossLinesToStick = DEFAULT_BIND_CROSS_LINES_TO_STICK;
+
+    private boolean displayCrossYDegreeOnTouch = DEFAULT_DISPLAY_CROSS_Y_DEGREE_ON_TOUCH;
+
+    protected int bindCrossLinesToStick = DEFAULT_BIND_CROSS_LINES_TO_STICK;
 	
 	
     public CrossLines(GridChart inChart){
@@ -179,7 +186,23 @@ public class CrossLines implements ICrossLines {
     public void setBindCrossLinesToStick(int bindCrossLinesToStick) {
         this.bindCrossLinesToStick = bindCrossLinesToStick;
     }
-    
+
+    public boolean isDisplayCrossXDegreeOnTouch() {
+        return displayCrossXDegreeOnTouch;
+    }
+
+    public void setDisplayCrossXDegreeOnTouch(boolean displayCrossXDegreeOnTouch) {
+        this.displayCrossXDegreeOnTouch = displayCrossXDegreeOnTouch;
+    }
+
+    public boolean isDisplayCrossYDegreeOnTouch() {
+        return displayCrossYDegreeOnTouch;
+    }
+
+    public void setDisplayCrossYDegreeOnTouch(boolean displayCrossYDegreeOnTouch) {
+        this.displayCrossYDegreeOnTouch = displayCrossYDegreeOnTouch;
+    }
+
     /**
      * <p>
      * draw cross line ,called when graph is touched
@@ -195,9 +218,6 @@ public class CrossLines implements ICrossLines {
      */
     protected void drawVerticalLine(Canvas canvas) {
 
-//        if (!displayLongitudeTitle) {
-//            return;
-//        }
         
         PointF touchPoint = inChart.getTouchPoint();
         if (!displayCrossXOnTouch) {
@@ -213,37 +233,48 @@ public class CrossLines implements ICrossLines {
         Paint mPaint = new Paint();
         mPaint.setColor(crossLinesColor);
         mPaint.setStyle(Style.STROKE);
-        mPaint.setStrokeWidth(1.0f);
+        mPaint.setStrokeWidth(2.0f);
         mPaint.setPathEffect(new DashPathEffect(
                 new float[]{6, 3, 6, 3}, 1));
 
         float lineVLength = inChart.getDataQuadrant().getHeight() 
                 + inChart.getAxisX().getLineWidth();
 
-//        // TODO calculate points to draw
-//        PointF boxVS = new PointF(touchPoint.x - longitudeFontSize * 5f / 2f,
-//                borderWidth + lineVLength);
-//        PointF boxVE = new PointF(touchPoint.x + longitudeFontSize * 5f / 2f,
-//                borderWidth + lineVLength + axisXTitleQuadrantHeight);
-//
-//        // draw text
-//        drawAlphaTextBox(boxVS, boxVE, getAxisXGraduate(touchPoint.x),
-//                longitudeFontSize, canvas);
-
-//        canvas.drawLine(touchPoint.x, inChart.getBorderWidth(), touchPoint.x, lineVLength,
-//                mPaint);
 
         Path path = new Path();
         path.moveTo(touchPoint.x, inChart.getBorderWidth());
         path.lineTo(touchPoint.x, lineVLength);
         canvas.drawPath(path, mPaint);
+
+
+        if (displayCrossXDegreeOnTouch) {
+            int fontSize = inChart.getSimpleGrid().getLongitudeFontSize();
+            String textToDraw = inChart.calcAxisXGraduate();
+
+            Paint mPaintBox = new Paint();
+            mPaintBox.setColor(Color.LTGRAY);
+            // mPaintBox.setAlpha(80);
+            mPaintBox.setStyle(Style.FILL);
+
+            Paint mPaintBoxText = new Paint();
+            mPaintBoxText.setColor(Color.BLACK);
+            mPaintBoxText.setAntiAlias(true);
+            mPaintBoxText.setTextSize(fontSize);
+
+            float textWidth = mPaintBoxText.measureText(textToDraw);
+
+            PointF boxHS = new PointF(inChart.getTouchPoint().x - textWidth / 2.0f, inChart.getBorderWidth());
+            PointF boxHE = new PointF(inChart.getTouchPoint().x + textWidth / 2.0f, inChart.getBorderWidth() + fontSize + 4);
+
+            // draw a rectangle
+            canvas.drawRect(boxHS.x, boxHS.y, boxHE.x, boxHE.y, mPaintBox);
+            // draw text
+            canvas.drawText(textToDraw, boxHS.x, boxHS.y + fontSize, mPaintBoxText);
+        }
     }
 
     protected void drawHorizontalLine(Canvas canvas) {
 
-//        if (!displayLatitudeTitle) {
-//            return;
-//        }
         
         PointF touchPoint = inChart.getTouchPoint();
         
@@ -260,52 +291,42 @@ public class CrossLines implements ICrossLines {
         Paint mPaint = new Paint();
         mPaint.setColor(crossLinesColor);
         mPaint.setStyle(Style.STROKE);
-        mPaint.setStrokeWidth(1.0f);
+        mPaint.setStrokeWidth(2.0f);
         mPaint.setPathEffect(new DashPathEffect(
                 new float[] { 6, 3, 6, 3 }, 1));
 
         float lineHLength = inChart.getDataQuadrant().getWidth() + inChart.getAxisY().getLineWidth();
 
-        if (inChart.getAxisY().getPosition() == Axis.AXIS_Y_POSITION_LEFT) {
-//            PointF boxHS = new PointF(borderWidth, touchPoint.y
-//                    - latitudeFontSize / 2f - 2);
-//            PointF boxHE = new PointF(borderWidth + axisYTitleQuadrantWidth,
-//                    touchPoint.y + latitudeFontSize / 2f + 2);
-//
-//            // draw text
-//            drawAlphaTextBox(boxHS, boxHE, getAxisYGraduate(touchPoint.y),
-//                    latitudeFontSize, canvas);
+        Path path = new Path();
+        path.moveTo(inChart.getBorderWidth(), inChart.getTouchPoint().y);
+        path.lineTo(inChart.getBorderWidth() + lineHLength,
+                inChart.getTouchPoint().y);
+        canvas.drawPath(path, mPaint);
 
-            Path path = new Path();
-            path.moveTo(inChart.getBorderWidth() + inChart.getAxisY().getWidth(), touchPoint.y);
-            path.lineTo(inChart.getBorderWidth() + inChart.getAxisY().getWidth() + lineHLength,
-                    touchPoint.y);
-            canvas.drawPath(path, mPaint);
+        if (displayCrossYDegreeOnTouch) {
+            int fontSize = inChart.getSimpleGrid().getLatitudeFontSize();
+            String textToDraw = inChart.calcAxisYGraduate();
 
-//            canvas.drawLine(inChart.getBorderWidth() + inChart.getAxisY().getWidth(), touchPoint.y,
-//                    inChart.getBorderWidth() + inChart.getAxisY().getWidth() + lineHLength,
-//                    touchPoint.y, mPaint);
-        } else {
-//            PointF boxHS = new PointF(super.getWidth() - borderWidth
-//                    - axisYTitleQuadrantWidth, touchPoint.y - latitudeFontSize
-//                    / 2f - 2);
-//            PointF boxHE = new PointF(super.getWidth() - borderWidth,
-//                    touchPoint.y + latitudeFontSize / 2f + 2);
-//
-//            // draw text
-//            drawAlphaTextBox(boxHS, boxHE, getAxisYGraduate(touchPoint.y),
-//                    latitudeFontSize, canvas);
+            Paint mPaintBox = new Paint();
+            mPaintBox.setColor(Color.LTGRAY);
+            // mPaintBox.setAlpha(80);
+            mPaintBox.setStyle(Style.FILL);
 
-            Path path = new Path();
-            path.moveTo(inChart.getBorderWidth(), inChart.getTouchPoint().y );
-            path.lineTo(inChart.getBorderWidth() + lineHLength,
-                    inChart.getTouchPoint().y);
-            canvas.drawPath(path, mPaint);
-            
-//            canvas.drawLine(inChart.getBorderWidth(), inChart.getTouchPoint().y , inChart.getBorderWidth() + lineHLength,
-//                    inChart.getTouchPoint().y , mPaint);
+            Paint mPaintBoxText = new Paint();
+            mPaintBoxText.setColor(Color.BLACK);
+            mPaintBoxText.setAntiAlias(true);
+            mPaintBoxText.setTextSize(fontSize);
+
+            float textWidth = mPaintBoxText.measureText(textToDraw);
+
+            PointF boxHS = new PointF(inChart.getBorderWidth(), inChart.getTouchPoint().y - fontSize / 2.f - 4);
+            PointF boxHE = new PointF(inChart.getBorderWidth() + textWidth, inChart.getTouchPoint().y + fontSize / 2.f + 4);
+
+            // draw a rectangle
+            canvas.drawRect(boxHS.x, boxHS.y, boxHE.x, boxHE.y, mPaintBox);
+            // draw text
+            canvas.drawText(textToDraw, boxHS.x, boxHS.y + fontSize, mPaintBoxText);
         }
-
     }
     
     public void draw(Canvas canvas){
@@ -313,90 +334,5 @@ public class CrossLines implements ICrossLines {
             drawHorizontalLine(canvas);
             drawVerticalLine(canvas);
         }
-    }
-    
-    
-    /**
-     * <p>
-     * draw some text with border
-     * </p>
-     * <p>
-     * 文字を書く、枠あり
-     * </p>
-     * <p>
-     * 绘制一段文本，并增加外框
-     * </p>
-     * 
-     * @param ptStart
-     *            <p>
-     *            start point
-     *            </p>
-     *            <p>
-     *            開始ポイント
-     *            </p>
-     *            <p>
-     *            开始点
-     *            </p>
-     * 
-     * @param ptEnd
-     *            <p>
-     *            end point
-     *            </p>
-     *            <p>
-     *            結束ポイント
-     *            </p>
-     *            <p>
-     *            结束点
-     *            </p>
-     * 
-     * @param content
-     *            <p>
-     *            text content
-     *            </p>
-     *            <p>
-     *            文字内容
-     *            </p>
-     *            <p>
-     *            文字内容
-     *            </p>
-     * 
-     * @param fontSize
-     *            <p>
-     *            font size
-     *            </p>
-     *            <p>
-     *            文字フォントサイズ
-     *            </p>
-     *            <p>
-     *            字体大小
-     *            </p>
-     * 
-     * @param canvas
-     */
-    private void drawAlphaTextBox(PointF ptStart, PointF ptEnd, String content,
-            int color, int fontSize, Canvas canvas) {
-
-        Paint mPaintBox = new Paint();
-        mPaintBox.setColor(Color.WHITE);
-        mPaintBox.setAlpha(80);
-        mPaintBox.setStyle(Style.FILL);
-
-        Paint mPaintBoxLine = new Paint();
-        mPaintBoxLine.setColor(color);
-        mPaintBoxLine.setAntiAlias(true);
-        mPaintBoxLine.setTextSize(fontSize);
-
-        // draw a rectangle
-        canvas.drawRect(ptStart.x, ptStart.y, ptEnd.x, ptEnd.y, mPaintBox);
-
-        // draw a rectangle' border
-        canvas.drawLine(ptStart.x, ptStart.y, ptStart.x, ptEnd.y, mPaintBoxLine);
-        canvas.drawLine(ptStart.x, ptEnd.y, ptEnd.x, ptEnd.y, mPaintBoxLine);
-        canvas.drawLine(ptEnd.x, ptEnd.y, ptEnd.x, ptStart.y, mPaintBoxLine);
-        canvas.drawLine(ptEnd.x, ptStart.y, ptStart.x, ptStart.y, mPaintBoxLine);
-
-        mPaintBoxLine.setColor(color);
-        // draw text
-        canvas.drawText(content, ptStart.x, ptStart.y + fontSize, mPaintBoxLine);
     }
 }

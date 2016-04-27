@@ -15,17 +15,24 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import cn.limc.androidcharts.R;
 import cn.limc.demo.common.BaseActivity;
 import cn.limc.demo.common.BaseLvAdapter;
+import cn.limc.demo.common.EnumType.ThemeModeType;
+import cn.limc.demo.common.utils.PreferencesUtils;
 
 public class SettingActivity extends BaseActivity {
 
 	private BroadcastReciver mBroadcastReciver;
 	
+	/** 主题 */
+	ThemeModeType mThemeMode;
+	
 	List<Map<String, String>> mIndicatorData;
 	
+	RelativeLayout mRelBackground;
 	ListView mLvIndicator;
 	LvAdapter mAdapter;
 	
@@ -63,6 +70,10 @@ public class SettingActivity extends BaseActivity {
 	}
 	
 	private void initValues() {
+		int themeMode =  PreferencesUtils.getInt(this, PreferencesUtils.THEME_MODE);
+		mThemeMode = themeMode == -1?ThemeModeType.THEME_DAY:themeMode == 0?ThemeModeType.THEME_DAY:ThemeModeType.THEME_NIGHT;
+
+		this.mRelBackground = (RelativeLayout) findViewById(R.id.rel_background);
 		this.mLvIndicator = (ListView) findViewById(R.id.lv_indicator);
     	
 		mIndicatorData = new ArrayList<Map<String, String>>();
@@ -73,6 +84,9 @@ public class SettingActivity extends BaseActivity {
     	Map<String, String> maIndicator = new HashMap<String, String>();
     	maIndicator.put("title", "MA均线");
     	mIndicatorData.add(maIndicator);
+    	Map<String, String> vmaIndicator = new HashMap<String, String>();
+    	vmaIndicator.put("title", "VMA均线");
+    	mIndicatorData.add(vmaIndicator);
     	Map<String, String> kdjIndicator = new HashMap<String, String>();
     	kdjIndicator.put("title", "KDJ随机指标");
     	mIndicatorData.add(kdjIndicator);
@@ -109,6 +123,8 @@ public class SettingActivity extends BaseActivity {
                 startActivity(intent);
 			}
 		});
+    	
+    	mRelBackground.setBackgroundResource(mThemeMode==ThemeModeType.THEME_DAY?R.color.chart_background_day:R.color.chart_background_night);
     }
 	
 	/**
@@ -152,12 +168,13 @@ public class SettingActivity extends BaseActivity {
 				viewHolder = (ViewHolder) convertView.getTag();
 			}
 			
-			convertView.setBackgroundResource(R.drawable.white);
+			convertView.setBackgroundResource(mThemeMode == ThemeModeType.THEME_DAY?R.color.cell_background_day:R.color.cell_background_night);
 			
 			@SuppressWarnings("unchecked")
 			Map<String, String> data = (Map<String, String>) dataList.get(position);
 			
 			viewHolder.tvIndicator.setText(data.get("title"));
+			viewHolder.tvIndicator.setTextColor(mThemeMode == ThemeModeType.THEME_DAY?getResources().getColor(R.color.cell_text_day):getResources().getColor(R.color.cell_text_night));
  			
  			return convertView;
  		}

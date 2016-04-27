@@ -20,4 +20,28 @@
 	<drawable name="backgroundcolor">#F6F6F6</drawable>
 	<drawable name="linecolor">#DCDCDC</drawable>
 	<drawable name="textcolor">#323232</drawable>
+	<drawable name="productgroundcolor">#ED4D4D</drawable>
+	<drawable name="chartbackgroundcolor">#F5F5F5</drawable>
+	
+	<color name="content_background_day">#FFFFFF</color>
+	<color name="content_background_night">#16181E</color>
+	
+	<color name="product_background_day">#F44D4D</color>
+	<color name="product_background_night">#1D2330</color>
+	
+	<color name="chart_background_day">#F5F5F5</color>
+	<color name="chart_background_night">#16181E</color>
+	
+	<color name="button_normal_text_day">#88909C</color>
+	<color name="button_normal_text_night">#6F7177</color>
+	
+	<color name="button_selected_text_day">#323232</color>
+	<color name="button_selected_text_night">#FFFFFFFF</color>
+	
+	<color name="cell_background_day">#FFFFFF</color>
+	<color name="cell_background_night">#16181F</color>
+	
+	<color name="cell_text_day">#323232</color>
+	<color name="cell_text_night">#FFD3D3D3</color>
+	
 </resources>

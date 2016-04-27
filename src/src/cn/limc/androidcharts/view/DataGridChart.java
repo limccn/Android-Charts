@@ -33,9 +33,12 @@ import cn.limc.androidcharts.common.SectionDataCursor;
 import cn.limc.androidcharts.entity.IChartData;
 import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.IStickEntity;
+import cn.limc.androidcharts.event.IDisplayCursorListener;
+import cn.limc.androidcharts.event.ITouchedIndexListener;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.PointF;
 import android.util.AttributeSet;
 
 /** 
@@ -50,6 +53,8 @@ import android.util.AttributeSet;
 public abstract class DataGridChart extends GridChart implements IDataCursor {
 	
 	public static final boolean DEFAULT_AUTO_CALC_VALUE_RANGE = true;
+	public static final boolean DEFAULT_AUTO_CALC_LONGITUDE_TITLES = true;
+	public static final boolean DEFAULT_AUTO_CALC_LATITUDE_TITLES = true;
 	public static final boolean DEFAULT_AUTO_CALC_BALANCE_RANGE = false;
 	public static final float[] DEFAULT_NONE_DISPLAY_VALUE = new float[]{};
 
@@ -69,6 +74,8 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 	public abstract IDataCursor getDataCursor();
 
 	public abstract IChartData<IStickEntity> getChartData();
+	
+	protected  ITouchedIndexListener touchedIndexListener;
 	
 	/**
 	 * <p>
@@ -96,8 +103,14 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 	 */
 	protected double minValue;
 
+	protected double maxDataValue;
+	protected double minDataValue;
+
 	protected boolean autoCalcValueRange = DEFAULT_AUTO_CALC_VALUE_RANGE;
 	protected boolean autoBalanceValueRange = DEFAULT_AUTO_CALC_BALANCE_RANGE;
+
+	protected boolean autoCalcLongitudeTitle = DEFAULT_AUTO_CALC_LONGITUDE_TITLES;
+	protected boolean autoCalcLatitudeTitle = DEFAULT_AUTO_CALC_LATITUDE_TITLES;
 
 
 	protected void calcDataValueRange() {
@@ -344,7 +357,34 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 			return "";
 		}
 	}
-	
+
+	@Override
+	public String calcAxisXGraduate() {
+		long date = touchPointAxisXValue();
+		return  date >0 ? formatAxisXDegree(date):"";
+	}
+
+	@Override
+	public String calcAxisYGraduate() {
+		return  formatAxisYDegree(this.touchPointAxisYValue());
+	}
+
+	@Override
+	public long touchPointAxisXValue() {
+		if (null == touchPoint) {
+			return 0;
+		}
+		return getChartData().get(getSelectedIndex()).getDate();
+	}
+
+	@Override
+	public double touchPointAxisYValue() {
+		if (null == touchPoint) {
+			return 0;
+		}
+		return (1 - (touchPoint.y - dataQuadrant.getPaddingStartY()) / dataQuadrant.getPaddingHeight())  * (maxValue - minValue) + minValue;
+	}
+
 	/**
 	 * <p>
 	 * get current selected data index
@@ -476,6 +516,22 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 		this.minValue = minValue;
 	}
 
+	public double getMaxDataValue() {
+		return maxDataValue;
+	}
+
+	public void setMaxDataValue(double maxDataValue) {
+		this.maxDataValue = maxDataValue;
+	}
+
+	public double getMinDataValue() {
+		return minDataValue;
+	}
+
+	public void setMinDataValue(double minDataValue) {
+		this.minDataValue = minDataValue;
+	}
+
 	/**
 	 * @return the autoCalcValueRange
 	 */
@@ -595,6 +651,19 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 	}
 
 
+	/**
+	 * @return the bindCrossLinesToStick
+	 */
+	public int getBindCrossLinesToStick() {
+		return this.crossLines.getBindCrossLinesToStick();
+	}
+
+	/**
+	 * @param bindCrossLinesToStick the bindCrossLinesToStick to set
+	 */
+	public void setBindCrossLinesToStick(int bindCrossLinesToStick) {
+		this.crossLines.setBindCrossLinesToStick(bindCrossLinesToStick);
+	}
 
 	/**
 	 * @return the maxPointNum
@@ -628,5 +697,41 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 
 	public void setAutoBalanceValueRange(boolean autoBalanceValueRange) {
 		this.autoBalanceValueRange = autoBalanceValueRange;
+	}
+
+	public ITouchedIndexListener getTouchedIndexListener() {
+		return touchedIndexListener;
+	}
+
+	public void setTouchedIndexListener(ITouchedIndexListener touchedIndexListener) {
+		this.touchedIndexListener = touchedIndexListener;
+	}
+
+	public boolean isAutoCalcLongitudeTitle() {
+		return autoCalcLongitudeTitle;
+	}
+
+	public void setAutoCalcLongitudeTitle(boolean autoCalcLongitudeTitle) {
+		this.autoCalcLongitudeTitle = autoCalcLongitudeTitle;
+	}
+
+	public boolean isAutoCalcLatitudeTitle() {
+		return autoCalcLatitudeTitle;
+	}
+
+	public void setAutoCalcLatitudeTitle(boolean autoCalcLatitudeTitle) {
+		this.autoCalcLatitudeTitle = autoCalcLatitudeTitle;
+	}
+
+	public float computeValueY(float value){
+		return (float)((1f - (value - minValue)
+				/ (maxValue - minValue))
+				* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
+	}
+
+	public double computeValueY(double value){
+		return ((1f - (value - minValue)
+				/ (maxValue - minValue))
+				* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
 	}
 }

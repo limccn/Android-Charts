@@ -1,4 +1,4 @@
-package cn.limc.demo.common;
+package cn.limc.demo.common.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,6 +11,8 @@ import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.IStickEntity;
 import cn.limc.androidcharts.entity.LineEntity;
 import cn.limc.androidcharts.entity.ListChartData;
+import cn.limc.demo.common.utils.PreferencesUtils;
+import cn.limc.demo.common.utils.TAComputeUtils;
 
 /**
  * @author zhourr
@@ -114,6 +116,14 @@ public class GroupChartData implements Serializable {
 		PreferencesUtils.putInt(mContext, PreferencesUtils.MA3, ma3);
 		
 		this.candleStickLinesData = TAComputeUtils.convertCandleStickLinesData(ohlcData, ma1, ma2, ma3);
+	}
+	
+	public void updateVMAData(int ma1, int ma2, int ma3){
+		PreferencesUtils.putInt(mContext, PreferencesUtils.VMA1, ma1);
+		PreferencesUtils.putInt(mContext, PreferencesUtils.VMA2, ma2);
+		PreferencesUtils.putInt(mContext, PreferencesUtils.VMA3, ma3);
+		
+		this.volMAData = TAComputeUtils.convertVOLMAData(ohlcData, ma1, ma2, ma3);
 	}
 	
 	public void updateBandData(int bollN){

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import android.graphics.Color;
+import android.os.Bundle;
 import cn.limc.androidcharts.R;
 import cn.limc.androidcharts.axis.Axis;
 import cn.limc.androidcharts.common.IDataCursor;
@@ -14,18 +16,15 @@ import cn.limc.androidcharts.entity.LineEntity;
 import cn.limc.androidcharts.entity.ListChartData;
 import cn.limc.androidcharts.event.IDisplayCursorListener;
 import cn.limc.androidcharts.view.ColoredSlipStickChart;
-import cn.limc.androidcharts.view.SlipAreaChart;
 import cn.limc.androidcharts.view.TickChart;
 import cn.limc.demo.common.BaseActivity;
-import cn.limc.demo.common.FastJsonPaser;
-import cn.limc.demo.common.OHLCVData;
 import cn.limc.demo.common.TimesJSONBean;
-import android.graphics.Color;
-import android.os.Bundle;
+import cn.limc.demo.common.bean.OHLCVData;
+import cn.limc.demo.common.utils.FastJsonPaser;
 
 public class SampleTickDemoActivity extends BaseActivity {
 
-	SlipAreaChart mTimesChart;
+	TickChart mTimesChart;
 	ColoredSlipStickChart mVOLchart;
 	
 	final IDisplayCursorListener displayCursorListener =  new IDisplayCursorListener() {
@@ -144,15 +143,15 @@ public class SampleTickDemoActivity extends BaseActivity {
     	List<OHLCVData> chartData = new ArrayList<OHLCVData>();
     	for (Map<String, String> map : bean.getData().getTimedivisionline()) {
     		OHLCVData data = new OHLCVData();
-			data.setOpen(map.get("o"));
-			data.setHigh(map.get("h"));
-			data.setLow(map.get("l"));
-			data.setClose(map.get("paid_price"));
-			data.setVol(map.get("paid_quantity"));
+			data.setOpen(Float.parseFloat(map.get("o")));
+			data.setHigh(Float.parseFloat(map.get("h")));
+			data.setLow(Float.parseFloat(map.get("l")));
+			data.setClose(Float.parseFloat(map.get("paid_price")));
+			data.setVol(Float.parseFloat(map.get("paid_quantity")));
 			data.setDate(TimeStamp2Date(map.get("datetime"), "yyyyMMddHHmm"));
-			data.setCurrent(map.get("n"));
-			data.setPreclose(null);
-			data.setChange(map.get("change_percent"));
+			data.setCurrent(Float.parseFloat(map.get("n")));
+			data.setPreclose(0.0f);
+			data.setChange(Float.parseFloat(map.get("change_percent")));
 			
 			System.out.println(data.getClose());
 			System.out.println(data.getVol());
@@ -185,7 +184,7 @@ public class SampleTickDemoActivity extends BaseActivity {
         
         for (OHLCVData data : arrayData) {
         	try {
-				dateValues.add(new DateValueEntity(Float.parseFloat(data.getClose()), Long.parseLong(data.getDate())));
+				dateValues.add(new DateValueEntity((float) data.getClose(), Long.parseLong(data.getDate())));
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 				continue;
@@ -206,15 +205,15 @@ public class SampleTickDemoActivity extends BaseActivity {
         	int lastIndex = index;
         	try {
         		if (lastIndex >= 0) {
-    				if(Double.parseDouble(data.getVol()) > Double.parseDouble(arrayData.get(lastIndex).getVol())){
-    					stick.add(new ColoredStickEntity(Double.parseDouble(data.getVol()), 0, (int) Long.parseLong(data.getDate()), Color.RED));
-    				}else if(Double.parseDouble(data.getVol()) < Double.parseDouble(arrayData.get(lastIndex).getVol())){
-    					stick.add(new ColoredStickEntity(Double.parseDouble(data.getVol()), 0, (int) Long.parseLong(data.getDate()), Color.GREEN));
+    				if(data.getVol() > arrayData.get(lastIndex).getVol()){
+    					stick.add(new ColoredStickEntity(data.getVol(), 0, (int) Long.parseLong(data.getDate()), Color.RED));
+    				}else if(data.getVol() < arrayData.get(lastIndex).getVol()){
+    					stick.add(new ColoredStickEntity(data.getVol(), 0, (int) Long.parseLong(data.getDate()), Color.GREEN));
     				}else{
-    					stick.add(new ColoredStickEntity(Double.parseDouble(data.getVol()), 0, (int) Long.parseLong(data.getDate()), Color.LTGRAY));
+    					stick.add(new ColoredStickEntity(data.getVol(), 0, (int) Long.parseLong(data.getDate()), Color.LTGRAY));
     				}
     			}else{
-    				stick.add(new ColoredStickEntity(Double.parseDouble(data.getVol()), 0, (int) Long.parseLong(data.getDate()), Color.LTGRAY));
+    				stick.add(new ColoredStickEntity(data.getVol(), 0, (int) Long.parseLong(data.getDate()), Color.LTGRAY));
     			}
 			} catch (NumberFormatException e) {
 				e.printStackTrace();

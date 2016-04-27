@@ -86,7 +86,7 @@ public interface IGrid {
 	 * 默认经线是否显示为虚线
 	 * </p>
 	 */
-	public static final boolean DEFAULT_DASH_LONGITUDE = Boolean.TRUE;
+	public static final boolean DEFAULT_DASH_LONGITUDE = Boolean.FALSE;
 
 	/**
 	 * <p>
@@ -112,7 +112,7 @@ public interface IGrid {
 	 * 纬线是否显示为虚线
 	 * </p>
 	 */
-	public static final boolean DEFAULT_DASH_LATITUDE = Boolean.TRUE;
+	public static final boolean DEFAULT_DASH_LATITUDE = Boolean.FALSE;
 
 	/**
 	 * <p>
@@ -169,7 +169,7 @@ public interface IGrid {
 	 * 经线刻度字体大小
 	 * </p>
 	 */
-	public static final int DEFAULT_LONGITUDE_FONT_SIZE = 18;
+	public static final int DEFAULT_LONGITUDE_FONT_SIZE = 26;
 
 	/**
 	 * <p>
@@ -195,7 +195,7 @@ public interface IGrid {
 	 * 默认纬线刻度字体大小
 	 * </p>
 	 */
-	public static final int DEFAULT_LATITUDE_FONT_SIZE = 18;
+	public static final int DEFAULT_LATITUDE_FONT_SIZE = 26;
 	
 	   /**
      * <p>

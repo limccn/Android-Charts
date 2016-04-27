@@ -20,7 +20,6 @@ public class TimesJSONDataBean implements Serializable{
 	}
 
 
-
 	public ArrayList<Map<String, String>> getTimedivisionline() {
 		return timedivisionline;
 	}

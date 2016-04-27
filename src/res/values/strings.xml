@@ -83,6 +83,8 @@
     <string name="chart_type_setting">设置</string>
     <string name="chart_type_handicap">盘口</string>
     <string name="chart_type_1min">分时</string>
+    <string name="chart_type_2days">2日</string>
+    <string name="chart_type_3days">3日</string>
     <string name="chart_type_detail">明细</string>
     <string name="chart_type_day">日</string>
     <string name="chart_type_week">周</string>

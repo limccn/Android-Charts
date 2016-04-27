@@ -33,6 +33,7 @@ import cn.limc.androidcharts.entity.IStickEntity;
 import cn.limc.androidcharts.entity.MACDEntity;
 import cn.limc.androidcharts.entity.OHLCEntity;
 import cn.limc.androidcharts.entity.StickEntity;
+import cn.limc.demo.common.utils.DipUtils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
@@ -40,16 +41,6 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 public class BaseActivity extends Activity {
-    
-	public enum IndicatorType {  
-		IndicatorMACD,
-		IndicatorMA,
-		IndicatorKDJ,
-		IndicatorRSI,
-		IndicatorWR,
-		IndicatorCCI,
-		IndicatorBOLL
-	}
 	
 	public boolean isHorizontal;
 	

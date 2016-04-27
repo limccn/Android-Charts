@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rel_background"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@drawable/white" >
     <LinearLayout
         android:id="@+id/lin_product_info"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="@dimen/product_info_height"
+        android:background="@drawable/productgroundcolor"
         android:baselineAligned="false" >
         <RelativeLayout
             android:layout_width="0dip"
@@ -19,14 +22,14 @@
 	        	android:layout_height="@dimen/current_price_height"
 	        	android:gravity="center"
 	        	android:textSize="22sp"
-	        	android:textColor="@drawable/red" />
+	        	android:textColor="@drawable/white" />
             <TextView
 	    	    android:id="@+id/tv_current_percent"
 	    	    android:layout_below="@+id/tv_current_price"
 	    	    android:layout_marginLeft="11dip"
 	        	android:layout_width="wrap_content"
 	        	android:layout_height="wrap_content"
-	        	android:textColor="@drawable/green" />
+	        	android:textColor="@drawable/white" />
             <TextView
 	    	    android:id="@+id/tv_newest_percent"
 	    	    android:layout_below="@+id/tv_current_price"
@@ -34,7 +37,7 @@
 	    	    android:layout_marginLeft="11dip"
 	        	android:layout_width="wrap_content"
 	        	android:layout_height="wrap_content"
-	        	android:textColor="@drawable/lightgray" />
+	        	android:textColor="@drawable/white" />
             <TextView
 	    	    android:id="@+id/tv_date_time"
 	    	    android:layout_below="@+id/tv_current_percent"
@@ -62,7 +65,7 @@
 	        	android:layout_width="match_parent"
 	        	android:layout_height="wrap_content"
 	        	android:gravity="center"
-	        	android:textColor="@drawable/lightgray" />
+	        	android:textColor="@drawable/white" />
             <TextView
 	    	    android:id="@+id/tv_high_label"
 	    	    android:layout_below="@+id/tv_buy_price"
@@ -78,7 +81,7 @@
 	        	android:layout_width="match_parent"
 	        	android:layout_height="wrap_content"
 	        	android:gravity="center"
-	        	android:textColor="@drawable/lightgray" />
+	        	android:textColor="@drawable/white" />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="0dip"
@@ -99,7 +102,7 @@
 	        	android:layout_width="match_parent"
 	        	android:layout_height="wrap_content"
 	        	android:gravity="center"
-	        	android:textColor="@drawable/lightgray" />
+	        	android:textColor="@drawable/white" />
             <TextView
 	    	    android:id="@+id/tv_low_label"
 	    	    android:layout_below="@+id/tv_sell_price"
@@ -115,7 +118,7 @@
 	        	android:layout_width="match_parent"
 	        	android:layout_height="wrap_content"
 	        	android:gravity="center"
-	        	android:textColor="@drawable/lightgray" />
+	        	android:textColor="@drawable/white" />
         </RelativeLayout>
     </LinearLayout>
     <LinearLayout
@@ -138,6 +141,20 @@
         	android:layout_weight="1"
         	android:gravity="center"
         	android:text="@string/chart_type_1min" />
+	    <TextView
+	        android:id="@+id/tv_2days"
+        	android:layout_width="0dip"
+        	android:layout_height="match_parent"
+        	android:layout_weight="1"
+        	android:gravity="center"
+        	android:text="@string/chart_type_2days" />
+	    <TextView
+	        android:id="@+id/tv_3days"
+        	android:layout_width="0dip"
+        	android:layout_height="match_parent"
+        	android:layout_weight="1"
+        	android:gravity="center"
+        	android:text="@string/chart_type_3days" />
 	    <TextView
 	        android:id="@+id/tv_detail"
         	android:layout_width="0dip"
@@ -191,18 +208,21 @@
 	        	android:layout_height="match_parent"
 	        	android:layout_weight="1"
 	        	android:gravity="center"
+	        	android:textColor="@drawable/lightgray"
 	        	android:text="@string/detail_time" />
 		    <TextView
 	        	android:layout_width="0dip"
 	        	android:layout_height="match_parent"
 	        	android:layout_weight="1"
 	        	android:gravity="center"
+	        	android:textColor="@drawable/lightgray"
 	        	android:text="@string/detail_price" />
 		    <TextView
 	        	android:layout_width="0dip"
 	        	android:layout_height="match_parent"
 	        	android:layout_weight="1"
 	        	android:gravity="center"
+	        	android:textColor="@drawable/lightgray"
 	        	android:text="@string/detail_count" />
 	    </LinearLayout>
 	    <ListView
@@ -228,6 +248,7 @@
 	        android:layout_marginRight="@dimen/tickchart_order_width"
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
+	        android:background="@drawable/chartbackgroundcolor"
 	        android:visibility="invisible" />
 		<LinearLayout
 	        android:id="@+id/lin_order_container"
@@ -236,6 +257,7 @@
 	        android:layout_width="@dimen/tickchart_order_width"
 	       	android:layout_height="match_parent"
 	       	android:visibility="invisible"
+	       	android:background="@drawable/chartbackgroundcolor"
 	       	android:orientation="vertical" >
 	        <LinearLayout
 			    android:id="@+id/tickchart_order1"
@@ -309,60 +331,199 @@
 		    </LinearLayout>
 	    </LinearLayout>
 	</RelativeLayout>
+	<cn.limc.androidcharts.view.SlipLineChart
+        android:id="@+id/chart_2days"
+        android:layout_below="@+id/lin_tops"
+	    android:layout_above="@+id/lin_chart_type"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/chartbackgroundcolor"
+        android:visibility="invisible" />
+	<cn.limc.androidcharts.view.SlipLineChart
+        android:id="@+id/chart_3days"
+        android:layout_below="@+id/lin_tops"
+	    android:layout_above="@+id/lin_chart_type"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/chartbackgroundcolor"
+        android:visibility="invisible" />
+	<TextView
+        android:id="@+id/tv_float_datetime_1"
+        android:layout_below="@+id/lin_tops"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/float_margin_top"
+        android:layout_marginRight="@dimen/float_margin_top"
+        android:layout_width="wrap_content"
+       	android:layout_height="wrap_content"
+       	android:textSize="@dimen/float_text_size" />
+	<TextView
+        android:id="@+id/tv_float_datetime_2"
+        android:layout_below="@+id/tv_float_datetime_1"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/float_margin_top"
+        android:layout_marginRight="@dimen/float_margin_top"
+        android:layout_width="wrap_content"
+       	android:layout_height="wrap_content"
+       	android:textSize="@dimen/float_text_size" />
+	<TextView
+        android:id="@+id/tv_float_datetime_3"
+        android:layout_below="@+id/tv_float_datetime_2"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/float_margin_top"
+        android:layout_marginRight="@dimen/float_margin_top"
+        android:layout_width="wrap_content"
+       	android:layout_height="wrap_content"
+       	android:textSize="@dimen/float_text_size" />
 	<LinearLayout
 	    android:id="@+id/lin_charts_container"
 	    android:layout_below="@+id/lin_tops"
 	    android:layout_above="@+id/lin_chart_type"
 	    android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-	    <cn.limc.androidcharts.view.BOLLMASlipCandleStickChart
-	        android:id="@+id/bollmaslipcandlestickchart"
-	        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/chartbackgroundcolor" >
+		<FrameLayout
+		    android:id="@+id/frame_candleStickChart_contaienr"
+		    android:layout_width="match_parent"
         	android:layout_height="0dip"
         	android:layout_weight="2"
-	        android:visibility="visible" />
+       		android:visibility="visible" >
+		    <cn.limc.androidcharts.view.BOLLMASlipCandleStickChart
+		        android:id="@+id/bollmaslipcandlestickchart"
+		        android:layout_width="match_parent"
+	        	android:layout_height="match_parent" />
+		    <TextView
+		        android:id="@+id/tv_candlestick"
+		        android:layout_marginTop="@dimen/float_margin_top"
+		        android:layout_width="match_parent"
+	        	android:layout_height="match_parent"
+	        	android:textSize="@dimen/float_text_size"
+	        	android:textColor="@drawable/lightgray" />
+		</FrameLayout>
 		<LinearLayout
 		    android:id="@+id/lin_mask"
 	        android:layout_width="match_parent"
 	        android:orientation="horizontal"
 	        android:layout_height="0dip"
 	        android:layout_weight="1" >
-	        <cn.limc.androidcharts.view.MAColoredSlipStickChart
-		        android:id="@+id/slipstickchart"
+		    <FrameLayout
 		        android:layout_width="match_parent"
-		        android:layout_height="match_parent"
-				android:visibility="visible"/>
-	        <cn.limc.androidcharts.view.MACDChart
-		        android:id="@+id/macdchart"
+		        android:layout_height="match_parent" >
+		        <cn.limc.androidcharts.view.MAColoredSlipStickChart
+			        android:id="@+id/slipstickchart"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+					android:visibility="visible"/>
+		        <TextView
+			        android:id="@+id/tv_vol_float"
+			        android:layout_marginTop="@dimen/float_margin_top"
+			        android:layout_width="match_parent"
+		        	android:layout_height="match_parent"
+		        	android:textSize="@dimen/float_text_size"
+		        	android:textColor="@drawable/lightgray" />
+		    </FrameLayout>
+	        
+		    <FrameLayout
 		        android:layout_width="match_parent"
-		        android:layout_height="match_parent"
-				android:visibility="visible"/>
-			<cn.limc.androidcharts.view.SlipLineChart
-		        android:id="@+id/kdjchart"
+		        android:layout_height="match_parent" >
+		        <cn.limc.androidcharts.view.MACDChart
+			        android:id="@+id/macdchart"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+					android:visibility="visible"/>
+		        <TextView
+			        android:id="@+id/tv_macd_float"
+			        android:layout_marginTop="@dimen/float_margin_top"
+			        android:layout_width="match_parent"
+		        	android:layout_height="match_parent"
+		        	android:textSize="@dimen/float_text_size"
+		        	android:textColor="@drawable/lightgray" />
+		    </FrameLayout>
+	        
+		    <FrameLayout
 		        android:layout_width="match_parent"
-		        android:layout_height="match_parent"
-				android:visibility="visible"/>
-			<cn.limc.androidcharts.view.SlipLineChart
-		        android:id="@+id/rsichart"
+		        android:layout_height="match_parent" >
+		        <cn.limc.androidcharts.view.SlipLineChart
+			        android:id="@+id/kdjchart"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+					android:visibility="visible"/>
+		        <TextView
+			        android:id="@+id/tv_kdj_float"
+			        android:layout_marginTop="@dimen/float_margin_top"
+			        android:layout_width="match_parent"
+		        	android:layout_height="match_parent"
+		        	android:textSize="@dimen/float_text_size"
+		        	android:textColor="@drawable/lightgray" />
+		    </FrameLayout>
+			
+		    <FrameLayout
 		        android:layout_width="match_parent"
-		        android:layout_height="match_parent"
-				android:visibility="visible"/>
-			<cn.limc.androidcharts.view.SlipLineChart
-		        android:id="@+id/wrchart"
+		        android:layout_height="match_parent" >
+		        <cn.limc.androidcharts.view.SlipLineChart
+			        android:id="@+id/rsichart"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+					android:visibility="visible"/>
+		        <TextView
+			        android:id="@+id/tv_rsi_float"
+			        android:layout_marginTop="@dimen/float_margin_top"
+			        android:layout_width="match_parent"
+		        	android:layout_height="match_parent"
+		        	android:textSize="@dimen/float_text_size"
+		        	android:textColor="@drawable/lightgray" />
+		    </FrameLayout>
+			
+		    <FrameLayout
 		        android:layout_width="match_parent"
-		        android:layout_height="match_parent"
-				android:visibility="visible"/>
-			<cn.limc.androidcharts.view.SlipLineChart
-		        android:id="@+id/ccichart"
-		        android:layout_width="match_parent"
-		        android:layout_height="match_parent"
-				android:visibility="visible"/>
-			<cn.limc.androidcharts.view.SlipLineChart
-		        android:id="@+id/bollchart"
-		        android:layout_width="match_parent"
-		        android:layout_height="match_parent"
-				android:visibility="visible"/>
+		        android:layout_height="match_parent" >
+		        <cn.limc.androidcharts.view.SlipLineChart
+			        android:id="@+id/wrchart"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+					android:visibility="visible"/>
+		        <TextView
+			        android:id="@+id/tv_wr_float"
+			        android:layout_marginTop="@dimen/float_margin_top"
+			        android:layout_width="match_parent"
+		        	android:layout_height="match_parent"
+		        	android:textSize="@dimen/float_text_size"
+		        	android:textColor="@drawable/lightgray" />
+		    </FrameLayout>
+		    
+			<FrameLayout
+			    android:layout_width="match_parent"
+			    android:layout_height="match_parent" >
+			    <cn.limc.androidcharts.view.SlipLineChart
+			        android:id="@+id/ccichart"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+					android:visibility="visible"/>
+			    <TextView
+			        android:id="@+id/tv_cci_float"
+			        android:layout_marginTop="@dimen/float_margin_top"
+			        android:layout_width="match_parent"
+		        	android:layout_height="match_parent"
+		        	android:textSize="@dimen/float_text_size"
+		        	android:textColor="@drawable/lightgray" />
+			</FrameLayout>
+			
+			<FrameLayout
+			    android:layout_width="match_parent"
+		        android:layout_height="match_parent" >
+			    <cn.limc.androidcharts.view.SlipLineChart
+			        android:id="@+id/bollchart"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+					android:visibility="visible"/>
+			    <TextView
+			        android:id="@+id/tv_boll_float"
+			        android:layout_marginTop="@dimen/float_margin_top"
+			        android:layout_width="match_parent"
+		        	android:layout_height="match_parent"
+		        	android:textSize="@dimen/float_text_size"
+		        	android:textColor="@drawable/lightgray" />
+			</FrameLayout>
 		</LinearLayout>
 	</LinearLayout>
 	<LinearLayout
@@ -426,11 +587,13 @@
         	android:layout_height="match_parent"
         	android:layout_weight="1"
         	android:gravity="center"
+        	android:textColor="@drawable/lightgray"
         	android:text="@string/chart_type_setting" />
 	</LinearLayout>
 	<LinearLayout
 	    android:id="@+id/lin_trade"
 	    android:layout_above="@+id/lin_go_trade"
+	    android:visibility="gone"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_chart_type_height" >
@@ -484,6 +647,7 @@
         	android:layout_height="match_parent"
         	android:layout_weight="4"
         	android:gravity="center"
+        	android:visibility="invisible"
         	android:text="@string/go_trade" />
 	    <Button
 	        android:id="@+id/btn_horizontal"

@@ -28,6 +28,7 @@ import cn.limc.androidcharts.entity.DateValueEntity;
 import cn.limc.androidcharts.entity.LineEntity;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
@@ -210,8 +211,8 @@ public class BOLLMASlipCandleStickChart extends MASlipCandleStickChart {
 		}
 
 		Paint mPaint = new Paint();
-		mPaint.setColor(line1.getLineColor());
-		mPaint.setAlpha(70);
+		mPaint.setColor(Color.YELLOW);
+		mPaint.setAlpha(50);
 		mPaint.setAntiAlias(true);
 		// set start point’s X
 		if (gridAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {

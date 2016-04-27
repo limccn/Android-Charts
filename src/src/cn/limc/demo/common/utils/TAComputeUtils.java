@@ -1,4 +1,4 @@
-package cn.limc.demo.common;
+package cn.limc.demo.common.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,6 +15,7 @@ import cn.limc.androidcharts.entity.LineEntity;
 import cn.limc.androidcharts.entity.ListChartData;
 import cn.limc.androidcharts.entity.MACDEntity;
 import cn.limc.androidcharts.entity.OHLCEntity;
+import cn.limc.demo.common.bean.OHLCVData;
 
 import com.tictactec.ta.lib.Core;
 import com.tictactec.ta.lib.MAType;
@@ -32,6 +33,7 @@ public class TAComputeUtils {
 	public static String[] LINE_COLORS = {"#ed4d4d", "#52ba27", "#00a0e9"};
 	
 	public static String SourceDateformatString = "yyyy-MM-ddHH: mm: ss";
+	public static String ToDateformatString = "yyyyMMdd";
 	
 	/**
 	 * 不允许实例
@@ -66,7 +68,7 @@ public class TAComputeUtils {
     	RetCode retCode = core.macd(0, arrayData.size() - 1, inReal, macdS, macdL, macdM, outBegIdx, outNBElement, outMACD, outMACDSignal, outMACDHist);
     	if (RetCode.Success == retCode) {
     		SimpleDateFormat df = new SimpleDateFormat(SourceDateformatString);
-            SimpleDateFormat dt = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat dt = new SimpleDateFormat(ToDateformatString);
     		for (int i = 0; i < inReal.length; i++) {
     			OHLCVData data = arrayData.get(i);
     			try {
@@ -130,7 +132,7 @@ public class TAComputeUtils {
     	RetCode retCode = core.stoch(0, arrayData.size()-1, inHigh, inLow, inClose, kdjN, 3, MAType.Ema, 3, MAType.Ema, outBegIdx, outNBElement, outSlowK, outSlowD);
     	if (RetCode.Success == retCode) {
     		SimpleDateFormat df = new SimpleDateFormat(SourceDateformatString);
-            SimpleDateFormat dt = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat dt = new SimpleDateFormat(ToDateformatString);
     		for (int i = 0; i < arrayData.size(); i++) {
     			OHLCVData data = arrayData.get(i);
 				try {
@@ -188,7 +190,7 @@ public class TAComputeUtils {
     	RetCode retCode = core.rsi(0, arrayData.size() - 1, inReal, optInTimePeriod, outBegIdx, outNBElement, outReal);
     	if (RetCode.Success == retCode) {
     		SimpleDateFormat df = new SimpleDateFormat(SourceDateformatString);
-            SimpleDateFormat dt = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat dt = new SimpleDateFormat(ToDateformatString);
     		for (int i = 0; i < arrayData.size(); i++) {
     			OHLCVData data = arrayData.get(i);
 				try {
@@ -247,7 +249,7 @@ public class TAComputeUtils {
     	RetCode retCode = core.willR(0, arrayData.size() - 1, inHigh, inLow, inClose, wrN, outBegIdx, outNBElement, outReal);
     	if (RetCode.Success == retCode) {
     		SimpleDateFormat df = new SimpleDateFormat(SourceDateformatString);
-            SimpleDateFormat dt = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat dt = new SimpleDateFormat(ToDateformatString);
     		for (int i = 0; i < arrayData.size(); i++) {
     			OHLCVData data = arrayData.get(i);
 				try {
@@ -305,7 +307,7 @@ public class TAComputeUtils {
     	RetCode retCode = core.cci(0, arrayData.size() - 1, inHigh, inLow, inClose, cciN, outBegIdx, outNBElement, outReal);
     	if (RetCode.Success == retCode) {
     		SimpleDateFormat df = new SimpleDateFormat(SourceDateformatString);
-            SimpleDateFormat dt = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat dt = new SimpleDateFormat(ToDateformatString);
     		for (int i = 0; i < arrayData.size(); i++) {
     			OHLCVData data = arrayData.get(i);
 				try {
@@ -356,7 +358,7 @@ public class TAComputeUtils {
     	RetCode retCode = core.bbands(0, arrayData.size() - 1, inReal, bollN, 2, 2, MAType.Sma, outBegIdx, outNBElement, outRealUpperBand, outRealMiddleBand, outRealLowerBand);
     	if (RetCode.Success == retCode) {
     		SimpleDateFormat df = new SimpleDateFormat(SourceDateformatString);
-            SimpleDateFormat dt = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat dt = new SimpleDateFormat(ToDateformatString);
     		for (int i = 0; i < arrayData.size(); i++) {
     			OHLCVData data = arrayData.get(i);
 				try {
@@ -419,7 +421,7 @@ public class TAComputeUtils {
 		List<IStickEntity> candleStickData = new ArrayList<IStickEntity>();
 		
         SimpleDateFormat df = new SimpleDateFormat(SourceDateformatString);
-        SimpleDateFormat dt = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat dt = new SimpleDateFormat(ToDateformatString);
         for (OHLCVData data : ohlcData) {
 			try {
 				candleStickData.add(new OHLCEntity(data.getOpen(), data.getHigh(), data.getLow(),data.getClose(), Integer.parseInt(dt.format(df.parse(data.getDate())))));
@@ -442,7 +444,7 @@ public class TAComputeUtils {
 		List<IStickEntity> candleStickData = new ArrayList<IStickEntity>();
 		
         SimpleDateFormat df = new SimpleDateFormat(SourceDateformatString);
-        SimpleDateFormat dt = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat dt = new SimpleDateFormat(ToDateformatString);
         for (OHLCVData data : ohlcData) {
 			try {
 				candleStickData.add(new OHLCEntity(data.getOpen(), data.getHigh(), data.getLow(),data.getClose(), Integer.parseInt(dt.format(df.parse(data.getDate())))));
@@ -513,7 +515,7 @@ public class TAComputeUtils {
 		List<IStickEntity> stick = new ArrayList<IStickEntity>();
 
         SimpleDateFormat df = new SimpleDateFormat(SourceDateformatString);
-        SimpleDateFormat dt = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat dt = new SimpleDateFormat(ToDateformatString);
         for (OHLCVData data : ohlcData) {
 			try {
 				if(data.getOpen() - data.getClose() > 0){
@@ -539,7 +541,7 @@ public class TAComputeUtils {
 		List<IStickEntity> candleStickData = new ArrayList<IStickEntity>();
 		
         SimpleDateFormat df = new SimpleDateFormat(SourceDateformatString);
-        SimpleDateFormat dt = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat dt = new SimpleDateFormat(ToDateformatString);
         for (OHLCVData data : ohlcData) {
 			try {
 				candleStickData.add(new OHLCEntity(data.getOpen(), data.getHigh(), data.getLow(),data.getVol(), Integer.parseInt(dt.format(df.parse(data.getDate())))));

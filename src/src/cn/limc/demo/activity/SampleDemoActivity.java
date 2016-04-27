@@ -1,5 +1,6 @@
 package cn.limc.demo.activity;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,6 +17,9 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,35 +30,48 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import cn.limc.androidcharts.R;
 import cn.limc.androidcharts.axis.Axis;
+import cn.limc.androidcharts.common.ICrossLines;
 import cn.limc.androidcharts.common.IDataCursor;
 import cn.limc.androidcharts.entity.DateValueEntity;
+import cn.limc.androidcharts.entity.IStickEntity;
 import cn.limc.androidcharts.entity.LineEntity;
+import cn.limc.androidcharts.entity.ListChartData;
+import cn.limc.androidcharts.entity.MACDEntity;
 import cn.limc.androidcharts.event.IDisplayCursorListener;
+import cn.limc.androidcharts.event.ITouchable;
+import cn.limc.androidcharts.event.ITouchedIndexListener;
 import cn.limc.androidcharts.view.BOLLMASlipCandleStickChart;
-import cn.limc.androidcharts.view.ColoredSlipStickChart;
 import cn.limc.androidcharts.view.MACDChart;
 import cn.limc.androidcharts.view.MAColoredSlipStickChart;
 import cn.limc.androidcharts.view.SlipLineChart;
 import cn.limc.androidcharts.view.TickChart;
 import cn.limc.demo.common.BaseActivity;
 import cn.limc.demo.common.BaseLvAdapter;
-import cn.limc.demo.common.DipUtils;
-import cn.limc.demo.common.FastJsonPaser;
-import cn.limc.demo.common.GroupChartData;
-import cn.limc.demo.common.HandicapData;
-import cn.limc.demo.common.OHLCVData;
-import cn.limc.demo.common.ProductData;
-import cn.limc.demo.common.ResponseBodyData;
-import cn.limc.demo.common.ResponseData;
-import cn.limc.demo.common.TickData;
+import cn.limc.demo.common.EnumType.ChartDataType;
+import cn.limc.demo.common.EnumType.ChartViewType;
+import cn.limc.demo.common.EnumType.DisplayType;
+import cn.limc.demo.common.EnumType.IndicatorType;
+import cn.limc.demo.common.EnumType.ThemeModeType;
+import cn.limc.demo.common.bean.GroupChartData;
+import cn.limc.demo.common.bean.HandicapData;
+import cn.limc.demo.common.bean.OHLCVData;
+import cn.limc.demo.common.bean.ProductData;
+import cn.limc.demo.common.bean.ResponseData;
+import cn.limc.demo.common.bean.TickData;
+import cn.limc.demo.common.utils.DipUtils;
+import cn.limc.demo.common.utils.FastJsonPaser;
+import cn.limc.demo.common.utils.PreferencesUtils;
+import cn.limc.demo.common.utils.TAComputeUtils;
 
 @SuppressLint("SimpleDateFormat")
 public class SampleDemoActivity extends BaseActivity {
 	
 	private static final int REFRESH_SECOND = 10;
+	private static final String VALUE_FORMAT = "#.00";
 	
 	/** 商品数据 */
 	public static final String PRODUCT_DATA = "PRODUCT_DATA";
@@ -69,39 +86,7 @@ public class SampleDemoActivity extends BaseActivity {
 	 * 自动刷新
 	 */
 	private Handler mRefreshHandler = new Handler();
-    private Runnable mRefreshRunnable = new Runnable() {
-        public void run() {
-            this.update();
-            mRefreshHandler.postDelayed(this, 1000 * REFRESH_SECOND);// 间隔120秒
-        }
-        void update() {
-        	isRefresh = true;
-            loadKLineData(mDisplayDataType);
-        }
-    }; 
-    
-	public enum ChartDataType {
-		DAY,
-		WEEK,
-		MONTH,
-		ONE_MINUTE,
-		FIVE_MINUTE,
-		FIFTEEN_MINUTE,
-		THIRTY_MINUTE,
-		ONE_HOUR,
-		TWO_HOUR,
-		FOUR_HOUR
-	}
-	
-	public enum ChartViewType { 
-		VOL,
-		MACD,
-		KDJ,
-		RSI,
-		WR,
-		CCI,
-		BOLL
-	}
+    private Runnable mRefreshRunnable; 
 	
 	private BroadcastReciver mBroadcastReciver;
 	boolean isRefresh;
@@ -118,6 +103,10 @@ public class SampleDemoActivity extends BaseActivity {
 	int mMA2;
 	int mMA3;
 	
+	int mVMA1;
+	int mVMA2;
+	int mVMA3;
+	
 	int mKDJN;
 	
 	int mRSIN1;
@@ -128,6 +117,9 @@ public class SampleDemoActivity extends BaseActivity {
 	int mCCIN;
 	
 	int mBOLLN;
+	
+	/** 主题 */
+	ThemeModeType mThemeMode;
 	
 	ChartDataType mDisplayDataType;
 	GroupChartData mCurrentData;
@@ -148,7 +140,11 @@ public class SampleDemoActivity extends BaseActivity {
 	TickData mTickData;
 	List<TickData> mDetailData;
 	
+	DisplayType   mDisplayType;
 	ChartViewType mDisplayChart;
+	
+	RelativeLayout mRelBackground;
+	LinearLayout mLinPdtBackground;
 	
 	TextView mTvCurrentPrice;
 	TextView mTvCurrentPercent;
@@ -161,6 +157,8 @@ public class SampleDemoActivity extends BaseActivity {
 	
 	TextView mTvHandicap;
 	TextView mTvTick;
+	TextView mTv2DaysTick;
+	TextView mTv3DaysTick;
 	TextView mTvDetail;
 	TextView mTvDay;
 	TextView mTvWeek;
@@ -170,21 +168,38 @@ public class SampleDemoActivity extends BaseActivity {
 	PopupWindow mPopup;
 	LinearLayout mLinPopup;
 	
+	ITouchedIndexListener mITouchedIndexListener;
+	
+	LinearLayout mLinChartsContainer;
 	BOLLMASlipCandleStickChart mBollmaslipcandlestickchart;
+	TextView mTvFloatCandleStick;
 	TickChart mTickChart;
 	LinearLayout mLinOrderContainer;
 	int[] mOrdersId = {R.id.tickchart_order1, R.id.tickchart_order2, R.id.tickchart_order3, R.id.tickchart_order4, R.id.tickchart_order5, R.id.tickchart_order6,
 			R.id.tickchart_order7, R.id.tickchart_order8, R.id.tickchart_order9, R.id.tickchart_order10};
 	LinearLayout[] mLinOrders;
 	
+	SlipLineChart m2daysTickChart;
+	SlipLineChart m3daysTickChart;
+	TextView mTvFloatDateTime1;
+	TextView mTvFloatDateTime2;
+	TextView mTvFloatDateTime3;
+	
 	LinearLayout mLinBottomChartContainer;
 	MAColoredSlipStickChart mVOLchart;
+	TextView mTvVOLFloat;
 	MACDChart mMacdChart;
+	TextView mTvMACDFloat;
 	SlipLineChart mKDJchart;
+	TextView mTvKDJFloat;
 	SlipLineChart mRSIchart;
+	TextView mTvRSIFloat;
 	SlipLineChart mWRchart;
+	TextView mTvWRFloat;
 	SlipLineChart mCCIchart;
+	TextView mTvCCIFloat;
 	SlipLineChart mBOLLchart;
+	TextView mTvBOLLFloat;
 	
 	LinearLayout mLinHandicap;
 	
@@ -206,16 +221,20 @@ public class SampleDemoActivity extends BaseActivity {
 	
     @Override
 	public void onCreate(Bundle savedInstanceState) {
+    	// TODO OnCreate
         super.onCreate(savedInstanceState);
         
         if (layoutResID == 0) {
         	setContentView(R.layout.activity_sample_demo);
 		}
         
+        initValues();
         initWidgets();
         
         initBOLLMASlipCandleStickChart();
         initTickChart();
+        init2DaysTickChart();
+        init3DaysTickChart();
         
         initVOLChart();
         initMACDChart();
@@ -236,14 +255,10 @@ public class SampleDemoActivity extends BaseActivity {
         initBottomViews();
         
         mDisplayDataType = ChartDataType.DAY;
-        loadKLineData(ChartDataType.DAY);
-        loadTickData();
-        loadHandicapData();
-        loadDetailData();
         
         registerReceiver();
         
-        mRefreshHandler.postDelayed(mRefreshRunnable, (long) (1000 * 1));
+        mRefreshHandler.postDelayed(mRefreshRunnable, (long) (1000 * 0.5));
 	}
     
     @Override
@@ -263,21 +278,405 @@ public class SampleDemoActivity extends BaseActivity {
     	this.layoutResID = layoutResID;
     }
     
-    private void initWidgets() {
-    	this.mBtnHorizontal = (Button) findViewById(R.id.btn_horizontal);
-    	if (mBtnHorizontal == null) {
-			return;
+    private void initValues() {
+    	mDisplayType = DisplayType.ALL;
+		int themeMode =  PreferencesUtils.getInt(this, PreferencesUtils.THEME_MODE);
+		mThemeMode = themeMode == -1?ThemeModeType.THEME_DAY:themeMode == 0?ThemeModeType.THEME_DAY:ThemeModeType.THEME_NIGHT;
+		
+		mThemeMode = ThemeModeType.THEME_DAY;
+		
+		PreferencesUtils.putInt(this, PreferencesUtils.THEME_MODE, mThemeMode.ordinal());
+
+    	mRelBackground = (RelativeLayout) findViewById(R.id.rel_background);
+    	mLinPdtBackground = (LinearLayout) findViewById(R.id.lin_product_info);
+    	
+    	mBtnHorizontal = (Button) findViewById(R.id.btn_horizontal);
+    	mTvFloatCandleStick = (TextView) findViewById(R.id.tv_candlestick);
+    	mTvVOLFloat = (TextView) findViewById(R.id.tv_vol_float);
+    	mTvMACDFloat = (TextView) findViewById(R.id.tv_macd_float);
+    	mTvKDJFloat = (TextView) findViewById(R.id.tv_kdj_float);
+    	mTvRSIFloat = (TextView) findViewById(R.id.tv_rsi_float);
+    	mTvWRFloat = (TextView) findViewById(R.id.tv_wr_float);
+    	mTvCCIFloat = (TextView) findViewById(R.id.tv_cci_float);
+    	mTvBOLLFloat = (TextView) findViewById(R.id.tv_boll_float);
+
+    	mTvFloatDateTime1 = (TextView) findViewById(R.id.tv_float_datetime_1);
+    	mTvFloatDateTime2 = (TextView) findViewById(R.id.tv_float_datetime_2);
+    	mTvFloatDateTime3 = (TextView) findViewById(R.id.tv_float_datetime_3);
+    	
+    	mRefreshRunnable = new Runnable() {
+            public void run() {
+                this.update();
+                // 间隔 REFRESH_SECOND 秒
+                mRefreshHandler.postDelayed(this, 1000 * REFRESH_SECOND);
+            }
+            
+            void update() {
+            	isRefresh = true;
+            	
+            	loadHandicapData();
+            	
+            	if (mDisplayType == DisplayType.ALL) {
+            		mDisplayType = DisplayType.KLINECHART;
+            		
+            		loadTickData();
+            		load2DaysData();
+            		load3DaysData();
+            		loadDetailData();
+            		loadKLineData(ChartDataType.DAY);
+    			}else if (mDisplayType == DisplayType.TICKCHART) {
+            		loadTickData();
+    			}else if(mDisplayType == DisplayType.DAYS2CHART){
+    				load2DaysData();
+    			}else if(mDisplayType == DisplayType.DAYS3CHART){
+    				load3DaysData();
+    			}else if (mDisplayType == DisplayType.DETAIL) {
+    				loadDetailData();
+    			}else if (mDisplayType == DisplayType.KLINECHART) {
+    				loadKLineData(ChartDataType.DAY);
+    			}else{
+    			}
+            }
+        };
+    	
+    	mITouchedIndexListener = new ITouchedIndexListener() {
+			@Override
+			public void onSelectedIndexChanged(ITouchable touchable, int index) {
+				DecimalFormat df = new DecimalFormat(VALUE_FORMAT);
+				if(touchable == mBollmaslipcandlestickchart){
+					SpannableStringBuilder strFloatCandleStick = new SpannableStringBuilder();
+		        	
+		            OHLCVData ohlcvData = mCurrentData.getOhlcData().get(index);
+		            OHLCVData lastOhlcvData = mCurrentData.getOhlcData().get(index == 0? index:index - 1);
+
+		            strFloatCandleStick.append("开:");
+		            strFloatCandleStick.append(df.format(ohlcvData.getOpen()));
+		            strFloatCandleStick.append(" 收:");
+		            strFloatCandleStick.append(df.format(ohlcvData.getClose()));
+		            strFloatCandleStick.append(" 高:");
+		            strFloatCandleStick.append(df.format(ohlcvData.getHigh()));
+		            strFloatCandleStick.append(" 低:");
+		            strFloatCandleStick.append(df.format(ohlcvData.getLow()));
+		            
+		            String strOhlc = strFloatCandleStick.toString();
+		            // 设置标签文本颜色
+		            if (ohlcvData.getOpen() == 0) {
+		            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.LTGRAY), strOhlc.indexOf("开:") + 2, strOhlc.indexOf(" 收:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		            } else {
+		            	if (ohlcvData.getOpen() == lastOhlcvData.getOpen()) {
+			            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.LTGRAY), strOhlc.indexOf("开:") + 2, strOhlc.indexOf(" 收:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						}else if (ohlcvData.getOpen() > lastOhlcvData.getOpen()) {
+			            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strOhlc.indexOf("开:") + 2, strOhlc.indexOf(" 收:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						}else if (ohlcvData.getOpen() < lastOhlcvData.getOpen()) {
+			            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[1])), strOhlc.indexOf("开:") + 2, strOhlc.indexOf(" 收:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						}
+		            }
+		            
+		            if (ohlcvData.getClose() == 0) {
+		            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.LTGRAY), strOhlc.indexOf("收:") + 2, strOhlc.indexOf(" 高:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		            } else {
+		            	if (ohlcvData.getClose() == lastOhlcvData.getClose()) {
+			            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.LTGRAY), strOhlc.indexOf("收:") + 2, strOhlc.indexOf(" 高:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						}else if (ohlcvData.getClose() > lastOhlcvData.getClose()) {
+			            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strOhlc.indexOf("收:") + 2, strOhlc.indexOf(" 高:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						}else if (ohlcvData.getClose() < lastOhlcvData.getClose()) {
+			            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[1])), strOhlc.indexOf("收:") + 2, strOhlc.indexOf(" 高:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						}
+		            }
+		            
+		            if (ohlcvData.getHigh() == 0) {
+		            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.LTGRAY), strOhlc.indexOf("高:") + 2, strOhlc.indexOf(" 低:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		            } else {
+		            	if (ohlcvData.getHigh() == lastOhlcvData.getHigh()) {
+			            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.LTGRAY), strOhlc.indexOf("高:") + 2, strOhlc.indexOf(" 低:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						}else if (ohlcvData.getHigh() > lastOhlcvData.getHigh()) {
+			            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strOhlc.indexOf("高:") + 2, strOhlc.indexOf(" 低:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						}else if (ohlcvData.getHigh() < lastOhlcvData.getHigh()) {
+			            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[1])), strOhlc.indexOf("高:") + 2, strOhlc.indexOf(" 低:") , Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						}
+		            }
+		            
+		            if (ohlcvData.getLow() == 0) {
+		            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.LTGRAY), strOhlc.indexOf("低:") + 2, strOhlc.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		            } else {
+		            	if (ohlcvData.getLow() == lastOhlcvData.getLow()) {
+			            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.LTGRAY), strOhlc.indexOf("低:") + 2, strOhlc.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						}else if (ohlcvData.getLow() > lastOhlcvData.getLow()) {
+			            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strOhlc.indexOf("低:") + 2, strOhlc.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						}else if (ohlcvData.getLow() < lastOhlcvData.getLow()) {
+			            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[1])), strOhlc.indexOf("低:") + 2, strOhlc.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						}
+		            }
+		            
+		            mTvFloatCandleStick.setText(strFloatCandleStick);
+				}else if (touchable == mVOLchart) {
+					OHLCVData ohlcvData = mCurrentData.getOhlcData().get(index);
+					
+					SpannableStringBuilder strVOLFloat = new SpannableStringBuilder();
+		            strVOLFloat.append("VOL:");
+		            strVOLFloat.append(df.format(ohlcvData.getVol()));
+		            
+		            String strVOL = strVOLFloat.toString();
+		            strVOLFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strVOL.indexOf("VOL:"), strVOL.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		            
+		            mTvVOLFloat.setText(strVOLFloat);
+				}else if (touchable == mMacdChart) {
+		            int macdS = PreferencesUtils.getInt(SampleDemoActivity.this, PreferencesUtils.MACD_S);
+		            int macdL = PreferencesUtils.getInt(SampleDemoActivity.this, PreferencesUtils.MACD_L);
+		            int macdM = PreferencesUtils.getInt(SampleDemoActivity.this, PreferencesUtils.MACD_M);
+		            SpannableStringBuilder strMACDFloat = new SpannableStringBuilder();
+		            
+		            ListChartData<IStickEntity> macdData = mCurrentData.getMacdData();
+		            if (macdData.size() > 0) {
+		            	strMACDFloat.append("MACD(");
+		            	strMACDFloat.append(String.valueOf(macdS));
+		            	strMACDFloat.append(",");
+		            	strMACDFloat.append(String.valueOf(macdL));
+		            	strMACDFloat.append(",");
+		            	strMACDFloat.append(String.valueOf(macdM));
+		            	strMACDFloat.append("): ");
+		            	
+		            	MACDEntity macd = (MACDEntity) macdData.get(index);
+
+		            	strMACDFloat.append(df.format(macd.getMacd()));
+		            	strMACDFloat.append(" DIF:");
+		            	            	
+		            	strMACDFloat.append(df.format(macd.getDiff()));
+		                
+		            	strMACDFloat.append(" DEA:");
+		            	strMACDFloat.append(df.format(macd.getDea()));
+					}else{
+		            	strMACDFloat.append("MACD(");
+		            	strMACDFloat.append(String.valueOf(macdS));
+		            	strMACDFloat.append(",");
+		            	strMACDFloat.append(String.valueOf(macdL));
+		            	strMACDFloat.append(",");
+		            	strMACDFloat.append(String.valueOf(macdM));
+		            	strMACDFloat.append("): ");
+		            	strMACDFloat.append("0.00");
+		            	strMACDFloat.append(" DIF:");
+		            	   	
+		            	strMACDFloat.append("0.00");
+		                
+		            	strMACDFloat.append(" DEA:");
+		            	strMACDFloat.append("0.00");
+					}
+
+		            String strMacd = strMACDFloat.toString();
+		            
+		            strMACDFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strMacd.indexOf("): ") + 3, strMacd.indexOf(" DIF:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		            strMACDFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[1])), strMacd.indexOf("DIF:"), strMacd.indexOf("DEA:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		            strMACDFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[2])), strMacd.indexOf("DEA:"), strMacd.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		            
+		            mTvMACDFloat.setText(strMACDFloat);
+				}else if (touchable == mKDJchart) {
+					int kdjN = PreferencesUtils.getInt(SampleDemoActivity.this, PreferencesUtils.KDJ_N);
+					SpannableStringBuilder strKDJFloat = new SpannableStringBuilder();
+		            strKDJFloat.append("KDJ(");
+		            strKDJFloat.append(String.valueOf(kdjN));
+		            strKDJFloat.append(",3,3): ");
+		            
+		            List<LineEntity<DateValueEntity>> kdjData = mCurrentData.getKdjData();
+		            if (kdjData.size() == 3) {
+		            	strKDJFloat.append("K:");
+		    			strKDJFloat.append(df.format(kdjData.get(0).getLineData().get(index).getValue()));
+		                
+		    			strKDJFloat.append(" D:");
+		    			strKDJFloat.append(df.format(kdjData.get(1).getLineData().get(index).getValue()));
+		    			
+		    			strKDJFloat.append(" J:");
+		    			strKDJFloat.append(df.format(kdjData.get(2).getLineData().get(index).getValue()));
+					}else{
+		            	strKDJFloat.append("K:");
+		    			strKDJFloat.append("0.00");
+		                
+		    			strKDJFloat.append(" D:");
+		    			strKDJFloat.append("0.00");
+		    			
+		    			strKDJFloat.append(" J:");
+		    			strKDJFloat.append("0.00");
+					}
+
+		            String strKDJ = strKDJFloat.toString();
+		            
+		            strKDJFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strKDJ.indexOf("K:"), strKDJ.indexOf(" D:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		            strKDJFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[1])), strKDJ.indexOf(" D:"), strKDJ.indexOf(" J:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		            strKDJFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[2])), strKDJ.indexOf(" J:"), strKDJ.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+		            mTvKDJFloat.setText(strKDJFloat);
+				}else if (touchable == mRSIchart) {
+					int rsiN1 = PreferencesUtils.getInt(SampleDemoActivity.this, PreferencesUtils.RSI_N1);
+		            int rsiN2 = PreferencesUtils.getInt(SampleDemoActivity.this, PreferencesUtils.RSI_N2);
+		            SpannableStringBuilder strRSIFloat = new SpannableStringBuilder();
+		            
+		            List<LineEntity<DateValueEntity>> rsiData = mCurrentData.getRsiData();
+		            if (rsiData.size() == 3) {
+		            	strRSIFloat.append("RSI");
+		            	strRSIFloat.append(String.valueOf(rsiN1));
+		            	strRSIFloat.append(": ");
+		            	strRSIFloat.append(df.format(rsiData.get(0).getLineData().get(index).getValue()));
+		                
+		            	strRSIFloat.append(" RSI");
+		            	strRSIFloat.append(String.valueOf(rsiN2));
+		            	strRSIFloat.append(": ");
+		            	strRSIFloat.append(df.format(rsiData.get(1).getLineData().get(index).getValue()));
+		    			
+		            	strRSIFloat.append(" RSI");
+		            	strRSIFloat.append("24");
+		            	strRSIFloat.append(": ");
+		            	strRSIFloat.append(df.format(rsiData.get(2).getLineData().get(index).getValue()));
+					}else{
+						strRSIFloat.append(" RSI");
+						strRSIFloat.append(String.valueOf(rsiN1));
+						strRSIFloat.append(": ");
+						strRSIFloat.append("0.00");
+		                
+						strRSIFloat.append(" RSI");
+						strRSIFloat.append(String.valueOf(rsiN2));
+						strRSIFloat.append(": ");
+						strRSIFloat.append("0.00");
+		    			
+						strRSIFloat.append(" RSI");
+						strRSIFloat.append("24");
+						strRSIFloat.append(": ");
+						strRSIFloat.append("0.00");
+					}
+
+		            String strRSI = strRSIFloat.toString();
+                    
+		            strRSIFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), 0, strRSI.indexOf("RSI" + String.valueOf(rsiN2)), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		            strRSIFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[1])), strRSI.indexOf("RSI" + String.valueOf(rsiN2)), strRSI.indexOf("RSI24:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		            strRSIFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[2])), strRSI.indexOf("RSI24:"), strRSI.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+		            mTvRSIFloat.setText(strRSIFloat);
+				}else if (touchable == mWRchart) {
+					int wrN = PreferencesUtils.getInt(SampleDemoActivity.this, PreferencesUtils.WR_N);
+					SpannableStringBuilder strWRFloat = new SpannableStringBuilder();
+		            
+		            List<LineEntity<DateValueEntity>> wrData = mCurrentData.getWrData();
+		            if (wrData.size() == 1) {
+		            	strWRFloat.append("WR(");
+		            	strWRFloat.append(String.valueOf(wrN));
+		            	strWRFloat.append("): ");
+		            	strWRFloat.append(df.format(wrData.get(0).getLineData().get(index).getValue()));
+					}else{
+						strWRFloat.append("WR(");
+		            	strWRFloat.append(String.valueOf(wrN));
+		            	strWRFloat.append("): ");
+						strWRFloat.append("0.00");
+					}
+
+		            String strWR = strWRFloat.toString();
+		            
+		            strWRFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strWR.indexOf(":") + 1, strWR.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+		            mTvWRFloat.setText(strWRFloat);
+				}else if (touchable == mCCIchart) {
+					int cciN = PreferencesUtils.getInt(SampleDemoActivity.this, PreferencesUtils.CCI_N);
+					SpannableStringBuilder strCCIFloat = new SpannableStringBuilder();
+		            
+		            List<LineEntity<DateValueEntity>> cciData = mCurrentData.getCciData();
+		            if (cciData.size() == 1) {
+		            	strCCIFloat.append("CCI(");
+		            	strCCIFloat.append(String.valueOf(cciN));
+		            	strCCIFloat.append("): ");
+		            	strCCIFloat.append(df.format(cciData.get(0).getLineData().get(index).getValue()));
+					}else{
+						strCCIFloat.append("WR(");
+						strCCIFloat.append(String.valueOf(cciN));
+		            	strCCIFloat.append("): ");
+		            	strCCIFloat.append("0.00");
+					}
+
+		            String strCCI = strCCIFloat.toString();
+		            
+		            strCCIFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strCCI.indexOf(":") + 1, strCCI.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+		            mTvCCIFloat.setText(strCCIFloat);
+				}else if (touchable == mBOLLchart) {
+					int bollN = PreferencesUtils.getInt(SampleDemoActivity.this, PreferencesUtils.BOLL_N);
+					SpannableStringBuilder strBOLLFloat = new SpannableStringBuilder();
+		            
+		            List<LineEntity<DateValueEntity>> bollData = mCurrentData.getBollData();
+		            if (bollData.size() == 3) {
+		            	strBOLLFloat.append("BOLL(");
+		            	strBOLLFloat.append(String.valueOf(bollN));
+		            	strBOLLFloat.append(",2,2): ");
+		            	strBOLLFloat.append(df.format(bollData.get(0).getLineData().get(index).getValue()));
+		                
+		            	strBOLLFloat.append(" ");
+		            	strBOLLFloat.append(df.format(bollData.get(1).getLineData().get(index).getValue()));
+		    			
+		            	strBOLLFloat.append(" ");
+		            	strBOLLFloat.append(df.format(bollData.get(2).getLineData().get(index).getValue()));
+					}else{
+		            	strBOLLFloat.append("BOLL(");
+		            	strBOLLFloat.append(String.valueOf(bollN));
+		            	strBOLLFloat.append(",2,2): ");
+		            	strBOLLFloat.append("0.00");
+		                
+		            	strBOLLFloat.append(" ");
+		            	strBOLLFloat.append("0.00");
+		    			
+		            	strBOLLFloat.append(" ");
+		            	strBOLLFloat.append("0.00");
+					}
+
+		            String strBOLL = strBOLLFloat.toString();
+		            
+		            int index0Space = 0;
+		            int index1Space = 0;
+		            int index2Space = 0;
+		            for (int i = 0; i < strBOLL.toCharArray().length; i++) {
+						char c = strBOLL.charAt(i);
+						if (c == ' ') {
+							if (index0Space == 0) {
+								index0Space = i;
+							}else if(index1Space == 0){
+								index1Space = i;
+							}else if(index2Space == 0){
+								index2Space = i;
+								break;
+							}
+						}
+					}
+		            
+		            strBOLLFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), index0Space, index1Space, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		            strBOLLFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[1])), index1Space, index2Space, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		            strBOLLFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[2])), index2Space, strBOLL.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+		            mTvBOLLFloat.setText(strBOLLFloat);
+				}else{
+					
+				}
+			}
+		};
+    }
+    
+    private void initWidgets() { 
+    	mTvFloatDateTime1.setTextColor(Color.parseColor(TAComputeUtils.LINE_COLORS[0]));
+    	mTvFloatDateTime2.setTextColor(Color.parseColor(TAComputeUtils.LINE_COLORS[1]));
+    	mTvFloatDateTime3.setTextColor(Color.parseColor(TAComputeUtils.LINE_COLORS[2]));
+    	
+    	if (mBtnHorizontal != null) {
+    		mBtnHorizontal.setOnClickListener(new OnClickListener() {
+    			@Override
+    			public void onClick(View v) {
+    				Intent intent = new Intent();
+    				intent.setClass(SampleDemoActivity.this,
+                            cn.limc.demo.activity.SampleHorizontalDemoActivity.class);
+                    
+    				Bundle bundle = new Bundle();
+    				bundle.putSerializable(PRODUCT_DATA, mProductData);
+    				bundle.putSerializable(HANDICAP_DATA, mHandicapData);
+    				
+    				startActivity(intent);
+    			}
+    		});
 		}
     	
-    	mBtnHorizontal.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent();
-				intent.setClass(SampleDemoActivity.this,
-                        cn.limc.demo.activity.SampleHorizontalDemoActivity.class);
-                startActivity(intent);
-			}
-		});
+    	mRelBackground.setBackgroundResource(mThemeMode == ThemeModeType.THEME_DAY?R.color.content_background_day:R.color.content_background_night);
+    	mLinPdtBackground.setBackgroundResource(mThemeMode == ThemeModeType.THEME_DAY?R.color.product_background_day:R.color.product_background_night);
     }
     
     public void initProductInfo(){
@@ -315,6 +714,8 @@ public class SampleDemoActivity extends BaseActivity {
     public void initTopViews(){
     	mTvHandicap = (TextView) findViewById(R.id.tv_handicap);
     	mTvTick = (TextView) findViewById(R.id.tv_tick);
+    	mTv2DaysTick = (TextView) findViewById(R.id.tv_2days);
+    	mTv3DaysTick = (TextView) findViewById(R.id.tv_3days);
     	mTvDetail = (TextView) findViewById(R.id.tv_detail);
     	mTvDay = (TextView) findViewById(R.id.tv_day);
     	mTvWeek = (TextView) findViewById(R.id.tv_week);
@@ -326,6 +727,8 @@ public class SampleDemoActivity extends BaseActivity {
     	mTvHandicap.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				mDisplayType = DisplayType.HANDICAP;
+				
 				changeTopButtonsColor((TextView) v);
 				
 				mLinHandicap.setVisibility(View.VISIBLE);
@@ -333,8 +736,13 @@ public class SampleDemoActivity extends BaseActivity {
 				mLinDetailTop.setVisibility(View.INVISIBLE);
 				mLvDetail.setVisibility(View.INVISIBLE);
 				mTickChart.setVisibility(View.INVISIBLE);
+				m2daysTickChart.setVisibility(View.INVISIBLE);
+				m3daysTickChart.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime1.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime2.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime3.setVisibility(View.INVISIBLE);
 				mLinOrderContainer.setVisibility(View.INVISIBLE);
-				mBollmaslipcandlestickchart.setVisibility(View.INVISIBLE);
+				mLinChartsContainer.setVisibility(View.INVISIBLE);
 				mLinBottomChartContainer.setVisibility(View.INVISIBLE);
 				mLinBottomButtons.setVisibility(View.INVISIBLE);
 			}
@@ -343,6 +751,8 @@ public class SampleDemoActivity extends BaseActivity {
     	mTvTick.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				mDisplayType = DisplayType.TICKCHART;
+				
 				changeTopButtonsColor((TextView) v);
 				
 				mLinHandicap.setVisibility(View.INVISIBLE);
@@ -350,9 +760,62 @@ public class SampleDemoActivity extends BaseActivity {
 				mTickChart.setVisibility(View.VISIBLE);
 				mLinOrderContainer.setVisibility(View.VISIBLE);
 				
+				m2daysTickChart.setVisibility(View.INVISIBLE);
+				m3daysTickChart.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime1.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime2.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime3.setVisibility(View.INVISIBLE);
 				mLinDetailTop.setVisibility(View.INVISIBLE);
 				mLvDetail.setVisibility(View.INVISIBLE);
-				mBollmaslipcandlestickchart.setVisibility(View.INVISIBLE);
+				mLinChartsContainer.setVisibility(View.INVISIBLE);
+				mLinBottomChartContainer.setVisibility(View.INVISIBLE);
+				mLinBottomButtons.setVisibility(View.INVISIBLE);
+			}
+		});
+    	mTv2DaysTick.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mDisplayType = DisplayType.DAYS2CHART;
+				
+				changeTopButtonsColor((TextView) v);
+				
+				mLinHandicap.setVisibility(View.INVISIBLE);
+				mTickChart.setVisibility(View.INVISIBLE);
+				mLinOrderContainer.setVisibility(View.INVISIBLE);
+				
+				m2daysTickChart.setVisibility(View.VISIBLE);
+				m3daysTickChart.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime1.setVisibility(View.VISIBLE);
+				mTvFloatDateTime2.setVisibility(View.VISIBLE);
+				mTvFloatDateTime3.setVisibility(View.INVISIBLE);
+
+				mLinDetailTop.setVisibility(View.INVISIBLE);
+				mLvDetail.setVisibility(View.INVISIBLE);
+				mLinChartsContainer.setVisibility(View.INVISIBLE);
+				mLinBottomChartContainer.setVisibility(View.INVISIBLE);
+				mLinBottomButtons.setVisibility(View.INVISIBLE);
+			}
+		});
+    	mTv3DaysTick.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mDisplayType = DisplayType.DAYS3CHART;
+				
+				changeTopButtonsColor((TextView) v);
+				
+				mLinHandicap.setVisibility(View.INVISIBLE);
+				mTickChart.setVisibility(View.INVISIBLE);
+				
+				m2daysTickChart.setVisibility(View.INVISIBLE);
+				m3daysTickChart.setVisibility(View.VISIBLE);
+				mTvFloatDateTime1.setVisibility(View.VISIBLE);
+				mTvFloatDateTime2.setVisibility(View.VISIBLE);
+				mTvFloatDateTime3.setVisibility(View.VISIBLE);
+				
+				mLinOrderContainer.setVisibility(View.INVISIBLE);
+				mLinDetailTop.setVisibility(View.INVISIBLE);
+				mLvDetail.setVisibility(View.INVISIBLE);
+				mLinChartsContainer.setVisibility(View.INVISIBLE);
 				mLinBottomChartContainer.setVisibility(View.INVISIBLE);
 				mLinBottomButtons.setVisibility(View.INVISIBLE);
 			}
@@ -361,16 +824,23 @@ public class SampleDemoActivity extends BaseActivity {
     	mTvDetail.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				mDisplayType = DisplayType.DETAIL;
+				
 				changeTopButtonsColor((TextView) v);
 				
 				mLinHandicap.setVisibility(View.INVISIBLE);
 				mTickChart.setVisibility(View.INVISIBLE);
 				mLinOrderContainer.setVisibility(View.INVISIBLE);
+				m2daysTickChart.setVisibility(View.INVISIBLE);
+				m3daysTickChart.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime1.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime2.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime3.setVisibility(View.INVISIBLE);
 				
 				mLinDetailTop.setVisibility(View.VISIBLE);
 				mLvDetail.setVisibility(View.VISIBLE);
 				
-				mBollmaslipcandlestickchart.setVisibility(View.INVISIBLE);
+				mLinChartsContainer.setVisibility(View.INVISIBLE);
 				mLinBottomChartContainer.setVisibility(View.INVISIBLE);
 				mLinBottomButtons.setVisibility(View.INVISIBLE);
 			}
@@ -379,6 +849,8 @@ public class SampleDemoActivity extends BaseActivity {
     	mTvDay.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+            	mDisplayType = DisplayType.KLINECHART;
+            	
             	changeTopButtonsColor((TextView) v);
             	
             	loadKLineData(ChartDataType.DAY);
@@ -387,7 +859,13 @@ public class SampleDemoActivity extends BaseActivity {
                 mLinOrderContainer.setVisibility(View.INVISIBLE);
                 mLinDetailTop.setVisibility(View.INVISIBLE);
 				mLvDetail.setVisibility(View.INVISIBLE);
-				mBollmaslipcandlestickchart.setVisibility(View.VISIBLE);
+				m2daysTickChart.setVisibility(View.INVISIBLE);
+				m3daysTickChart.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime1.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime2.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime3.setVisibility(View.INVISIBLE);
+				
+				mLinChartsContainer.setVisibility(View.VISIBLE);
                 mLinBottomChartContainer.setVisibility(View.VISIBLE);
                 mLinBottomButtons.setVisibility(View.VISIBLE);
             }
@@ -396,6 +874,8 @@ public class SampleDemoActivity extends BaseActivity {
     	mTvWeek.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+            	mDisplayType = DisplayType.KLINECHART;
+            	
             	changeTopButtonsColor((TextView) v);
             	
             	loadKLineData(ChartDataType.WEEK);
@@ -404,7 +884,13 @@ public class SampleDemoActivity extends BaseActivity {
                 mLinOrderContainer.setVisibility(View.INVISIBLE);
                 mLinDetailTop.setVisibility(View.INVISIBLE);
 				mLvDetail.setVisibility(View.INVISIBLE);
-				mBollmaslipcandlestickchart.setVisibility(View.VISIBLE);
+				m2daysTickChart.setVisibility(View.INVISIBLE);
+				m3daysTickChart.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime1.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime2.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime3.setVisibility(View.INVISIBLE);
+				
+				mLinChartsContainer.setVisibility(View.VISIBLE);
                 mLinBottomChartContainer.setVisibility(View.VISIBLE);
                 mLinBottomButtons.setVisibility(View.VISIBLE);
             }
@@ -413,6 +899,8 @@ public class SampleDemoActivity extends BaseActivity {
     	mTvMonth.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+            	mDisplayType = DisplayType.KLINECHART;
+            	
             	changeTopButtonsColor((TextView) v);
             	
             	loadKLineData(ChartDataType.MONTH);
@@ -421,7 +909,13 @@ public class SampleDemoActivity extends BaseActivity {
                 mLinOrderContainer.setVisibility(View.INVISIBLE);
                 mLinDetailTop.setVisibility(View.INVISIBLE);
 				mLvDetail.setVisibility(View.INVISIBLE);
-				mBollmaslipcandlestickchart.setVisibility(View.VISIBLE);
+				m2daysTickChart.setVisibility(View.INVISIBLE);
+				m3daysTickChart.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime1.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime2.setVisibility(View.INVISIBLE);
+				mTvFloatDateTime3.setVisibility(View.INVISIBLE);
+				
+				mLinChartsContainer.setVisibility(View.VISIBLE);
                 mLinBottomChartContainer.setVisibility(View.VISIBLE);
                 mLinBottomButtons.setVisibility(View.VISIBLE);
             }
@@ -430,6 +924,10 @@ public class SampleDemoActivity extends BaseActivity {
     	mTvMinute.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+            	mDisplayType = DisplayType.KLINECHART;
+            	
+            	changeTopButtonsColor((TextView) v);
+            	
             	if(mPopup.isShowing()) {  
                     // 隐藏窗口，如果设置了点击窗口外小时即不需要此方式隐藏  
             		mPopup.dismiss();
@@ -641,77 +1139,91 @@ public class SampleDemoActivity extends BaseActivity {
     }
     
     public void changeTopButtonsColor(TextView tvSelected){
-    	mTvHandicap.setTextColor(Color.LTGRAY);
-    	mTvTick.setTextColor(Color.LTGRAY);
-    	mTvDetail.setTextColor(Color.LTGRAY);
-    	mTvDay.setTextColor(Color.LTGRAY);
-    	mTvWeek.setTextColor(Color.LTGRAY);
-    	mTvMonth.setTextColor(Color.LTGRAY);
-    	mTvMinute.setTextColor(Color.LTGRAY);
+    	int resIDNomalColor = mThemeMode == ThemeModeType.THEME_DAY?getResources().getColor(R.color.button_normal_text_day):getResources().getColor(R.color.button_normal_text_night);
+    	int resIDSelectedColor = mThemeMode == ThemeModeType.THEME_DAY?getResources().getColor(R.color.button_selected_text_day):getResources().getColor(R.color.button_selected_text_night);
     	
-    	tvSelected.setTextColor(Color.WHITE);
+    	mTvHandicap.setTextColor(resIDNomalColor);
+    	mTvTick.setTextColor(resIDNomalColor);
+    	mTvDetail.setTextColor(resIDNomalColor);
+    	mTvDay.setTextColor(resIDNomalColor);
+    	mTvWeek.setTextColor(resIDNomalColor);
+    	mTvMonth.setTextColor(resIDNomalColor);
+    	mTvMinute.setTextColor(resIDNomalColor);
+    	mTv2DaysTick.setTextColor(resIDNomalColor);
+    	mTv3DaysTick.setTextColor(resIDNomalColor);
+    	
+    	tvSelected.setTextColor(resIDSelectedColor);
     }
     
     private void hideBottomChart(){
+    	int resIDNomalColor = mThemeMode == ThemeModeType.THEME_DAY?getResources().getColor(R.color.button_normal_text_day):getResources().getColor(R.color.button_normal_text_night);
+    	int resIDSelectedColor = mThemeMode == ThemeModeType.THEME_DAY?getResources().getColor(R.color.button_selected_text_day):getResources().getColor(R.color.button_selected_text_night);
+
         if (mDisplayChart == ChartViewType.VOL){
         	mLinBottomChartContainer.scrollTo(0, 0);
-            mTvVOL.setTextColor(Color.WHITE);
+            mTvVOL.setTextColor(resIDSelectedColor);
         }else {
-            mTvVOL.setTextColor(Color.LTGRAY);
+            mTvVOL.setTextColor(resIDNomalColor);
         }
         if (mDisplayChart == ChartViewType.MACD) {
         	mLinBottomChartContainer.scrollTo(screenWidth, 0);
-            mTvMACD.setTextColor(Color.WHITE);
+            mTvMACD.setTextColor(resIDSelectedColor);
         }else{
-            mTvMACD.setTextColor(Color.LTGRAY);
+            mTvMACD.setTextColor(resIDNomalColor);
         }
         if (mDisplayChart == ChartViewType.KDJ){
         	mLinBottomChartContainer.scrollTo(screenWidth*2, 0);
-            mTvKDJ.setTextColor(Color.WHITE);
+            mTvKDJ.setTextColor(resIDSelectedColor);
         }else {
-            mTvKDJ.setTextColor(Color.LTGRAY);
+            mTvKDJ.setTextColor(resIDNomalColor);
         }
         if (mDisplayChart == ChartViewType.RSI){
         	mLinBottomChartContainer.scrollTo(screenWidth*3, 0);
-            mTvRSI.setTextColor(Color.WHITE);
+            mTvRSI.setTextColor(resIDSelectedColor);
         }else {
-            mTvRSI.setTextColor(Color.LTGRAY);
+            mTvRSI.setTextColor(resIDNomalColor);
         }
         if (mDisplayChart == ChartViewType.WR){
         	mLinBottomChartContainer.scrollTo(screenWidth*4, 0);
-            mTvWR.setTextColor(Color.WHITE);
+            mTvWR.setTextColor(resIDSelectedColor);
         }else {
-            mTvWR.setTextColor(Color.LTGRAY);
+            mTvWR.setTextColor(resIDNomalColor);
         }
         if (mDisplayChart == ChartViewType.CCI){
         	mLinBottomChartContainer.scrollTo(screenWidth*5, 0);
-            mTvCCI.setTextColor(Color.WHITE);
+            mTvCCI.setTextColor(resIDSelectedColor);
         }else {
-            mTvCCI.setTextColor(Color.LTGRAY);
+            mTvCCI.setTextColor(resIDNomalColor);
         }
         if (mDisplayChart == ChartViewType.BOLL){
         	mLinBottomChartContainer.scrollTo(screenWidth*6, 0);
-            mTvBOLL.setTextColor(Color.WHITE);
+            mTvBOLL.setTextColor(resIDSelectedColor);
         }else {
-            mTvBOLL.setTextColor(Color.LTGRAY);
+            mTvBOLL.setTextColor(resIDNomalColor);
         }
     }
     
     private void initBOLLMASlipCandleStickChart() {
+    	this.mLinChartsContainer = (LinearLayout) findViewById(R.id.lin_charts_container);
         this.mBollmaslipcandlestickchart = (BOLLMASlipCandleStickChart) findViewById(R.id.bollmaslipcandlestickchart);
+
+    	mBollmaslipcandlestickchart.setBackgroundResource(mThemeMode == ThemeModeType.THEME_DAY?R.color.chart_background_day:R.color.chart_background_night);
+    	mLinChartsContainer.setBackgroundResource(mThemeMode == ThemeModeType.THEME_DAY?R.color.chart_background_day:R.color.chart_background_night);
 
         mBollmaslipcandlestickchart.setAxisXColor(Color.LTGRAY);
         mBollmaslipcandlestickchart.setAxisYColor(Color.LTGRAY);
         mBollmaslipcandlestickchart.setLatitudeColor(Color.GRAY);
         mBollmaslipcandlestickchart.setLongitudeColor(Color.GRAY);
         mBollmaslipcandlestickchart.setBorderColor(Color.LTGRAY);
-        mBollmaslipcandlestickchart.setLongitudeFontColor(Color.WHITE);
-        mBollmaslipcandlestickchart.setLatitudeFontColor(Color.WHITE);
+        mBollmaslipcandlestickchart.setLongitudeFontColor(Color.LTGRAY);
+        mBollmaslipcandlestickchart.setLatitudeFontColor(Color.LTGRAY);
 
+        mBollmaslipcandlestickchart.setCrossLinesColor(Color.LTGRAY);
+        
         // 最大纬线数
-        mBollmaslipcandlestickchart.setLatitudeNum(5);
-        // 最大经线数
-        mBollmaslipcandlestickchart.setLongitudeNum(3);
+        mBollmaslipcandlestickchart.setLatitudeNum(3);
+//        // 最大经线数
+//        mBollmaslipcandlestickchart.setLongitudeNum(3);
         // 最大价格
         mBollmaslipcandlestickchart.setMaxValue(1200);
         // 最小价格
@@ -730,7 +1242,6 @@ public class SampleDemoActivity extends BaseActivity {
         mBollmaslipcandlestickchart.setDisplayLatitudeTitle(true);
         mBollmaslipcandlestickchart.setDisplayLatitude(true);
         mBollmaslipcandlestickchart.setDisplayLongitude(true);
-        mBollmaslipcandlestickchart.setBackgroundColor(Color.BLACK);
 
         mBollmaslipcandlestickchart.setDataQuadrantPaddingTop(5);
         mBollmaslipcandlestickchart.setDataQuadrantPaddingBottom(5);
@@ -745,12 +1256,14 @@ public class SampleDemoActivity extends BaseActivity {
 
         mBollmaslipcandlestickchart.setOnDisplayCursorListener(displayCursorListener);
         mBollmaslipcandlestickchart.setNoneDisplayValue(new float[]{Float.MAX_VALUE});
+        
+        mBollmaslipcandlestickchart.setTouchedIndexListener(mITouchedIndexListener);
     }
 
     final IDisplayCursorListener displayCursorListener =  new IDisplayCursorListener() {
         @Override
         public void onCursorChanged(IDataCursor cursor, int displayFrom, int displayNumber) {
-
+        	
             if (cursor ==  mBollmaslipcandlestickchart){
 
                 mVOLchart.setDisplayFrom(displayFrom);
@@ -805,18 +1318,21 @@ public class SampleDemoActivity extends BaseActivity {
     	this.mTickChart = (TickChart) findViewById(R.id.timeschart);
     	this.mLinOrderContainer = (LinearLayout) findViewById(R.id.lin_order_container);
     	
+    	mTickChart.setBackgroundResource(mThemeMode == ThemeModeType.THEME_DAY?R.color.chart_background_day:R.color.chart_background_night);
+    	mLinOrderContainer.setBackgroundResource(mThemeMode == ThemeModeType.THEME_DAY ? R.color.chart_background_day : R.color.chart_background_night);
+    	
     	mTickChart.setAxisXColor(Color.LTGRAY);
     	mTickChart.setAxisYColor(Color.LTGRAY);
     	mTickChart.setBorderColor(Color.LTGRAY);
-    	mTickChart.setLongitudeFontSize(14);
-    	mTickChart.setLongitudeFontColor(Color.WHITE);
+//    	mTickChart.setLongitudeFontSize(14);
+    	mTickChart.setLongitudeFontColor(Color.LTGRAY);
     	mTickChart.setLatitudeColor(Color.GRAY);
-        mTickChart.setLatitudeFontColor(Color.WHITE);
+        mTickChart.setLatitudeFontColor(Color.LTGRAY);
         mTickChart.setLongitudeColor(Color.GRAY);
         mTickChart.setMaxValue(1300);
         mTickChart.setMinValue(700);
         mTickChart.setDisplayFrom(10);
-        mTickChart.setDisplayNumber(30);
+        mTickChart.setDisplayNumber(2);
         mTickChart.setMinDisplayNumber(5);
 //        mTickChart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
         mTickChart.setDisplayLongitudeTitle(true);
@@ -831,8 +1347,24 @@ public class SampleDemoActivity extends BaseActivity {
         // mTickChart.setAxisXTitleQuadrantHeight(20);
         mTickChart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
         mTickChart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
-        
-        mLinOrders = new LinearLayout[10];
+		mTickChart.setLongitudeSplitor(new int[]{360, 300});
+		mTickChart.setAutoBalanceValueRange(true);
+		mTickChart.setLastClose(4300);
+		mTickChart.setLongitudeNum(2);
+
+		List<String> longitudeTitles = new ArrayList<String>();
+		longitudeTitles.add("04/20 21:00");
+		longitudeTitles.add("02:15/09:00");
+		longitudeTitles.add("04/21 15:00");
+		mTickChart.setAutoCalcLongitudeTitle(false);
+		mTickChart.setLongitudeTitles(longitudeTitles);
+		mTickChart.setDetectZoomEvent(false);
+//		mTickChart.setDetectSlipEvent(false);
+		
+
+		mTickChart.setBindCrossLinesToStick(ICrossLines.BIND_TO_TYPE_BOTH);
+
+		mLinOrders = new LinearLayout[10];
         for (int i = 0; i < mOrdersId.length; i++) {
         	mLinOrders[i] = (LinearLayout) findViewById(mOrdersId[i]);
         	
@@ -865,6 +1397,72 @@ public class SampleDemoActivity extends BaseActivity {
 		}
     }
     
+    private void init2DaysTickChart(){
+    	this.m2daysTickChart = (SlipLineChart) findViewById(R.id.chart_2days);
+    	
+    	m2daysTickChart.setBackgroundResource(mThemeMode == ThemeModeType.THEME_DAY ? R.color.chart_background_day : R.color.chart_background_night);
+    	
+    	m2daysTickChart.setAxisXColor(Color.LTGRAY);
+    	m2daysTickChart.setAxisYColor(Color.LTGRAY);
+    	m2daysTickChart.setBorderColor(Color.LTGRAY);
+//    	m2daysTickChart.setLongitudeFontSize(14);
+    	m2daysTickChart.setLongitudeFontColor(Color.LTGRAY);
+    	m2daysTickChart.setLatitudeColor(Color.GRAY);
+    	m2daysTickChart.setLatitudeFontColor(Color.LTGRAY);
+    	m2daysTickChart.setLongitudeColor(Color.GRAY);
+    	m2daysTickChart.setMaxValue(1300);
+    	m2daysTickChart.setMinValue(700);
+    	m2daysTickChart.setDisplayFrom(10);
+    	m2daysTickChart.setDisplayNumber(2);
+    	m2daysTickChart.setMinDisplayNumber(5);
+//        mTickChart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+    	m2daysTickChart.setDisplayLongitudeTitle(true);
+    	m2daysTickChart.setDisplayLatitudeTitle(true);
+    	m2daysTickChart.setDisplayLatitude(true);
+    	m2daysTickChart.setDisplayLongitude(true);
+    	m2daysTickChart.setDataQuadrantPaddingTop(5);
+    	m2daysTickChart.setDataQuadrantPaddingBottom(5);
+    	m2daysTickChart.setDataQuadrantPaddingLeft(5);
+    	m2daysTickChart.setDataQuadrantPaddingRight(5);
+        // mTickChart.setAxisYTitleQuadrantWidth(50);
+        // mTickChart.setAxisXTitleQuadrantHeight(20);
+    	m2daysTickChart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
+    	m2daysTickChart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+    }
+    
+    private void init3DaysTickChart(){
+    	this.m3daysTickChart = (SlipLineChart) findViewById(R.id.chart_3days);
+    	
+    	m3daysTickChart.setBackgroundResource(mThemeMode == ThemeModeType.THEME_DAY ? R.color.chart_background_day : R.color.chart_background_night);
+
+    	m3daysTickChart.setAxisXColor(Color.LTGRAY);
+    	m3daysTickChart.setAxisYColor(Color.LTGRAY);
+    	m3daysTickChart.setBorderColor(Color.LTGRAY);
+//    	m3daysTickChart.setLongitudeFontSize(14);
+    	m3daysTickChart.setLongitudeFontColor(Color.LTGRAY);
+    	m3daysTickChart.setLatitudeColor(Color.GRAY);
+    	m3daysTickChart.setLatitudeFontColor(Color.LTGRAY);
+    	m3daysTickChart.setLongitudeColor(Color.GRAY);
+    	m3daysTickChart.setMaxValue(1300);
+    	m3daysTickChart.setMinValue(700);
+    	m3daysTickChart.setDisplayFrom(10);
+        m3daysTickChart.setDisplayNumber(2);
+        m3daysTickChart.setMinDisplayNumber(5);
+//        mTickChart.setZoomBaseLine(IZoomable.ZOOM_BASE_LINE_CENTER);
+        m3daysTickChart.setDisplayLongitudeTitle(true);
+        m3daysTickChart.setDisplayLatitudeTitle(true);
+        m3daysTickChart.setDisplayLatitude(true);
+        m3daysTickChart.setDisplayLongitude(true);
+        m3daysTickChart.setDataQuadrantPaddingTop(5);
+        m3daysTickChart.setDataQuadrantPaddingBottom(5);
+        m3daysTickChart.setDataQuadrantPaddingLeft(5);
+        m3daysTickChart.setDataQuadrantPaddingRight(5);
+        // mTickChart.setAxisYTitleQuadrantWidth(50);
+        // mTickChart.setAxisXTitleQuadrantHeight(20);
+        m3daysTickChart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
+        m3daysTickChart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
+    }
+    
     private void initVOLChart() {
         this.mVOLchart = (MAColoredSlipStickChart) findViewById(R.id.slipstickchart);
 
@@ -873,8 +1471,8 @@ public class SampleDemoActivity extends BaseActivity {
         mVOLchart.setLatitudeColor(Color.GRAY);
         mVOLchart.setLongitudeColor(Color.GRAY);
         mVOLchart.setBorderColor(Color.LTGRAY);
-        mVOLchart.setLongitudeFontColor(Color.WHITE);
-        mVOLchart.setLatitudeFontColor(Color.WHITE);
+        mVOLchart.setLongitudeFontColor(Color.LTGRAY);
+        mVOLchart.setLatitudeFontColor(Color.LTGRAY);
         mVOLchart.setDataQuadrantPaddingTop(6);
         mVOLchart.setDataQuadrantPaddingBottom(1);
         mVOLchart.setDataQuadrantPaddingLeft(1);
@@ -883,10 +1481,10 @@ public class SampleDemoActivity extends BaseActivity {
         // mVOLchart.setAxisXTitleQuadrantHeight(20);
         mVOLchart.setAxisXPosition(Axis.AXIS_X_POSITION_BOTTOM);
         mVOLchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
-        // 最大纬线数
-        mVOLchart.setLatitudeNum(3);
-        // 最大经线数
-        mVOLchart.setLongitudeNum(3);
+//        // 最大纬线数
+//        mVOLchart.setLatitudeNum(3);
+//        // 最大经线数
+//        mVOLchart.setLongitudeNum(3);
         // 最大价格
         mVOLchart.setMaxValue(340);
         // 最小价格
@@ -904,13 +1502,13 @@ public class SampleDemoActivity extends BaseActivity {
         mVOLchart.setDisplayLatitudeTitle(true);
         mVOLchart.setDisplayLatitude(true);
         mVOLchart.setDisplayLongitude(true);
-        mVOLchart.setBackgroundColor(Color.BLACK);
 
 //        mVOLchart.setDataMultiple(100);
 //        mVOLchart.setAxisYDecimalFormat("#,##0");
         mVOLchart.setAxisXDateTargetFormat("yyyy/MM/dd");
         mVOLchart.setAxisXDateSourceFormat("yyyyMMdd");
         mVOLchart.setOnDisplayCursorListener(displayCursorListener);
+        mVOLchart.setTouchedIndexListener(mITouchedIndexListener);
     }
     
     @SuppressWarnings("static-access")
@@ -920,8 +1518,8 @@ public class SampleDemoActivity extends BaseActivity {
         mMacdChart.setMinValue(-300000);
         // mMacdChart.setDisplayCrossXOnTouch(true);
         // mMacdChart.setDisplayCrossYOnTouch(true);
-        mMacdChart.setLatitudeNum(4);
-        mMacdChart.setLongitudeNum(3);
+//        mMacdChart.setLatitudeNum(4);
+//        mMacdChart.setLongitudeNum(3);
 //        mMacdChart.setDisplayFrom(0);
 //        mMacdChart.setDisplayNumber(10);
 //        mMacdChart.setMinDisplayNumber(10);
@@ -931,14 +1529,18 @@ public class SampleDemoActivity extends BaseActivity {
         mMacdChart.setLatitudeColor(Color.GRAY);
         mMacdChart.setLongitudeColor(Color.GRAY);
         mMacdChart.setBorderColor(Color.LTGRAY);
-        mMacdChart.setLongitudeFontColor(Color.WHITE);
-        mMacdChart.setLatitudeFontColor(Color.WHITE);
+        mMacdChart.setLongitudeFontColor(Color.LTGRAY);
+        mMacdChart.setLatitudeFontColor(Color.LTGRAY);
         mMacdChart.setMacdDisplayType(mMacdChart.MACD_DISPLAY_TYPE_STICK);
 //        mMacdChart.setPositiveStickColor(Color.RED);
 //        mMacdChart.setNegativeStickColor(Color.CYAN);
-        mMacdChart.setMacdLineColor(Color.CYAN);
-        mMacdChart.setDeaLineColor(Color.YELLOW);
-        mMacdChart.setDiffLineColor(Color.WHITE);
+        mMacdChart.setMacdLineColor(Color.parseColor(TAComputeUtils.LINE_COLORS[0]));
+        mMacdChart.setDeaLineColor(Color.parseColor(TAComputeUtils.LINE_COLORS[1]));
+        mMacdChart.setDiffLineColor(Color.parseColor(TAComputeUtils.LINE_COLORS[2]));
+        mMacdChart.setPositiveStickFillColor(Color.parseColor(TAComputeUtils.LINE_COLORS[0]));
+        mMacdChart.setPositiveStickStrokeColor(Color.parseColor(TAComputeUtils.LINE_COLORS[0]));
+        mMacdChart.setNegativeStickFillColor(Color.parseColor(TAComputeUtils.LINE_COLORS[1]));
+        mMacdChart.setNegativeStickStrokeColor(Color.parseColor(TAComputeUtils.LINE_COLORS[1]));
         mMacdChart.setDataQuadrantPaddingTop(5);
         mMacdChart.setDataQuadrantPaddingBottom(5);
         mMacdChart.setDataQuadrantPaddingLeft(5);
@@ -949,6 +1551,7 @@ public class SampleDemoActivity extends BaseActivity {
         mMacdChart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
         mMacdChart.setOnDisplayCursorListener(displayCursorListener);
         mMacdChart.setNoneDisplayValue(new float[]{Float.MAX_VALUE});
+        mMacdChart.setTouchedIndexListener(mITouchedIndexListener);
     }
     
     private void initKDJChart() {
@@ -958,9 +1561,9 @@ public class SampleDemoActivity extends BaseActivity {
         mKDJchart.setAxisYColor(Color.LTGRAY);
         mKDJchart.setBorderColor(Color.LTGRAY);
         mKDJchart.setLongitudeFontSize(14);
-        mKDJchart.setLongitudeFontColor(Color.WHITE);
+        mKDJchart.setLongitudeFontColor(Color.LTGRAY);
         mKDJchart.setLatitudeColor(Color.GRAY);
-        mKDJchart.setLatitudeFontColor(Color.WHITE);
+        mKDJchart.setLatitudeFontColor(Color.LTGRAY);
         mKDJchart.setLongitudeColor(Color.GRAY);
         mKDJchart.setMaxValue(100);
         mKDJchart.setMinValue(0);
@@ -983,6 +1586,7 @@ public class SampleDemoActivity extends BaseActivity {
         mKDJchart.setOnDisplayCursorListener(displayCursorListener);
         mKDJchart.setNoneDisplayValue(new float[]{0});
 //        mKDJchart.setAutoCalcValueRange(false);
+        mKDJchart.setTouchedIndexListener(mITouchedIndexListener);
     }
     
     private void initRSIChart() {
@@ -992,9 +1596,9 @@ public class SampleDemoActivity extends BaseActivity {
         mRSIchart.setAxisYColor(Color.LTGRAY);
         mRSIchart.setBorderColor(Color.LTGRAY);
         mRSIchart.setLongitudeFontSize(14);
-        mRSIchart.setLongitudeFontColor(Color.WHITE);
+        mRSIchart.setLongitudeFontColor(Color.LTGRAY);
         mRSIchart.setLatitudeColor(Color.GRAY);
-        mRSIchart.setLatitudeFontColor(Color.WHITE);
+        mRSIchart.setLatitudeFontColor(Color.LTGRAY);
         mRSIchart.setLongitudeColor(Color.GRAY);
         mRSIchart.setMaxValue(100);
         mRSIchart.setMinValue(0);
@@ -1017,6 +1621,7 @@ public class SampleDemoActivity extends BaseActivity {
         mRSIchart.setOnDisplayCursorListener(displayCursorListener);
         mRSIchart.setAutoCalcValueRange(false);
         mRSIchart.setNoneDisplayValue(new float[]{0});
+        mRSIchart.setTouchedIndexListener(mITouchedIndexListener);
     }
     
     private void initWRChart() {
@@ -1026,9 +1631,9 @@ public class SampleDemoActivity extends BaseActivity {
         mWRchart.setAxisYColor(Color.LTGRAY);
         mWRchart.setBorderColor(Color.LTGRAY);
         mWRchart.setLongitudeFontSize(14);
-        mWRchart.setLongitudeFontColor(Color.WHITE);
+        mWRchart.setLongitudeFontColor(Color.LTGRAY);
         mWRchart.setLatitudeColor(Color.GRAY);
-        mWRchart.setLatitudeFontColor(Color.WHITE);
+        mWRchart.setLatitudeFontColor(Color.LTGRAY);
         mWRchart.setLongitudeColor(Color.GRAY);
         mWRchart.setMaxValue(100);
         mWRchart.setMinValue(0);
@@ -1051,6 +1656,7 @@ public class SampleDemoActivity extends BaseActivity {
         mWRchart.setOnDisplayCursorListener(displayCursorListener);
         mWRchart.setAutoCalcValueRange(false);
         mWRchart.setNoneDisplayValue(new float[]{101});
+        mWRchart.setTouchedIndexListener(mITouchedIndexListener);
     }
     
     private void initCCIChart() {
@@ -1060,9 +1666,9 @@ public class SampleDemoActivity extends BaseActivity {
         mCCIchart.setAxisYColor(Color.LTGRAY);
         mCCIchart.setBorderColor(Color.LTGRAY);
         mCCIchart.setLongitudeFontSize(14);
-        mCCIchart.setLongitudeFontColor(Color.WHITE);
+        mCCIchart.setLongitudeFontColor(Color.LTGRAY);
         mCCIchart.setLatitudeColor(Color.GRAY);
-        mCCIchart.setLatitudeFontColor(Color.WHITE);
+        mCCIchart.setLatitudeFontColor(Color.LTGRAY);
         mCCIchart.setLongitudeColor(Color.GRAY);
         mCCIchart.setMaxValue(1300);
         mCCIchart.setMinValue(700);
@@ -1085,6 +1691,7 @@ public class SampleDemoActivity extends BaseActivity {
         mCCIchart.setOnDisplayCursorListener(displayCursorListener);
         mCCIchart.setAutoCalcValueRange(true);
         mCCIchart.setNoneDisplayValue(new float[]{Float.MAX_VALUE});
+        mCCIchart.setTouchedIndexListener(mITouchedIndexListener);
     }
     
     private void initBOLLChart() {
@@ -1094,9 +1701,9 @@ public class SampleDemoActivity extends BaseActivity {
         mBOLLchart.setAxisYColor(Color.LTGRAY);
         mBOLLchart.setBorderColor(Color.LTGRAY);
         mBOLLchart.setLongitudeFontSize(14);
-        mBOLLchart.setLongitudeFontColor(Color.WHITE);
+        mBOLLchart.setLongitudeFontColor(Color.LTGRAY);
         mBOLLchart.setLatitudeColor(Color.GRAY);
-        mBOLLchart.setLatitudeFontColor(Color.WHITE);
+        mBOLLchart.setLatitudeFontColor(Color.LTGRAY);
         mBOLLchart.setLongitudeColor(Color.GRAY);
         mBOLLchart.setMaxValue(1300);
         mBOLLchart.setMinValue(700);
@@ -1118,6 +1725,7 @@ public class SampleDemoActivity extends BaseActivity {
         mBOLLchart.setAxisYPosition(Axis.AXIS_Y_POSITION_RIGHT);
         mBOLLchart.setOnDisplayCursorListener(displayCursorListener);
         mBOLLchart.setNoneDisplayValue(new float[]{Float.MAX_VALUE});
+        mBOLLchart.setTouchedIndexListener(mITouchedIndexListener);
     }
     
     public void initHandicap() {
@@ -1144,7 +1752,7 @@ public class SampleDemoActivity extends BaseActivity {
         	((LinearLayout.LayoutParams)tvLeftLabel.getLayoutParams()).weight = 1;
         	((LinearLayout.LayoutParams)tvLeftLabel.getLayoutParams()).rightMargin = DipUtils.dip2px(this, 5);
         	tvLeftLabel.setGravity(Gravity.RIGHT);
-        	tvLeftLabel.setTextColor(Color.LTGRAY);
+        	tvLeftLabel.setTextColor(getResources().getColor(R.drawable.lightgray));
         	tvLeftLabel.setTextSize(12.0f);
         	linHandicap.addView(tvLeftLabel);
         	
@@ -1153,7 +1761,7 @@ public class SampleDemoActivity extends BaseActivity {
         	((LinearLayout.LayoutParams)tvLeftValue.getLayoutParams()).weight = 1;
         	((LinearLayout.LayoutParams)tvLeftValue.getLayoutParams()).leftMargin = DipUtils.dip2px(this, 5);
         	tvLeftValue.setGravity(Gravity.LEFT);
-        	tvLeftValue.setTextColor(Color.LTGRAY);
+        	tvLeftValue.setTextColor(getResources().getColor(R.drawable.lightgray));
         	tvLeftValue.setTextSize(12.0f);
         	linHandicap.addView(tvLeftValue);
         	
@@ -1162,7 +1770,7 @@ public class SampleDemoActivity extends BaseActivity {
         	((LinearLayout.LayoutParams)tvRightLabel.getLayoutParams()).weight = 1;
         	((LinearLayout.LayoutParams)tvRightLabel.getLayoutParams()).rightMargin = DipUtils.dip2px(this, 5);
         	tvRightLabel.setGravity(Gravity.RIGHT);
-        	tvRightLabel.setTextColor(Color.LTGRAY);
+        	tvRightLabel.setTextColor(getResources().getColor(R.drawable.lightgray));
         	tvRightLabel.setTextSize(12.0f);
         	linHandicap.addView(tvRightLabel);
         	
@@ -1171,7 +1779,7 @@ public class SampleDemoActivity extends BaseActivity {
         	((LinearLayout.LayoutParams)tvRightValue.getLayoutParams()).weight = 1;
         	((LinearLayout.LayoutParams)tvRightValue.getLayoutParams()).leftMargin = DipUtils.dip2px(this, 5);
         	tvRightValue.setGravity(Gravity.LEFT);
-        	tvRightValue.setTextColor(Color.LTGRAY);
+        	tvRightValue.setTextColor(getResources().getColor(R.drawable.lightgray));
         	tvRightValue.setTextSize(12.0f);
         	linHandicap.addView(tvRightValue);
         	
@@ -1245,7 +1853,7 @@ public class SampleDemoActivity extends BaseActivity {
      * 请求K线数据
      * @return
      */
-    public void loadKLineData(ChartDataType dataType){
+	public void loadKLineData(ChartDataType dataType){
     	GroupChartData currentChartData = dataType == ChartDataType.DAY?mDayData:dataType == ChartDataType.WEEK?mWeekData:dataType == ChartDataType.MONTH?mMonthData:dataType == ChartDataType.ONE_MINUTE?m1MinuteData:dataType == ChartDataType.FIVE_MINUTE?m5MinuteData:dataType == ChartDataType.FIFTEEN_MINUTE?m15MinuteData:dataType == ChartDataType.THIRTY_MINUTE?m30MinuteData:dataType == ChartDataType.ONE_HOUR?m1HourData:dataType == ChartDataType.TWO_HOUR?m2HourData:m4HourData;
     	
     	if (currentChartData == null || isRefresh) {
@@ -1269,15 +1877,16 @@ public class SampleDemoActivity extends BaseActivity {
         	
         	for (Map<String, String> map : arrayData) {
         		OHLCVData data = new OHLCVData();
-    			data.setOpen(map.get("o"));
-    			data.setHigh(map.get("h"));
-    			data.setLow(map.get("l"));
-    			data.setClose(map.get("c"));
-    			data.setVol(map.get("tr"));
+        		
+        		data.setOpen(Float.parseFloat(map.get("o")));
+    			data.setHigh(Float.parseFloat(map.get("h")));
+    			data.setLow(Float.parseFloat(map.get("l")));
+    			data.setClose(Float.parseFloat(map.get("c")));
+    			data.setVol(Float.parseFloat(map.get("tr")));
     			data.setDate(map.get("qt"));
-    			data.setCurrent(map.get("n"));
-    			data.setPreclose(null);
-    			data.setChange(map.get("changesPercent"));
+    			data.setCurrent(Float.parseFloat(map.get("c")));
+    			data.setPreclose(0.0f);
+    			data.setChange(0.0f);
     			
     			chartData.add(data);
     		}
@@ -1322,6 +1931,316 @@ public class SampleDemoActivity extends BaseActivity {
     	mBollmaslipcandlestickchart.setLinesData(currentChartData.getCandleStickLinesData());
         mBollmaslipcandlestickchart.setBandData(currentChartData.getCandleBandData());
 
+        DecimalFormat df = new DecimalFormat(VALUE_FORMAT);
+        
+        if (currentChartData.getOhlcData() != null && currentChartData.getOhlcData().size() > 0) {
+        	SpannableStringBuilder strFloatCandleStick = new SpannableStringBuilder();
+        	
+        	int index = currentChartData.getOhlcData().size() - 1;
+        	
+            OHLCVData ohlcvData = currentChartData.getOhlcData().get(index);
+            OHLCVData lastOhlcvData = currentChartData.getOhlcData().get(index == 0? index:index - 1);
+
+            strFloatCandleStick.append("开:");
+            strFloatCandleStick.append(df.format(ohlcvData.getOpen()));
+            strFloatCandleStick.append(" 收:");
+            strFloatCandleStick.append(df.format(ohlcvData.getClose()));
+            strFloatCandleStick.append(" 高:");
+            strFloatCandleStick.append(df.format(ohlcvData.getHigh()));
+            strFloatCandleStick.append(" 低:");
+            strFloatCandleStick.append(df.format(ohlcvData.getLow()));
+            
+            String strOhlc = strFloatCandleStick.toString();
+            // 设置标签文本颜色
+            if (ohlcvData.getOpen() == 0) {
+            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.LTGRAY), strOhlc.indexOf("开:") + 2, strOhlc.indexOf(" 收:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {
+            	if (ohlcvData.getOpen() == lastOhlcvData.getOpen()) {
+	            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.LTGRAY), strOhlc.indexOf("开:") + 2, strOhlc.indexOf(" 收:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}else if (ohlcvData.getOpen() > lastOhlcvData.getOpen()) {
+	            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strOhlc.indexOf("开:") + 2, strOhlc.indexOf(" 收:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}else if (ohlcvData.getOpen() < lastOhlcvData.getOpen()) {
+	            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[1])), strOhlc.indexOf("开:") + 2, strOhlc.indexOf(" 收:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}
+            }
+            
+            if (ohlcvData.getClose() == 0) {
+            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.LTGRAY), strOhlc.indexOf("收:") + 2, strOhlc.indexOf(" 高:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {
+            	if (ohlcvData.getClose() == lastOhlcvData.getClose()) {
+	            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.LTGRAY), strOhlc.indexOf("收:") + 2, strOhlc.indexOf(" 高:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}else if (ohlcvData.getClose() > lastOhlcvData.getClose()) {
+	            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strOhlc.indexOf("收:") + 2, strOhlc.indexOf(" 高:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}else if (ohlcvData.getClose() < lastOhlcvData.getClose()) {
+	            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[1])), strOhlc.indexOf("收:") + 2, strOhlc.indexOf(" 高:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}
+            }
+            
+            if (ohlcvData.getHigh() == 0) {
+            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.LTGRAY), strOhlc.indexOf("高:") + 2, strOhlc.indexOf(" 低:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {
+            	if (ohlcvData.getHigh() == lastOhlcvData.getHigh()) {
+	            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.LTGRAY), strOhlc.indexOf("高:") + 2, strOhlc.indexOf(" 低:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}else if (ohlcvData.getHigh() > lastOhlcvData.getHigh()) {
+	            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strOhlc.indexOf("高:") + 2, strOhlc.indexOf(" 低:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}else if (ohlcvData.getHigh() < lastOhlcvData.getHigh()) {
+	            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[1])), strOhlc.indexOf("高:") + 2, strOhlc.indexOf(" 低:") , Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}
+            }
+            
+            if (ohlcvData.getLow() == 0) {
+            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.LTGRAY), strOhlc.indexOf("低:") + 2, strOhlc.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {
+            	if (ohlcvData.getLow() == lastOhlcvData.getLow()) {
+	            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.LTGRAY), strOhlc.indexOf("低:") + 2, strOhlc.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}else if (ohlcvData.getLow() > lastOhlcvData.getLow()) {
+	            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strOhlc.indexOf("低:") + 2, strOhlc.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}else if (ohlcvData.getLow() < lastOhlcvData.getLow()) {
+	            	strFloatCandleStick.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[1])), strOhlc.indexOf("低:") + 2, strOhlc.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}
+            }
+            
+            mTvFloatCandleStick.setText(strFloatCandleStick);
+            
+            SpannableStringBuilder strVOLFloat = new SpannableStringBuilder();
+            strVOLFloat.append("VOL: ");
+            strVOLFloat.append(df.format(ohlcvData.getVol()));
+            
+            String strVOL = strVOLFloat.toString();
+            strVOLFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strVOL.indexOf("VOL:") + 5, strVOL.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            
+            mTvVOLFloat.setText(strVOLFloat);
+            
+            int macdS = PreferencesUtils.getInt(this, PreferencesUtils.MACD_S);
+            int macdL = PreferencesUtils.getInt(this, PreferencesUtils.MACD_L);
+            int macdM = PreferencesUtils.getInt(this, PreferencesUtils.MACD_M);
+            SpannableStringBuilder strMACDFloat = new SpannableStringBuilder();
+            
+            ListChartData<IStickEntity> macdData = currentChartData.getMacdData();
+            if (macdData.size() > 0) {
+            	strMACDFloat.append("MACD(");
+            	strMACDFloat.append(String.valueOf(macdS));
+            	strMACDFloat.append(",");
+            	strMACDFloat.append(String.valueOf(macdL));
+            	strMACDFloat.append(",");
+            	strMACDFloat.append(String.valueOf(macdM));
+            	strMACDFloat.append("): ");
+            	
+            	MACDEntity macd = (MACDEntity) macdData.get(macdData.size() - 1);
+
+            	strMACDFloat.append(df.format(macd.getMacd()));
+            	strMACDFloat.append(" DIF:");
+            	            	
+            	strMACDFloat.append(df.format(macd.getDiff()));
+                
+            	strMACDFloat.append(" DEA:");
+            	strMACDFloat.append(df.format(macd.getDea()));
+			}else{
+            	strMACDFloat.append("MACD(");
+            	strMACDFloat.append(String.valueOf(macdS));
+            	strMACDFloat.append(",");
+            	strMACDFloat.append(String.valueOf(macdL));
+            	strMACDFloat.append(",");
+            	strMACDFloat.append(String.valueOf(macdM));
+            	strMACDFloat.append("): ");
+            	strMACDFloat.append("0.00");
+            	strMACDFloat.append(" DIF:");
+            	   	
+            	strMACDFloat.append("0.00");
+                
+            	strMACDFloat.append(" DEA:");
+            	strMACDFloat.append("0.00");
+			}
+
+            String strMacd = strMACDFloat.toString();
+            
+            strMACDFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strMacd.indexOf("): ") + 3, strMacd.indexOf(" DIF:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            strMACDFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[1])), strMacd.indexOf("DIF:"), strMacd.indexOf("DEA:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            strMACDFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[2])), strMacd.indexOf("DEA:"), strMacd.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            
+            mTvMACDFloat.setText(strMACDFloat);
+            
+            int kdjN = PreferencesUtils.getInt(this, PreferencesUtils.KDJ_N);
+            SpannableStringBuilder strKDJFloat = new SpannableStringBuilder();
+            strKDJFloat.append("KDJ(");
+            strKDJFloat.append(String.valueOf(kdjN));
+            strKDJFloat.append(",3,3): ");
+            
+            List<LineEntity<DateValueEntity>> kdjData = currentChartData.getKdjData();
+            if (kdjData.size() == 3) {
+            	strKDJFloat.append("K:");
+            	float k = kdjData.get(0).getLineData().get(kdjData.get(0).getLineData().size() - 1).getValue();
+    			strKDJFloat.append(df.format(k));
+                
+    			strKDJFloat.append(" D:");
+    			float d = kdjData.get(1).getLineData().get(kdjData.get(0).getLineData().size() - 1).getValue();
+    			strKDJFloat.append(df.format(d));
+    			
+    			strKDJFloat.append(" J:");
+    			float j = kdjData.get(2).getLineData().get(kdjData.get(0).getLineData().size() - 1).getValue();
+    			strKDJFloat.append(df.format(j));
+			}else{
+            	strKDJFloat.append("K:");
+    			strKDJFloat.append("0.00");
+                
+    			strKDJFloat.append(" D:");
+    			strKDJFloat.append("0.00");
+    			
+    			strKDJFloat.append(" J:");
+    			strKDJFloat.append("0.00");
+			}
+
+            String strKDJ = strKDJFloat.toString();
+            
+            strKDJFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strKDJ.indexOf("K:"), strKDJ.indexOf(" D:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            strKDJFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[1])), strKDJ.indexOf(" D:"), strKDJ.indexOf(" J:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            strKDJFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[2])), strKDJ.indexOf(" J:"), strKDJ.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            mTvKDJFloat.setText(strKDJFloat);
+            
+            int rsiN1 = PreferencesUtils.getInt(this, PreferencesUtils.RSI_N1);
+            int rsiN2 = PreferencesUtils.getInt(this, PreferencesUtils.RSI_N2);
+            SpannableStringBuilder strRSIFloat = new SpannableStringBuilder();
+            
+            List<LineEntity<DateValueEntity>> rsiData = currentChartData.getRsiData();
+            if (rsiData.size() == 3) {
+            	strRSIFloat.append("RSI");
+            	strRSIFloat.append(String.valueOf(rsiN1));
+            	strRSIFloat.append(": ");
+            	strRSIFloat.append(df.format(rsiData.get(0).getLineData().get(rsiData.get(0).getLineData().size() - 1).getValue()));
+                
+            	strRSIFloat.append(" RSI");
+            	strRSIFloat.append(String.valueOf(rsiN2));
+            	strRSIFloat.append(": ");
+            	strRSIFloat.append(df.format(rsiData.get(1).getLineData().get(rsiData.get(0).getLineData().size() - 1).getValue()));
+    			
+            	strRSIFloat.append(" RSI");
+            	strRSIFloat.append("24");
+            	strRSIFloat.append(": ");
+            	strRSIFloat.append(df.format(rsiData.get(2).getLineData().get(rsiData.get(0).getLineData().size() - 1).getValue()));
+			}else{
+				strRSIFloat.append(" RSI");
+				strRSIFloat.append(String.valueOf(rsiN1));
+				strRSIFloat.append(": ");
+				strRSIFloat.append("0.00");
+                
+				strRSIFloat.append(" RSI");
+				strRSIFloat.append(String.valueOf(rsiN2));
+				strRSIFloat.append(": ");
+				strRSIFloat.append("0.00");
+    			
+				strRSIFloat.append(" RSI");
+				strRSIFloat.append("24");
+				strRSIFloat.append(": ");
+				strRSIFloat.append("0.00");
+			}
+
+            String strRSI = strRSIFloat.toString();
+                        
+            strRSIFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), 0, strRSI.indexOf("RSI" + String.valueOf(rsiN2)), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            strRSIFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[1])), strRSI.indexOf("RSI" + String.valueOf(rsiN2)), strRSI.indexOf("RSI24:"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            strRSIFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[2])), strRSI.indexOf("RSI24:"), strRSI.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            mTvRSIFloat.setText(strRSIFloat);
+            
+            int wrN = PreferencesUtils.getInt(this, PreferencesUtils.WR_N);
+            SpannableStringBuilder strWRFloat = new SpannableStringBuilder();
+            
+            List<LineEntity<DateValueEntity>> wrData = currentChartData.getWrData();
+            if (wrData.size() == 1) {
+            	strWRFloat.append("WR(");
+            	strWRFloat.append(String.valueOf(wrN));
+            	strWRFloat.append("): ");
+            	strWRFloat.append(df.format(wrData.get(0).getLineData().get(wrData.get(0).getLineData().size() - 1).getValue()));
+			}else{
+				strWRFloat.append("WR(");
+            	strWRFloat.append(String.valueOf(wrN));
+            	strWRFloat.append("): ");
+				strWRFloat.append("0.00");
+			}
+
+            String strWR = strWRFloat.toString();
+            
+            strWRFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strWR.indexOf(":") + 1, strWR.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            mTvWRFloat.setText(strWRFloat);
+            
+            int cciN = PreferencesUtils.getInt(this, PreferencesUtils.CCI_N);
+            SpannableStringBuilder strCCIFloat = new SpannableStringBuilder();
+            
+            List<LineEntity<DateValueEntity>> cciData = currentChartData.getCciData();
+            if (cciData.size() == 1) {
+            	strCCIFloat.append("CCI(");
+            	strCCIFloat.append(String.valueOf(cciN));
+            	strCCIFloat.append("): ");
+            	strCCIFloat.append(df.format(cciData.get(0).getLineData().get(cciData.get(0).getLineData().size() - 1).getValue()));
+			}else{
+				strCCIFloat.append("WR(");
+				strCCIFloat.append(String.valueOf(cciN));
+            	strCCIFloat.append("): ");
+            	strCCIFloat.append("0.00");
+			}
+
+            String strCCI = strCCIFloat.toString();
+            
+            strCCIFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), strCCI.indexOf(":") + 1, strCCI.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            mTvCCIFloat.setText(strCCIFloat);
+            
+            int bollN = PreferencesUtils.getInt(this, PreferencesUtils.BOLL_N);
+            SpannableStringBuilder strBOLLFloat = new SpannableStringBuilder();
+            
+            List<LineEntity<DateValueEntity>> bollData = currentChartData.getBollData();
+            if (bollData.size() == 3) {
+            	strBOLLFloat.append("BOLL(");
+            	strBOLLFloat.append(String.valueOf(bollN));
+            	strBOLLFloat.append(",2,2): ");
+            	strBOLLFloat.append(df.format(bollData.get(0).getLineData().get(bollData.get(0).getLineData().size() - 1).getValue()));
+                
+            	strBOLLFloat.append(" ");
+            	strBOLLFloat.append(df.format(bollData.get(1).getLineData().get(bollData.get(0).getLineData().size() - 1).getValue()));
+    			
+            	strBOLLFloat.append(" ");
+            	strBOLLFloat.append(df.format(bollData.get(2).getLineData().get(bollData.get(0).getLineData().size() - 1).getValue()));
+			}else{
+            	strBOLLFloat.append("BOLL(");
+            	strBOLLFloat.append(String.valueOf(bollN));
+            	strBOLLFloat.append(",2,2): ");
+            	strBOLLFloat.append("0.00");
+                
+            	strBOLLFloat.append(" ");
+            	strBOLLFloat.append("0.00");
+    			
+            	strBOLLFloat.append(" ");
+            	strBOLLFloat.append("0.00");
+			}
+
+            String strBOLL = strBOLLFloat.toString();
+            
+            int index0Space = 0;
+            int index1Space = 0;
+            int index2Space = 0;
+            for (int i = 0; i < strBOLL.toCharArray().length; i++) {
+				char c = strBOLL.charAt(i);
+				if (c == ' ') {
+					if (index0Space == 0) {
+						index0Space = i;
+					}else if(index1Space == 0){
+						index1Space = i;
+					}else if(index2Space == 0){
+						index2Space = i;
+						break;
+					}
+				}
+			}
+            
+            strBOLLFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[0])), index0Space, index1Space, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            strBOLLFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[1])), index1Space, index2Space, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            strBOLLFloat.setSpan(new ForegroundColorSpan(Color.parseColor(TAComputeUtils.LINE_COLORS[2])), index2Space, strBOLL.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            mTvBOLLFloat.setText(strBOLLFloat);
+		}
+        
         // 为chart1增加均线
         mVOLchart.setStickData(currentChartData.getVolData());
         mVOLchart.setLineData(currentChartData.getVolMAData());
@@ -1347,27 +2266,181 @@ public class SampleDemoActivity extends BaseActivity {
     	String strData = getStringFromAssets(strFileNm);
     	// TODO 请求分时数据
     	
-    	ResponseBodyData bean = (ResponseBodyData)FastJsonPaser.parse(strData, ResponseBodyData.class);
-    	List<Map<String, String>> arrayData = bean.getKqn() != null ? bean.getKqn():bean.getCt() != null?bean.getCt():bean.getCtt() != null? bean.getCtt():null;
+    	ResponseData bean = (ResponseData)FastJsonPaser.parse(strData, ResponseData.class);
+    	List<Map<String, String>> arrayData = bean.getBd().getKqn() != null ? bean.getBd().getKqn():bean.getBd().getCt() != null?bean.getBd().getCt():bean.getBd().getCtt() != null? bean.getBd().getCtt():null;
     	
     	List<OHLCVData> timesData = new ArrayList<OHLCVData>();
     	
     	for (Map<String, String> map : arrayData) {
     		OHLCVData data = new OHLCVData();
-			data.setOpen(map.get("o"));
-			data.setHigh(map.get("h"));
-			data.setLow(map.get("l"));
-			data.setClose(map.get("c"));
-			data.setVol(map.get("tr"));
-			data.setDate(map.get("qt"));
-			data.setCurrent(map.get("n"));
-			data.setPreclose(null);
-			data.setChange(map.get("changesPercent"));
-			
-			timesData.add(data);
+    		
+    		try {
+    			data.setOpen(Float.parseFloat(map.get("o")));
+    			data.setHigh(Float.parseFloat(map.get("h")));
+    			data.setLow(Float.parseFloat(map.get("l")));
+    			data.setClose(Float.parseFloat(map.get("c")));
+    			data.setVol(Float.parseFloat(map.get("tr")));
+    			data.setDate(map.get("qt"));
+    			data.setCurrent(Float.parseFloat(map.get("c")));
+    			data.setPreclose(0.0f);
+    			data.setChange(0.0f);
+    			
+    			timesData.add(data);
+			} catch (Exception e) {
+				continue;
+			}
 		}
     	
-    	mTickChart.setLinesData(initTickLines(timesData));
+    	mTickChart.setDisplayFrom(0);
+        mTickChart.setDisplayNumber(timesData.size());
+        mTickChart.setMinDisplayNumber(timesData.size());
+		mTickChart.setMaxDisplayNumber(timesData.size());
+
+		List<LineEntity<DateValueEntity>> lines = new ArrayList<LineEntity<DateValueEntity>>();
+    	lines.add(initTickLines(timesData, 0));
+    	mTickChart.setLinesData(lines);
+    }
+    
+    /**
+     * 请求分时数据
+     * @return
+     */
+    public void load2DaysData(){
+    	String strFileNm = "time.txt";
+    	
+    	String strData = getStringFromAssets(strFileNm);
+    	// TODO 请求2日数据
+    	
+    	ResponseData bean = (ResponseData)FastJsonPaser.parse(strData, ResponseData.class);
+    	List<Map<String, String>> arrayData = bean.getBd().getKqn() != null ? bean.getBd().getKqn():bean.getBd().getCt() != null?bean.getBd().getCt():bean.getBd().getCtt() != null? bean.getBd().getCtt():null;
+    	
+    	List<OHLCVData> days2Data = new ArrayList<OHLCVData>();
+    	List<OHLCVData> days2SecondData = new ArrayList<OHLCVData>();
+    	
+    	for (Map<String, String> map : arrayData) {
+    		OHLCVData data = new OHLCVData();
+    		OHLCVData secondData = new OHLCVData();
+    		
+    		try {
+    			data.setOpen(Float.parseFloat(map.get("o")));
+    			data.setHigh(Float.parseFloat(map.get("h")));
+    			data.setLow(Float.parseFloat(map.get("l")));
+    			data.setClose(Float.parseFloat(map.get("c")));
+    			data.setVol(Float.parseFloat(map.get("tr")));
+    			data.setDate(map.get("qt"));
+    			data.setCurrent(Float.parseFloat(map.get("c")));
+    			data.setPreclose(0.0f);
+    			data.setChange(0.0f);
+    			
+    			days2Data.add(data);
+    			
+    			secondData.setOpen(Float.parseFloat(map.get("o")) - 5);
+    			secondData.setHigh(Float.parseFloat(map.get("h")) - 5);
+    			secondData.setLow(Float.parseFloat(map.get("l")) - 5);
+    			secondData.setClose(Float.parseFloat(map.get("c")) - 5);
+    			secondData.setVol(Float.parseFloat(map.get("tr")) - 5);
+    			secondData.setDate(map.get("qt"));
+    			secondData.setCurrent(Float.parseFloat(map.get("c")) - 5);
+    			secondData.setPreclose(0.0f);
+    			secondData.setChange(0.0f);
+    			
+    			days2SecondData.add(secondData);
+			} catch (Exception e) {
+				continue;
+			}
+		}
+    	
+    	m2daysTickChart.setDisplayFrom(0);
+    	m2daysTickChart.setDisplayNumber(days2Data.size());
+    	m2daysTickChart.setMinDisplayNumber(days2Data.size());
+        
+    	List<LineEntity<DateValueEntity>> lines = new ArrayList<LineEntity<DateValueEntity>>();
+    	lines.add(initTickLines(days2Data, 0));
+    	lines.add(initTickLines(days2SecondData, 1));
+    	
+    	m2daysTickChart.setLinesData(lines);
+    	
+    	mTvFloatDateTime1.setText("2016-04-18");
+    	mTvFloatDateTime2.setText("2016-04-19");
+    }
+    
+    /**
+     * 请求3日数据
+     * @return
+     */
+    public void load3DaysData(){
+    	String strFileNm = "time.txt";
+    	
+    	String strData = getStringFromAssets(strFileNm);
+    	// TODO 请求分时数据
+    	
+    	ResponseData bean = (ResponseData)FastJsonPaser.parse(strData, ResponseData.class);
+    	List<Map<String, String>> arrayData = bean.getBd().getKqn() != null ? bean.getBd().getKqn():bean.getBd().getCt() != null?bean.getBd().getCt():bean.getBd().getCtt() != null? bean.getBd().getCtt():null;
+    	
+    	List<OHLCVData> days3Data = new ArrayList<OHLCVData>();
+    	List<OHLCVData> days3SecondData = new ArrayList<OHLCVData>();
+    	List<OHLCVData> days3ThirdData = new ArrayList<OHLCVData>();
+    	
+    	for (Map<String, String> map : arrayData) {
+    		OHLCVData data = new OHLCVData();
+    		OHLCVData secondData = new OHLCVData();
+    		OHLCVData thirdData = new OHLCVData();
+    		
+    		try {
+    			data.setOpen(Float.parseFloat(map.get("o")));
+    			data.setHigh(Float.parseFloat(map.get("h")));
+    			data.setLow(Float.parseFloat(map.get("l")));
+    			data.setClose(Float.parseFloat(map.get("c")));
+    			data.setVol(Float.parseFloat(map.get("tr")));
+    			data.setDate(map.get("qt"));
+    			data.setCurrent(Float.parseFloat(map.get("c")));
+    			data.setPreclose(0.0f);
+    			data.setChange(0.0f);
+    			
+    			days3Data.add(data);
+    			
+    			secondData.setOpen(Float.parseFloat(map.get("o")) - 5);
+    			secondData.setHigh(Float.parseFloat(map.get("h")) - 5);
+    			secondData.setLow(Float.parseFloat(map.get("l")) - 5);
+    			secondData.setClose(Float.parseFloat(map.get("c")) - 5);
+    			secondData.setVol(Float.parseFloat(map.get("tr")) - 5);
+    			secondData.setDate(map.get("qt"));
+    			secondData.setCurrent(Float.parseFloat(map.get("c")) - 5);
+    			secondData.setPreclose(0.0f);
+    			secondData.setChange(0.0f);
+    			
+    			days3SecondData.add(secondData);
+    			
+    			thirdData.setOpen(Float.parseFloat(map.get("o")) - 10);
+    			thirdData.setHigh(Float.parseFloat(map.get("h")) - 10);
+    			thirdData.setLow(Float.parseFloat(map.get("l")) - 10);
+    			thirdData.setClose(Float.parseFloat(map.get("c")) - 10);
+    			thirdData.setVol(Float.parseFloat(map.get("tr")) - 10);
+    			thirdData.setDate(map.get("qt"));
+    			thirdData.setCurrent(Float.parseFloat(map.get("c")) - 10);
+    			thirdData.setPreclose(0.0f);
+    			thirdData.setChange(0.0f);
+    			
+    			days3ThirdData.add(thirdData);
+			} catch (Exception e) {
+				continue;
+			}
+		}
+    	
+    	m3daysTickChart.setDisplayFrom(0);
+    	m3daysTickChart.setDisplayNumber(days3Data.size());
+    	m3daysTickChart.setMinDisplayNumber(days3Data.size());
+        
+    	List<LineEntity<DateValueEntity>> lines = new ArrayList<LineEntity<DateValueEntity>>();
+    	lines.add(initTickLines(days3Data, 0));
+    	lines.add(initTickLines(days3SecondData, 1));
+    	lines.add(initTickLines(days3ThirdData, 2));
+
+    	m3daysTickChart.setLinesData(lines);
+    	
+    	mTvFloatDateTime1.setText("2016-04-17");
+    	mTvFloatDateTime2.setText("2016-04-18");
+    	mTvFloatDateTime3.setText("2016-04-19");
     }
     
     /**
@@ -1389,7 +2462,7 @@ public class SampleDemoActivity extends BaseActivity {
 	public void loadDetailData(){
     	// TODO 请求明细数据
     	mDetailData = new ArrayList<TickData>();
-    	    	
+    	
     	TickData detail1 = new TickData();
     	detail1.setTime("14:02:53");
     	detail1.setPrice("2742");
@@ -1452,12 +2525,11 @@ public class SampleDemoActivity extends BaseActivity {
     	mBOLLchart.postInvalidate();
 	}
     
-    protected List<LineEntity<DateValueEntity>> initTickLines(List<OHLCVData> arrayData) {
-    	List<LineEntity<DateValueEntity>> lines = new ArrayList<LineEntity<DateValueEntity>>();
+    protected LineEntity<DateValueEntity> initTickLines(List<OHLCVData> arrayData, int colorIndex) {
         // 计算5日均线
         LineEntity<DateValueEntity> MA5 = new LineEntity<DateValueEntity>();
         MA5.setTitle("HIGH");
-        MA5.setLineColor(Color.WHITE);
+        MA5.setLineColor(Color.parseColor(TAComputeUtils.LINE_COLORS[colorIndex]));
         
         List<DateValueEntity> dateValues = new ArrayList<DateValueEntity>();
         
@@ -1465,7 +2537,7 @@ public class SampleDemoActivity extends BaseActivity {
         SimpleDateFormat dt = new SimpleDateFormat("yyyyMMdd");
         for (OHLCVData data : arrayData) {
         	try {
-				dateValues.add(new DateValueEntity(Float.parseFloat(data.getClose()), Integer.parseInt(dt.format(df.parse(data.getDate())))));
+				dateValues.add(new DateValueEntity((float) data.getClose(), Integer.parseInt(dt.format(df.parse(data.getDate())))));
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 				continue;
@@ -1474,11 +2546,9 @@ public class SampleDemoActivity extends BaseActivity {
 				continue;
 			}
 		}
-        
         MA5.setLineData(dateValues);
-        lines.add(MA5);
 
-        return lines;
+        return MA5;
 	}
     
     /**
@@ -1506,6 +2576,19 @@ public class SampleDemoActivity extends BaseActivity {
     	mTvSellPrice.setText(mProductData.getSellPrice());
     	mTvLow.setText(mProductData.getLowPrice());
     }
+	
+	public void updateOrders(){
+		for (int i = 0; i < mOrdersId.length; i++) {
+        	TextView tvTime = (TextView) mLinOrders[i].getChildAt(0);
+        	tvTime.setText("09:36");
+        	
+        	TextView tvPrice = (TextView) mLinOrders[i].getChildAt(1);
+        	tvPrice.setText("3408");
+        	
+        	TextView tvCount = (TextView) mLinOrders[i].getChildAt(2);
+        	tvCount.setText("3");
+		}
+	}
 	
 	public void updateHandicap(){    	
     	for (int i = 0; i < mLinHandicap.getChildCount(); i++) {
@@ -1619,6 +2702,41 @@ public class SampleDemoActivity extends BaseActivity {
 			
 			mBollmaslipcandlestickchart.setLinesData(mCurrentData.getCandleStickLinesData());
 			mBollmaslipcandlestickchart.postInvalidate();
+		}else if (indicatorType == IndicatorType.IndicatorVMA) {
+			mVMA1 = indicators[0];
+			mVMA2 = indicators[1];
+			mVMA3 = indicators[2];
+			
+			if (mDayData != null) {
+				mDayData.updateVMAData(mVMA1, mVMA2, mVMA3);
+			}
+			if (mWeekData != null) {
+				mWeekData.updateVMAData(mVMA1, mVMA2, mVMA3);
+			}
+			if (mMonthData != null) {
+				mMonthData.updateVMAData(mVMA1, mVMA2, mVMA3);
+			}
+			if (m1MinuteData != null) {
+				m1MinuteData.updateVMAData(mVMA1, mVMA2, mVMA3);
+			}
+			if (m15MinuteData != null) {
+				m15MinuteData.updateVMAData(mVMA1, mVMA2, mVMA3);
+			}
+			if (m30MinuteData != null) {
+				m30MinuteData.updateVMAData(mVMA1, mVMA2, mVMA3);
+			}
+			if (m1HourData != null) {
+				m1HourData.updateVMAData(mVMA1, mVMA2, mVMA3);
+			}
+			if (m2HourData != null) {
+				m2HourData.updateVMAData(mVMA1, mVMA2, mVMA3);
+			}
+			if (m4HourData != null) {
+				m4HourData.updateVMAData(mVMA1, mVMA2, mVMA3);
+			}
+			
+			mVOLchart.setLineData(mCurrentData.getVolMAData());
+			mVOLchart.postInvalidate();
 		}else if (indicatorType == IndicatorType.IndicatorKDJ) {
 			mKDJN = indicators[0];
 			
@@ -1803,7 +2921,7 @@ public class SampleDemoActivity extends BaseActivity {
     /*******************************************************************************
      *	Internal Class,Interface
      *******************************************************************************/
-
+	
  	/**
  	 * 自定义Adapter类
  	 * @author zhourr
@@ -1829,7 +2947,6 @@ public class SampleDemoActivity extends BaseActivity {
 				viewHolder = (ViewHolder) convertView.getTag();
 			}
 			
-			@SuppressWarnings("unchecked")
 			TickData data = (TickData) dataList.get(position);
 			
 			viewHolder.tvTime.setText(data.getTime());
@@ -1875,7 +2992,7 @@ public class SampleDemoActivity extends BaseActivity {
 			
 			int indicatorType = intent.getIntExtra("indicatorType", 0);
 			
-			IndicatorType indicator = indicatorType == 0?IndicatorType.IndicatorMACD:indicatorType == 1?IndicatorType.IndicatorMA:indicatorType == 2?IndicatorType.IndicatorKDJ:indicatorType == 3?IndicatorType.IndicatorRSI:indicatorType == 4?IndicatorType.IndicatorWR:indicatorType == 5?IndicatorType.IndicatorCCI:IndicatorType.IndicatorBOLL;;
+			IndicatorType indicator = indicatorType == 0?IndicatorType.IndicatorMACD:indicatorType == 1?IndicatorType.IndicatorMA:indicatorType == 2?IndicatorType.IndicatorVMA:indicatorType == 3?IndicatorType.IndicatorKDJ:indicatorType == 4?IndicatorType.IndicatorRSI:indicatorType == 5?IndicatorType.IndicatorWR:indicatorType == 6?IndicatorType.IndicatorCCI:IndicatorType.IndicatorBOLL;;
 			
 			updateChart(indicator, indicators);
 		}

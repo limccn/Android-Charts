@@ -59,6 +59,8 @@ public interface ICrossLines {
 	 * </p>
 	 */
 	public static final boolean DEFAULT_DISPLAY_CROSS_X_ON_TOUCH = false;
+	public static final boolean DEFAULT_DISPLAY_CROSS_X_DEGREE_ON_TOUCH = true;
+
 
 	/**
 	 * <p>
@@ -72,8 +74,10 @@ public interface ICrossLines {
 	 * </p>
 	 */
 	public static final boolean DEFAULT_DISPLAY_CROSS_Y_ON_TOUCH = false;
-	
-	
+	public static final boolean DEFAULT_DISPLAY_CROSS_Y_DEGREE_ON_TOUCH = true;
+
+
+
 	public static final int DEFAULT_BIND_CROSS_LINES_TO_STICK = BIND_TO_TYPE_HIRIZIONAL;
 	
 }

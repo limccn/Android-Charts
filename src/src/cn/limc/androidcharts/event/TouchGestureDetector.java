@@ -22,6 +22,7 @@
 
 package cn.limc.androidcharts.event;
 import android.graphics.PointF;
+import android.util.Log;
 import android.view.MotionEvent;
 
 /** 
@@ -49,7 +50,9 @@ public class TouchGestureDetector<T extends ITouchable> implements IGestureDetec
 	 */
 	public TouchGestureDetector(T touchable) {
 		instance = touchable;
+//		Log.e("#####", touchable.toString());
 		if (touchable != null) {
+//			Log.e("#####", touchable.getOnTouchGestureListener().toString());
 			this.onTouchGestureListener = touchable.getOnTouchGestureListener();
 		}
 	}

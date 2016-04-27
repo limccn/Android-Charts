@@ -104,6 +104,9 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 	 * </p>
 	 */
 	protected void initAxisX() {
+		if (this.autoCalcLongitudeTitle == false) {
+			return;
+		}
 		List<String> titleX = new ArrayList<String>();
 		if (null != getChartData() && getChartData().size() > 0) {
 			float average = getDataDisplayNumber() / simpleGrid.getLongitudeNum();
@@ -176,7 +179,10 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 	 */
 	@Override
 	public void touchDown(PointF pt) {
-		this.touchPoint = pt;
+		this.touchPoint =  calcTouchedPoint(pt.x,pt.y);
+		
+		this.touchedIndexChanged();
+		
 		this.postInvalidate();
 	}
 
@@ -186,7 +192,10 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 	 */
 	@Override
 	public void touchMoved(PointF pt) {
-		this.touchPoint = pt;
+		this.touchPoint =  calcTouchedPoint(pt.x,pt.y);
+		
+		this.touchedIndexChanged();
+		
 		this.postInvalidate();
 	}
 
@@ -196,7 +205,10 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 	 */
 	@Override
 	public void touchUp(PointF pt) {
-		this.touchPoint = pt;
+		this.touchPoint =  calcTouchedPoint(pt.x,pt.y);
+		
+//		this.touchedIndexChanged();
+		
 		this.postInvalidate();
 	}
 
@@ -206,11 +218,13 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 	 */
 	@Override
 	public void longPressDown(PointF pt) {
-		this.touchPoint = pt;
 		this.touchPoint = calcTouchedPoint(pt.x,pt.y);
 
 		this.crossLines.setDisplayCrossXOnTouch(true);
 		this.crossLines.setDisplayCrossYOnTouch(true);
+		
+		this.touchedIndexChanged();
+		
 		this.postInvalidate();
 	}
 
@@ -221,6 +235,9 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 	@Override
 	public void longPressMoved(PointF pt) {
 		this.touchPoint = calcTouchedPoint(pt.x,pt.y);
+		
+		this.touchedIndexChanged();
+		
 		this.postInvalidate();
 	}
 
@@ -230,10 +247,22 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 	 */
 	@Override
 	public void longPressUp(PointF pt) {
-		this.touchPoint = pt;
+		this.touchPoint =  calcTouchedPoint(pt.x,pt.y);;
 		this.crossLines.setDisplayCrossXOnTouch(false);
 		this.crossLines.setDisplayCrossYOnTouch(false);
+		
+//		this.touchedIndexChanged();
+		
 		this.postInvalidate();
+	}
+	
+	protected void touchedIndexChanged(){
+		int index = getSelectedIndex();
+		if(index >= getDataCursor().getDisplayFrom() && index < getDataCursor().getDisplayTo()){
+			if(this.touchedIndexListener != null){
+				this.touchedIndexListener.onSelectedIndexChanged(this, index);
+			}
+		}
 	}
 	
 	protected PointF calcTouchedPoint(float x ,float y) {

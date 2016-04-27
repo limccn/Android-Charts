@@ -674,6 +674,28 @@ public class LineChart extends PeriodDataGridChart implements IZoomable {
 	 * </p>
 	 */
 	protected void initAxisX() {
+		if (this.autoCalcLongitudeTitle == false) {
+			return;
+		}
+		if (null == linesData) {
+			return;
+		}
+		if (0 == linesData.size()) {
+			return;
+		}
+		LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
+				.get(0);
+		if (line == null) {
+			return;
+		}
+		if (line.isDisplay() == false) {
+			return;
+		}
+		List<DateValueEntity> lineData = line.getLineData();
+		if (lineData == null) {
+			return;
+		}
+
 		List<String> titleX = new ArrayList<String>();
 		if (null != linesData && linesData.size() > 0) {
 			float average = getDisplayNumber() / simpleGrid.getLongitudeNum();
@@ -682,13 +704,9 @@ public class LineChart extends PeriodDataGridChart implements IZoomable {
 				if (index > getDisplayNumber() - 1) {
 					index = getDisplayNumber() - 1;
 				}
-				titleX.add(String.valueOf(
-						linesData.get(0).getLineData().get(index).getDate())
-						.substring(4));
+				titleX.add(formatAxisXDegree(lineData.get(index).getDate()));
 			}
-			titleX.add(String.valueOf(
-					linesData.get(0).getLineData().get(getDisplayNumber() - 1)
-							.getDate()).substring(4));
+			titleX.add(formatAxisXDegree(lineData.get(getDisplayNumber() - 1).getDate()));
 		}
 		simpleGrid.setLongitudeTitles(titleX);
 	}
@@ -868,6 +886,32 @@ public class LineChart extends PeriodDataGridChart implements IZoomable {
 			//右侧显示
 			dataCursor.setDisplayFrom(datasize - getDisplayNumber());
 		}
+	}
+
+	@Override
+	public long touchPointAxisXValue() {
+		if (null == touchPoint) {
+			return 0;
+		}
+		if (null == linesData) {
+			return 0;
+		}
+		if (0 == linesData.size()) {
+			return 0;
+		}
+		LineEntity<DateValueEntity> line = (LineEntity<DateValueEntity>) linesData
+				.get(0);
+		if (line == null) {
+			return 0 ;
+		}
+		if (line.isDisplay() == false) {
+			return 0 ;
+		}
+		List<DateValueEntity> lineData = line.getLineData();
+		if (lineData == null) {
+			return 0 ;
+		}
+		return lineData.get(getSelectedIndex()).getDate();
 	}
 
 //	/**

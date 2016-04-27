@@ -40,6 +40,7 @@ import android.graphics.Canvas;
 import android.graphics.PathEffect;
 import android.graphics.PointF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 
 /**
@@ -272,6 +273,22 @@ public class GridChart extends AbstractBaseChart implements ITouchable {
 	}
 
 
+
+	public String calcAxisXGraduate() {
+		return "";
+	}
+
+	public String calcAxisYGraduate() {
+		return "";
+	}
+
+	public long touchPointAxisXValue() {
+		return 0;
+	}
+
+	public double touchPointAxisYValue() {
+		return 0;
+	}
 
 	/**
 	 * @return the axisXColor
@@ -516,7 +533,7 @@ public class GridChart extends AbstractBaseChart implements ITouchable {
 
 	/* (non-Javadoc)
 	 *
-	 * @see cn.limc.androidcharts.event.ITouchable#touchDown()
+	 * @see cn.limc.androidcharts.event.ITouchable#longPressDown()
 	 */
 	public void longPressDown(PointF pt) {
 		this.touchPoint = pt;
@@ -527,7 +544,7 @@ public class GridChart extends AbstractBaseChart implements ITouchable {
 
 	/* (non-Javadoc)
 	 *
-	 * @see cn.limc.androidcharts.event.ITouchable#touchMoved()
+	 * @see cn.limc.androidcharts.event.ITouchable#longPressMoved()
 	 */
 	public void longPressMoved(PointF pt) {
 		this.touchPoint = pt;
@@ -536,7 +553,7 @@ public class GridChart extends AbstractBaseChart implements ITouchable {
 
 	/* (non-Javadoc)
 	 *
-	 * @see cn.limc.androidcharts.event.ITouchable#touchUp()
+	 * @see cn.limc.androidcharts.event.ITouchable#longPressUp()
 	 */
 	public void longPressUp(PointF pt) {
 		this.touchPoint = pt;
