@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cn.limc.androidcharts.demo">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.AppCompat">
+
+        <!-- android:name="cn.limc.androidcharts.AndroidChartsActivity" -->
+        <activity
+            android:name=".activity.ChartListActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".activity.GridChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.LineChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.SlipLineChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.SlipAreaChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.SlipBandAreaChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.StickChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.SlipStickChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.ColoredSlipStickChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.MAStickChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.MASlipStickChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.MinusStickChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.SlipMinusStickChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.CandleStickChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.SlipCandleStickChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.MACandleStickChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.MASlipCandleStickChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.BOLLMASlipCandleStickChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.MACDChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.PieChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.RoseChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.SpiderWebChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.RadarChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.DonutChartActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.SampleDemoActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.SampleTickDemoActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.SampleHorizontalDemoActivity"
+            android:screenOrientation="landscape"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.SettingActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.SettingDetailActivity"
+            android:label="@string/app_name" >
+        </activity>
+    </application>
+
+</manifest>
