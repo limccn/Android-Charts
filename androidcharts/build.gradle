@@ -42,3 +42,17 @@ task releaseLib(type: Copy, dependsOn: releaseJar) {
     include('androidcharts.jar')
     rename('androidcharts.jar', 'androidcharts.v0.2.2.jar')
 }
+
+task releaseJavaDoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    destinationDir = file("../doc/javadoc")
+    options {
+        links "http://docs.oracle.com/javase/7/docs/api/"
+        charSet "utf-8"
+        docEncoding "utf-8"
+        noDeprecated true
+    }
+    title = "Android-Charts 0.2.2 Reference"
+    failOnError false
+}
