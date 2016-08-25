@@ -162,6 +162,11 @@ public class SlipAreaChart extends SlipLineChart {
 			if (line.isDisplay() == false) {
 				continue;
 			}
+			if (line.getDisplayType() == LineEntity.LINE_DISPLAY_TYPE_LINE ||
+					line.getDisplayType() == LineEntity.LINE_DISPLAY_TYPE_NONE)
+			{
+				continue;
+			}
 			List<DateValueEntity> lineData = line.getLineData();
 			if (lineData == null) {
 				continue;

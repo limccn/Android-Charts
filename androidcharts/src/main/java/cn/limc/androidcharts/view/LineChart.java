@@ -446,6 +446,11 @@ public class LineChart extends PeriodDataGridChart implements IZoomable {
 			if (line.isDisplay() == false) {
 				continue;
 			}
+			if (line.getDisplayType() == LineEntity.LINE_DISPLAY_TYPE_AREA ||
+					line.getDisplayType() == LineEntity.LINE_DISPLAY_TYPE_NONE)
+			{
+				continue;
+			}
 			List<DateValueEntity> lineData = line.getLineData();
 			if (lineData == null) {
 				continue;

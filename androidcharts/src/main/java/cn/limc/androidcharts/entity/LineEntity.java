@@ -40,6 +40,15 @@ import java.util.List;
  */
 public class LineEntity<T> {
 
+	public static final int LINE_DISPLAY_TYPE_NONE = 0;
+	public static final int LINE_DISPLAY_TYPE_LINE = 1;
+	public static final int LINE_DISPLAY_TYPE_AREA = 2;
+	public static final int LINE_DISPLAY_TYPE_BOTH = 3;
+
+	public static final int LINE_DISPLAY_STYLE_NONE = 0;
+	public static final int LINE_DISPLAY_STYLE_SOLID = 1;
+	public static final int LINE_DISPLAY_STYLE_DASHED = 2;
+
 	/**
 	 * <p>
 	 * Data for draw this line
@@ -91,6 +100,9 @@ public class LineEntity<T> {
 	 * </p>
 	 */
 	private boolean display = true;
+
+
+	private int displayType = LINE_DISPLAY_TYPE_BOTH;
 
 	/**
 	 * <p>
@@ -225,5 +237,13 @@ public class LineEntity<T> {
 	 */
 	public void setDisplay(boolean display) {
 		this.display = display;
+	}
+
+	public int getDisplayType() {
+		return displayType;
+	}
+
+	public void setDisplayType(int displayType) {
+		this.displayType = displayType;
 	}
 }
