@@ -23,6 +23,7 @@ package cn.limc.androidcharts.view;
 import cn.limc.androidcharts.entity.TitleValueColorEntity;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Paint.Style;
@@ -115,6 +116,13 @@ public class RoseChart extends PieChart {
             for (int i = 0; i < data.size(); i++) {
                 max = Math.max(max,data.get(i).getValue());
             }
+
+            Paint mPaintFillCircleBackgroud = new Paint();
+            mPaintFillCircleBackgroud.setStyle(Style.FILL);
+            mPaintFillCircleBackgroud.setColor(Color.LTGRAY);
+            mPaintFillCircleBackgroud.setAntiAlias(true);
+
+            canvas.drawCircle(position.x, position.y, longitudeLength , mPaintFillCircleBackgroud);
 
             Paint mPaintFill = new Paint();
             mPaintFill.setStyle(Style.FILL);
