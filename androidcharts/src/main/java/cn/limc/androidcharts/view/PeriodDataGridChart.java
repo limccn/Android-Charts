@@ -27,9 +27,11 @@ import java.util.List;
 
 import cn.limc.androidcharts.common.ICrossLines;
 import cn.limc.androidcharts.common.IFlexableGrid;
+import cn.limc.androidcharts.common.IGrid;
 import cn.limc.androidcharts.entity.IMeasurable;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.FloatMath;
@@ -137,23 +139,146 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 		if (this.autoBalanceValueRange) {
 			this.calcValueRange();
 		}
-		List<String> titleY = new ArrayList<String>();
+
+		//test for axis color
+//		this.midValue = (this.maxValue + this.minValue) / 2.0f;
+
+		initAxisYLeft();
+		// midValue != 0
+		if (this.midValue != 0) {
+			initAxisYLeftColor();
+		}
+
+		initAxisYRight();
+		// midValue != 0
+		if (this.midValue != 0) {
+			initAxisYRightColor();
+		}
+	}
+
+
+	protected void initAxisYLeftColor() {
+		List<Integer> titleYColor = new ArrayList<Integer>();
+
 		double average = (maxValue - minValue) / simpleGrid.getLatitudeNum();
 		;
 		// calculate degrees on Y axis
 		for (int i = 0; i < simpleGrid.getLatitudeNum(); i++) {
-			String value = formatAxisYDegree(minValue + i * average);
-			titleY.add(value);
+			double valueToDisplay = minValue + i * average;
+			if (valueToDisplay - this.midValue > 0){
+				titleYColor.add(Color.RED);
+			}else if(valueToDisplay - this.midValue == 0){
+				titleYColor.add(Color.LTGRAY);
+			}else {
+				titleYColor.add(Color.GREEN);
+			}
+		}
+
+		if (maxValue - this.midValue > 0){
+			titleYColor.add(Color.RED);
+		}else if(maxValue - this.midValue == 0){
+			titleYColor.add(Color.LTGRAY);
+		}else {
+			titleYColor.add(Color.GREEN);
+		}
+		simpleGrid.setLeftLatitudeTitleColors(titleYColor);
+	}
+
+	protected void initAxisYRightColor() {
+		List<Integer> titleYColor = new ArrayList<Integer>();
+
+		double average = (maxValue - minValue) / simpleGrid.getLatitudeNum();
+		;
+		// calculate degrees on Y axis
+		for (int i = 0; i < simpleGrid.getLatitudeNum(); i++) {
+			double valueToDisplay = minValue + i * average;
+			if (valueToDisplay - this.midValue > 0){
+				titleYColor.add(Color.RED);
+			}else if(valueToDisplay - this.midValue == 0){
+				titleYColor.add(Color.LTGRAY);
+			}else {
+				titleYColor.add(Color.GREEN);
+			}
+		}
+
+		if (maxValue - this.midValue > 0){
+			titleYColor.add(Color.RED);
+		}else if(maxValue - this.midValue == 0){
+			titleYColor.add(Color.LTGRAY);
+		}else {
+			titleYColor.add(Color.GREEN);
+		}
+		simpleGrid.setRightLatitudeTitleColors(titleYColor);
+	}
+
+	protected void initAxisYLeft() {
+		List<String> titleYLeft = new ArrayList<String>();
+
+		double average = (maxValue - minValue) / simpleGrid.getLatitudeNum();
+		;
+		// calculate degrees on Y axis
+		for (int i = 0; i < simpleGrid.getLatitudeNum(); i++) {
+			double valueToDisplay = minValue + i * average;
+			String valueLeft;
+			if (IGrid.TITLE_FORMAT_DECIMAL==simpleGrid.getLeftLatitudeTitlesFormat()) {
+				valueLeft = formatAxisYDegree(valueToDisplay);
+			}else if (IGrid.TITLE_FORMAT_PERCENT==simpleGrid.getLeftLatitudeTitlesFormat()) {
+				valueLeft = formatAxisYDegreePercent(valueToDisplay , this.midValue);
+			}else{
+				valueLeft = formatAxisYDegree(valueToDisplay);
+			}
+
+			titleYLeft.add(valueLeft);
 		}
 		// calculate last degrees by use max value
-		String value = formatAxisYDegree(maxValue);
-		titleY.add(value);
+		String valueLeft;
+		if (IGrid.TITLE_FORMAT_DECIMAL==simpleGrid.getLeftLatitudeTitlesFormat()) {
+			valueLeft = formatAxisYDegree(maxValue);
+		}else if (IGrid.TITLE_FORMAT_PERCENT==simpleGrid.getLeftLatitudeTitlesFormat()) {
+			valueLeft = formatAxisYDegreePercent(maxValue , this.midValue);
+		}else{
+			valueLeft = formatAxisYDegree(maxValue);
+		}
 
-		simpleGrid.setLatitudeTitles(titleY);
+		titleYLeft.add(valueLeft);
+		simpleGrid.setLeftLatitudeTitles(titleYLeft);
 	}
-	
 
-	
+	protected void initAxisYRight() {
+		List<String> titleYRight = new ArrayList<String>();
+
+		double average = (maxValue - minValue) / simpleGrid.getLatitudeNum();
+		;
+		// calculate degrees on Y axis
+		for (int i = 0; i < simpleGrid.getLatitudeNum(); i++) {
+			double valueToDisplay = minValue + i * average;
+			String valueRight;
+			if (IGrid.TITLE_FORMAT_DECIMAL==simpleGrid.getRightLatitudeTitlesFormat()) {
+				valueRight = formatAxisYDegree(valueToDisplay);
+			}else if (IGrid.TITLE_FORMAT_PERCENT==simpleGrid.getRightLatitudeTitlesFormat()) {
+				valueRight = formatAxisYDegreePercent(valueToDisplay , this.midValue);
+			}else{
+				valueRight = formatAxisYDegree(valueToDisplay);
+			}
+			titleYRight.add(valueRight);
+		}
+
+		String valueRight;
+		if (IGrid.TITLE_FORMAT_DECIMAL==simpleGrid.getRightLatitudeTitlesFormat()) {
+			valueRight = formatAxisYDegree(maxValue);
+		}else if (IGrid.TITLE_FORMAT_PERCENT==simpleGrid.getRightLatitudeTitlesFormat()) {
+			valueRight = formatAxisYDegreePercent(maxValue , this.midValue);
+		}else{
+			valueRight = formatAxisYDegree(maxValue);
+		}
+
+		titleYRight.add(valueRight);
+
+		simpleGrid.setRightLatitudeTitles(titleYRight);
+	}
+
+
+
 	public float longitudePostOffset(){
 		if (gridAlignType == IFlexableGrid.ALIGN_TYPE_CENTER) {
 			float stickWidth = dataQuadrant.getPaddingWidth() / getDataDisplayNumber();

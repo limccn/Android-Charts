@@ -28,4 +28,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'org.apache.httpcomponents:httpcore:4.4.4'
     compile 'com.android.support:appcompat-v7:23.1.1'
+    compile project(':androidcharts')
 }

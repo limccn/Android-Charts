@@ -36,6 +36,19 @@ import android.graphics.PathEffect;
  *  
  */
 public interface IGrid {
+
+
+	public static final int TITLE_FORMAT_NONE = 0;
+//	public static final int TITLE_FORMAT_NORMAL = 1;
+	public static final int TITLE_FORMAT_DECIMAL = 10;
+//	public static final int TITLE_FORMAT_DECIMAL1 = 11;
+//	public static final int TITLE_FORMAT_DECIMAL2 = 12;
+	public static final int TITLE_FORMAT_PERCENT = 100;
+//	public static final int TITLE_FORMAT_PERCENT1 = 101;
+//	public static final int TITLE_FORMAT_PERCENT2 = 102;
+	public static final int TITLE_FORMAT_CUSTOM = 999;
+
+
 	/**
 	 * <p>
 	 * default numbers of grid‘s latitude line
@@ -249,4 +262,10 @@ public interface IGrid {
      * </p>
      */
     public static final int DEFAULT_LATITUDE_MAX_TITLE_LENGTH = 5;
+
+
+	public static final int DEFAULT_LEFT_LATITUDE_TITLE_FORMAT = TITLE_FORMAT_DECIMAL;
+	public static final int DEFAULT_RIGHT_LATITUDE_TITLE_FORMAT = TITLE_FORMAT_PERCENT;
+
+
 }

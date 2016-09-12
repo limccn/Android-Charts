@@ -106,6 +106,8 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 	protected double maxDataValue;
 	protected double minDataValue;
 
+	protected double midValue;
+
 	protected boolean autoCalcValueRange = DEFAULT_AUTO_CALC_VALUE_RANGE;
 	protected boolean autoBalanceValueRange = DEFAULT_AUTO_CALC_BALANCE_RANGE;
 
@@ -348,7 +350,18 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 			return new DecimalFormat("#,##0.00").format(displayValue/100000000) + "亿";
 		}
 	}
-	
+
+	public String formatAxisYDegreePercent(double value , double midValue) {
+		if (midValue == 0) return "";
+		//数据
+		double displayValue = (value - midValue) * 100/ midValue;
+		if(displayValue < 0){
+			return new DecimalFormat("#,##0.00").format(displayValue) + "%";
+		}else {
+			return new DecimalFormat("-#,##0.00").format(displayValue) + "%";
+		}
+	}
+
 	public String formatAxisXDegree(long date) {
 		try {
 			Date dt = new SimpleDateFormat(axisXDateSourceFormat).parse(String.valueOf(date));
@@ -530,6 +543,14 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 
 	public void setMinDataValue(double minDataValue) {
 		this.minDataValue = minDataValue;
+	}
+
+	public double getMidValue() {
+		return midValue;
+	}
+
+	public void setMidValue(double midValue) {
+		this.midValue = midValue;
 	}
 
 	/**
