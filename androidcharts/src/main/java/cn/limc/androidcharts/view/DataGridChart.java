@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import cn.limc.androidcharts.common.CustomLines;
 import cn.limc.androidcharts.common.IDataCursor;
 import cn.limc.androidcharts.common.SectionDataCursor;
 import cn.limc.androidcharts.entity.IChartData;
@@ -79,6 +80,10 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 	
 	protected  ITouchedIndexListener touchedIndexListener;
 	protected  ITouchedValueListener touchedValueListener;
+
+	protected CustomLines customLines = new CustomLines(this);
+	public static final boolean DEFAULT_DISPLAY_CUSTOM_LINES = true;
+	protected boolean displayCustomLines = DEFAULT_DISPLAY_CUSTOM_LINES;
 
 	/**
 	 *
@@ -289,7 +294,10 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
+
 		super.onDraw(canvas);
+
+		this.customLines.draw(canvas);
 	}
 
 	public boolean isNoneDisplayValue(double value){
@@ -754,6 +762,22 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 
 	public void setAutoCalcLatitudeTitle(boolean autoCalcLatitudeTitle) {
 		this.autoCalcLatitudeTitle = autoCalcLatitudeTitle;
+	}
+
+	public CustomLines getCustomLines() {
+		return customLines;
+	}
+
+	public void setCustomLines(CustomLines customLines) {
+		this.customLines = customLines;
+	}
+
+	public boolean isDisplayCustomLines() {
+		return displayCustomLines;
+	}
+
+	public void setDisplayCustomLines(boolean displayCustomLines) {
+		this.displayCustomLines = displayCustomLines;
 	}
 
 	public float computeValueY(float value){

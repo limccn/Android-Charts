@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.limc.androidcharts.common.CustomLines;
 import cn.limc.androidcharts.demo.R;
 import cn.limc.androidcharts.axis.Axis;
 import cn.limc.androidcharts.common.ICrossLines;
@@ -1088,7 +1089,37 @@ public class SampleDemoActivity extends BaseActivity {
 		mTickChart.setBindCrossLinesToStick(ICrossLines.BIND_TO_TYPE_BOTH);
 		mTickChart.setTouchedValueListener(mITouchedValueListener);
 
-		initTickChartLines();
+
+//        CustomLines.CustomLine lastCloseLine1 = new CustomLines.CustomLine();
+//        lastCloseLine1.setLineColor(Color.BLUE);
+//        lastCloseLine1.setLabelBackgroudColor(Color.BLUE);
+//        lastCloseLine1.setLineValue(4300);
+//        lastCloseLine1.setLabelPosition(CustomLines.CustomLine.LABEL_POSITION_BOTH);
+//
+//        CustomLines.CustomLine lastCloseLine2 = new CustomLines.CustomLine();
+//        lastCloseLine2.setLineColor(Color.RED);
+//        lastCloseLine2.setLabelBackgroudColor(Color.RED);
+//        lastCloseLine2.setLineValue(4290);
+//        lastCloseLine2.setLabelPosition(CustomLines.CustomLine.LABEL_POSITION_LEFT);
+//
+//        CustomLines.CustomLine lastCloseLine3 = new CustomLines.CustomLine();
+//        lastCloseLine3.setLineColor(Color.YELLOW);
+//        lastCloseLine3.setLabelBackgroudColor(Color.YELLOW);
+//        lastCloseLine3.setLineValue(4280);
+//        lastCloseLine3.setLabelPosition(CustomLines.CustomLine.LABEL_POSITION_RIGHT);
+//
+//        CustomLines.CustomLine lastCloseLine4 = new CustomLines.CustomLine();
+//        lastCloseLine4.setLineColor(Color.MAGENTA);
+//        lastCloseLine4.setLabelBackgroudColor(Color.MAGENTA);
+//        lastCloseLine4.setLineValue(4270);
+//        lastCloseLine4.setLabelPosition(CustomLines.CustomLine.LABEL_POSITION_NONE);
+//
+//        mTickChart.getCustomLines().getHorizontalLines().add(lastCloseLine1);
+//        mTickChart.getCustomLines().getHorizontalLines().add(lastCloseLine2);
+//        mTickChart.getCustomLines().getHorizontalLines().add(lastCloseLine3);
+//        mTickChart.getCustomLines().getHorizontalLines().add(lastCloseLine4);
+
+        initTickChartLines();
 	}
 
 	private void initTickChartLines() {
