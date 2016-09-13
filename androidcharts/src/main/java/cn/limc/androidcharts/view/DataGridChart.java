@@ -35,6 +35,8 @@ import cn.limc.androidcharts.entity.IMeasurable;
 import cn.limc.androidcharts.entity.IStickEntity;
 import cn.limc.androidcharts.event.IDisplayCursorListener;
 import cn.limc.androidcharts.event.ITouchedIndexListener;
+import cn.limc.androidcharts.event.ITouchedValueListener;
+
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -76,8 +78,10 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 	public abstract IChartData<IStickEntity> getChartData();
 	
 	protected  ITouchedIndexListener touchedIndexListener;
-	
+	protected  ITouchedValueListener touchedValueListener;
+
 	/**
+	 *
 	 * <p>
 	 * max value of Y axis
 	 * </p>
@@ -728,6 +732,14 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 		this.touchedIndexListener = touchedIndexListener;
 	}
 
+	public ITouchedValueListener getTouchedValueListener() {
+		return touchedValueListener;
+	}
+
+	public void setTouchedValueListener(ITouchedValueListener touchedValueListener) {
+		this.touchedValueListener = touchedValueListener;
+	}
+
 	public boolean isAutoCalcLongitudeTitle() {
 		return autoCalcLongitudeTitle;
 	}
@@ -754,5 +766,11 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 		return ((1f - (value - minValue)
 				/ (maxValue - minValue))
 				* (dataQuadrant.getPaddingHeight()) + dataQuadrant.getPaddingStartY());
+	}
+
+	public double computeY2Value(double pty){
+		return (1f - (pty - dataQuadrant.getPaddingStartY()) / dataQuadrant.getPaddingHeight())
+				* (maxValue - minValue)
+				+ minValue;
 	}
 }

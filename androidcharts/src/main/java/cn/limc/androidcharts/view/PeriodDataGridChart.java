@@ -377,7 +377,8 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 		this.crossLines.setDisplayCrossYOnTouch(false);
 		
 //		this.touchedIndexChanged();
-		
+
+		this.lastTouchedValueChanged();
 		this.postInvalidate();
 	}
 	
@@ -387,6 +388,23 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 			if(this.touchedIndexListener != null){
 				this.touchedIndexListener.onSelectedIndexChanged(this, index);
 			}
+		}
+	}
+
+	protected void lastTouchedValueChanged(){
+		double lastTouchedValue = 0f;
+		if (crossLines.getBindCrossLinesToStick() == ICrossLines.BIND_TO_TYPE_NONE) {
+			lastTouchedValue = computeY2Value(this.touchPoint.y);
+			if(this.touchedValueListener != null){
+				this.touchedValueListener.onLastTouchedValueChanged(this, lastTouchedValue);
+			}
+		} else if (crossLines.getBindCrossLinesToStick() == ICrossLines.BIND_TO_TYPE_HIRIZIONAL) {
+			lastTouchedValue = computeY2Value(this.touchPoint.y);
+			if(this.touchedValueListener != null){
+				this.touchedValueListener.onLastTouchedValueChanged(this, lastTouchedValue);
+			}
+		} else{
+
 		}
 	}
 	
