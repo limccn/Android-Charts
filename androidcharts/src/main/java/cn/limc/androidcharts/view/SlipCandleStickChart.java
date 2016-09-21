@@ -49,6 +49,13 @@ import android.util.AttributeSet;
  */
 public class SlipCandleStickChart extends SlipStickChart {
 
+	//Standard Candle Style
+	public static final int CANDLE_STICK_STYLE_STANDARD  = 0;
+	//American Bar Style
+	public static final int CANDLE_STICK_STYLE_BAR = 1;
+	//Close Line Style
+	public static final int CANDLE_STICK_STYLE_LINE = 2;
+
 	/**
 	 * <p>
 	 * Default price up stick's border color
@@ -113,6 +120,8 @@ public class SlipCandleStickChart extends SlipStickChart {
 	 * </p>
 	 */
 	public static final int DEFAULT_CROSS_STAR_COLOR = Color.LTGRAY;
+
+	public static final int DEFAULT_CANDLE_STICK_STYLE = CANDLE_STICK_STYLE_STANDARD;
 
 	/**
 	 * <p>
@@ -179,6 +188,9 @@ public class SlipCandleStickChart extends SlipStickChart {
 	 * </p>
 	 */
 	private int crossStarColor = DEFAULT_CROSS_STAR_COLOR;
+
+
+	private int candleStickStyle = DEFAULT_CANDLE_STICK_STYLE;
 
 	/**
 	 * <p>
@@ -376,37 +388,48 @@ public class SlipCandleStickChart extends SlipStickChart {
 			float stickCenterX = stickX + stickWidth / 2;
 
 			if (ohlc.getOpen() < ohlc.getClose()) {
-				// stick or line
-				if (stickWidth >= 2f) {
-					canvas.drawRect(stickX, closeY, stickX + stickWidth, openY,
-							mPaintPositiveFill);
-					canvas.drawRect(stickX, closeY, stickX + stickWidth, openY,
-							mPaintPositiveBorder);
+				if (this.candleStickStyle == CANDLE_STICK_STYLE_STANDARD) {
+					// stick or line
+					if (stickWidth >= 2f) {
+						canvas.drawRect(stickX, closeY, stickX + stickWidth, openY,
+								mPaintPositiveFill);
+						canvas.drawRect(stickX, closeY, stickX + stickWidth, openY,
+								mPaintPositiveBorder);
+					}
+					canvas.drawLine(stickCenterX, highY, stickCenterX, closeY, mPaintPositiveBorder);
+					canvas.drawLine(stickCenterX, openY, stickCenterX, lowY, mPaintPositiveBorder);
+				}else if(this.candleStickStyle == CANDLE_STICK_STYLE_BAR){
+					canvas.drawLine(stickX, openY, stickCenterX, openY, mPaintPositiveBorder);
+					canvas.drawLine(stickCenterX, highY, stickCenterX, lowY, mPaintPositiveBorder);
+					canvas.drawLine(stickCenterX, closeY, stickX + stickWidth, closeY, mPaintPositiveBorder);
+				}else{
+					//noop
 				}
-				canvas.drawLine(stickCenterX, highY, stickX
-						+ stickWidth / 2f, closeY, mPaintPositiveBorder);
-				canvas.drawLine(stickCenterX, openY, stickX
-						+ stickWidth / 2f, lowY, mPaintPositiveBorder);
 			} else if (ohlc.getOpen() > ohlc.getClose()) {
-				// stick or line
-				if (stickWidth >= 2f) {
-					canvas.drawRect(stickX, openY, stickX + stickWidth, closeY,
-							mPaintNegativeFill);
-					canvas.drawRect(stickX, openY, stickX + stickWidth, closeY,
-							mPaintNegativeBorder);
+				if (this.candleStickStyle == CANDLE_STICK_STYLE_STANDARD) {
+					// stick or line
+					if (stickWidth >= 2f) {
+						canvas.drawRect(stickX, openY, stickX + stickWidth, closeY,
+								mPaintNegativeFill);
+						canvas.drawRect(stickX, openY, stickX + stickWidth, closeY,
+								mPaintNegativeBorder);
+					}
+					canvas.drawLine(stickCenterX, highY, stickCenterX , openY, mPaintNegativeBorder);
+					canvas.drawLine(stickCenterX, closeY, stickCenterX , lowY, mPaintNegativeBorder);
+				}else if(this.candleStickStyle == CANDLE_STICK_STYLE_BAR){
+					canvas.drawLine(stickX, openY, stickCenterX, openY, mPaintNegativeBorder);
+					canvas.drawLine(stickCenterX, highY, stickCenterX, lowY, mPaintNegativeBorder);
+					canvas.drawLine(stickCenterX, closeY, stickX + stickWidth, closeY, mPaintNegativeBorder);
+				}else{
+					//noop
 				}
-				canvas.drawLine(stickCenterX, highY, stickX
-						+ stickWidth / 2f, openY, mPaintNegativeBorder);
-				canvas.drawLine(stickCenterX, closeY, stickX
-						+ stickWidth / 2f, lowY, mPaintNegativeBorder);
 			} else {
 				// line or point
 				if (stickWidth >= 2f) {
 					canvas.drawLine(stickX, closeY, stickX + stickWidth, openY,
 							mPaintCross);
 				}
-				canvas.drawLine(stickCenterX, highY, stickX
-						+ stickWidth / 2f, lowY, mPaintCross);
+				canvas.drawLine(stickCenterX, highY, stickCenterX, lowY, mPaintCross);
 			}
 
 			if (ohlc.getHigh() - this.maxDataValue == 0 && maxValueDrawn == false) {
@@ -699,5 +722,13 @@ public class SlipCandleStickChart extends SlipStickChart {
 	 */
 	public void setCrossStarColor(int crossStarColor) {
 		this.crossStarColor = crossStarColor;
+	}
+
+	public int getCandleStickStyle() {
+		return candleStickStyle;
+	}
+
+	public void setCandleStickStyle(int candleStickStyle) {
+		this.candleStickStyle = candleStickStyle;
 	}
 }
