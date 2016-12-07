@@ -368,9 +368,9 @@ public abstract class DataGridChart extends GridChart implements IDataCursor {
 		//数据
 		double displayValue = (value - midValue) * 100/ midValue;
 		if(displayValue < 0){
-			return new DecimalFormat("#,##0.00").format(displayValue) + "%";
-		}else {
 			return new DecimalFormat("-#,##0.00").format(displayValue) + "%";
+		}else {
+			return new DecimalFormat("#,##0.00").format(displayValue) + "%";
 		}
 	}
 

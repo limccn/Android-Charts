@@ -435,7 +435,7 @@ public abstract class PeriodDataGridChart extends DataGridChart {
 		int index = calcSelectedIndex(x,y);
 		
 		float stickWidth = dataQuadrant.getPaddingWidth() / getDataDisplayNumber();
-		if (index > getDisplayFrom() && index < getDisplayTo() - 1) {
+		if (index >= getDisplayFrom() && index < getDisplayTo()) {
 			IMeasurable stick = getChartData().get(index);
 			calcY = (float) ((1f - (stick.getHigh() - minValue)
 					/ (maxValue - minValue))

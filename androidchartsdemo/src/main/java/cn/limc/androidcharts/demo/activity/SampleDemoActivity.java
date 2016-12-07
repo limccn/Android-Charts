@@ -1924,6 +1924,7 @@ public class SampleDemoActivity extends BaseActivity {
 	}
 
 	private void updateChart(IndicatorType indicatorType, int[] indicators) {
+		if(indicators == null || indicators.length == 0) return;
 		if (indicatorType == IndicatorType.IndicatorMACD) {
 			mMACDS = indicators[0];
 			mMACDL = indicators[1];
